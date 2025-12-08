@@ -1,0 +1,88 @@
+// 骨架屏组件样式 - 严格遵循设计规范 V4.0
+
+// 骨架屏动画
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+// 通用骨架屏块
+.skeleton-block {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+// 卡片骨架屏
+.skeleton-card {
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  overflow: hidden;
+  margin-bottom: 32rpx;
+
+  &__image {
+    width: 100%;
+    height: 400rpx;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.06) 25%,
+      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.06) 75%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+  }
+
+  &__body {
+    padding: 32rpx;
+  }
+
+  &__title {
+    width: 60%;
+    height: 36rpx;
+    border-radius: 8rpx;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.06) 25%,
+      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.06) 75%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+    margin-bottom: 24rpx;
+  }
+
+  &__line {
+    width: 100%;
+    height: 28rpx;
+    border-radius: 8rpx;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.06) 25%,
+      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.06) 75%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+    margin-bottom: 16rpx;
+
+    &--short {
+      width: 80%;
+    }
+  }
+}
+
+// 列表骨架屏
+.skeleton-list {
+  padding: 32rpx;
+}
+

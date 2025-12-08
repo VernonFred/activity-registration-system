@@ -1,0 +1,53 @@
+// 标签组件样式 - 严格遵循设计规范 V4.0
+
+.custom-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx; // 胶囊形
+  font-size: 24rpx;
+  font-weight: 400;
+  white-space: nowrap;
+
+  // 状态：进行中（蓝色）
+  &--ongoing {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3B82F6;
+  }
+
+  // 状态：报名中（绿色）
+  &--signup {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+  }
+
+  // 状态：即将开始（黄色）
+  &--upcoming {
+    background: rgba(246, 203, 66, 0.2);
+    color: #F6CB42;
+  }
+
+  // 状态：已结束（灰色）
+  &--finished {
+    background: rgba(156, 163, 175, 0.2);
+    color: #9CA3AF;
+  }
+
+  // 状态：免费（绿色）
+  &--free {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+  }
+
+  // 状态：需付费（橙色）
+  &--paid {
+    background: rgba(251, 146, 60, 0.2);
+    color: #FB923C;
+  }
+
+  &__text {
+    line-height: 1;
+  }
+}
+

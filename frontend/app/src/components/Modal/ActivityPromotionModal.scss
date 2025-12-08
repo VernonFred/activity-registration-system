@@ -1,0 +1,284 @@
+/**
+ * 「活动推广」弹窗样式
+ * 毛玻璃效果 + 倒计时 + CTA按钮 + 底部关闭按钮
+ */
+
+.promotion-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+}
+
+// 毛玻璃遮罩
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+// 弹窗容器 - 包含卡片和关闭按钮
+.modal-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 620rpx;
+  animation: modalBounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalBounceIn {
+  from {
+    opacity: 0;
+    transform: translateY(60rpx) scale(0.9);
+  }
+  50% {
+    transform: translateY(-10rpx) scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// 弹窗内容卡片
+.modal-content {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 40rpx;
+  box-shadow: 0 32rpx 100rpx rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+// 活动封面
+.activity-cover {
+  position: relative;
+  width: 100%;
+  height: 320rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin-bottom: 28rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1A3A2A 0%, #2D5A3D 50%, #1A3A2A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon {
+  font-size: 100rpx;
+}
+
+// 状态标签 - 报名中（带脉冲动画）
+.status-badge {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  padding: 10rpx 24rpx;
+  background: linear-gradient(135deg, #1A3A2A 0%, #2D5A3D 100%);
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  box-shadow: 0 6rpx 20rpx rgba(26, 58, 42, 0.4);
+}
+
+.pulse-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #4ADE80;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12rpx rgba(74, 222, 128, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+  }
+}
+
+.badge-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1rpx;
+}
+
+// 活动信息
+.activity-info {
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.activity-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1A1B1F;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
+}
+
+.location-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.location-icon {
+  font-size: 24rpx;
+}
+
+.location-text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+// 倒计时区域
+.countdown-section {
+  background: linear-gradient(135deg, rgba(26, 58, 42, 0.08) 0%, rgba(26, 58, 42, 0.04) 100%);
+  border-radius: 20rpx;
+  padding: 24rpx 20rpx;
+  margin-bottom: 28rpx;
+  border: 1rpx solid rgba(26, 58, 42, 0.1);
+}
+
+.countdown-label {
+  display: block;
+  text-align: center;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+  letter-spacing: 1rpx;
+}
+
+.countdown-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70rpx;
+}
+
+.time-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1A3A2A;
+  line-height: 1;
+  font-family: 'SF Mono', 'Menlo', monospace;
+}
+
+.time-unit {
+  font-size: 20rpx;
+  color: #888;
+  margin-top: 6rpx;
+}
+
+.time-separator {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1A3A2A;
+  margin-bottom: 20rpx;
+}
+
+// CTA按钮 - 立即报名
+.action-btn {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  transition: all 0.2s ease;
+  
+  &.signup-now {
+    background: linear-gradient(135deg, #1A3A2A 0%, #2D5A3D 100%);
+    box-shadow: 0 12rpx 40rpx rgba(26, 58, 42, 0.35);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 8rpx 24rpx rgba(26, 58, 42, 0.25);
+  }
+}
+
+.btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 2rpx;
+}
+
+.btn-arrow {
+  font-size: 32rpx;
+  color: #fff;
+  transition: transform 0.2s ease;
+}
+
+.action-btn:active .btn-arrow {
+  transform: translateX(6rpx);
+}
+
+// 关闭按钮 - 放在卡片下方
+.close-btn {
+  margin-top: 32rpx;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.95);
+    background: #fff;
+  }
+}
+
+.close-icon {
+  font-size: 48rpx;
+  color: #333;
+  line-height: 1;
+  font-weight: 300;
+}

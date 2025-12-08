@@ -1,0 +1,102 @@
+/**
+ * 主题切换按钮样式
+ */
+
+.theme-toggle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  // 浅色模式
+  &.light {
+    background: #FFFFFF;
+    border: 1rpx solid #DDDEE3;
+    
+    &:active {
+      background: #F0F0F2;
+    }
+  }
+  
+  // 深色模式
+  &.dark {
+    background: #27272A;
+    border: 1rpx solid #2E2E33;
+    
+    &:active {
+      background: #3F3F46;
+    }
+  }
+}
+
+.toggle-icon {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 太阳图标
+.sun-icon {
+  position: relative;
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.sun-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16rpx;
+  height: 16rpx;
+  background: #18181B;
+  border-radius: 50%;
+}
+
+.sun-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32rpx;
+  height: 32rpx;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: #18181B;
+  }
+  
+  &::before {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4rpx;
+    height: 32rpx;
+  }
+  
+  &::after {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 32rpx;
+    height: 4rpx;
+  }
+}
+
+// 月亮图标
+.moon-icon {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset -10rpx -2rpx 0 0 #FAFAFA;
+}
+
+

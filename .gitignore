@@ -1,0 +1,52 @@
+# 依赖目录
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# 编译输出
+dist/
+build/
+*.egg-info/
+
+# 环境配置
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 日志
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 小程序
+project.private.config.json
+
+# 测试覆盖率
+coverage/
+.coverage
+htmlcov/
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+
+# 数据库文件（开发用）
+*.db
+*.sqlite
+*.sqlite3

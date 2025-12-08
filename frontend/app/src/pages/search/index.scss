@@ -1,0 +1,874 @@
+/**
+ * 搜索页面样式 - 照搬 Lovable 风格 + 双主题
+ * 参考：lovable参考样式代码/Search.tsx, SearchResults.tsx
+ */
+
+// ==========================================
+// 浅色主题变量（Lovable Light）
+// ==========================================
+$light-background: #FAFAFA;
+$light-foreground: #18181B;
+$light-card: #FFFFFF;
+$light-muted: #F0F0F2;
+$light-muted-foreground: #6D6E7A;
+$light-border: #DDDEE3;
+$light-primary: #FF8A1A;
+
+$light-shadow-card: 0 25px 50px -12px rgba(24, 24, 27, 0.08);
+$light-shadow-elevated: 0 8px 32px -8px rgba(24, 24, 27, 0.1);
+
+// ==========================================
+// 深色主题变量（Lovable Dark）
+// ==========================================
+$dark-background: #0A0A0B;
+$dark-foreground: #FAFAFA;
+$dark-card: #18181B;
+$dark-muted: #27272A;
+$dark-muted-foreground: #A1A1AA;
+$dark-border: #2E2E33;
+$dark-primary: #FF9933;
+
+$dark-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+$dark-shadow-elevated: 0 8px 32px -8px rgba(0, 0, 0, 0.3);
+
+$radius-lg: 24rpx;
+$radius-xl: 32rpx;
+$radius-full: 999rpx;
+
+// ==========================================
+// 页面容器
+// ==========================================
+.search-page {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden; // 防止内容超出屏幕
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s ease;
+  box-sizing: border-box;
+  
+  // 浅色主题
+  &.theme-light {
+    background: $light-background;
+    
+    .status-bar { background: $light-background; }
+    .search-header { background: rgba($light-background, 0.8); border-color: rgba($light-border, 0.5); }
+    .back-btn { background: $light-muted; }
+    .back-icon { filter: brightness(0); opacity: 0.8; }
+    .search-input-wrapper { background: rgba($light-muted, 0.5); border-color: rgba($light-border, 0.5); }
+    .search-icon { filter: brightness(0); opacity: 0.5; }
+    .search-input { color: $light-foreground; }
+    .search-placeholder { color: $light-muted-foreground; }
+    .clear-btn { background: $light-muted; }
+    .clear-icon { color: $light-muted-foreground; }
+    
+    .section-title { color: $light-foreground; }
+    .clear-all, .clear-all-btn { color: $light-muted-foreground; }
+    
+    .recent-tag { 
+      background: rgba($light-muted, 0.5); 
+      border-color: rgba($light-border, 0.5);
+    }
+    .tag-text { color: $light-foreground; }
+    .tag-close { color: $light-muted-foreground; }
+    
+    .recent-view-card { 
+      background: $light-card; 
+      border-color: rgba($light-border, 0.5);
+      box-shadow: $light-shadow-card;
+    }
+    .view-cover-gradient { background: linear-gradient(to top, $light-card 0%, transparent 100%); }
+    .view-date { color: $light-muted-foreground; }
+    .view-title { color: $light-foreground; }
+    .view-status { background: rgba(#166534, 0.1); }
+    .status-label { color: #166534; }
+    .view-location { color: $light-muted-foreground; }
+    .location-icon { filter: brightness(0); opacity: 0.5; }
+    
+    .hot-search-item { 
+      background: $light-card; 
+      border-color: rgba($light-border, 0.5);
+      
+      &:active {
+        box-shadow: $light-shadow-elevated;
+      }
+    }
+    .hot-title { color: $light-foreground; }
+    .hot-meta { color: $light-muted-foreground; }
+    .hot-badge { background: linear-gradient(135deg, $light-primary 0%, #E65100 100%); }
+    
+    // 搜索结果
+    .category-scroll { background: $light-background; }
+    .category-item { 
+      background: rgba($light-muted, 0.5); 
+      border-color: rgba($light-border, 0.5);
+      
+      &.active { 
+        background: $light-primary; 
+        border-color: $light-primary;
+        .category-label { color: #FFFFFF; }
+      }
+    }
+    .category-label { color: $light-muted-foreground; }
+    
+    .results-title { color: $light-foreground; }
+    .results-count { color: $light-primary; }
+    
+    .result-card { 
+      background: $light-card; 
+      border-color: rgba($light-border, 0.5);
+      box-shadow: $light-shadow-card;
+    }
+    .card-gradient { background: linear-gradient(to top, rgba($light-card, 0.8) 0%, transparent 100%); }
+    .favorite-btn { 
+      background: rgba($light-background, 0.6);
+      backdrop-filter: blur(8px);
+      &.active { background: rgba($light-primary, 0.9); }
+    }
+    .favorite-icon { color: $light-foreground; }
+    .favorite-btn.active .favorite-icon { color: #FFFFFF; }
+    .star-icon { color: #F59E0B; }
+    .rating-value { color: $light-foreground; }
+    .reviews-count { color: $light-muted-foreground; }
+    .card-title { color: $light-foreground; }
+    .card-location { color: $light-muted-foreground; }
+    
+    .loading-spinner { border-color: $light-muted; border-top-color: $light-primary; }
+    .loading-text { color: $light-muted-foreground; }
+    .empty-icon-wrapper { background: $light-muted; }
+    .empty-icon { filter: brightness(0); opacity: 0.3; }
+    .empty-title { color: $light-foreground; }
+    .empty-desc { color: $light-muted-foreground; }
+    .load-more-text { color: $light-muted-foreground; }
+  }
+  
+  // 深色主题
+  &.theme-dark {
+    background: $dark-background;
+    
+    .status-bar { background: $dark-background; }
+    .search-header { background: rgba($dark-background, 0.8); border-color: rgba($dark-border, 0.5); }
+    .back-btn { background: $dark-muted; }
+    .back-icon { filter: brightness(0) invert(1); opacity: 0.9; }
+    .search-input-wrapper { background: rgba($dark-muted, 0.5); border-color: rgba($dark-border, 0.5); }
+    .search-icon { filter: brightness(0) invert(1); opacity: 0.5; }
+    .search-input { color: $dark-foreground; }
+    .search-placeholder { color: $dark-muted-foreground; }
+    .clear-btn { background: $dark-muted; }
+    .clear-icon { color: $dark-muted-foreground; }
+    
+    .section-title { color: $dark-foreground; }
+    .clear-all, .clear-all-btn { color: $dark-muted-foreground; }
+    
+    .recent-tag { 
+      background: rgba($dark-muted, 0.5); 
+      border-color: rgba($dark-border, 0.5);
+    }
+    .tag-text { color: $dark-foreground; }
+    .tag-close { color: $dark-muted-foreground; }
+    
+    .recent-view-card { 
+      background: $dark-card; 
+      border-color: rgba($dark-border, 0.5);
+      box-shadow: $dark-shadow-card;
+    }
+    .view-cover-gradient { background: linear-gradient(to top, $dark-card 0%, transparent 100%); }
+    .view-date { color: $dark-muted-foreground; }
+    .view-title { color: $dark-foreground; }
+    .view-status { background: rgba(#166534, 0.2); }
+    .status-label { color: #4ADE80; }
+    .view-location { color: $dark-muted-foreground; }
+    .location-icon { filter: brightness(0) invert(1); opacity: 0.5; }
+    
+    .hot-search-item { 
+      background: $dark-card; 
+      border-color: rgba($dark-border, 0.5);
+      
+      &:active {
+        box-shadow: $dark-shadow-elevated;
+      }
+    }
+    .hot-title { color: $dark-foreground; }
+    .hot-meta { color: $dark-muted-foreground; }
+    .hot-badge { background: linear-gradient(135deg, $dark-primary 0%, #E65100 100%); }
+    
+    // 搜索结果
+    .category-scroll { background: $dark-background; }
+    .category-item { 
+      background: rgba($dark-muted, 0.5); 
+      border-color: rgba($dark-border, 0.5);
+      
+      &.active { 
+        background: $dark-primary; 
+        border-color: $dark-primary;
+        box-shadow: 0 0 24rpx rgba($dark-primary, 0.4);
+        .category-label { color: #FFFFFF; }
+      }
+    }
+    .category-label { color: $dark-muted-foreground; }
+    
+    .results-title { color: $dark-foreground; }
+    .results-count { color: $dark-primary; }
+    
+    .result-card { 
+      background: $dark-card; 
+      border-color: rgba($dark-border, 0.5);
+      box-shadow: $dark-shadow-card;
+    }
+    .card-gradient { background: linear-gradient(to top, rgba($dark-card, 0.8) 0%, transparent 100%); }
+    .favorite-btn { 
+      background: rgba($dark-background, 0.6);
+      backdrop-filter: blur(8px);
+      &.active { background: rgba($dark-primary, 0.9); }
+    }
+    .favorite-icon { color: $dark-foreground; }
+    .favorite-btn.active .favorite-icon { color: #FFFFFF; }
+    .star-icon { color: #F59E0B; }
+    .rating-value { color: $dark-foreground; }
+    .reviews-count { color: $dark-muted-foreground; }
+    .card-title { color: $dark-foreground; }
+    .card-location { color: $dark-muted-foreground; }
+    
+    .loading-spinner { border-color: $dark-muted; border-top-color: $dark-primary; }
+    .loading-text { color: $dark-muted-foreground; }
+    .empty-icon-wrapper { background: $dark-muted; }
+    .empty-icon { filter: brightness(0) invert(1); opacity: 0.3; }
+    .empty-title { color: $dark-foreground; }
+    .empty-desc { color: $dark-muted-foreground; }
+    .load-more-text { color: $dark-muted-foreground; }
+  }
+}
+
+.status-bar {
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+// ==========================================
+// 顶部导航 - 照搬 Lovable header 样式
+// 注意：statusBarHeight 已包含胶囊按钮偏移
+// ==========================================
+.search-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1rpx solid;
+  padding: 24rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.back-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+  transition: filter 0.3s ease;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  padding: 0 32rpx;
+  border: 1rpx solid;
+  border-radius: $radius-lg;
+  gap: 16rpx;
+  transition: all 0.3s ease;
+  
+  &:focus-within {
+    border-color: $light-primary;
+  }
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+  transition: filter 0.3s ease;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  background: transparent;
+  transition: color 0.3s ease;
+}
+
+.search-placeholder {
+  transition: color 0.3s ease;
+}
+
+.clear-btn {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.clear-icon {
+  font-size: 32rpx;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+// ==========================================
+// 搜索内容区域 - 照搬 Lovable p-5 (20px = 40rpx)
+// ==========================================
+.search-content {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  padding: 40rpx;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.search-section {
+  margin-bottom: 64rpx;
+  // 确保内容不溢出
+  overflow: visible;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+  padding-right: 0;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.clear-all,
+.clear-all-btn {
+  font-size: 24rpx;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+  
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+// 所有 section-header 统一样式，确保对齐
+
+// ==========================================
+// 最近搜索标签 - 照搬 Lovable 样式
+// ==========================================
+.recent-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.recent-tag {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 32rpx;
+  border: 1rpx solid;
+  border-radius: $radius-full;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.tag-text {
+  font-size: 28rpx;
+  transition: color 0.3s ease;
+}
+
+.tag-close {
+  font-size: 28rpx;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+// ==========================================
+// 最近浏览 - 完全照搬 Lovable Search.tsx 结构
+// ==========================================
+.recent-views-scroll {
+  width: calc(100% + 80rpx);
+  margin-left: -40rpx;
+  padding: 0 40rpx;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.recent-views-list {
+  display: inline-flex;
+  gap: 32rpx;
+  padding-right: 40rpx;
+}
+
+.recent-view-card {
+  width: 448rpx;
+  flex-shrink: 0;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  border: 1rpx solid;
+  transition: all 0.3s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// 封面区域
+.view-cover-wrapper {
+  position: relative;
+  width: 100%;
+  height: 256rpx;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); // 加载时的渐变背景
+}
+  
+.view-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.recent-view-card:active .view-cover-img {
+  transform: scale(1.1);
+}
+
+.view-cover-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  pointer-events: none;
+}
+
+// 内容区域 - 照搬 Lovable
+.view-content {
+  padding: 24rpx;
+}
+
+.view-date-row {
+  margin-bottom: 12rpx;
+}
+
+.view-date {
+  font-size: 24rpx;
+  transition: color 0.3s ease;
+}
+
+.view-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  transition: color 0.3s ease;
+}
+
+.view-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.view-status {
+  display: inline-flex;
+  padding: 8rpx 20rpx;
+  border-radius: $radius-full;
+  transition: all 0.3s ease;
+}
+
+.status-label {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.view-location-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.view-location {
+  font-size: 24rpx;
+  transition: color 0.3s ease;
+}
+
+.location-icon {
+  width: 24rpx;
+  height: 24rpx;
+  transition: filter 0.3s ease;
+}
+
+// ==========================================
+// 热门搜索 - 照搬 Lovable 样式
+// ==========================================
+.hot-search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-top: 24rpx;
+  width: 100%;
+}
+
+.hot-search-item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx;
+  border: 1rpx solid;
+  border-radius: $radius-xl;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hot-cover {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hot-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hot-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.hot-meta {
+  font-size: 24rpx;
+  transition: color 0.3s ease;
+}
+
+.hot-badge {
+  padding: 12rpx 24rpx;
+  border-radius: $radius-full;
+  flex-shrink: 0;
+}
+
+.badge-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+// ==========================================
+// 搜索结果区域 - 照搬 Lovable SearchResults
+// ==========================================
+.search-results-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-scroll {
+  padding: 24rpx 32rpx;
+  white-space: nowrap;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  transition: background 0.3s ease;
+}
+
+.category-list {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.category-item {
+  padding: 16rpx 32rpx;
+  border: 1rpx solid;
+  border-radius: $radius-full;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.category-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.results-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  padding: 32rpx 40rpx 24rpx;
+}
+
+.results-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.results-count {
+  font-size: 32rpx;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.results-scroll {
+  flex: 1;
+}
+
+.results-grid {
+  display: inline-flex;
+  gap: 24rpx;
+  padding: 0 40rpx 40rpx;
+}
+
+.result-card {
+  width: 320rpx;
+  flex-shrink: 0;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  border: 1rpx solid;
+  transition: all 0.3s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+  
+  .cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.result-card:active .cover-image {
+  transform: scale(1.1);
+}
+
+.card-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  transition: background 0.3s ease;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.favorite-icon {
+  font-size: 32rpx;
+  transition: color 0.3s ease;
+}
+
+.card-info {
+  padding: 24rpx;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 12rpx;
+}
+
+.star-icon {
+  font-size: 28rpx;
+  transition: color 0.3s ease;
+}
+
+.rating-value {
+  font-size: 24rpx;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.reviews-count {
+  font-size: 22rpx;
+  transition: color 0.3s ease;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 8rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  transition: color 0.3s ease;
+}
+
+.card-location {
+  font-size: 22rpx;
+  transition: color 0.3s ease;
+}
+
+// ==========================================
+// 加载状态
+// ==========================================
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 0;
+}
+
+.loading-spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  transition: border-color 0.3s ease;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 32rpx;
+  font-size: 28rpx;
+  transition: color 0.3s ease;
+}
+
+// ==========================================
+// 空状态
+// ==========================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon-wrapper {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+  transition: background 0.3s ease;
+}
+
+.empty-icon {
+  width: 80rpx;
+  height: 80rpx;
+  transition: filter 0.3s ease;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  transition: color 0.3s ease;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  transition: color 0.3s ease;
+}
+
+// ==========================================
+// 加载更多提示
+// ==========================================
+.load-more-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 0;
+}
+
+.load-more-text {
+  font-size: 24rpx;
+  transition: color 0.3s ease;
+}
+
+// ==========================================
+// 底部占位
+// ==========================================
+.bottom-spacer {
+  height: 120rpx;
+}

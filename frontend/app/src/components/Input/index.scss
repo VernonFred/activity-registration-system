@@ -1,0 +1,81 @@
+// 输入框组件样式 - 严格遵循设计规范 V4.0
+
+.custom-input {
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  padding: 0 32rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  border: 1rpx solid #E5E7EB;
+  transition: all 0.2s ease;
+
+  // 聚焦状态：边框变为深绿色
+  &--focused {
+    border-color: #1B5E20;
+  }
+
+  // 禁用状态
+  &--disabled {
+    background: #F9FAFB;
+    color: #9CA3AF;
+    cursor: not-allowed;
+  }
+
+  &__field {
+    flex: 1;
+    font-size: 28rpx;
+    color: #333333;
+    
+    &::placeholder {
+      color: #9CA3AF;
+    }
+  }
+
+  &__placeholder {
+    color: #9CA3AF;
+  }
+}
+
+// 搜索输入框
+.custom-search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  padding: 0 32rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  border: 1rpx solid #E5E7EB;
+
+  &__icon {
+    width: 32rpx;
+    height: 32rpx;
+    margin-right: 16rpx;
+    flex-shrink: 0;
+    // PNG图标，深色背景用浅色，浅色背景用深色
+    filter: brightness(0) saturate(100%) invert(75%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(85%);
+    opacity: 0.7;
+  }
+
+  &__input {
+    flex: 1;
+    border: none !important;
+    padding: 0 !important;
+    height: auto !important;
+  }
+
+  &__clear {
+    font-size: 32rpx;
+    margin-left: 16rpx;
+    color: #9CA3AF;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:active {
+      opacity: 0.6;
+    }
+  }
+}
+

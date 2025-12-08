@@ -1,0 +1,48 @@
+{
+  "name": "event-signup-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Event signup mini-program built with Taro",
+  "scripts": {
+    "dev:weapp": "taro build --watch --type weapp",
+    "build:weapp": "taro build --type weapp",
+    "dev:h5": "taro build --watch --type h5",
+    "build:h5": "taro build --type h5",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@tarojs/components": "3.6.26",
+    "@tarojs/plugin-platform-h5": "3.6.26",
+    "@tarojs/react": "3.6.26",
+    "@tarojs/runtime": "3.6.26",
+    "@tarojs/shared": "3.6.26",
+    "@tarojs/taro": "3.6.26",
+    "axios": "^1.6.0",
+    "dayjs": "^1.11.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.6"
+  },
+  "devDependencies": {
+    "@babel/core": "7.22.20",
+    "@babel/plugin-bugfix-firefox-class-in-computed-class-key": "^7.22.15",
+    "@babel/preset-env": "7.22.20",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
+    "@tarojs/cli": "3.6.26",
+    "@tarojs/plugin-framework-react": "3.6.26",
+    "@tarojs/plugin-html": "3.6.26",
+    "@tarojs/plugin-http": "3.6.26",
+    "@tarojs/plugin-mini-ci": "3.6.26",
+    "@tarojs/plugin-platform-weapp": "3.6.26",
+    "@tarojs/plugin-react-devtools": "3.6.26",
+    "@tarojs/webpack5-runner": "3.6.26",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "babel-preset-taro": "3.6.26",
+    "eslint": "^8.57.0",
+    "react-refresh": "^0.18.0",
+    "sass": "^1.69.0",
+    "typescript": "^5.4.0"
+  }
+}

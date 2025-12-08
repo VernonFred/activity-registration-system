@@ -1,0 +1,101 @@
+// ==========================================
+// 自定义TabBar - 苹果风格毛玻璃效果
+// ==========================================
+
+.custom-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  padding: 0 20rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+  
+  // 毛玻璃背景
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-top: 0.5rpx solid rgba(0, 0, 0, 0.08);
+  }
+}
+
+.tab-bar-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100rpx;
+  padding: 0 10rpx;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:active {
+    transform: scale(0.92);
+  }
+  
+  // 选中状态的胶囊背景
+  &.active {
+    .tab-icon-wrapper {
+      background: rgba(45, 90, 61, 0.12);
+      transform: scale(1.05);
+    }
+  }
+  
+  // AI助手特殊样式
+  &.ai-tab {
+    .tab-icon-wrapper {
+      background: transparent;
+      border: 2rpx solid rgba(45, 90, 61, 0.2);
+    }
+    
+    &.active .tab-icon-wrapper {
+      background: rgba(45, 90, 61, 0.12);
+      border-color: transparent;
+    }
+  }
+}
+
+.tab-icon-wrapper {
+  width: 88rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 4rpx;
+}
+
+.tab-icon {
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.tab-text {
+  font-size: 20rpx;
+  color: #8E8E93;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  
+  &.active {
+    color: #2D5A3D;
+    font-weight: 600;
+  }
+}
+

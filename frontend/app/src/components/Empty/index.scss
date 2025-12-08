@@ -1,0 +1,34 @@
+// 空状态组件样式 - 严格遵循设计规范 V4.0
+
+.custom-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 64rpx;
+  text-align: center;
+
+  &__icon {
+    width: 160rpx;
+    height: 160rpx;
+    margin-bottom: 32rpx;
+    opacity: 0.4;
+    // PNG图标智能适配颜色
+    filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%);
+  }
+
+  &__title {
+    font-size: 28rpx;
+    font-weight: 400;
+    color: #333333;
+    margin-bottom: 16rpx;
+  }
+
+  &__desc {
+    font-size: 24rpx;
+    font-weight: 400;
+    color: #999999;
+    line-height: 1.5;
+  }
+}
+

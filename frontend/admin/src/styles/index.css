@@ -1,0 +1,134 @@
+:root {
+  --bg: #f6f8fb;
+  --card-bg: #fff;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-sm: 0 6px 20px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 36px rgba(15, 23, 42, 0.10);
+  --text-muted: #8a94a6;
+  --brand: #4c8cf5;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; }
+
+/* Soft glass background column effect */
+.app-glass {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(255, 229, 224, .5) 0%, transparent 60%),
+    radial-gradient(1000px 500px at 110% 20%, rgba(227, 241, 255, .5) 0%, transparent 60%),
+    linear-gradient(180deg, #f9fbff, #f3f6fb);
+}
+
+.login-bg {
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 10% -10%, #ffe5e0 0%, transparent 60%),
+              radial-gradient(1000px 500px at 110% 20%, #e3f1ff 0%, transparent 60%),
+              linear-gradient(180deg, #f9fbff, #f3f6fb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Generic containers */
+.section-card {
+  background: rgba(255,255,255,.86);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+.section-card .ant-divider { margin: 8px 0 12px; }
+.ant-modal .section-card { box-shadow: none; padding: 12px 16px; }
+.ant-form-vertical .ant-form-item { margin-bottom: 12px; }
+.ant-form-item-label > label { font-weight: 500; color: #344051; }
+
+/* Quill fine-tune */
+.ql-toolbar.ql-snow { border-radius: 10px 10px 0 0; }
+.ql-container.ql-snow { border-radius: 0 0 10px 10px; min-height: 220px; }
+.ql-editor { min-height: 220px; }
+
+/* Inline filter bar spacing when plain */
+.filter-bar { background: var(--card-bg); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 12px 16px; }
+.filter-bar + .section-card { margin-top: 12px; }
+
+/* Pill style helpers */
+.pill { border-radius: 999px !important; }
+.ant-segmented { background: rgba(255,255,255,.7); box-shadow: 0 14px 40px rgba(76, 140, 245, .14); padding: 6px; border-radius: 999px; }
+.ant-segmented .ant-segmented-item { border-radius: 999px; }
+.ant-segmented .ant-segmented-item-label { padding: 6px 14px; }
+.ant-segmented .ant-segmented-thumb { border-radius: 999px; background: #fff; box-shadow: 0 14px 36px rgba(76, 140, 245,.35); }
+.ant-segmented .ant-segmented-item-selected .ant-segmented-item-label { color: #2b5cd7; font-weight: 600; }
+.ant-btn-primary { border-radius: 999px; box-shadow: 0 8px 24px rgba(76, 140, 245, .3); }
+
+/* Section pill headings */
+.pill-title { display:inline-block; padding: 6px 14px; border-radius: 999px; font-weight: 600; margin: 6px 0 10px; }
+.pill-brand { background: #e8f0ff; color: #2b5cd7; }
+.pill-green { background: #e9f7ef; color: #1f8f4e; }
+.pill-orange { background: #fff1e6; color: #c26c0a; }
+.pill-slate { background: #eef1f5; color: #394659; }
+
+/* Upload picture card size tweak for tighter layout */
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload,
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list-item-container { width: 200px; height: 200px; }
+/* Center content inside picture-card (兼容 Safari/Chromium) */
+.ant-upload.center-trigger.ant-upload-select-picture-card { position: relative; display: grid; place-items: center; padding: 0 !important; }
+.ant-upload.center-trigger.ant-upload-select-picture-card .upload-trigger-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+
+/* Picker text readability and space */
+.ant-picker { width: 100%; }
+.ant-picker-input > input { font-variant-numeric: tabular-nums; }
+.filter-bar {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 12px 16px;
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.page-header .title-block {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.page-title { font-size: 20px; font-weight: 700; }
+.page-subtitle { color: var(--text-muted); }
+
+.status-pill { border-radius: 999px; padding: 2px 10px; font-size: 12px; }
+.search-pill { display: inline-flex; align-items: center; border: 1px solid #b8c1d4; border-radius: 999px; padding: 0 0 0 8px; background: transparent; overflow: hidden; }
+.search-pill .ant-input { border: none; box-shadow: none; background: transparent; height: 40px; }
+.search-pill .ant-input-affix-wrapper { border: none !important; box-shadow: none !important; background: transparent !important; height: 40px; display: flex; align-items: center; }
+.search-pill .ant-input-prefix { display: flex; align-items: center; }
+.search-pill .ant-input { height: 40px; line-height: 40px; padding-top: 0; }
+.search-pill .ant-input-prefix { color: #98a2b3; margin-inline-end: 8px; }
+.search-pill .pill-btn { border-radius: 999px; height: 40px; padding: 0 18px; background: #4c8cf5; border: none; box-shadow: 0 12px 28px rgba(76, 140, 245,.35); margin-left: 0; }
+.search-pill .pill-btn:hover { filter: brightness(1.05); }
+
+/* Pills for action buttons */
+.pill-action { border-radius: 999px !important; height: 28px; padding: 0 12px; border: none; }
+.pill-edit { background: #eef4ff; color: #2b5cd7; }
+.pill-delete { background: #ffeceb; color: #c0392b; }
+
+/* Region chips */
+.chip { border: 1px solid #cfd6e4; background: #fff; color: #3c4a64; padding: 4px 12px; border-radius: 999px; cursor: pointer; font-size: 12px; }
+.chip:hover { border-color: #b8c1d4; }
+.chip-selected { background: #e8f0ff; color: #2b5cd7; border-color: #b8c1d4; }
+.chip-label { color: #6b778c; font-size: 12px; margin-right: 4px; }
+
+/* Gradient status pills */
+.status-grad { display: inline-block; padding: 2px 10px; border-radius: 999px; color: #fff; font-size: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.grad-draft { background: linear-gradient(90deg,#cfd6e4,#aab6c8); }
+.grad-scheduled { background: linear-gradient(90deg,#a3b8ff,#6f8df0); }
+.grad-published { background: linear-gradient(90deg,#6be7a4,#38c594); }
+.grad-closed { background: linear-gradient(90deg,#ffd39a,#ff9f5a); }
+.grad-archived { background: linear-gradient(90deg,#d4d8e1,#b7bfcc); color: #2d3a4a; }

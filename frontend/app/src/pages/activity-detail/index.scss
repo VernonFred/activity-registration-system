@@ -1,0 +1,997 @@
+@import "../../styles/variables";
+
+// ========================================
+// 活动详情页样式
+// ========================================
+
+.activity-detail {
+  min-height: 100vh;
+  background: $bg-page;
+  display: flex;
+  flex-direction: column;
+  padding-top: constant(safe-area-inset-top); // iOS < 11.2
+  padding-top: env(safe-area-inset-top); // iOS >= 11.2
+  
+  // 加载状态
+  &.loading {
+    .skeleton-header {
+      height: 200px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    .skeleton-tabs {
+      height: 48px;
+      margin: $spacing-lg;
+      border-radius: $radius-md;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    .skeleton-content {
+      padding: $spacing-lg;
+      
+      .skeleton-line {
+        height: 16px;
+        margin-bottom: $spacing-md;
+        border-radius: $radius-sm;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        
+        &.short {
+          width: 60%;
+        }
+      }
+    }
+  }
+  
+  // 空状态
+  &.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-tertiary;
+  }
+}
+
+// ========================================
+// 导航栏
+// ========================================
+
+.nav-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-sticky;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc($safe-area-top + 8px) $spacing-lg $spacing-md;
+  background: $primary-gradient;
+  
+  .nav-back {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .icon-back {
+      font-size: 24px;
+      color: $text-inverse;
+      font-weight: 300;
+    }
+  }
+  
+  .nav-title {
+    flex: 1;
+    text-align: center;
+    font-size: $font-size-md;
+    font-weight: 600;
+    color: $text-inverse;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .nav-placeholder {
+    width: 32px;
+  }
+}
+
+// ========================================
+// Tab 切换
+// ========================================
+
+.tabs-container {
+  position: fixed;
+  top: calc($safe-area-top + 52px);
+  left: 0;
+  right: 0;
+  z-index: $z-sticky;
+  background: $primary-color;
+  padding: 0 $spacing-lg;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  .tab-item {
+    flex: 1;
+    position: relative;
+    padding: $spacing-md 0;
+    text-align: center;
+    transition: all $transition-normal;
+    
+    .tab-text {
+      font-size: $font-size-base;
+      color: rgba(255, 255, 255, 0.7);
+      transition: all $transition-normal;
+    }
+    
+    &.active {
+      .tab-text {
+        color: $text-inverse;
+        font-weight: 600;
+      }
+    }
+    
+    .tab-indicator {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 3px;
+      background: $accent-color;
+      border-radius: $radius-full;
+    }
+  }
+}
+
+// ========================================
+// 内容区域
+// ========================================
+
+.content-scroll {
+  flex: 1;
+  margin-top: calc($safe-area-top + 100px);
+  padding-bottom: 100px;
+}
+
+.tab-content {
+  padding: $spacing-lg;
+  
+  &.animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+}
+
+// ========================================
+// 活动速览 Tab
+// ========================================
+
+.overview {
+  padding: 0;
+  
+  .banner-section {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    
+    .banner-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .banner-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+    }
+  }
+  
+  .info-card {
+    margin: -40px $spacing-lg 0;
+    padding: $spacing-xl;
+    position: relative;
+    z-index: 1;
+    
+    .info-header {
+      margin-bottom: $spacing-lg;
+      
+      .location-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        background: rgba(45, 90, 61, 0.1);
+        border-radius: $radius-sm;
+        margin-bottom: $spacing-sm;
+        
+        text {
+          font-size: $font-size-sm;
+          color: $primary-color;
+        }
+      }
+      
+      .activity-title {
+        display: block;
+        font-size: $font-size-lg;
+        font-weight: 600;
+        color: $text-primary;
+        line-height: $line-height-tight;
+        margin-bottom: $spacing-sm;
+      }
+      
+      .fee-tag {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: $radius-full;
+        font-size: $font-size-xs;
+        font-weight: 500;
+        
+        &.free {
+          background: rgba(82, 196, 26, 0.15);
+          color: $success-color;
+        }
+        
+        &.paid {
+          background: rgba(245, 197, 24, 0.15);
+          color: $accent-dark;
+        }
+      }
+    }
+    
+    .info-divider {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.06);
+      margin: $spacing-md 0;
+    }
+    
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      
+      .info-label {
+        flex: 1;
+        
+        .info-date {
+          display: block;
+          font-size: $font-size-base;
+          font-weight: 600;
+          color: $text-primary;
+        }
+        
+        .info-note {
+          display: block;
+          font-size: $font-size-xs;
+          color: $text-tertiary;
+          margin-top: 2px;
+        }
+      }
+      
+      .info-deadline {
+        text {
+          font-size: $font-size-xs;
+          color: $text-secondary;
+        }
+      }
+    }
+    
+    .location-row {
+      .location-name {
+        display: block;
+        font-size: $font-size-base;
+        font-weight: 500;
+        color: $text-primary;
+      }
+      
+      .location-address {
+        display: block;
+        font-size: $font-size-xs;
+        color: $text-tertiary;
+        margin-top: 2px;
+      }
+      
+      .location-distance {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .distance-icon {
+          font-size: 20px;
+          margin-bottom: 2px;
+        }
+        
+        text {
+          font-size: $font-size-xs;
+          color: $text-secondary;
+        }
+      }
+    }
+    
+    .participants-row {
+      align-items: center;
+      
+      .participants-label {
+        font-size: $font-size-sm;
+        color: $text-secondary;
+      }
+      
+      .participants-count {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        
+        .count-number {
+          font-size: $font-size-2xl;
+          font-weight: 700;
+          color: $primary-color;
+        }
+        
+        .count-unit {
+          font-size: $font-size-sm;
+          color: $primary-color;
+        }
+        
+        .avatar-stack {
+          position: relative;
+          width: 96px;
+          height: 24px;
+          margin-left: $spacing-sm;
+          
+          .avatar-item {
+            position: absolute;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid $bg-card;
+            overflow: hidden;
+            
+            .avatar-img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+      
+      .signup-status {
+        font-size: $font-size-xs;
+        color: $error-color;
+      }
+    }
+    
+    .description-section {
+      margin-top: $spacing-md;
+      
+      .section-title {
+        display: block;
+        font-size: $font-size-base;
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: $spacing-sm;
+      }
+      
+      .description-text {
+        font-size: $font-size-sm;
+        color: $text-secondary;
+        line-height: $line-height-relaxed;
+      }
+    }
+  }
+}
+
+// ========================================
+// 活动议程 Tab
+// ========================================
+
+.agenda {
+  .agenda-timeline {
+    position: relative;
+    
+    .agenda-item {
+      display: flex;
+      margin-bottom: $spacing-lg;
+      animation: slideUp 0.4s ease forwards;
+      opacity: 0;
+      
+      .timeline-dot {
+        position: relative;
+        width: 24px;
+        margin-right: $spacing-md;
+        
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: $bg-page;
+          border: 2px solid $text-tertiary;
+          
+          &.active {
+            background: $primary-color;
+            border-color: $primary-color;
+          }
+        }
+        
+        .timeline-line {
+          position: absolute;
+          top: 16px;
+          left: 5px;
+          width: 2px;
+          height: calc(100% + 16px);
+          background: rgba(0, 0, 0, 0.08);
+        }
+      }
+      
+      .agenda-card {
+        flex: 1;
+        padding: $spacing-lg;
+        
+        .agenda-time {
+          display: flex;
+          align-items: center;
+          gap: $spacing-xs;
+          margin-bottom: $spacing-sm;
+          
+          .time-icon {
+            font-size: 14px;
+          }
+          
+          .time-text {
+            font-size: $font-size-sm;
+            color: $primary-color;
+            font-weight: 500;
+          }
+        }
+        
+        .agenda-title {
+          display: block;
+          font-size: $font-size-base;
+          font-weight: 600;
+          color: $text-primary;
+          margin-bottom: $spacing-sm;
+        }
+        
+        .agenda-info {
+          display: flex;
+          align-items: center;
+          gap: $spacing-xs;
+          margin-bottom: $spacing-xs;
+          
+          .info-icon {
+            font-size: 12px;
+          }
+          
+          .info-text {
+            font-size: $font-size-sm;
+            color: $text-secondary;
+          }
+        }
+        
+        .agenda-tag {
+          display: inline-block;
+          margin-top: $spacing-sm;
+          padding: 2px 8px;
+          background: rgba(45, 90, 61, 0.1);
+          border-radius: $radius-sm;
+          font-size: $font-size-xs;
+          color: $primary-color;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// 酒店信息 Tab
+// ========================================
+
+.hotel {
+  padding: 0;
+  
+  .hotel-tabs {
+    display: flex;
+    gap: $spacing-sm;
+    padding: $spacing-lg;
+    white-space: nowrap;
+    
+    .hotel-tab {
+      display: inline-block;
+      padding: $spacing-sm $spacing-lg;
+      background: $bg-card;
+      border-radius: $radius-full;
+      font-size: $font-size-sm;
+      color: $text-secondary;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      
+      &.active {
+        background: $primary-color;
+        color: $text-inverse;
+        border-color: $primary-color;
+      }
+    }
+  }
+  
+  .hotel-detail {
+    padding: 0 $spacing-lg $spacing-lg;
+  }
+  
+  .hotel-card {
+    position: relative;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    margin-bottom: $spacing-lg;
+    
+    .hotel-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .hotel-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(45, 90, 61, 0.85) 0%, rgba(45, 90, 61, 0.95) 100%);
+      padding: $spacing-lg;
+      display: flex;
+      flex-direction: column;
+      
+      .hotel-header {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-md;
+        
+        .hotel-logo {
+          font-size: 20px;
+        }
+        
+        .hotel-name {
+          font-size: $font-size-md;
+          font-weight: 600;
+          color: $text-inverse;
+        }
+        
+        .hotel-verify {
+          font-size: 14px;
+          color: $success-color;
+        }
+      }
+      
+      .hotel-tip, .hotel-phone {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-sm;
+        
+        .tip-icon, .phone-icon {
+          font-size: 14px;
+        }
+        
+        .tip-text, .phone-text {
+          font-size: $font-size-sm;
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+      
+      .hotel-facilities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $spacing-md;
+        margin-top: auto;
+        
+        .facility-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          
+          .facility-icon {
+            font-size: 14px;
+          }
+          
+          .facility-text {
+            font-size: $font-size-xs;
+            color: rgba(255, 255, 255, 0.8);
+          }
+        }
+      }
+    }
+  }
+  
+  .room-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+    
+    .room-info {
+      .room-type {
+        display: block;
+        font-size: $font-size-base;
+        font-weight: 600;
+        color: $text-primary;
+      }
+      
+      .room-note {
+        display: block;
+        font-size: $font-size-xs;
+        color: $text-tertiary;
+      }
+    }
+    
+    .room-price {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+      
+      .price-currency {
+        font-size: 16px;
+      }
+      
+      .price-amount {
+        font-size: $font-size-2xl;
+        font-weight: 700;
+        color: $primary-color;
+      }
+      
+      .price-unit {
+        font-size: $font-size-sm;
+        color: $text-tertiary;
+      }
+    }
+  }
+  
+  .booking-section {
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    
+    .booking-item {
+      display: flex;
+      gap: $spacing-md;
+      margin-bottom: $spacing-md;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .booking-icon {
+        font-size: 20px;
+      }
+      
+      .booking-content {
+        flex: 1;
+        
+        .booking-label {
+          display: block;
+          font-size: $font-size-sm;
+          color: $text-tertiary;
+          margin-bottom: 2px;
+        }
+        
+        .booking-text {
+          display: block;
+          font-size: $font-size-sm;
+          color: $text-secondary;
+        }
+        
+        .booking-name {
+          display: block;
+          font-size: $font-size-sm;
+          color: $text-primary;
+        }
+        
+        .booking-phone {
+          display: block;
+          font-size: $font-size-sm;
+          color: $text-secondary;
+        }
+      }
+    }
+  }
+  
+  .booking-button {
+    width: 100%;
+    padding: $spacing-md;
+    background: $bg-card;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: $radius-lg;
+    text-align: center;
+    margin-bottom: $spacing-xl;
+    
+    text {
+      font-size: $font-size-base;
+      color: $text-primary;
+    }
+    
+    &:active {
+      background: $bg-card-hover;
+    }
+  }
+  
+  .map-section, .transport-section, .weather-section {
+    margin-bottom: $spacing-xl;
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-md;
+      
+      .section-icon {
+        font-size: 18px;
+      }
+      
+      .section-title {
+        font-size: $font-size-base;
+        font-weight: 600;
+        color: $text-primary;
+      }
+    }
+  }
+  
+  .map-placeholder {
+    border-radius: $radius-lg;
+    overflow: hidden;
+    
+    .map-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #e0e0e0;
+    }
+  }
+  
+  .transport-list {
+    .transport-item {
+      padding: $spacing-md 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .transport-type {
+        display: block;
+        font-size: $font-size-sm;
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: 4px;
+      }
+      
+      .transport-desc {
+        font-size: $font-size-sm;
+        color: $text-secondary;
+        line-height: $line-height-normal;
+      }
+    }
+  }
+  
+  .weather-card {
+    display: flex;
+    align-items: center;
+    padding: $spacing-lg;
+    background: $glass-bg;
+    border-radius: $radius-lg;
+    
+    .weather-main {
+      flex: 1;
+      
+      .weather-temp {
+        display: block;
+        font-size: $font-size-3xl;
+        font-weight: 700;
+        color: $text-primary;
+      }
+      
+      .weather-desc {
+        display: block;
+        font-size: $font-size-sm;
+        color: $text-secondary;
+      }
+    }
+    
+    .weather-details {
+      display: flex;
+      gap: $spacing-lg;
+      
+      .weather-item {
+        text-align: center;
+        
+        .weather-icon {
+          display: block;
+          font-size: 20px;
+          margin-bottom: 4px;
+        }
+        
+        .weather-label {
+          display: block;
+          font-size: $font-size-xs;
+          color: $text-tertiary;
+          margin-bottom: 2px;
+        }
+        
+        .weather-value {
+          display: block;
+          font-size: $font-size-sm;
+          font-weight: 600;
+          color: $text-primary;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// 图片直播 Tab
+// ========================================
+
+.live {
+  padding: $spacing-lg;
+  
+  .live-container {
+    position: relative;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    
+    .live-cover {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+    }
+    
+    .live-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: $spacing-xl;
+      background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.5));
+      
+      .live-button {
+        padding: $spacing-md $spacing-2xl;
+        background: $glass-bg;
+        backdrop-filter: $glass-blur;
+        border-radius: $radius-full;
+        
+        text {
+          font-size: $font-size-base;
+          color: $text-primary;
+        }
+        
+        &:active {
+          transform: scale(0.96);
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// 底部操作栏
+// ========================================
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-fixed;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg calc($safe-area-bottom + 12px);
+  background: $glass-bg-dark;
+  backdrop-filter: $glass-blur;
+  border-top-left-radius: $radius-xl;
+  border-top-right-radius: $radius-xl;
+  
+  .action-buttons {
+    display: flex;
+    gap: $spacing-lg;
+    
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      
+      .action-icon {
+        font-size: 20px;
+      }
+      
+      .action-text {
+        font-size: $font-size-xs;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      
+      &.active {
+        .action-icon {
+          transform: scale(1.1);
+        }
+        
+        .action-text {
+          color: $accent-color;
+        }
+      }
+      
+      &:active {
+        opacity: 0.7;
+      }
+    }
+  }
+  
+  .signup-button {
+    flex: 1;
+    padding: $spacing-md $spacing-xl;
+    background: $accent-gradient;
+    border-radius: $radius-full;
+    text-align: center;
+    box-shadow: $shadow-button;
+    
+    text {
+      font-size: $font-size-md;
+      font-weight: 600;
+      color: $text-primary;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(245, 197, 24, 0.3);
+    }
+  }
+}
+
+// ========================================
+// 动画
+// ========================================
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
