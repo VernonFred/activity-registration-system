@@ -1,50 +1,26 @@
 /**
  * 活动详情页样式 - Lovable 精致风格
- * 创建时间: 2025年12月9日 13:30
+ * 创建时间: 2025年12月9日
  * 
- * 设计特点：
- * - 顶部导航更有呼吸感
- * - Tab 卡片化设计
- * - 底部胶囊浮岛
- * - 卡片排版更精致
+ * 文件结构（符合代码规范 - 单文件不超过800行）:
+ * - _variables.scss: 变量定义
+ * - _overview.scss: 活动速览 Tab
+ * - _agenda.scss: 活动议程 Tab
+ * - _hotel.scss: 酒店信息 Tab
+ * - _live.scss: 图片直播 Tab
+ * - _bottom-bar.scss: 底部胶囊浮岛
+ * - index.scss: 页面容器、导航、Tab、骨架屏、动画、主题
  */
 
 // ============================================================
-// 变量定义
+// 导入 Partial 文件
 // ============================================================
-
-// 浅色主题
-$light-background: #FAFAFA;
-$light-foreground: #18181B;
-$light-card: #FFFFFF;
-$light-muted: #F0F0F2;
-$light-muted-foreground: #6D6E7A;
-$light-border: #DDDEE3;
-$light-primary: #FF8A1A;
-
-$light-shadow-card: 0 4px 24px -4px rgba(24, 24, 27, 0.08);
-$light-shadow-elevated: 0 12px 40px -12px rgba(24, 24, 27, 0.15);
-$light-shadow-glow: 0 0 50px -15px rgba(255, 138, 26, 0.3);
-
-// 深色主题
-$dark-background: #0A0A0B;
-$dark-foreground: #FAFAFA;
-$dark-card: #18181B;
-$dark-muted: #27272A;
-$dark-muted-foreground: #A1A1AA;
-$dark-border: #2E2E33;
-$dark-primary: #FF9933;
-
-$dark-shadow-card: 0 4px 24px -4px rgba(0, 0, 0, 0.3);
-$dark-shadow-elevated: 0 12px 40px -12px rgba(0, 0, 0, 0.5);
-$dark-shadow-glow: 0 0 50px -15px rgba(255, 153, 51, 0.4);
-
-// 圆角
-$radius-sm: 12rpx;
-$radius-md: 16rpx;
-$radius-lg: 24rpx;
-$radius-xl: 32rpx;
-$radius-full: 999rpx;
+@import './variables';
+@import './overview';
+@import './agenda';
+@import './hotel';
+@import './live';
+@import './bottom-bar';
 
 // ============================================================
 // 页面容器
@@ -52,7 +28,7 @@ $radius-full: 999rpx;
 
 .activity-detail {
   min-height: 100vh;
-    display: flex;
+  display: flex;
   flex-direction: column;
   transition: background 0.3s ease;
 
@@ -65,11 +41,10 @@ $radius-full: 999rpx;
 .status-bar {
   flex-shrink: 0;
   transition: background 0.3s ease;
-  }
+}
 
 // ============================================================
 // 顶部导航（参照设计稿布局）
-// 布局：返回按钮 + 标题居中 → 分隔线 → Tab导航
 // ============================================================
 
 .nav-header {
@@ -100,8 +75,8 @@ $radius-full: 999rpx;
   .nav-title {
     flex: 1;
   font-size: 32rpx;
-    font-weight: 600;
-  text-align: center;
+  font-weight: 600;
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -158,709 +133,9 @@ $radius-full: 999rpx;
 // 内容区域
 // ============================================================
 
-.content-scroll {
-  flex: 1;
-}
-
-.tab-content {
-  padding: 0 24rpx;
-}
-  
-.bottom-spacer {
-  height: 220rpx;
-}
-
-// ============================================================
-// 活动速览 Tab - 精致排版
-// ============================================================
-
-.overview {
-  padding: 0;
-  
-  .banner-section {
-    position: relative;
-    width: 100%;
-    height: 380rpx;
-    overflow: hidden;
-    border-radius: 0 0 $radius-xl $radius-xl;
-  }
-    
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-    
-  .banner-gradient {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    height: 200rpx;
-    transition: background 0.3s ease;
-  }
-  
-  // 信息卡片 - 精致设计
-  .info-card {
-    margin: -60rpx 24rpx 0;
-    padding: 28rpx;
-    border-radius: $radius-xl;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease;
-  }
-    
-    .info-header {
-    margin-bottom: 20rpx;
-  }
-
-  .title-row {
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 8rpx;
-    margin-bottom: 12rpx;
-  }
-
-  .city-text {
-    font-size: 26rpx;
-    font-weight: 500;
-    transition: color 0.3s ease;
-  }
-
-  .divider {
-    font-size: 26rpx;
-    transition: color 0.3s ease;
-      }
-      
-      .activity-title {
-    font-size: 32rpx;
-    font-weight: 700;
-    line-height: 1.4;
-    transition: color 0.3s ease;
-      }
-      
-      .fee-tag {
-        display: inline-block;
-    padding: 8rpx 18rpx;
-        border-radius: $radius-full;
-        
-    &.free { background: rgba(16, 185, 129, 0.12); }
-    &.paid { background: rgba(245, 158, 11, 0.12); }
-  }
-
-  .fee-text {
-    font-size: 22rpx;
-    font-weight: 600;
-    
-    .free & { color: #10B981; }
-    .paid & { color: #F59E0B; }
-    }
-    
-  .info-divider {
-    height: 1rpx;
-    margin: 20rpx 0;
-    transition: background 0.3s ease;
-  }
-    
-    .info-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-  }
-      
-  .row-left {
-    display: flex;
-    align-items: flex-start;
-    gap: 12rpx;
-        flex: 1;
-  }
-
-  .row-icon {
-    width: 32rpx;
-    height: 32rpx;
-    flex-shrink: 0;
-    margin-top: 4rpx;
-    transition: filter 0.3s ease;
-    }
-    
-  .row-content { flex: 1; }
-
-  .main-text {
-    font-size: 26rpx;
-    font-weight: 500;
-    display: block;
-    transition: color 0.3s ease;
-  }
-
-  .sub-text {
-    font-size: 22rpx;
-    display: block;
-    margin-top: 4rpx;
-    transition: color 0.3s ease;
-  }
-      
-  .row-right {
-    flex-shrink: 0;
-    
-    &.distance {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-  }
-
-  .deadline-text {
-    font-size: 22rpx;
-    transition: color 0.3s ease;
-  }
-
-  .distance-icon { font-size: 28rpx; }
-  .distance-text {
-    font-size: 22rpx;
-    transition: color 0.3s ease;
-  }
-
-  // 报名人数
-  .participants-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10rpx;
-  }
-      
-  .participants-label {
-    font-size: 24rpx;
-    transition: color 0.3s ease;
-  }
-      
-  .participants-info {
-        display: flex;
-        align-items: center;
-    gap: 8rpx;
-  }
-
-  .participants-count {
-    font-size: 44rpx;
-    font-weight: 700;
-    transition: color 0.3s ease;
-  }
-
-  .participants-unit {
-    font-size: 26rpx;
-    transition: color 0.3s ease;
-  }
-        
-        .avatar-stack {
-          position: relative;
-    width: 120rpx;
-    height: 44rpx;
-    margin-left: 12rpx;
-  }
-          
-  .avatar-img {
-            position: absolute;
-            top: 0;
-    width: 44rpx;
-    height: 44rpx;
-            border-radius: 50%;
-    border: 3rpx solid;
-    object-fit: cover;
-    transition: border-color 0.3s ease;
-      }
-      
-  .signup-status {
-    font-size: 22rpx;
-    margin-left: auto;
-    color: #EF4444;
-    font-weight: 500;
-    }
-    
-  // 活动介绍
-  .description-section { margin-top: 20rpx; }
-
-  .section-title {
-    font-size: 28rpx;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 12rpx;
-    transition: color 0.3s ease;
-  }
-
-  .description-text {
-    font-size: 24rpx;
-    line-height: 1.8;
-    transition: color 0.3s ease;
-  }
-}
-
-// ============================================================
-// 活动议程 Tab
-// ============================================================
-
-.agenda {
-  padding: 24rpx;
-
-  .agenda-timeline { position: relative; }
-    
-    .agenda-item {
-      display: flex;
-    gap: 20rpx;
-    margin-bottom: 24rpx;
-      animation: slideUp 0.4s ease forwards;
-      opacity: 0;
-  }
-      
-  .timeline-col {
-        position: relative;
-    width: 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .timeline-dot {
-    width: 20rpx;
-    height: 20rpx;
-          border-radius: 50%;
-    border: 3rpx solid;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-          
-    &.active { border-width: 0; }
-        }
-        
-        .timeline-line {
-    width: 3rpx;
-    flex: 1;
-    margin-top: 8rpx;
-    transition: background 0.3s ease;
-      }
-      
-      .agenda-card {
-        flex: 1;
-    padding: 20rpx;
-    border-radius: $radius-lg;
-    transition: all 0.3s ease;
-  }
-        
-        .agenda-time {
-          display: flex;
-          align-items: center;
-    gap: 6rpx;
-    margin-bottom: 10rpx;
-  }
-
-  .time-icon {
-    width: 24rpx;
-    height: 24rpx;
-    transition: filter 0.3s ease;
-  }
-
-  .time-text {
-    font-size: 24rpx;
-    font-weight: 500;
-    transition: color 0.3s ease;
-        }
-        
-  .agenda-title {
-    font-size: 28rpx;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 10rpx;
-    transition: color 0.3s ease;
-  }
-        
-        .agenda-info {
-          display: flex;
-          align-items: center;
-    gap: 6rpx;
-    margin-bottom: 6rpx;
-  }
-
-  .info-icon {
-    width: 22rpx;
-    height: 22rpx;
-    transition: filter 0.3s ease;
-  }
-
-  .info-label, .info-text {
-    font-size: 22rpx;
-    transition: color 0.3s ease;
-        }
-        
-        .agenda-tag {
-          display: inline-block;
-    margin-top: 10rpx;
-    padding: 6rpx 14rpx;
-          border-radius: $radius-sm;
-    transition: background 0.3s ease;
-  }
-
-  .tag-text {
-    font-size: 20rpx;
-    transition: color 0.3s ease;
-  }
-}
-
-// ============================================================
-// 酒店信息 Tab
-// ============================================================
-
-.hotel {
-  padding: 0 24rpx 24rpx;
-  
-  .hotel-tabs {
-    display: flex;
-    gap: 12rpx;
-    padding: 20rpx 0;
-    white-space: nowrap;
-  }
-    
-    .hotel-tab {
-      display: inline-block;
-    padding: 12rpx 24rpx;
-      border-radius: $radius-full;
-    border: 2rpx solid;
-    transition: all 0.25s ease;
-      
-    &:active { transform: scale(0.95); }
-  }
-  
-  .hotel-card {
-    border-radius: $radius-xl;
-    overflow: hidden;
-    margin-bottom: 20rpx;
-    transition: all 0.3s ease;
-  }
-
-  .hotel-image {
-    width: 100%;
-    height: 260rpx;
-    object-fit: cover;
-  }
-    
-  .hotel-info { padding: 20rpx; }
-
-  .hotel-name {
-    font-size: 30rpx;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 10rpx;
-    transition: color 0.3s ease;
-      }
-      
-  .hotel-address {
-        display: flex;
-        align-items: center;
-    gap: 6rpx;
-  }
-
-  .addr-icon {
-    width: 24rpx;
-    height: 24rpx;
-    transition: filter 0.3s ease;
-  }
-
-  .addr-text {
-    font-size: 24rpx;
-    transition: color 0.3s ease;
-  }
-  
-  .room-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20rpx;
-    border-radius: $radius-lg;
-    margin-bottom: 20rpx;
-    transition: all 0.3s ease;
-  }
-    
-    .room-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4rpx;
-  }
-
-  .room-type {
-    font-size: 26rpx;
-    font-weight: 600;
-    transition: color 0.3s ease;
-  }
-
-  .room-note {
-    font-size: 22rpx;
-    transition: color 0.3s ease;
-    }
-    
-    .room-price {
-      display: flex;
-      align-items: baseline;
-  }
-
-  .price-symbol {
-    font-size: 26rpx;
-    font-weight: 600;
-    transition: color 0.3s ease;
-  }
-
-  .price-amount {
-    font-size: 44rpx;
-    font-weight: 700;
-    transition: color 0.3s ease;
-  }
-
-  .price-unit {
-    font-size: 22rpx;
-    transition: color 0.3s ease;
-  }
-  
-  .booking-card {
-    padding: 20rpx;
-    border-radius: $radius-lg;
-    margin-bottom: 20rpx;
-    transition: all 0.3s ease;
-  }
-
-  .booking-item {
-    &.contact {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-  }
-      
-  .booking-label {
-    font-size: 22rpx;
-    display: block;
-    margin-bottom: 6rpx;
-    transition: color 0.3s ease;
-  }
-
-  .booking-text {
-    font-size: 24rpx;
-    transition: color 0.3s ease;
-  }
-
-  .booking-divider {
-    height: 1rpx;
-    margin: 16rpx 0;
-    transition: background 0.3s ease;
-  }
-
-  .contact-name {
-    font-size: 26rpx;
-    font-weight: 500;
-    transition: color 0.3s ease;
-  }
-  
-  .contact-phone {
-      display: flex;
-      align-items: center;
-    gap: 6rpx;
-    padding: 10rpx 18rpx;
-    border-radius: $radius-full;
-    transition: all 0.25s ease;
-
-    &:active { transform: scale(0.95); }
-  }
-
-  .phone-icon {
-    width: 24rpx;
-    height: 24rpx;
-  }
-
-  .phone-text {
-    font-size: 24rpx;
-    transition: color 0.3s ease;
-  }
-  
-  .facilities-card {
-    padding: 20rpx;
-    border-radius: $radius-lg;
-    margin-bottom: 20rpx;
-    transition: all 0.3s ease;
-  }
-  
-  .facilities-grid {
-      display: flex;
-    flex-wrap: wrap;
-    gap: 12rpx;
-    margin-top: 12rpx;
-  }
-
-  .facility-item {
-    padding: 10rpx 16rpx;
-    border-radius: $radius-sm;
-    transition: background 0.3s ease;
-  }
-  
-  .facility-text {
-    font-size: 22rpx;
-    transition: color 0.3s ease;
-  }
-
-  .booking-button {
-    width: 100%;
-    padding: 24rpx;
-    border-radius: $radius-lg;
-    text-align: center;
-    transition: all 0.25s ease;
-
-    &:active { transform: scale(0.98); opacity: 0.9; }
-  }
-
-  .btn-text {
-    font-size: 28rpx;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-}
-
-// ============================================================
-// 图片直播 Tab
-// ============================================================
-
-.live {
-  padding: 24rpx;
-
-  .live-container {
-    position: relative;
-    border-radius: $radius-xl;
-    overflow: hidden;
-  }
-    
-  .live-cover {
-    width: 100%;
-    height: 460rpx;
-    object-fit: cover;
-  }
-    
-    .live-overlay {
-      position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-      display: flex;
-    flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    gap: 16rpx;
-  }
-
-  .live-icon { font-size: 56rpx; }
-
-  .live-title {
-    font-size: 34rpx;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-
-  .live-desc {
-    font-size: 24rpx;
-    color: rgba(255, 255, 255, 0.8);
-  }
-      
-      .live-button {
-    margin-top: 20rpx;
-    padding: 18rpx 44rpx;
-        border-radius: $radius-full;
-    transition: all 0.25s ease;
-        
-        &:active { transform: scale(0.95); }
-      }
-
-  .btn-text {
-    font-size: 26rpx;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-}
-
-// ============================================================
-// 底部胶囊浮岛（参照设计稿布局 + 苹果液态玻璃效果）
-// 布局：左侧4个操作按钮 + 右侧报名按钮
-// 宽度：与上方卡片保持一致
-// ============================================================
-
-.bottom-island {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20rpx 24rpx;
-  padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  z-index: 100;
-}
-
-// 整体胶囊容器（宽度撑满，苹果液态玻璃效果）
-.island-capsule {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 16rpx 24rpx;
-  border-radius: 60rpx;
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.12);
-  border: 1rpx solid;
-  transition: all 0.3s ease;
-}
-
-// 左侧操作按钮组（间距加大）
-.action-group {
-    display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-    
-    .action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-  padding: 12rpx 24rpx;
-  border-radius: 36rpx;
-  transition: all 0.2s ease;
-  position: relative;
-
-  &:active { transform: scale(0.9); }
-}
-
-.action-icon {
-  width: 44rpx;
-  height: 44rpx;
-  margin-bottom: 6rpx;
-  transition: filter 0.3s ease;
-}
-
-.action-text {
-  font-size: 22rpx;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-// 右侧报名按钮（与左侧保持足够间距）
-.signup-btn {
-  padding: 24rpx 56rpx;
-  border-radius: 48rpx;
-  text-align: center;
-  margin-left: 24rpx;
-  transition: all 0.2s ease;
-
-  &:active { transform: scale(0.95); }
-}
-
-.signup-text {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #FFFFFF;
-  white-space: nowrap;
-}
+.content-scroll { flex: 1; }
+.tab-content { padding: 0 24rpx; }
+.bottom-spacer { height: 220rpx; }
 
 // ============================================================
 // 骨架屏
@@ -875,7 +150,7 @@ $radius-full: 999rpx;
 .skeleton-tabs {
   height: 80rpx;
   margin: 24rpx;
-    border-radius: $radius-lg;
+  border-radius: $radius-lg;
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -919,12 +194,12 @@ $radius-full: 999rpx;
   &.activity-detail { background: $light-background; }
   .status-bar { background: $light-background; }
   
-  // 导航（参照设计稿布局）
+  // 导航
   .nav-back { background: transparent; }
   .back-icon { filter: brightness(0); opacity: 0.6; }
   .nav-title { color: $light-foreground; }
   
-  // Tab（参照设计稿 - 简洁线性排列）
+  // Tab
   .tabs-wrapper { border-color: rgba($light-border, 0.5); }
   .tabs-card { background: transparent; }
   .tab-text { color: $light-muted-foreground; }
@@ -992,29 +267,19 @@ $radius-full: 999rpx;
   }
   
   // 直播
-  .live {
-    .live-button { background: $light-primary; }
-  }
+  .live { .live-button { background: $light-primary; } }
   
-  // 底部浮岛（苹果液态玻璃效果 - 高透明度）
+  // 底部浮岛（苹果液态玻璃效果）
   .island-capsule { 
     background: rgba(255, 255, 255, 0.65);
     border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.08),
-      inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
   }
-  .action-icon { 
-    filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); 
-    opacity: 0.85;
-  }
+  .action-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); opacity: 0.85; }
   .action-text { color: $light-primary; }
   .action-item.active { background: rgba($light-primary, 0.1); }
   .action-item.active .action-icon { opacity: 1; }
-  .signup-btn { 
-    background: $light-primary;
-    box-shadow: 0 4px 16px -4px rgba($light-primary, 0.4);
-  }
+  .signup-btn { background: $light-primary; box-shadow: 0 4px 16px -4px rgba($light-primary, 0.4); }
   
   // 骨架屏
   .skeleton-header, .skeleton-tabs, .skeleton-line {
@@ -1031,12 +296,12 @@ $radius-full: 999rpx;
   &.activity-detail { background: $dark-background; }
   .status-bar { background: $dark-background; }
   
-  // 导航（参照设计稿布局）
+  // 导航
   .nav-back { background: transparent; }
   .back-icon { filter: brightness(0) invert(1); opacity: 0.8; }
   .nav-title { color: $dark-foreground; }
   
-  // Tab（参照设计稿 - 简洁线性排列）
+  // Tab
   .tabs-wrapper { border-color: rgba($dark-border, 0.5); }
   .tabs-card { background: transparent; }
   .tab-text { color: $dark-muted-foreground; }
@@ -1104,28 +369,20 @@ $radius-full: 999rpx;
   }
   
   // 直播
-  .live {
-    .live-button { background: $dark-primary; }
-  }
+  .live { .live-button { background: $dark-primary; } }
   
-  // 底部浮岛（参照设计稿 - 深色胶囊 + 金黄色按钮/图标）
+  // 底部浮岛（深色胶囊 + 金黄色按钮/图标）
   .island-capsule { 
     background: linear-gradient(145deg, rgba(30, 60, 40, 0.95) 0%, rgba(20, 45, 30, 0.98) 100%);
     border-color: rgba(60, 100, 70, 0.4);
     box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
   }
-  .action-icon { 
-    filter: brightness(0) saturate(100%) invert(75%) sepia(80%) saturate(600%) hue-rotate(5deg); 
-    opacity: 0.9;
-  }
+  .action-icon { filter: brightness(0) saturate(100%) invert(75%) sepia(80%) saturate(600%) hue-rotate(5deg); opacity: 0.9; }
   .action-text { color: #D4A853; }
   .action-item.active { background: rgba(212, 168, 83, 0.15); }
   .action-item.active .action-icon { opacity: 1; }
   .action-item.active .action-text { color: #F5C563; }
-  .signup-btn { 
-    background: linear-gradient(135deg, #D4A853 0%, #C49843 100%);
-    box-shadow: 0 4px 16px -4px rgba(212, 168, 83, 0.4);
-  }
+  .signup-btn { background: linear-gradient(135deg, #D4A853 0%, #C49843 100%); box-shadow: 0 4px 16px -4px rgba(212, 168, 83, 0.4); }
   .signup-text { color: #1A2E1F; }
   
   // 骨架屏

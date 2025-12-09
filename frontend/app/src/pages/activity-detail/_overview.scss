@@ -1,0 +1,221 @@
+/**
+ * 活动速览 Tab 样式
+ */
+
+.overview {
+  padding: 0;
+  
+  .banner-section {
+    position: relative;
+    width: 100%;
+    height: 380rpx;
+    overflow: hidden;
+    border-radius: 0 0 $radius-xl $radius-xl;
+  }
+    
+  .banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+    
+  .banner-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200rpx;
+    transition: background 0.3s ease;
+  }
+  
+  // 信息卡片
+  .info-card {
+    margin: -60rpx 24rpx 0;
+    padding: 28rpx;
+    border-radius: $radius-xl;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+    
+  .info-header { margin-bottom: 20rpx; }
+
+  .title-row {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8rpx;
+    margin-bottom: 12rpx;
+  }
+
+  .city-text {
+    font-size: 26rpx;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .divider {
+    font-size: 26rpx;
+    transition: color 0.3s ease;
+  }
+      
+  .activity-title {
+    font-size: 32rpx;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+  }
+      
+  .fee-tag {
+    display: inline-block;
+    padding: 8rpx 18rpx;
+    border-radius: $radius-full;
+    
+    &.free { background: rgba(16, 185, 129, 0.12); }
+    &.paid { background: rgba(245, 158, 11, 0.12); }
+  }
+
+  .fee-text {
+    font-size: 22rpx;
+    font-weight: 600;
+    
+    .free & { color: #10B981; }
+    .paid & { color: #F59E0B; }
+  }
+    
+  .info-divider {
+    height: 1rpx;
+    margin: 20rpx 0;
+    transition: background 0.3s ease;
+  }
+    
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+      
+  .row-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 12rpx;
+    flex: 1;
+  }
+
+  .row-icon {
+    width: 32rpx;
+    height: 32rpx;
+    flex-shrink: 0;
+    margin-top: 4rpx;
+    transition: filter 0.3s ease;
+  }
+    
+  .row-content { flex: 1; }
+
+  .main-text {
+    font-size: 26rpx;
+    font-weight: 500;
+    display: block;
+    transition: color 0.3s ease;
+  }
+
+  .sub-text {
+    font-size: 22rpx;
+    display: block;
+    margin-top: 4rpx;
+    transition: color 0.3s ease;
+  }
+      
+  .row-right {
+    flex-shrink: 0;
+    
+    &.distance {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .deadline-text {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+
+  .distance-icon { font-size: 28rpx; }
+  .distance-text {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+
+  // 报名人数
+  .participants-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10rpx;
+  }
+      
+  .participants-label {
+    font-size: 24rpx;
+    transition: color 0.3s ease;
+  }
+      
+  .participants-info {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+  }
+
+  .participants-count {
+    font-size: 44rpx;
+    font-weight: 700;
+    transition: color 0.3s ease;
+  }
+
+  .participants-unit {
+    font-size: 26rpx;
+    transition: color 0.3s ease;
+  }
+        
+  .avatar-stack {
+    position: relative;
+    width: 120rpx;
+    height: 44rpx;
+    margin-left: 12rpx;
+  }
+          
+  .avatar-img {
+    position: absolute;
+    top: 0;
+    width: 44rpx;
+    height: 44rpx;
+    border-radius: 50%;
+    border: 3rpx solid;
+    object-fit: cover;
+    transition: border-color 0.3s ease;
+  }
+      
+  .signup-status {
+    font-size: 22rpx;
+    margin-left: auto;
+    color: #EF4444;
+    font-weight: 500;
+  }
+    
+  // 活动介绍
+  .description-section { margin-top: 20rpx; }
+
+  .section-title {
+    font-size: 28rpx;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 12rpx;
+    transition: color 0.3s ease;
+  }
+
+  .description-text {
+    font-size: 24rpx;
+    line-height: 1.8;
+    transition: color 0.3s ease;
+  }
+}
+

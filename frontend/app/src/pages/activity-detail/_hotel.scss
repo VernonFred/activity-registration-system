@@ -1,0 +1,215 @@
+/**
+ * 酒店信息 Tab 样式
+ */
+
+.hotel {
+  padding: 0 24rpx 24rpx;
+  
+  .hotel-tabs {
+    display: flex;
+    gap: 12rpx;
+    padding: 20rpx 0;
+    white-space: nowrap;
+  }
+    
+  .hotel-tab {
+    display: inline-block;
+    padding: 12rpx 24rpx;
+    border-radius: $radius-full;
+    border: 2rpx solid;
+    transition: all 0.25s ease;
+      
+    &:active { transform: scale(0.95); }
+  }
+  
+  .hotel-card {
+    border-radius: $radius-xl;
+    overflow: hidden;
+    margin-bottom: 20rpx;
+    transition: all 0.3s ease;
+  }
+
+  .hotel-image {
+    width: 100%;
+    height: 260rpx;
+    object-fit: cover;
+  }
+    
+  .hotel-info { padding: 20rpx; }
+
+  .hotel-name {
+    font-size: 30rpx;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10rpx;
+    transition: color 0.3s ease;
+  }
+      
+  .hotel-address {
+    display: flex;
+    align-items: center;
+    gap: 6rpx;
+  }
+
+  .addr-icon {
+    width: 24rpx;
+    height: 24rpx;
+    transition: filter 0.3s ease;
+  }
+
+  .addr-text {
+    font-size: 24rpx;
+    transition: color 0.3s ease;
+  }
+  
+  .room-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20rpx;
+    border-radius: $radius-lg;
+    margin-bottom: 20rpx;
+    transition: all 0.3s ease;
+  }
+    
+  .room-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4rpx;
+  }
+
+  .room-type {
+    font-size: 26rpx;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  .room-note {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+    
+  .room-price {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .price-symbol {
+    font-size: 26rpx;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  .price-amount {
+    font-size: 44rpx;
+    font-weight: 700;
+    transition: color 0.3s ease;
+  }
+
+  .price-unit {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+  
+  .booking-card {
+    padding: 20rpx;
+    border-radius: $radius-lg;
+    margin-bottom: 20rpx;
+    transition: all 0.3s ease;
+  }
+
+  .booking-item {
+    &.contact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+      
+  .booking-label {
+    font-size: 22rpx;
+    display: block;
+    margin-bottom: 6rpx;
+    transition: color 0.3s ease;
+  }
+
+  .booking-text {
+    font-size: 24rpx;
+    transition: color 0.3s ease;
+  }
+
+  .booking-divider {
+    height: 1rpx;
+    margin: 16rpx 0;
+    transition: background 0.3s ease;
+  }
+
+  .contact-name {
+    font-size: 26rpx;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .contact-phone {
+    display: flex;
+    align-items: center;
+    gap: 6rpx;
+    padding: 10rpx 18rpx;
+    border-radius: $radius-full;
+    transition: all 0.25s ease;
+
+    &:active { transform: scale(0.95); }
+  }
+
+  .phone-icon {
+    width: 24rpx;
+    height: 24rpx;
+  }
+
+  .phone-text {
+    font-size: 24rpx;
+    transition: color 0.3s ease;
+  }
+  
+  .facilities-card {
+    padding: 20rpx;
+    border-radius: $radius-lg;
+    margin-bottom: 20rpx;
+    transition: all 0.3s ease;
+  }
+  
+  .facilities-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-top: 12rpx;
+  }
+
+  .facility-item {
+    padding: 10rpx 16rpx;
+    border-radius: $radius-sm;
+    transition: background 0.3s ease;
+  }
+  
+  .facility-text {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+
+  .booking-button {
+    width: 100%;
+    padding: 24rpx;
+    border-radius: $radius-lg;
+    text-align: center;
+    transition: all 0.25s ease;
+
+    &:active { transform: scale(0.98); opacity: 0.9; }
+  }
+
+  .btn-text {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+}
+

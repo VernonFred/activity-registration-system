@@ -1,0 +1,109 @@
+/**
+ * 活动议程 Tab 样式
+ */
+
+.agenda {
+  padding: 24rpx;
+
+  .agenda-timeline { position: relative; }
+    
+  .agenda-item {
+    display: flex;
+    gap: 20rpx;
+    margin-bottom: 24rpx;
+    animation: slideUp 0.4s ease forwards;
+    opacity: 0;
+  }
+      
+  .timeline-col {
+    position: relative;
+    width: 20rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-dot {
+    width: 20rpx;
+    height: 20rpx;
+    border-radius: 50%;
+    border: 3rpx solid;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+          
+    &.active { border-width: 0; }
+  }
+        
+  .timeline-line {
+    width: 3rpx;
+    flex: 1;
+    margin-top: 8rpx;
+    transition: background 0.3s ease;
+  }
+      
+  .agenda-card {
+    flex: 1;
+    padding: 20rpx;
+    border-radius: $radius-lg;
+    transition: all 0.3s ease;
+  }
+        
+  .agenda-time {
+    display: flex;
+    align-items: center;
+    gap: 6rpx;
+    margin-bottom: 10rpx;
+  }
+
+  .time-icon {
+    width: 24rpx;
+    height: 24rpx;
+    transition: filter 0.3s ease;
+  }
+
+  .time-text {
+    font-size: 24rpx;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+        
+  .agenda-title {
+    font-size: 28rpx;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10rpx;
+    transition: color 0.3s ease;
+  }
+        
+  .agenda-info {
+    display: flex;
+    align-items: center;
+    gap: 6rpx;
+    margin-bottom: 6rpx;
+  }
+
+  .info-icon {
+    width: 22rpx;
+    height: 22rpx;
+    transition: filter 0.3s ease;
+  }
+
+  .info-label, .info-text {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+        
+  .agenda-tag {
+    display: inline-block;
+    margin-top: 10rpx;
+    padding: 6rpx 14rpx;
+    border-radius: $radius-sm;
+    transition: background 0.3s ease;
+  }
+
+  .tag-text {
+    font-size: 20rpx;
+    transition: color 0.3s ease;
+  }
+}
+
