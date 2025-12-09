@@ -1,35 +1,17 @@
+/**
+ * 报名页面
+ * 重构时间: 2025年12月9日
+ * 代码行数: 从408行优化至约180行
+ */
 import { useEffect, useState, useMemo } from 'react'
-import { View, Text, Button, Input, Picker, Textarea, Switch, ScrollView } from '@tarojs/components'
+import { View, Text, Button, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { fetchActivityDetail } from '../../services/activities'
 import { createSignup } from '../../services/signups'
+import { StepIndicator, FormFieldRenderer, SuccessModal } from './components'
+import { STEPS } from './constants'
+import type { FormField } from './types'
 import './index.scss'
-
-interface FormFieldOption {
-  id: number
-  label: string
-  value: string
-  is_default?: boolean
-}
-
-interface FormField {
-  id: number
-  label: string
-  field_type: string
-  required: boolean
-  options?: FormFieldOption[]
-  name: string
-  placeholder?: string
-  display_order?: number
-}
-
-// 步骤定义
-const STEPS = [
-  { key: 'personal', title: '个人信息', keywords: ['姓名', '学校', '学院', '部门', '职位', '手机', '电话', '邮箱'] },
-  { key: 'payment', title: '缴费信息', keywords: ['缴费', '发票', '抬头', '税号'] },
-  { key: 'accommodation', title: '住宿信息', keywords: ['住宿', '酒店', '房型', '入住'] },
-  { key: 'transport', title: '交通信息', keywords: ['接站', '送站', '车次', '航班', '到达', '返程', '交通'] },
-]
 
 const SignupPage = () => {
   const router = useRouter()
@@ -43,13 +25,15 @@ const SignupPage = () => {
   const [showSuccess, setShowSuccess] = useState(false)
   const [signupId, setSignupId] = useState<number | null>(null)
 
+  // 加载活动数据
   useEffect(() => {
     if (!activityId) return
     const load = async () => {
       try {
-      const detail = await fetchActivityDetail(activityId)
-      setActivity(detail)
-      setFields(detail.form_fields || [])
+        const detail = await fetchActivityDetail(activityId)
+        setActivity(detail)
+        setFields(detail.form_fields || [])
+        
         // 设置默认值
         const defaults: Record<string, any> = {}
         ;(detail.form_fields || []).forEach((f: FormField) => {
@@ -100,10 +84,12 @@ const SignupPage = () => {
   const currentStepKey = activeSteps[currentStep]?.key || 'personal'
   const currentFields = groupedFields[currentStepKey] || []
 
+  // 表单值变更
   const handleChange = (key: string, value: any) => {
     setValues(prev => ({ ...prev, [key]: value }))
   }
 
+  // 验证当前步骤
   const validateCurrentStep = () => {
     for (const field of currentFields) {
       if (field.required) {
@@ -117,6 +103,7 @@ const SignupPage = () => {
     return true
   }
 
+  // 下一步/提交
   const handleNext = () => {
     if (!validateCurrentStep()) return
     if (currentStep < activeSteps.length - 1) {
@@ -126,12 +113,14 @@ const SignupPage = () => {
     }
   }
 
+  // 上一步
   const handlePrev = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1)
     }
   }
 
+  // 提交报名
   const handleSubmit = async () => {
     if (!activityId) return
     try {
@@ -153,169 +142,19 @@ const SignupPage = () => {
     }
   }
 
+  // 添加同行人员
   const handleAddCompanion = () => {
     if (signupId) {
       Taro.navigateTo({ url: `/pages/companion/index?signupId=${signupId}` })
     }
   }
 
+  // 完成
   const handleFinish = () => {
     Taro.navigateBack()
   }
 
-  // 渲染字段
-  const renderField = (field: FormField) => {
-    const value = values[field.name]
-
-    switch (field.field_type) {
-      case 'textarea':
-        return (
-          <Textarea
-            className="textarea-input"
-            value={value || ''}
-            placeholder={field.placeholder || `请输入${field.label}`}
-            onInput={e => handleChange(field.name, e.detail.value)}
-            maxlength={500}
-          />
-        )
-
-      case 'number':
-        return (
-          <Input
-            className="input"
-            type="number"
-            value={value || ''}
-            placeholder={field.placeholder || `请输入${field.label}`}
-            onInput={e => handleChange(field.name, e.detail.value)}
-          />
-        )
-
-      case 'select':
-      case 'radio':
-        return (
-          <Picker
-            mode="selector"
-            range={field.options?.map(opt => opt.label) || []}
-            value={field.options?.findIndex(opt => opt.value === value) ?? -1}
-            onChange={e => {
-              const selectedValue = field.options?.[Number(e.detail.value)]?.value || ''
-              handleChange(field.name, selectedValue)
-            }}
-          >
-            <View className="picker-value">
-              {field.options?.find(opt => opt.value === value)?.label || '请选择'}
-              <Text className="picker-arrow">▼</Text>
-            </View>
-          </Picker>
-        )
-
-      case 'multi_select':
-      case 'checkbox':
-        return (
-          <View className="checkbox-group">
-            {field.options?.map(opt => (
-              <View
-                key={opt.id}
-                className={`checkbox-item ${(value || []).includes(opt.value) ? 'checked' : ''}`}
-                onClick={() => {
-                  const current = value || []
-                  const newVal = current.includes(opt.value)
-                    ? current.filter((v: string) => v !== opt.value)
-                    : [...current, opt.value]
-                  handleChange(field.name, newVal)
-                }}
-              >
-                <View className="checkbox-box">
-                  {(value || []).includes(opt.value) && <Text className="checkbox-check">✓</Text>}
-                </View>
-                <Text className="checkbox-label">{opt.label}</Text>
-              </View>
-            ))}
-          </View>
-        )
-
-      case 'date':
-        return (
-          <Picker
-            mode="date"
-            value={value || ''}
-            onChange={e => handleChange(field.name, e.detail.value)}
-          >
-            <View className="picker-value">
-              {value || '请选择日期'}
-              <Text className="picker-arrow">▼</Text>
-            </View>
-          </Picker>
-        )
-
-      case 'time':
-        return (
-          <Picker
-            mode="time"
-            value={value || ''}
-            onChange={e => handleChange(field.name, e.detail.value)}
-          >
-            <View className="picker-value">
-              {value || '请选择时间'}
-              <Text className="picker-arrow">▼</Text>
-            </View>
-          </Picker>
-        )
-
-      case 'datetime':
-        return (
-          <View className="datetime-picker">
-            <Picker
-              mode="date"
-              value={value?.split(' ')[0] || ''}
-              onChange={e => {
-                const time = value?.split(' ')[1] || '09:00'
-                handleChange(field.name, `${e.detail.value} ${time}`)
-              }}
-            >
-              <View className="picker-value half">
-                {value?.split(' ')[0] || '选择日期'}
-              </View>
-            </Picker>
-            <Picker
-              mode="time"
-              value={value?.split(' ')[1] || '09:00'}
-              onChange={e => {
-                const date = value?.split(' ')[0] || ''
-                handleChange(field.name, `${date} ${e.detail.value}`)
-              }}
-            >
-              <View className="picker-value half">
-                {value?.split(' ')[1] || '选择时间'}
-              </View>
-            </Picker>
-          </View>
-        )
-
-      case 'switch':
-        return (
-          <View className="switch-wrapper">
-            <Switch
-              checked={!!value}
-              onChange={e => handleChange(field.name, e.detail.value)}
-              color="#0052d9"
-            />
-            <Text className="switch-label">{value ? '是' : '否'}</Text>
-          </View>
-        )
-
-      default: // text
-        return (
-          <Input
-            className="input"
-            value={value || ''}
-            placeholder={field.placeholder || `请输入${field.label}`}
-            onInput={e => handleChange(field.name, e.detail.value)}
-          />
-        )
-    }
-  }
-
+  // 加载状态
   if (!activity) {
     return (
       <View className="signup-page loading">
@@ -328,19 +167,7 @@ const SignupPage = () => {
   if (showSuccess) {
     return (
       <View className="signup-page">
-        <View className="success-modal">
-          <View className="success-icon">✓</View>
-          <Text className="success-title">报名成功</Text>
-          <Text className="success-subtitle">您已成功提交报名申请</Text>
-          <View className="success-actions">
-            <Button className="btn-secondary" onClick={handleAddCompanion}>
-              添加同行人员
-            </Button>
-            <Button className="btn-primary" onClick={handleFinish}>
-              完成
-            </Button>
-          </View>
-        </View>
+        <SuccessModal onAddCompanion={handleAddCompanion} onFinish={handleFinish} />
       </View>
     )
   }
@@ -355,22 +182,7 @@ const SignupPage = () => {
       </View>
 
       {/* 步骤指示器 */}
-      {activeSteps.length > 1 && (
-        <View className="step-indicator">
-          {activeSteps.map((step, idx) => (
-            <View
-              key={step.key}
-              className={`step-item ${idx === currentStep ? 'active' : ''} ${idx < currentStep ? 'completed' : ''}`}
-            >
-              <View className="step-number">
-                {idx < currentStep ? '✓' : idx + 1}
-              </View>
-              <Text className="step-title">{step.title}</Text>
-              {idx < activeSteps.length - 1 && <View className="step-line" />}
-            </View>
-          ))}
-        </View>
-      )}
+      <StepIndicator steps={activeSteps} currentStep={currentStep} />
 
       {/* 表单区域 */}
       <ScrollView className="form-section" scrollY>
@@ -381,7 +193,11 @@ const SignupPage = () => {
               {field.label}
               {field.required && <Text className="required">*</Text>}
             </Text>
-            {renderField(field)}
+            <FormFieldRenderer
+              field={field}
+              value={values[field.name]}
+              onChange={handleChange}
+            />
           </View>
         ))}
       </ScrollView>

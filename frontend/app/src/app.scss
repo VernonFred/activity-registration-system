@@ -313,3 +313,56 @@ page {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+// ========================================
+// H5 适配样式
+// ========================================
+
+// 确保文字不换行
+.username, .greeting, .section-title, .card-title, .history-title,
+.hot-title, .hot-meta, .badge-text, .search-placeholder, .view-all-text,
+.meta-text, .date-text, .footer-text, .status-text, .tab-text {
+  white-space: nowrap;
+}
+
+// H5 模式下的特殊处理
+@media screen {
+  // 修复 Taro H5 的一些默认样式问题
+  taro-view-core {
+    display: block;
+  }
+  
+  taro-text-core {
+    display: inline;
+  }
+  
+  // 确保 flex 布局正确
+  .user-left, .user-right, .user-info, .hot-info, .hot-search-item,
+  .meta-item, .history-meta, .card-footer, .footer-item, .card-date {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  
+  .user-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  
+  .hot-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  
+  .history-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  
+  .history-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}

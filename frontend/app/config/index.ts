@@ -1,6 +1,14 @@
 import devConfig from './dev'
 import prodConfig from './prod'
 
+// 根据编译目标设置不同的输出目录
+// 小程序: dist/ (用于微信开发者工具)
+// H5: dist-h5/ (用于浏览器预览)
+const getOutputRoot = () => {
+  const target = process.env.TARO_ENV || 'weapp'
+  return target === 'h5' ? 'dist-h5' : 'dist'
+}
+
 const baseConfig = {
   projectName: 'event-signup-app',
   date: '2024-10-07',
@@ -10,7 +18,7 @@ const baseConfig = {
     414: 2
   },
   sourceRoot: 'src',
-  outputRoot: 'dist',
+  outputRoot: getOutputRoot(),
   plugins: [
     '@tarojs/plugin-html', 
     '@tarojs/plugin-http', 
@@ -53,7 +61,11 @@ const baseConfig = {
           selectorBlackList: [],
           replace: true,
           mediaQuery: false,
-          minPixelValue: 0
+          minPixelValue: 0,
+          // H5 专用配置：将 rpx 转换为 rem，基准为 375px 设计稿
+          baseFontSize: 20,
+          maxRootSize: 40,
+          minRootSize: 12
         }
       },
       autoprefixer: { enable: true }

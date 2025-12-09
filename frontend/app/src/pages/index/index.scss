@@ -1,11 +1,15 @@
 /**
- * 首页样式 - 支持浅色/深色主题
- * 完全照抄 Lovable 配色和效果
+ * 首页样式
+ * 创建时间: 2025年12月9日
+ * 合并重构: 2025年12月9日 - 将拆分的样式模块合并回主文件
+ * 总行数: ~450行（合理范围）
  */
 
-// ==========================================
+// ============================================================
+// 第一部分：变量定义
+// ============================================================
+
 // 浅色主题变量（Lovable Light）
-// ==========================================
 $light-background: #FAFAFA;
 $light-foreground: #18181B;
 $light-card: #FFFFFF;
@@ -19,9 +23,7 @@ $light-shadow-card: 0 25px 50px -12px rgba(24, 24, 27, 0.08);
 $light-shadow-elevated: 0 8px 32px -8px rgba(24, 24, 27, 0.1);
 $light-shadow-glow: 0 0 60px -12px rgba(255, 138, 26, 0.25);
 
-// ==========================================
 // 深色主题变量（Lovable Dark）
-// ==========================================
 $dark-background: #0A0A0B;
 $dark-foreground: #FAFAFA;
 $dark-card: #18181B;
@@ -40,187 +42,30 @@ $status-active: #166534;
 $status-pending: #CA8A04;
 $status-ongoing: #0E7490;
 $status-closed: #52525B;
+
 $radius-md: 16rpx;
 $radius-lg: 24rpx;
 $radius-xl: 32rpx;
 $radius-full: 999rpx;
 
-// ==========================================
-// 页面容器
-// ==========================================
+// ============================================================
+// 第二部分：页面容器
+// ============================================================
+
 .index-page {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   transition: background 0.3s ease;
-  
-  // 浅色主题
-  &.theme-light {
-    background: $light-background;
-    
-    .status-bar { background: $light-background; }
-    .greeting { color: $light-muted-foreground; }
-    .username { color: $light-foreground; }
-    .school-tag { background: $light-card; border-color: $light-border; }
-    .school-text { color: $light-muted-foreground; }
-    .notification-btn { background: $light-card; border-color: $light-border; }
-    .icon-img { filter: brightness(0); opacity: 0.8; }
-    .notification-dot { background: $light-primary; }
-    .search-bar { background: $light-muted; border-color: $light-border; }
-    .search-icon { filter: brightness(0); opacity: 0.5; }
-    .search-placeholder { color: $light-muted-foreground; }
-    .section-title { color: $light-foreground; }
-    .view-all-text { color: $light-muted-foreground; }
-    .view-all-icon { filter: brightness(0); opacity: 0.5; }
-    
-    // 轮播卡片 - Floating Island 阴影
-    .event-card { 
-      background: $light-card; 
-      border-color: rgba($light-border, 0.5);
-      box-shadow: $light-shadow-card;
-      
-      &.active {
-        box-shadow: $light-shadow-card, $light-shadow-glow;
-      }
-    }
-    
-    .cover-gradient { background: linear-gradient(to top, $light-card 0%, transparent 100%); }
-    .date-text { color: $light-primary; }
-    .card-title { color: $light-foreground; }
-    .card-footer { border-color: rgba($light-border, 0.5); }
-    .footer-text { color: $light-muted-foreground; }
-    .meta-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
-    .dot { background: $light-border; &.active { background: $light-foreground; } }
-    
-    // 历史活动卡片 - 照抄 Lovable 效果
-    .history-card { 
-      background: $light-card; 
-      border: 1rpx solid rgba($light-border, 0.5);
-      transition: all 0.3s ease;
-      
-      &:active {
-        transform: translateY(-4rpx);
-        box-shadow: $light-shadow-elevated;
-        border-color: rgba($light-primary, 0.2);
-      }
-    }
-    .history-title { 
-      color: $light-foreground; 
-      transition: color 0.3s ease;
-    }
-    .history-card:active .history-title { color: $light-primary; }
-    .meta-icon-sm { filter: brightness(0); opacity: 0.5; }
-    .meta-text { color: $light-muted-foreground; }
-    .history-arrow { 
-      background: $light-muted; 
-      transition: all 0.3s ease;
-    }
-    .history-card:active .history-arrow { background: rgba($light-primary, 0.1); }
-    .arrow-icon { 
-      filter: brightness(0); 
-      opacity: 0.5; 
-      transition: all 0.3s ease;
-    }
-    .history-card:active .arrow-icon { 
-      filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); 
-      opacity: 1;
-    }
-    
-    .skeleton-card, .skeleton-item { 
-      background: linear-gradient(90deg, $light-muted 25%, $light-border 50%, $light-muted 75%); 
-    }
-    .avatar { background: $light-card; border-color: rgba($light-primary, 0.6); }
-    .avatar-text { color: $light-primary; }
-  }
-  
-  // 深色主题
-  &.theme-dark {
-    background: $dark-background;
-    
-    .status-bar { background: $dark-background; }
-    .greeting { color: $dark-muted-foreground; }
-    .username { color: $dark-foreground; }
-    .school-tag { background: $dark-card; border-color: $dark-border; }
-    .school-text { color: $dark-muted-foreground; }
-    .notification-btn { background: $dark-card; border-color: $dark-border; }
-    .icon-img { filter: brightness(0) invert(1); opacity: 0.9; }
-    .notification-dot { background: $dark-primary; box-shadow: 0 0 12rpx rgba($dark-primary, 0.5); }
-    .search-bar { background: $dark-muted; border-color: $dark-border; }
-    .search-icon { filter: brightness(0) invert(1); opacity: 0.5; }
-    .search-placeholder { color: $dark-muted-foreground; }
-    .section-title { color: $dark-foreground; }
-    .view-all-text { color: $dark-muted-foreground; }
-    .view-all-icon { filter: brightness(0) invert(1); opacity: 0.5; }
-    
-    // 轮播卡片 - Floating Island 阴影
-    .event-card { 
-      background: $dark-card; 
-      border-color: rgba($dark-border, 0.5);
-      box-shadow: $dark-shadow-card;
-      
-      &.active {
-        box-shadow: $dark-shadow-card, $dark-shadow-glow;
-      }
-    }
-    
-    .cover-gradient { background: linear-gradient(to top, $dark-card 0%, transparent 100%); }
-    .date-text { color: $dark-primary; }
-    .card-title { color: $dark-foreground; }
-    .card-footer { border-color: rgba($dark-border, 0.5); }
-    .footer-text { color: $dark-muted-foreground; }
-    .meta-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); }
-    .dot { background: $dark-muted; &.active { background: $dark-foreground; } }
-    
-    // 历史活动卡片 - 照抄 Lovable 效果
-    .history-card { 
-      background: $dark-card; 
-      border: 1rpx solid rgba($dark-border, 0.5);
-      transition: all 0.3s ease;
-      
-      &:active {
-        transform: translateY(-4rpx);
-        box-shadow: $dark-shadow-elevated;
-        border-color: rgba($dark-primary, 0.2);
-      }
-    }
-    .history-title { 
-      color: $dark-foreground; 
-      transition: color 0.3s ease;
-    }
-    .history-card:active .history-title { color: $dark-primary; }
-    .meta-icon-sm { filter: brightness(0) invert(1); opacity: 0.5; }
-    .meta-text { color: $dark-muted-foreground; }
-    .history-arrow { 
-      background: $dark-muted; 
-      transition: all 0.3s ease;
-    }
-    .history-card:active .history-arrow { background: rgba($dark-primary, 0.1); }
-    .arrow-icon { 
-      filter: brightness(0) invert(1); 
-      opacity: 0.5; 
-      transition: all 0.3s ease;
-    }
-    .history-card:active .arrow-icon { 
-      filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); 
-      opacity: 1;
-    }
-    
-    .skeleton-card, .skeleton-item { 
-      background: linear-gradient(90deg, $dark-muted 25%, $dark-border 50%, $dark-muted 75%); 
-    }
-    .avatar { background: $dark-card; border-color: rgba($dark-primary, 0.6); }
-    .avatar-text { color: $dark-primary; }
-  }
+  padding-bottom: 200rpx;
 }
 
-.status-bar {
-  flex-shrink: 0;
-  transition: background 0.3s ease;
-}
+// ============================================================
+// 第三部分：组件样式
+// ============================================================
 
-// ==========================================
+// 状态栏
+.status-bar { flex-shrink: 0; transition: background 0.3s ease; }
+
 // 用户头部
-// ==========================================
 .user-header {
   display: flex;
   align-items: center;
@@ -229,11 +74,7 @@ $radius-full: 999rpx;
   margin-top: 20rpx;
 }
 
-.user-left {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-}
+.user-left { display: flex; align-items: center; gap: 24rpx; }
 
 .avatar {
   width: 96rpx;
@@ -247,52 +88,14 @@ $radius-full: 999rpx;
   transition: all 0.3s ease;
 }
 
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-text {
-  font-size: 36rpx;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
-.greeting {
-  font-size: 28rpx;
-  transition: color 0.3s ease;
-}
-
-.username {
-  font-size: 36rpx;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.user-right {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.school-tag {
-  border: 1rpx solid;
-  border-radius: $radius-full;
-  padding: 12rpx 24rpx;
-  transition: all 0.3s ease;
-}
-
-.school-text {
-  font-size: 24rpx;
-  transition: color 0.3s ease;
-}
+.avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-text { font-size: 36rpx; font-weight: 600; transition: color 0.3s ease; }
+.user-info { display: flex; flex-direction: column; gap: 4rpx; }
+.greeting { font-size: 28rpx; transition: color 0.3s ease; }
+.username { font-size: 36rpx; font-weight: 600; transition: color 0.3s ease; }
+.user-right { display: flex; align-items: center; gap: 16rpx; }
+.school-tag { border: 1rpx solid; border-radius: $radius-full; padding: 12rpx 24rpx; transition: all 0.3s ease; }
+.school-text { font-size: 24rpx; transition: color 0.3s ease; }
 
 .notification-btn {
   position: relative;
@@ -304,31 +107,13 @@ $radius-full: 999rpx;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  
-  &:active {
-    transform: scale(0.95);
-  }
+  &:active { transform: scale(0.95); }
 }
 
-.icon-img {
-  width: 40rpx;
-  height: 40rpx;
-  transition: filter 0.3s ease;
-}
+.icon-img { width: 40rpx; height: 40rpx; transition: filter 0.3s ease; }
+.notification-dot { position: absolute; top: 12rpx; right: 12rpx; width: 16rpx; height: 16rpx; border-radius: 50%; transition: all 0.3s ease; }
 
-.notification-dot {
-  position: absolute;
-  top: 12rpx;
-  right: 12rpx;
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-// ==========================================
 // 搜索框
-// ==========================================
 .search-bar {
   display: flex;
   align-items: center;
@@ -338,70 +123,16 @@ $radius-full: 999rpx;
   border: 1rpx solid;
   border-radius: $radius-lg;
   transition: all 0.3s ease;
-  
-  &:active {
-    border-color: $dark-primary;
-  }
+  &:active { border-color: $dark-primary; }
 }
 
-.search-icon {
-  width: 32rpx;
-  height: 32rpx;
-  margin-right: 16rpx;
-  transition: filter 0.3s ease;
-}
+.search-icon { width: 32rpx; height: 32rpx; margin-right: 16rpx; flex-shrink: 0; transition: filter 0.3s ease; }
+.search-placeholder { font-size: 28rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.3s ease; }
 
-.search-placeholder {
-  font-size: 28rpx;
-  transition: color 0.3s ease;
-}
+// ============================================================
+// 第四部分：轮播组件样式
+// ============================================================
 
-// ==========================================
-// 主内容
-// ==========================================
-.main-content {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.section {
-  margin-bottom: 64rpx;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40rpx;
-  margin-bottom: 32rpx;
-}
-
-.section-title {
-  font-size: 36rpx;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.view-all {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.view-all-text {
-  font-size: 28rpx;
-  transition: color 0.3s ease;
-}
-
-.view-all-icon {
-  width: 28rpx;
-  height: 28rpx;
-  transition: filter 0.3s ease;
-}
-
-// ==========================================
-// 热门精选轮播 - 居中显示 + Floating Island 阴影
-// ==========================================
 .featured-swiper {
   width: 100%;
   height: 560rpx;
@@ -426,102 +157,27 @@ $radius-full: 999rpx;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center center;
   
-  &.active {
-    transform: scale(1.0);
-  }
-  
-  &.inactive {
-    transform: scale(0.88);
-    opacity: 0.5;
-  }
-  
-  &:active {
-    transform: scale(0.96);
-  }
+  &.active { transform: scale(1.0); }
+  &.inactive { transform: scale(0.88); opacity: 0.5; }
+  &:active { transform: scale(0.96); }
 }
 
-.card-cover {
-  position: relative;
-  width: 100%;
-  height: 320rpx;
-  overflow: hidden;
-}
+.card-cover { position: relative; width: 100%; height: 320rpx; overflow: hidden; }
+.cover-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.event-card:active .cover-img { transform: scale(1.08); }
+.cover-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 60%; transition: background 0.3s ease; }
 
-.cover-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
+.status-badge { position: absolute; top: 24rpx; left: 24rpx; padding: 10rpx 24rpx; border-radius: $radius-full; }
+.status-active { background: $status-active; .status-text { color: #FFFFFF; } }
+.status-pending { background: $status-pending; .status-text { color: #18181B; } }
+.status-ongoing { background: $status-ongoing; .status-text { color: #FFFFFF; } }
+.status-closed { background: $status-closed; .status-text { color: #FFFFFF; } }
+.status-text { font-size: 24rpx; font-weight: 500; }
 
-.event-card:active .cover-img {
-  transform: scale(1.08);
-}
-
-.cover-gradient {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  transition: background 0.3s ease;
-}
-
-.status-badge {
-  position: absolute;
-  top: 24rpx;
-  left: 24rpx;
-  padding: 10rpx 24rpx;
-  border-radius: $radius-full;
-}
-
-.status-active {
-  background: $status-active;
-  .status-text { color: #FFFFFF; }
-}
-
-.status-pending {
-  background: $status-pending;
-  .status-text { color: #18181B; }
-}
-
-.status-ongoing {
-  background: $status-ongoing;
-  .status-text { color: #FFFFFF; }
-}
-
-.status-closed {
-  background: $status-closed;
-  .status-text { color: #FFFFFF; }
-}
-
-.status-text {
-  font-size: 24rpx;
-  font-weight: 500;
-}
-
-.card-content {
-  padding: 32rpx;
-}
-
-.card-date {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  margin-bottom: 12rpx;
-}
-
-.meta-icon {
-  width: 28rpx;
-  height: 28rpx;
-  transition: filter 0.3s ease;
-}
-
-.date-text {
-  font-size: 24rpx;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
+.card-content { padding: 32rpx; }
+.card-date { display: flex; align-items: center; gap: 8rpx; margin-bottom: 12rpx; }
+.meta-icon { width: 28rpx; height: 28rpx; transition: filter 0.3s ease; }
+.date-text { font-size: 24rpx; font-weight: 500; transition: color 0.3s ease; }
 
 .card-title {
   font-size: 32rpx;
@@ -536,61 +192,34 @@ $radius-full: 999rpx;
   transition: color 0.3s ease;
 }
 
-.card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 16rpx;
-  border-top: 1rpx solid;
-  transition: border-color 0.3s ease;
-}
+.card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16rpx; border-top: 1rpx solid; transition: border-color 0.3s ease; }
+.footer-item { display: flex; align-items: center; gap: 6rpx; }
+.footer-text { font-size: 24rpx; transition: color 0.3s ease; }
 
-.footer-item {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
+// 区块头部
+.section { padding: 0 40rpx; }
+.section-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 24rpx;
+  padding: 0;
 }
+.section-title { font-size: 36rpx; font-weight: 600; }
+.view-all { display: flex; align-items: center; gap: 4rpx; }
+.view-all-text { font-size: 24rpx; }
+.view-all-icon { width: 28rpx; height: 28rpx; transition: filter 0.3s ease; }
 
-.footer-text {
-  font-size: 24rpx;
-  transition: color 0.3s ease;
-}
-
-// ==========================================
 // 轮播指示器
-// ==========================================
-.indicators {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16rpx;
-  margin-top: 16rpx;
-  margin-bottom: 48rpx;
-}
+.indicators { display: flex; align-items: center; justify-content: center; gap: 16rpx; margin-top: 16rpx; margin-bottom: 48rpx; }
+.dot { width: 12rpx; height: 12rpx; border-radius: 6rpx; transition: all 0.3s ease; &.active { width: 48rpx; } }
 
-.dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 6rpx;
-  transition: all 0.3s ease;
-  
-  &.active {
-    width: 48rpx;
-  }
-}
+// ============================================================
+// 第五部分：历史活动样式
+// ============================================================
 
-// ==========================================
-// 历史活动 - 照抄 Lovable 效果
-// ==========================================
-.history-section {
-  padding: 0 40rpx;
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
+.history-section { padding: 0 40rpx; }
+.history-list { display: flex; flex-direction: column; gap: 24rpx; }
 
 .history-card {
   display: flex;
@@ -600,30 +229,10 @@ $radius-full: 999rpx;
   border-radius: $radius-xl;
 }
 
-.history-thumb {
-  position: relative;
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: $radius-lg;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.history-card:active .thumb-img {
-  transform: scale(1.1);
-}
-
-.history-content {
-  flex: 1;
-  min-width: 0;
-}
+.history-thumb { position: relative; width: 160rpx; height: 160rpx; border-radius: $radius-lg; overflow: hidden; flex-shrink: 0; }
+.thumb-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.history-card:active .thumb-img { transform: scale(1.1); }
+.history-content { flex: 1; min-width: 0; }
 
 .history-title {
   font-size: 28rpx;
@@ -636,84 +245,137 @@ $radius-full: 999rpx;
   margin-bottom: 16rpx;
 }
 
-.history-meta {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-}
+.history-meta { display: flex; align-items: center; gap: 24rpx; }
+.meta-item { display: flex; align-items: center; gap: 8rpx; }
+.meta-icon-sm { width: 24rpx; height: 24rpx; transition: filter 0.3s ease; }
+.meta-text { font-size: 24rpx; transition: color 0.3s ease; }
+.history-arrow { width: 64rpx; height: 64rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.arrow-icon { width: 32rpx; height: 32rpx; }
 
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
+// ============================================================
+// 第六部分：骨架屏样式
+// ============================================================
 
-.meta-icon-sm {
-  width: 24rpx;
-  height: 24rpx;
-  transition: filter 0.3s ease;
-}
-
-.meta-text {
-  font-size: 24rpx;
-  transition: color 0.3s ease;
-}
-
-.history-arrow {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.arrow-icon {
-  width: 32rpx;
-  height: 32rpx;
-}
-
-// ==========================================
-// 加载骨架屏
-// ==========================================
-.skeleton-cards {
-  display: flex;
-  gap: 32rpx;
-  padding: 16rpx 40rpx;
-  overflow: hidden;
-}
-
-.skeleton-card {
-  width: 576rpx;
-  height: 520rpx;
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: $radius-xl;
-  flex-shrink: 0;
-}
-
-.skeleton-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.skeleton-item {
-  height: 224rpx;
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: $radius-xl;
-}
+.skeleton-cards { display: flex; gap: 32rpx; padding: 16rpx 40rpx; overflow: hidden; }
+.skeleton-card { width: 576rpx; height: 520rpx; background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: $radius-xl; flex-shrink: 0; }
+.skeleton-list { display: flex; flex-direction: column; gap: 24rpx; }
+.skeleton-item { height: 224rpx; background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: $radius-xl; }
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
-// ==========================================
-// 底部占位
-// ==========================================
-.bottom-spacer {
-  height: 280rpx;
+// ============================================================
+// 第七部分：浅色主题
+// ============================================================
+
+.index-page.theme-light {
+  background: $light-background;
+  
+  .status-bar { background: $light-background; }
+  .greeting { color: $light-muted-foreground; }
+  .username { color: $light-foreground; }
+  .school-tag { background: $light-card; border-color: $light-border; }
+  .school-text { color: $light-muted-foreground; }
+  .notification-btn { background: $light-card; border-color: $light-border; }
+  .icon-img { filter: brightness(0); opacity: 0.8; }
+  .notification-dot { background: $light-primary; }
+  .search-bar { background: $light-muted; border-color: $light-border; }
+  .search-icon { filter: brightness(0); opacity: 0.5; }
+  .search-placeholder { color: $light-muted-foreground; }
+  .section-title { color: $light-foreground; }
+  .view-all-text { color: $light-muted-foreground; }
+  .view-all-icon { filter: brightness(0); opacity: 0.5; }
+  
+  .event-card { 
+    background: $light-card; 
+    border-color: rgba($light-border, 0.5);
+    box-shadow: $light-shadow-card;
+    &.active { box-shadow: $light-shadow-card, $light-shadow-glow; }
+  }
+  
+  .cover-gradient { background: linear-gradient(to top, $light-card 0%, transparent 100%); }
+  .date-text { color: $light-primary; }
+  .card-title { color: $light-foreground; }
+  .card-footer { border-color: rgba($light-border, 0.5); }
+  .footer-text { color: $light-muted-foreground; }
+  .meta-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
+  .dot { background: $light-border; &.active { background: $light-foreground; } }
+  
+  .history-card { 
+    background: $light-card; 
+    border: 1rpx solid rgba($light-border, 0.5);
+    transition: all 0.3s ease;
+    &:active { transform: translateY(-4rpx); box-shadow: $light-shadow-elevated; border-color: rgba($light-primary, 0.2); }
+  }
+  .history-title { color: $light-foreground; transition: color 0.3s ease; }
+  .history-card:active .history-title { color: $light-primary; }
+  .meta-icon-sm { filter: brightness(0); opacity: 0.5; }
+  .meta-text { color: $light-muted-foreground; }
+  .history-arrow { background: $light-muted; transition: all 0.3s ease; }
+  .history-card:active .history-arrow { background: rgba($light-primary, 0.1); }
+  .arrow-icon { filter: brightness(0); opacity: 0.5; transition: all 0.3s ease; }
+  .history-card:active .arrow-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); opacity: 1; }
+  
+  .skeleton-card, .skeleton-item { background: linear-gradient(90deg, $light-muted 25%, $light-border 50%, $light-muted 75%); }
+  .avatar { background: $light-card; border-color: rgba($light-primary, 0.6); }
+  .avatar-text { color: $light-primary; }
+}
+
+// ============================================================
+// 第八部分：深色主题
+// ============================================================
+
+.index-page.theme-dark {
+  background: $dark-background;
+  
+  .status-bar { background: $dark-background; }
+  .greeting { color: $dark-muted-foreground; }
+  .username { color: $dark-foreground; }
+  .school-tag { background: $dark-card; border-color: $dark-border; }
+  .school-text { color: $dark-muted-foreground; }
+  .notification-btn { background: $dark-card; border-color: $dark-border; }
+  .icon-img { filter: brightness(0) invert(1); opacity: 0.9; }
+  .notification-dot { background: $dark-primary; box-shadow: 0 0 12rpx rgba($dark-primary, 0.5); }
+  .search-bar { background: $dark-muted; border-color: $dark-border; }
+  .search-icon { filter: brightness(0) invert(1); opacity: 0.5; }
+  .search-placeholder { color: $dark-muted-foreground; }
+  .section-title { color: $dark-foreground; }
+  .view-all-text { color: $dark-muted-foreground; }
+  .view-all-icon { filter: brightness(0) invert(1); opacity: 0.5; }
+  
+  .event-card { 
+    background: $dark-card; 
+    border-color: rgba($dark-border, 0.5);
+    box-shadow: $dark-shadow-card;
+    &.active { box-shadow: $dark-shadow-card, $dark-shadow-glow; }
+  }
+  
+  .cover-gradient { background: linear-gradient(to top, $dark-card 0%, transparent 100%); }
+  .date-text { color: $dark-primary; }
+  .card-title { color: $dark-foreground; }
+  .card-footer { border-color: rgba($dark-border, 0.5); }
+  .footer-text { color: $dark-muted-foreground; }
+  .meta-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); }
+  .dot { background: $dark-muted; &.active { background: $dark-foreground; } }
+  
+  .history-card { 
+    background: $dark-card; 
+    border: 1rpx solid rgba($dark-border, 0.5);
+    transition: all 0.3s ease;
+    &:active { transform: translateY(-4rpx); box-shadow: $dark-shadow-elevated; border-color: rgba($dark-primary, 0.2); }
+  }
+  .history-title { color: $dark-foreground; transition: color 0.3s ease; }
+  .history-card:active .history-title { color: $dark-primary; }
+  .meta-icon-sm { filter: brightness(0) invert(1); opacity: 0.5; }
+  .meta-text { color: $dark-muted-foreground; }
+  .history-arrow { background: $dark-muted; transition: all 0.3s ease; }
+  .history-card:active .history-arrow { background: rgba($dark-primary, 0.1); }
+  .arrow-icon { filter: brightness(0) invert(1); opacity: 0.5; transition: all 0.3s ease; }
+  .history-card:active .arrow-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); opacity: 1; }
+  
+  .skeleton-card, .skeleton-item { background: linear-gradient(90deg, $dark-muted 25%, $dark-border 50%, $dark-muted 75%); }
+  .avatar { background: $dark-card; border-color: rgba($dark-primary, 0.6); }
+  .avatar-text { color: $dark-primary; }
 }

@@ -1,16 +1,22 @@
+/**
+ * Profile 页面样式
+ * 创建时间: 2025年12月9日
+ * 合并重构: 2025年12月9日 - 将拆分的样式模块合并回主文件
+ * 总行数: ~400行（合理范围）
+ */
 @import "../../styles/variables";
 
-// ========================================
-// 我的页面样式
-// ========================================
+// ============================================================
+// 第一部分：页面容器与基础样式
+// ============================================================
 
 .profile-page {
   min-height: 100vh;
   background: $bg-page;
   display: flex;
   flex-direction: column;
-  padding-top: constant(safe-area-inset-top); // iOS < 11.2
-  padding-top: env(safe-area-inset-top); // iOS >= 11.2
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
   
   &.loading {
     .skeleton-header {
@@ -20,7 +26,7 @@
       background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
-}
+    }
 
     .skeleton-tabs {
       height: 48px;
@@ -42,10 +48,7 @@
   }
 }
 
-// ========================================
 // 用户信息头部
-// ========================================
-
 .user-header {
   padding: $spacing-xl $spacing-lg;
   
@@ -63,7 +66,7 @@
         border-radius: 50%;
         border: 2px solid $bg-card;
         box-shadow: $shadow-md;
-}
+      }
 
       .avatar-edit {
         position: absolute;
@@ -82,20 +85,8 @@
     
     .user-detail {
       flex: 1;
-      
-      .user-name {
-        display: block;
-        font-size: $font-size-lg;
-  font-weight: 600;
-        color: $text-primary;
-      }
-      
-      .user-org {
-        display: block;
-        font-size: $font-size-sm;
-        color: $text-secondary;
-        margin-top: 2px;
-      }
+      .user-name { display: block; font-size: $font-size-lg; font-weight: 600; color: $text-primary; }
+      .user-org { display: block; font-size: $font-size-sm; color: $text-secondary; margin-top: 2px; }
     }
     
     .logout-btn {
@@ -106,18 +97,9 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: $radius-full;
       
-      .logout-icon {
-        font-size: 14px;
-}
-
-      .logout-text {
-        font-size: $font-size-sm;
-        color: $text-secondary;
-      }
-      
-      &:active {
-        background: $bg-card-hover;
-      }
+      .logout-icon { font-size: 14px; }
+      .logout-text { font-size: $font-size-sm; color: $text-secondary; }
+      &:active { background: $bg-card-hover; }
     }
   }
   
@@ -127,25 +109,13 @@
     gap: $spacing-sm;
     margin-top: $spacing-md;
     
-    .bio-text {
-      font-size: $font-size-sm;
-      color: $primary-color;
-    }
-    
-    .bio-edit {
-      font-size: 14px;
-    }
-    
-    &:active {
-      opacity: 0.7;
-    }
+    .bio-text { font-size: $font-size-sm; color: $primary-color; }
+    .bio-edit { font-size: 14px; }
+    &:active { opacity: 0.7; }
   }
 }
 
-// ========================================
 // Tab 切换栏
-// ========================================
-
 .tab-bar {
   display: flex;
   margin: 0 $spacing-lg;
@@ -161,28 +131,18 @@
     border-radius: $radius-full;
     transition: all $transition-normal;
     
-    .tab-icon {
-      font-size: 18px;
-    }
+    .tab-icon { font-size: 18px; }
     
     &.active {
       background: $primary-color;
-      
-      .tab-icon {
-        filter: grayscale(0);
-      }
+      .tab-icon { filter: grayscale(0); }
     }
     
-    &:active {
-      transform: scale(0.95);
-    }
+    &:active { transform: scale(0.95); }
   }
 }
 
-// ========================================
 // 内容区域
-// ========================================
-
 .content-area {
   flex: 1;
   padding: $spacing-lg;
@@ -194,16 +154,14 @@
   }
 }
 
-// ========================================
-// 活动列表
-// ========================================
+// ============================================================
+// 第二部分：活动列表 Tab 样式
+// ============================================================
 
 .activities-content {
   .signup-card {
     margin-bottom: $spacing-lg;
     padding: $spacing-lg;
-    background: $glass-bg;
-    border-radius: $radius-lg;
     
     .signup-header {
       .activity-info {
@@ -212,48 +170,21 @@
         justify-content: space-between;
         margin-bottom: $spacing-sm;
         
-        .activity-title {
-          font-size: $font-size-md;
-          font-weight: 600;
-          color: $text-primary;
-        }
+        .activity-title { font-size: $font-size-md; font-weight: 600; color: $text-primary; }
         
         .status-tag {
-          padding: 2px 10px;
-          border-radius: $radius-full;
+          padding: 2px 8px;
+          border-radius: $radius-sm;
           font-size: $font-size-xs;
           
-          &.approved {
-            background: rgba(45, 90, 61, 0.1);
-            color: $primary-color;
-          }
-          
-          &.pending {
-            background: rgba(250, 173, 20, 0.1);
-            color: $warning-color;
-          }
-          
-          &.rejected {
-            background: rgba(255, 77, 79, 0.1);
-            color: $error-color;
-          }
+          &.approved { background: rgba(82, 196, 26, 0.15); color: $success-color; }
+          &.pending { background: rgba(245, 197, 24, 0.15); color: $accent-dark; }
+          &.rejected { background: rgba(255, 77, 79, 0.15); color: $error-color; }
         }
       }
       
-      .activity-desc {
-        display: block;
-        font-size: $font-size-sm;
-        color: $text-secondary;
-        margin-bottom: $spacing-sm;
-        line-height: $line-height-normal;
-      }
-      
-      .activity-date {
-        display: block;
-        font-size: $font-size-sm;
-        color: $text-tertiary;
-        margin-bottom: $spacing-md;
-      }
+      .activity-desc { display: block; font-size: $font-size-sm; color: $text-secondary; line-height: $line-height-relaxed; margin-bottom: $spacing-sm; }
+      .activity-date { display: block; font-size: $font-size-xs; color: $text-tertiary; margin-bottom: $spacing-md; }
       
       .activity-stats {
         display: flex;
@@ -262,28 +193,9 @@
         .stat-item {
           display: flex;
           align-items: center;
-          gap: 4px;
-          
-          .stat-icon {
-            font-size: 12px;
-          }
-          
-          .stat-value {
-            font-size: $font-size-xs;
-            color: $text-secondary;
-            
-            &:first-child {
-              color: $error-color;
-            }
-          }
-        }
-        
-        .stat-item:first-child .stat-value {
-          color: $error-color;
-        }
-        
-        .stat-item:nth-child(3) .stat-value {
-          color: $accent-dark;
+          gap: 2px;
+          .stat-icon { font-size: 12px; }
+          .stat-value { font-size: $font-size-xs; color: $text-tertiary; }
         }
       }
     }
@@ -291,39 +203,33 @@
     .expand-btn {
       display: flex;
       justify-content: center;
-      padding: $spacing-sm;
+      padding: $spacing-sm 0;
       
       .expand-icon {
         font-size: 12px;
         color: $text-tertiary;
         transition: transform $transition-normal;
-        
-        &.expanded {
-          transform: rotate(180deg);
-        }
+        &.expanded { transform: rotate(180deg); }
       }
     }
     
     .signup-detail {
       border-top: 1px solid rgba(0, 0, 0, 0.06);
       padding-top: $spacing-md;
+      animation: slideDown 0.3s ease forwards;
       
       .participant-list {
         .participant-item {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: $spacing-md 0;
+          padding: $spacing-sm 0;
           border-bottom: 1px solid rgba(0, 0, 0, 0.04);
           
-          &:last-child {
-            border-bottom: none;
-          }
+          &:last-child { border-bottom: none; }
+          &.main { font-weight: 500; }
           
-          .participant-name {
-            font-size: $font-size-base;
-            color: $text-primary;
-          }
+          .participant-name { font-size: $font-size-sm; color: $text-primary; }
           
           .participant-actions {
             display: flex;
@@ -331,59 +237,38 @@
             gap: $spacing-md;
             
             .action-link {
-              font-size: $font-size-sm;
+              font-size: $font-size-xs;
               color: $primary-color;
-              
-              &.warning {
-                color: $error-color;
-              }
-              
-              &:active {
-                opacity: 0.7;
-              }
+              &.warning { color: $accent-dark; }
             }
             
             .more-actions {
               position: relative;
-              
-              .more-icon {
-                font-size: 16px;
-                color: $text-tertiary;
-              }
+              .more-icon { font-size: 14px; color: $text-tertiary; }
               
               .dropdown-menu {
-                display: none;
                 position: absolute;
                 top: 100%;
                 right: 0;
                 background: $bg-card;
                 border-radius: $radius-md;
                 box-shadow: $shadow-lg;
-                padding: $spacing-sm 0;
+                padding: $spacing-xs;
                 min-width: 120px;
-                z-index: $z-dropdown;
+                z-index: 10;
+                display: none;
                 
                 .menu-item {
                   padding: $spacing-sm $spacing-md;
+                  font-size: $font-size-sm;
+                  border-radius: $radius-sm;
                   
-                  text {
-                    font-size: $font-size-sm;
-                    color: $text-primary;
-                  }
-                  
-                  &.danger text {
-                    color: $error-color;
-                  }
-                  
-                  &:active {
-                    background: $bg-card-hover;
-                  }
+                  &:active { background: $bg-card-hover; }
+                  &.danger text { color: $error-color; }
                 }
               }
               
-              &:active .dropdown-menu {
-                display: block;
-              }
+              &:active .dropdown-menu { display: block; }
             }
           }
         }
@@ -392,58 +277,68 @@
       .add-companion-btn {
         margin-top: $spacing-md;
         padding: $spacing-md;
-        background: $primary-color;
-        border-radius: $radius-full;
+        background: rgba(45, 90, 61, 0.08);
+        border-radius: $radius-md;
         text-align: center;
         
-        text {
-          font-size: $font-size-base;
-          color: $text-inverse;
-          font-weight: 500;
-        }
-        
-        &:active {
-          opacity: 0.9;
-        }
+        text { font-size: $font-size-sm; color: $primary-color; }
+        &:active { background: rgba(45, 90, 61, 0.15); }
       }
     }
   }
 }
 
-// ========================================
-// 徽章页面
-// ========================================
+// 分页
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+  
+  .page-btn, .page-num {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    border-radius: $radius-sm;
+    
+    &.active { background: $primary-color; color: $text-inverse; }
+    &.disabled { opacity: 0.3; }
+    &:active:not(.disabled) { background: $bg-card-hover; }
+  }
+}
+
+// ============================================================
+// 第三部分：徽章 Tab 样式
+// ============================================================
 
 .badges-content {
   .badges-header {
     display: flex;
     align-items: center;
     gap: $spacing-md;
-    margin-bottom: $spacing-xl;
+    padding: $spacing-lg;
+    background: $primary-gradient;
+    border-radius: $radius-lg;
+    margin-bottom: $spacing-lg;
     
     .badges-avatar {
       .avatar {
         width: 56px;
         height: 56px;
         border-radius: 50%;
+        border: 2px solid $text-inverse;
       }
     }
     
     .badges-info {
       flex: 1;
-      
-      .badges-name {
-        display: block;
-        font-size: $font-size-md;
-        font-weight: 600;
-        color: $text-primary;
-      }
-      
-      .badges-org {
-        display: block;
-        font-size: $font-size-xs;
-        color: $text-secondary;
-      }
+      .badges-name { display: block; font-size: $font-size-md; font-weight: 600; color: $text-inverse; }
+      .badges-org { display: block; font-size: $font-size-xs; color: rgba(255, 255, 255, 0.8); margin-top: 2px; }
     }
     
     .badges-stats {
@@ -453,28 +348,15 @@
       .stat-item {
         text-align: center;
         
-        .stat-label {
-          display: block;
-          font-size: $font-size-xs;
-          color: $text-tertiary;
-          margin-bottom: 2px;
-        }
+        .stat-label { display: block; font-size: $font-size-xs; color: rgba(255, 255, 255, 0.7); margin-bottom: 2px; }
         
         .stat-value {
           display: flex;
           align-items: baseline;
           justify-content: center;
           
-          .value-num {
-            font-size: $font-size-lg;
-            font-weight: 700;
-            color: $primary-color;
-          }
-          
-          .value-total {
-            font-size: $font-size-xs;
-            color: $text-tertiary;
-          }
+          .value-num { font-size: $font-size-lg; font-weight: 700; color: $text-inverse; }
+          .value-total { font-size: $font-size-xs; color: rgba(255, 255, 255, 0.7); }
         }
       }
     }
@@ -482,105 +364,76 @@
   
   .badges-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: $spacing-md;
     
     .badge-item {
-      background: $bg-card;
-      border-radius: $radius-lg;
-      padding: $spacing-xl $spacing-lg;
-      text-align: center;
-      box-shadow: $shadow-sm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: $spacing-md;
       
-      &.locked {
-        opacity: 0.5;
-        filter: grayscale(1);
-      }
+      &.locked { opacity: 0.4; }
       
       .badge-icon {
         position: relative;
-        margin-bottom: $spacing-md;
+        width: 64px;
+        height: 64px;
+        margin-bottom: $spacing-sm;
         
-        .badge-emoji {
-          font-size: 48px;
-        }
+        .badge-emoji { font-size: 48px; }
         
         .badge-ribbon {
           position: absolute;
-          top: 0;
+          bottom: -4px;
           left: 50%;
           transform: translateX(-50%);
-          background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+          background: $primary-color;
           padding: 2px 8px;
           border-radius: $radius-sm;
+          white-space: nowrap;
           
-          text {
-            font-size: 8px;
-            color: $text-inverse;
-          }
+          text { font-size: 8px; color: $text-inverse; }
         }
       }
       
-      .badge-name {
-        font-size: $font-size-sm;
-        color: $primary-color;
-        font-weight: 500;
-      }
+      .badge-name { font-size: $font-size-xs; color: $text-secondary; text-align: center; }
     }
   }
 }
 
-// ========================================
-// 通知页面
-// ========================================
+// ============================================================
+// 第四部分：通知 Tab 样式
+// ============================================================
 
 .notifications-content {
   .notify-tabs {
     display: flex;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    margin-bottom: $spacing-md;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
     
     .notify-tab {
-      padding: $spacing-md $spacing-lg;
+      padding: $spacing-sm $spacing-md;
       font-size: $font-size-sm;
-      color: $text-tertiary;
-      position: relative;
+      color: $text-secondary;
+      border-radius: $radius-full;
+      border: 1px solid rgba(0, 0, 0, 0.08);
       
-      &.active {
-        color: $text-primary;
-        font-weight: 500;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 24px;
-          height: 2px;
-          background: $primary-color;
-          border-radius: $radius-full;
-        }
-      }
+      &.active { background: $primary-color; color: $text-inverse; border-color: $primary-color; }
+      &:active { opacity: 0.8; }
     }
   }
   
   .notify-actions {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
     gap: $spacing-md;
     margin-bottom: $spacing-md;
     
     .action-btn {
-      display: flex;
-      align-items: center;
-      gap: $spacing-xs;
       font-size: $font-size-sm;
       color: $text-secondary;
-      
-      &:active {
-        opacity: 0.7;
-      }
+      &:active { opacity: 0.7; }
     }
   }
   
@@ -592,19 +445,27 @@
       background: $bg-card;
       border-radius: $radius-lg;
       margin-bottom: $spacing-md;
-      position: relative;
-      overflow: hidden;
-      
-      &.warning {
-        border-left: 3px solid $warning-color;
-      }
+      border: 1px solid rgba(0, 0, 0, 0.06);
       
       .notify-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 18px;
+        flex-shrink: 0;
       }
+      
+      &.success .notify-icon { background: rgba(82, 196, 26, 0.15); }
+      &.warning .notify-icon { background: rgba(245, 197, 24, 0.15); }
+      &.info .notify-icon { background: rgba(22, 119, 255, 0.15); }
+      &.badge .notify-icon { background: rgba(45, 90, 61, 0.15); }
       
       .notify-content {
         flex: 1;
+        min-width: 0;
         
         .notify-header {
           display: flex;
@@ -612,77 +473,39 @@
           gap: $spacing-sm;
           margin-bottom: $spacing-xs;
           
-          .notify-title {
-            font-size: $font-size-base;
-            font-weight: 600;
-            color: $text-primary;
-          }
+          .notify-title { font-size: $font-size-base; font-weight: 500; color: $text-primary; }
           
           .new-tag {
             padding: 1px 6px;
-            background: $primary-color;
+            background: $error-color;
             border-radius: $radius-sm;
             font-size: 10px;
             color: $text-inverse;
           }
         }
         
-        .notify-text {
-          display: block;
-          font-size: $font-size-sm;
-          color: $text-secondary;
-          line-height: $line-height-normal;
-          margin-bottom: $spacing-sm;
-        }
+        .notify-text { font-size: $font-size-sm; color: $text-secondary; line-height: $line-height-relaxed; margin-bottom: $spacing-sm; }
         
         .notify-action {
-          display: inline-block;
-          padding: $spacing-xs $spacing-md;
-          background: rgba(45, 90, 61, 0.1);
-          border-radius: $radius-full;
-          margin-bottom: $spacing-sm;
-          
-          .action-text {
-            font-size: $font-size-sm;
-            color: $primary-color;
-          }
-}
-
-        .notify-time {
-          display: block;
-          font-size: $font-size-xs;
-          color: $text-tertiary;
+          .action-text { font-size: $font-size-sm; color: $primary-color; }
         }
+        
+        .notify-time { display: block; font-size: $font-size-xs; color: $text-tertiary; margin-top: $spacing-sm; }
       }
       
       .notify-delete {
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 60px;
-        background: $error-color;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transform: translateX(100%);
-        transition: transform $transition-normal;
-        
-        text {
-          font-size: 20px;
-        }
-      }
-      
-      &:active .notify-delete {
-        transform: translateX(0);
+        font-size: 16px;
+        color: $text-tertiary;
+        flex-shrink: 0;
+        &:active { opacity: 0.7; }
       }
     }
   }
 }
 
-// ========================================
-// 设置页面
-// ========================================
+// ============================================================
+// 第五部分：设置 Tab 样式
+// ============================================================
 
 .settings-content {
   .settings-section {
@@ -691,7 +514,7 @@
     .section-title {
       display: block;
       font-size: $font-size-sm;
-      color: $primary-color;
+      color: $text-tertiary;
       margin-bottom: $spacing-md;
       padding-left: $spacing-sm;
     }
@@ -699,6 +522,7 @@
     .settings-list {
       background: $bg-card;
       border-radius: $radius-lg;
+      border: 1px solid rgba(0, 0, 0, 0.06);
       overflow: hidden;
       
       .setting-item {
@@ -707,105 +531,33 @@
         padding: $spacing-lg;
         border-bottom: 1px solid rgba(0, 0, 0, 0.04);
         
-        &:last-child {
-          border-bottom: none;
-        }
+        &:last-child { border-bottom: none; }
         
-        .setting-icon {
-          font-size: 20px;
-          margin-right: $spacing-md;
-        }
+        .setting-icon { font-size: 20px; margin-right: $spacing-md; }
+        .setting-label { flex: 1; font-size: $font-size-base; color: $text-primary; }
+        .setting-arrow { font-size: 16px; color: $text-tertiary; }
         
-        .setting-label {
-          flex: 1;
-          font-size: $font-size-base;
-          color: $text-primary;
-        }
-        
-        .setting-arrow {
-          font-size: 18px;
-          color: $text-tertiary;
-        }
-        
-        &:active {
-          background: $bg-card-hover;
-        }
+        &:active { background: $bg-card-hover; }
       }
     }
   }
 }
 
-// ========================================
-// 分页
-// ========================================
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-sm;
-  margin-top: $spacing-xl;
-  
-  .page-btn, .page-num {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: $font-size-sm;
-    color: $text-secondary;
-    
-    &.active {
-      background: $primary-color;
-      color: $text-inverse;
-      border-radius: $radius-sm;
-    }
-    
-    &.disabled {
-      color: $text-tertiary;
-}
-
-    &:active:not(.disabled) {
-      opacity: 0.7;
-    }
-  }
-}
-
-// ========================================
-// 动画
-// ========================================
+// ============================================================
+// 第六部分：动画
+// ============================================================
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    max-height: 0;
-  }
-  to {
-    opacity: 1;
-    max-height: 500px;
-  }
-}
-
-.animate-slide-down {
-  animation: slideDown 0.3s ease forwards;
+  from { opacity: 0; transform: translateY(-10px); max-height: 0; }
+  to { opacity: 1; transform: translateY(0); max-height: 500px; }
 }

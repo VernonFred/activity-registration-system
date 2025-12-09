@@ -1,233 +1,554 @@
-// 活动列表页样式 - 严格遵循设计规范 V4.0
+/**
+ * 报名列表页样式 - Lovable 精致风格
+ * 创建时间: 2025年12月09日 12:00
+ * 更新时间: 2025年12月09日 13:30
+ * 
+ * 更新内容：
+ * - 移除页面标题
+ * - 卡片布局优化：按钮移至右下角
+ * - 添加精致的悬浮阴影和橙色边框反馈
+ */
+
+// ============================================================
+// 变量定义
+// ============================================================
+
+// 浅色主题
+$light-background: #FAFAFA;
+$light-foreground: #18181B;
+$light-card: #FFFFFF;
+$light-muted: #F0F0F2;
+$light-muted-foreground: #6D6E7A;
+$light-border: #DDDEE3;
+$light-primary: #FF8A1A;
+
+// 浅色阴影 - Floating Island 风格
+$light-shadow-card: 0 4px 20px -4px rgba(24, 24, 27, 0.08);
+$light-shadow-hover: 0 12px 32px -8px rgba(24, 24, 27, 0.12);
+
+// 深色主题
+$dark-background: #0A0A0B;
+$dark-foreground: #FAFAFA;
+$dark-card: #18181B;
+$dark-muted: #27272A;
+$dark-muted-foreground: #A1A1AA;
+$dark-border: #2E2E33;
+$dark-primary: #FF9933;
+
+// 深色阴影
+$dark-shadow-card: 0 4px 20px -4px rgba(0, 0, 0, 0.3);
+$dark-shadow-hover: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
+
+// 圆角
+$radius-sm: 12rpx;
+$radius-md: 16rpx;
+$radius-lg: 20rpx;
+$radius-xl: 28rpx;
+$radius-full: 999rpx;
+
+// ============================================================
+// 页面容器
+// ============================================================
 
 .activities-page {
   min-height: 100vh;
-  background: #121212; // 冷黑色背景
   display: flex;
   flex-direction: column;
-  padding-bottom: 200rpx; // 给底部导航栏留空间
+  transition: background 0.3s ease;
+  padding-bottom: 200rpx;
 }
 
-// ==========================================
-// 状态栏占位
-// ==========================================
-.status-bar-placeholder {
-  width: 100%;
+.status-bar {
   flex-shrink: 0;
-  background: #1B5E20; // 深绿色
-  margin: 0;
-  padding: 0;
-  border: none;
+  transition: background 0.3s ease;
 }
 
-// ==========================================
-// 头部深绿色区域
-// ==========================================
-.header-section {
-  background: linear-gradient(180deg, #1B5E20 0%, #145214 100%);
-  padding: 32rpx 32rpx 48rpx 32rpx;
-  margin-top: -1rpx;
-}
+// ============================================================
+// 筛选栏
+// ============================================================
 
-.page-title {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #FFFFFF;
-  display: block;
-}
-
-// ==========================================
-// 筛选区域
-// ==========================================
-.filter-section {
-  background: #1A1A1A; // 深色背景
-  padding: 32rpx 32rpx;
+.filter-bar {
   display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 32rpx;
   gap: 16rpx;
 }
 
-.filter-label {
+.filter-item {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  
-  .label-icon {
-    font-size: 28rpx;
+  gap: 6rpx;
+  padding: 12rpx 20rpx;
+  border-radius: $radius-full;
+  border: 2rpx solid;
+  transition: all 0.25s ease;
     flex-shrink: 0;
+
+  &:active {
+    transform: scale(0.96);
+  }
   }
   
-  .label-text {
-    font-size: 28rpx;
-    font-weight: 500;
-    color: #FFFFFF;
-  }
-}
-
-.filter-scroll {
+.filter-text {
+  font-size: 24rpx;
   white-space: nowrap;
-  
-  &::-webkit-scrollbar {
-    display: none;
+  transition: color 0.3s ease;
+}
+
+.filter-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5rpx solid transparent;
+  border-right: 5rpx solid transparent;
+  border-top: 6rpx solid;
+  transition: border-color 0.3s ease;
+  margin-left: 2rpx;
+}
+
+.filter-sort {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+
+  &:active {
+    transform: scale(0.9);
   }
 }
 
-.filter-chip {
-  display: inline-block;
-  padding: 16rpx 32rpx;
-  margin-right: 16rpx;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 24rpx;
-  border: 2rpx solid transparent;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  .chip-text {
-    font-size: 28rpx;
-    color: rgba(255, 255, 255, 0.7);
-  }
-  
-  &.active {
-    background: #1B5E20;
-    border-color: #1B5E20;
-    
-    .chip-text {
-      color: #FFFFFF;
-  font-weight: 600;
+.sort-icon {
+  width: 28rpx;
+  height: 28rpx;
+  transition: filter 0.3s ease;
 }
-  }
+
+// ============================================================
+// 状态标签
+// ============================================================
+
+.status-tabs {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 32rpx;
+  gap: 16rpx;
+}
+
+.status-tab {
+  padding: 12rpx 28rpx;
+  border-radius: $radius-full;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   
   &:active {
     transform: scale(0.95);
 }
 }
 
-// ==========================================
-// 活动列表区域
-// ==========================================
-.list-section {
+.tab-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 分隔线
+// ============================================================
+
+.divider {
+  height: 2rpx;
+  margin: 8rpx 40rpx 20rpx;
+  transition: background 0.3s ease;
+}
+
+// ============================================================
+// 活动列表
+// ============================================================
+
+.activity-list {
   flex: 1;
-  background: #121212;
-  padding: 0 32rpx;
+  padding: 0 24rpx;
+}
+
+.card-list {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 20rpx;
 }
 
-.list-scroll {
-  flex: 1;
-  height: 100%;
-  overflow-y: auto;
-  padding-top: 32rpx;
-}
+// ============================================================
+// 活动卡片 - 精致风格
+// ============================================================
 
-// ==========================================
-// 活动卡片
-// ==========================================
 .activity-card {
-  margin-bottom: 32rpx;
-  overflow: hidden;
-  
+  display: flex;
+  padding: 20rpx;
+  border-radius: $radius-xl;
+  gap: 20rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:active {
+    transform: translateY(-4rpx);
+  }
+}
+
+// 封面图
   .card-cover {
     position: relative;
-    width: 100%;
-    height: 360rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: $radius-lg;
     overflow: hidden;
+  flex-shrink: 0;
   }
   
-  .cover-image {
+.cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.activity-card:active .cover-img {
+  transform: scale(1.08);
   }
   
-  .status-badge {
+.free-badge {
     position: absolute;
-    top: 24rpx;
-    left: 24rpx;
+  bottom: 10rpx;
+  left: 10rpx;
+  padding: 6rpx 14rpx;
+  border-radius: $radius-sm;
+  background: #10B981;
+}
+
+.free-text {
+  font-size: 18rpx;
+  font-weight: 600;
+  color: #FFFFFF;
   }
   
+// 内容区
   .card-body {
-    padding: 32rpx;
-    background: #FFFFFF;
+  flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 24rpx;
+  min-width: 0;
+}
+
+.card-header {
+  margin-bottom: 8rpx;
   }
   
-  .activity-title {
-    font-size: 32rpx;
+.card-title {
+  font-size: 26rpx;
     font-weight: 600;
-    color: #111827;
     line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  margin-top: 6rpx;
+}
+
+.star-icon {
+  font-size: 24rpx;
+  color: #F59E0B;
+}
+
+.rating-score {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #F59E0B;
+}
+
+.rating-count {
+  font-size: 20rpx;
+  transition: color 0.3s ease;
+}
+
+// 元信息
+.card-meta-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6rpx;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.meta-icon {
+  width: 20rpx;
+  height: 20rpx;
+  flex-shrink: 0;
+  transition: filter 0.3s ease;
+}
+
+.meta-text {
+  font-size: 20rpx;
+  flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.location-text {
+  max-width: 280rpx;
+}
+
+// 底部操作区
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12rpx;
+}
+
+.signup-btn {
+  padding: 10rpx 20rpx;
+  border-radius: $radius-full;
+  border: 1.5rpx solid;
+  transition: all 0.25s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
   }
   
-  .activity-meta {
+.btn-text {
+  font-size: 22rpx;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 骨架屏
+// ============================================================
+
+.skeleton-list {
     display: flex;
     flex-direction: column;
-  gap: 12rpx;
+  gap: 20rpx;
 }
 
-  .meta-item {
-    display: flex;
-    align-items: center;
-    gap: 8rpx;
-    
-    .meta-pin {
-      font-size: 28rpx;
-      flex-shrink: 0;
-    }
-    
-    .meta-text {
-  font-size: 24rpx;
-      color: #6B7280;
-    }
-  }
-  
-  .card-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 24rpx;
-    border-top: 1rpx solid #E5E7EB;
+.skeleton-card {
+  height: 200rpx;
+  border-radius: $radius-xl;
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
-  .price-info {
-    display: flex;
-    align-items: baseline;
-    
-    .price-symbol {
-      font-size: 28rpx;
-      font-weight: 600;
-      color: #EF4444;
-      margin-right: 4rpx;
-    }
-    
-    .price-value {
-      font-size: 40rpx;
-      font-weight: 700;
-      color: #EF4444;
-    }
-    
-    .price-free {
-      font-size: 32rpx;
-      font-weight: 600;
-      color: #10B981;
-    }
-  }
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
+
+// ============================================================
+// 空状态
+// ============================================================
+
+.empty-state {
+    display: flex;
+  flex-direction: column;
+    align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  gap: 16rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  transition: color 0.3s ease;
+    }
+    
+.empty-desc {
+  font-size: 26rpx;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 底部安全区
+// ============================================================
 
 .bottom-spacer {
   height: 200rpx;
+    }
+
+// ============================================================
+// 浅色主题
+// ============================================================
+
+.activities-page.theme-light,
+.filter-bar.theme-light,
+.status-tabs.theme-light,
+.activity-card.theme-light {
+  background: $light-background;
+}
+
+.theme-light {
+  .status-bar { background: $light-background; }
+  
+  // 筛选栏
+  .filter-item {
+    background: $light-card;
+    border-color: $light-border;
+    
+    &.active {
+      border-color: $light-primary;
+      background: rgba($light-primary, 0.05);
+    }
+  }
+  .filter-text { color: $light-muted-foreground; }
+  .filter-item.active .filter-text { color: $light-primary; }
+  .filter-arrow { border-top-color: $light-muted-foreground; }
+  .filter-item.active .filter-arrow { border-top-color: $light-primary; }
+  .filter-sort { background: $light-card; border: 2rpx solid $light-border; }
+  .sort-icon { filter: brightness(0); opacity: 0.5; }
+  
+  // 状态标签
+  .status-tab {
+    background: $light-muted;
+    &.active { background: $light-primary; }
+  }
+  .tab-text { color: $light-muted-foreground; }
+  .status-tab.active .tab-text { color: #FFFFFF; }
+  
+  // 分隔线
+  .divider { background: $light-border; }
+  
+  // 活动卡片 - 精致交互
+  .activity-card {
+    background: $light-card;
+    box-shadow: $light-shadow-card;
+    
+    &:active {
+      box-shadow: $light-shadow-hover;
+      border-color: rgba($light-primary, 0.4);
+    }
+}
+
+  .card-title { color: $light-foreground; }
+  .rating-count { color: $light-muted-foreground; }
+  .meta-icon { filter: brightness(0); opacity: 0.45; }
+  .meta-text { color: $light-muted-foreground; }
+  
+  .signup-btn { 
+    border-color: $light-muted-foreground;
+    background: transparent;
+    
+    &:active {
+      background: $light-primary;
+      border-color: $light-primary;
+      
+      .btn-text { color: #FFFFFF; }
+    }
+  }
+  .btn-text { color: $light-muted-foreground; }
+  
+  // 骨架屏
+  .skeleton-card {
+    background: linear-gradient(90deg, $light-muted 25%, $light-border 50%, $light-muted 75%);
+  }
+  
+  // 空状态
+  .empty-text { color: $light-foreground; }
+  .empty-desc { color: $light-muted-foreground; }
+}
+
+// ============================================================
+// 深色主题
+// ============================================================
+
+.activities-page.theme-dark,
+.filter-bar.theme-dark,
+.status-tabs.theme-dark,
+.activity-card.theme-dark {
+  background: $dark-background;
+}
+
+.theme-dark {
+  .status-bar { background: $dark-background; }
+  
+  // 筛选栏
+  .filter-item {
+    background: $dark-card;
+    border-color: $dark-border;
+    
+    &.active {
+      border-color: $dark-primary;
+      background: rgba($dark-primary, 0.1);
+    }
+  }
+  .filter-text { color: $dark-muted-foreground; }
+  .filter-item.active .filter-text { color: $dark-primary; }
+  .filter-arrow { border-top-color: $dark-muted-foreground; }
+  .filter-item.active .filter-arrow { border-top-color: $dark-primary; }
+  .filter-sort { background: $dark-card; border: 2rpx solid $dark-border; }
+  .sort-icon { filter: brightness(0) invert(1); opacity: 0.5; }
+  
+  // 状态标签
+  .status-tab {
+    background: $dark-muted;
+    &.active { background: $dark-primary; }
+  }
+  .tab-text { color: $dark-muted-foreground; }
+  .status-tab.active .tab-text { color: #18181B; }
+  
+  // 分隔线
+  .divider { background: $dark-border; }
+  
+  // 活动卡片 - 精致交互
+  .activity-card {
+    background: $dark-card;
+    box-shadow: $dark-shadow-card;
+    
+    &:active {
+      box-shadow: $dark-shadow-hover;
+      border-color: rgba($dark-primary, 0.5);
+    }
+  }
+  
+  .card-title { color: $dark-foreground; }
+  .rating-count { color: $dark-muted-foreground; }
+  .meta-icon { filter: brightness(0) invert(1); opacity: 0.45; }
+  .meta-text { color: $dark-muted-foreground; }
+    
+  .signup-btn { 
+    border-color: $dark-muted-foreground;
+    background: transparent;
+    
+    &:active {
+      background: $dark-primary;
+      border-color: $dark-primary;
+      
+      .btn-text { color: #18181B; }
+  }
+}
+  .btn-text { color: $dark-muted-foreground; }
+  
+  // 骨架屏
+  .skeleton-card {
+    background: linear-gradient(90deg, $dark-muted 25%, $dark-border 50%, $dark-muted 75%);
+  }
+  
+  // 空状态
+  .empty-text { color: $dark-foreground; }
+  .empty-desc { color: $dark-muted-foreground; }
 }

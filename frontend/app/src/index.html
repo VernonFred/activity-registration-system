@@ -5,12 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
   <title>活动报名系统</title>
+  <script>
+    // H5 rem 适配：基于 375px 设计稿
+    (function flexible(window, document) {
+      var docEl = document.documentElement;
+      var dpr = window.devicePixelRatio || 1;
+
+      function setRemUnit() {
+        // 设计稿宽度 375px，1rem = 20px
+        var clientWidth = docEl.clientWidth;
+        if (!clientWidth) return;
+        // 限制最大宽度为 750px（手机屏幕模拟）
+        if (clientWidth > 750) clientWidth = 750;
+        // 1rem = clientWidth / 18.75 (即 375px 时 1rem = 20px)
+        docEl.style.fontSize = (clientWidth / 18.75) + 'px';
+      }
+
+      setRemUnit();
+
+      // 页面 resize 时重新计算
+      window.addEventListener('resize', setRemUnit);
+      window.addEventListener('pageshow', function(e) {
+        if (e.persisted) setRemUnit();
+      });
+
+      // 检测 0.5px 支持
+      if (dpr >= 2) {
+        var fakeBody = document.createElement('body');
+        var testElement = document.createElement('div');
+        testElement.style.border = '.5px solid transparent';
+        fakeBody.appendChild(testElement);
+        docEl.appendChild(fakeBody);
+        if (testElement.offsetHeight === 1) {
+          docEl.classList.add('hairlines');
+        }
+        docEl.removeChild(fakeBody);
+      }
+    }(window, document));
+  </script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
     /* 限制最大宽度，模拟手机屏幕 */
     #app {
       max-width: 750px;
       margin: 0 auto;
       min-height: 100vh;
+      background: #0A0A0B; /* 默认深色背景 */
+    }
+    /* 居中显示时添加边框效果 */
+    @media (min-width: 751px) {
+      body {
+        background: #1a1a1a;
+      }
+      #app {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
     }
   </style>
 </head>
