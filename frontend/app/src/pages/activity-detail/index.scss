@@ -44,98 +44,99 @@
 }
 
 // ============================================================
-// 顶部导航（参照设计稿：分隔线在上方 + < + 标题居中）
+// 顶部导航（方案一：现代精致风格）
 // ============================================================
 
 .nav-header {
   display: flex;
   align-items: center;
-  padding: 24rpx 32rpx;
-  gap: 16rpx;
-  border-top: 1rpx solid;
-  transition: border-color 0.3s ease;
+  padding: 28rpx 36rpx 24rpx;
+  gap: 20rpx;
+  transition: all 0.3s ease;
 }
   
   .nav-back {
-  width: 48rpx;
-  height: 48rpx;
+  width: 56rpx;
+  height: 56rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-  transition: all 0.25s ease;
+  border-radius: 50%;
+  transition: all 0.3s ease;
   flex-shrink: 0;
-    
-  &:active { transform: scale(0.9); }
-    }
+
+  &:active { 
+    transform: scale(0.9); 
+    opacity: 0.6;
+  }
+}
 
 .back-icon {
-  width: 32rpx;
-  height: 32rpx;
+  width: 36rpx;
+  height: 36rpx;
   transition: filter 0.3s ease;
-  }
+}
   
   .nav-title {
     flex: 1;
-  font-size: 34rpx;
+  font-size: 36rpx;
   font-weight: 600;
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   transition: color 0.3s ease;
+  letter-spacing: 0.5rpx;
 }
 
-.nav-placeholder { width: 48rpx; flex-shrink: 0; }
+.nav-placeholder { width: 56rpx; flex-shrink: 0; }
 
 // ============================================================
-// Tab 切换（参照设计稿：简洁线性排列 + 下划线指示器）
+// Tab 切换（方案一：现代胶囊式 - 简洁精致）
 // ============================================================
 
 .tabs-wrapper {
-  padding: 0;
-  border-bottom: 1rpx solid;
-  transition: border-color 0.3s ease;
+  padding: 0 32rpx 20rpx;
+  transition: all 0.3s ease;
 }
 
 .tabs-card {
   display: flex;
-  padding: 0;
+  gap: 8rpx;
+  padding: 8rpx;
   transition: all 0.3s ease;
 }
   
   .tab-item {
     flex: 1;
     position: relative;
-  padding: 28rpx 0;
+  padding: 20rpx 12rpx;
     text-align: center;
-  transition: all 0.3s ease;
+  border-radius: 24rpx;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  &:active { opacity: 0.7; }
+  &:active { 
+    transform: scale(0.96);
+  }
 }
 
 .tab-text {
   font-size: 28rpx;
   font-weight: 500;
-  transition: color 0.3s ease;
-    }
-    
-.tab-indicator {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 48rpx;
-  height: 4rpx;
-  border-radius: $radius-full;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 // ============================================================
 // 内容区域
 // ============================================================
 
-.content-scroll { flex: 1; }
-.tab-content { padding: 0 24rpx; }
+.content-scroll { 
+  flex: 1; 
+  padding-top: 8rpx;
+}
+.tab-content { padding: 0 32rpx; }
 .bottom-spacer { height: 280rpx; }
 
 // ============================================================
@@ -195,18 +196,25 @@
   &.activity-detail { background: $light-background; }
   .status-bar { background: $light-background; }
   
-  // 导航（分隔线在上方）
-  .nav-header { border-color: rgba($light-border, 0.4); }
-  .nav-back { background: transparent; }
-  .back-icon { filter: brightness(0); opacity: 0.6; }
+  // 导航（方案一：现代精致风格）
+  .nav-back { 
+    background: rgba($light-border, 0.3); 
+    &:active { background: rgba($light-border, 0.5); }
+  }
+  .back-icon { filter: brightness(0); opacity: 0.7; }
   .nav-title { color: $light-foreground; }
   
-  // Tab
-  .tabs-wrapper { border-color: rgba($light-border, 0.4); }
-  .tabs-card { background: transparent; }
+  // Tab（方案一：胶囊式）
+  .tabs-card { background: rgba($light-muted, 0.3); border-radius: $radius-xl; }
+  .tab-item { 
+    &:hover { background: rgba($light-muted, 0.5); }
+  }
+  .tab-item.active { 
+    background: rgba($light-primary, 0.12); 
+    box-shadow: 0 2px 8px rgba($light-primary, 0.15);
+  }
   .tab-text { color: $light-muted-foreground; }
   .tab-item.active .tab-text { color: $light-primary; font-weight: 600; }
-  .tab-indicator { background: $light-primary; }
   
   // 活动速览
   .overview {
@@ -298,18 +306,25 @@
   &.activity-detail { background: $dark-background; }
   .status-bar { background: $dark-background; }
   
-  // 导航（分隔线在上方）
-  .nav-header { border-color: rgba($dark-border, 0.5); }
-  .nav-back { background: transparent; }
-  .back-icon { filter: brightness(0) invert(1); opacity: 0.8; }
+  // 导航（方案一：现代精致风格）
+  .nav-back { 
+    background: rgba($dark-border, 0.5); 
+    &:active { background: rgba($dark-border, 0.8); }
+  }
+  .back-icon { filter: brightness(0) invert(1); opacity: 0.9; }
   .nav-title { color: $dark-foreground; }
   
-  // Tab
-  .tabs-wrapper { border-color: rgba($dark-border, 0.5); }
-  .tabs-card { background: transparent; }
+  // Tab（方案一：胶囊式）
+  .tabs-card { background: rgba($dark-muted, 0.4); border-radius: $radius-xl; }
+  .tab-item { 
+    &:hover { background: rgba($dark-muted, 0.6); }
+  }
+  .tab-item.active { 
+    background: rgba($dark-primary, 0.15); 
+    box-shadow: 0 2px 8px rgba($dark-primary, 0.2);
+  }
   .tab-text { color: $dark-muted-foreground; }
   .tab-item.active .tab-text { color: $dark-primary; font-weight: 600; }
-  .tab-indicator { background: $dark-primary; }
   
   // 活动速览
   .overview {
