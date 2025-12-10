@@ -44,54 +44,55 @@
 }
 
 // ============================================================
-// 顶部导航（参照设计稿布局）
+// 顶部导航（参照设计稿：< + 标题居中）
 // ============================================================
 
 .nav-header {
   display: flex;
   align-items: center;
-  padding: 20rpx 32rpx;
+  padding: 24rpx 32rpx;
   gap: 16rpx;
+  border-bottom: 1rpx solid;
+  transition: border-color 0.3s ease;
 }
-  
-  .nav-back {
-  width: 64rpx;
-  height: 64rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.nav-back {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.25s ease;
   flex-shrink: 0;
-    
+
   &:active { transform: scale(0.9); }
-    }
+}
 
 .back-icon {
-  width: 40rpx;
-  height: 40rpx;
+  width: 32rpx;
+  height: 32rpx;
   transition: filter 0.3s ease;
-  }
-  
-  .nav-title {
-    flex: 1;
-  font-size: 32rpx;
+}
+
+.nav-title {
+  flex: 1;
+  font-size: 34rpx;
   font-weight: 600;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   transition: color 0.3s ease;
 }
 
-.nav-placeholder { width: 64rpx; flex-shrink: 0; }
+.nav-placeholder { width: 48rpx; flex-shrink: 0; }
 
 // ============================================================
-// Tab 切换（参照设计稿布局 - 简洁线性排列）
+// Tab 切换（参照设计稿：简洁线性排列 + 下划线指示器）
 // ============================================================
 
 .tabs-wrapper {
   padding: 0;
-  border-top: 1rpx solid;
   border-bottom: 1rpx solid;
   transition: border-color 0.3s ease;
 }
@@ -135,7 +136,7 @@
 
 .content-scroll { flex: 1; }
 .tab-content { padding: 0 24rpx; }
-.bottom-spacer { height: 220rpx; }
+.bottom-spacer { height: 280rpx; }
 
 // ============================================================
 // 骨架屏
@@ -195,12 +196,13 @@
   .status-bar { background: $light-background; }
   
   // 导航
+  .nav-header { border-color: rgba($light-border, 0.3); }
   .nav-back { background: transparent; }
   .back-icon { filter: brightness(0); opacity: 0.6; }
   .nav-title { color: $light-foreground; }
   
   // Tab
-  .tabs-wrapper { border-color: rgba($light-border, 0.5); }
+  .tabs-wrapper { border-color: rgba($light-border, 0.3); }
   .tabs-card { background: transparent; }
   .tab-text { color: $light-muted-foreground; }
   .tab-item.active .tab-text { color: $light-primary; font-weight: 600; }
@@ -269,11 +271,11 @@
   // 直播
   .live { .live-button { background: $light-primary; } }
   
-  // 底部浮岛（苹果液态玻璃效果）
+  // 底部浮岛（苹果液态玻璃效果 - 更高透明度）
   .island-capsule { 
-    background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(200, 200, 200, 0.3);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   }
   .action-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); opacity: 0.85; }
   .action-text { color: $light-primary; }
@@ -297,12 +299,13 @@
   .status-bar { background: $dark-background; }
   
   // 导航
+  .nav-header { border-color: rgba($dark-border, 0.3); }
   .nav-back { background: transparent; }
   .back-icon { filter: brightness(0) invert(1); opacity: 0.8; }
   .nav-title { color: $dark-foreground; }
   
   // Tab
-  .tabs-wrapper { border-color: rgba($dark-border, 0.5); }
+  .tabs-wrapper { border-color: rgba($dark-border, 0.3); }
   .tabs-card { background: transparent; }
   .tab-text { color: $dark-muted-foreground; }
   .tab-item.active .tab-text { color: $dark-primary; font-weight: 600; }
