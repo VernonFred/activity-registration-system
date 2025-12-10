@@ -54,8 +54,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
           <View className="row-left">
             <Image src={iconMapPin} className="row-icon" mode="aspectFit" />
             <View className="row-content">
-              <Text className="main-text">{activity.location_city} | {activity.location_name}</Text>
-              <Text className="sub-text">{activity.location_address}</Text>
+              <Text className="main-text">
+                {activity.location_city || '长沙市'} | {activity.location_name || '喜来登大酒店'}
+              </Text>
+              <Text className="sub-text">{activity.location_address || '长沙市江发路12号国博园东门'}</Text>
             </View>
           </View>
           <View className="row-right distance">

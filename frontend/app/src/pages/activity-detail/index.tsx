@@ -154,7 +154,7 @@ export default function ActivityDetail() {
         {/* Banner 图片 */}
         <View className="banner-container">
           <Image 
-            src={activity.cover_url || 'https://via.placeholder.com/750x576'} 
+            src={activity.cover_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'} 
             className="banner-image" 
             mode="aspectFill" 
           />

@@ -170,7 +170,7 @@
 
 .content-scroll {
   flex: 1;
-  padding-top: 8rpx;
+  padding-top: 40rpx; // 增加 Tab 与内容的间距
 }
 .tab-content { padding: 0 32rpx; }
 .bottom-spacer { height: 280rpx; }
