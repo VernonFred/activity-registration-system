@@ -1,41 +1,21 @@
 /**
- * 活动速览 Tab 样式
+ * 活动速览 Tab 样式（Lovable 风格 - 卡片化布局）
  */
 
 .overview {
-  padding: 0;
+  padding: 40rpx;
   
-  .banner-section {
-    position: relative;
-    width: 100%;
-    height: 380rpx;
-    overflow: hidden;
-    border-radius: 0 0 $radius-xl $radius-xl;
-  }
-    
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-    
-  .banner-gradient {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 200rpx;
-    transition: background 0.3s ease;
+  // 标题卡片
+  .title-card {
+    margin-bottom: 32rpx;
   }
   
   // 信息卡片
   .info-card {
-    margin: -60rpx 24rpx 0;
-    padding: 28rpx;
+    padding: 32rpx;
     border-radius: $radius-xl;
-    position: relative;
-    z-index: 1;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
   }
     
   .info-header { margin-bottom: 20rpx; }

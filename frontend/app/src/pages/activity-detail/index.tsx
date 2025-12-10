@@ -149,21 +149,37 @@ export default function ActivityDetail() {
 
   return (
     <View className={`activity-detail theme-${theme}`}>
-      {/* 状态栏占位 */}
-      <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
+      {/* Hero Banner 区域（Lovable 风格） */}
+      <View className="hero-section">
+        {/* Banner 图片 */}
+        <View className="banner-container">
+          <Image 
+            src={activity.cover_url || 'https://via.placeholder.com/750x576'} 
+            className="banner-image" 
+            mode="aspectFill" 
+          />
+          {/* 渐变遮罩 */}
+          <View className="banner-gradient" />
+        </View>
 
-      {/* 顶部导航栏 - 更精致的设计 */}
-      <View className="nav-header">
-        <View className="nav-back" onClick={handleBack}>
+        {/* 浮动返回按钮 */}
+        <View 
+          className="floating-back-btn" 
+          onClick={handleBack}
+          style={{ top: `${statusBarHeight + 16}px` }}
+        >
           <Image src={iconArrowLeft} className="back-icon" mode="aspectFit" />
         </View>
-        <Text className="nav-title" numberOfLines={1}>{activity.title}</Text>
-        <View className="nav-placeholder" />
+
+        {/* 标题 Overlay */}
+        <View className="title-overlay">
+          <Text className="subtitle">{activity.location_city || '暑期培训会'}</Text>
+        </View>
       </View>
 
-      {/* Tab 切换 - 独立卡片样式 */}
-      <View className="tabs-wrapper">
-        <View className="tabs-card">
+      {/* Tab 切换 - 粘性定位 + 毛玻璃效果 */}
+      <View className="tabs-sticky-wrapper">
+        <View className="tabs-content">
           {TABS.map((tab) => (
             <View
               key={tab.key}
@@ -177,7 +193,7 @@ export default function ActivityDetail() {
         </View>
       </View>
 
-      {/* 内容区域 */}
+      {/* 内容区域 - 卡片化布局 */}
       <ScrollView className="content-scroll" scrollY enhanced showScrollbar={false}>
         {activeTab === 'overview' && <OverviewTab activity={activity} theme={theme} />}
         {activeTab === 'agenda' && <AgendaTab agenda={activity.agenda || []} theme={theme} />}
@@ -188,7 +204,7 @@ export default function ActivityDetail() {
         <View className="bottom-spacer" />
       </ScrollView>
 
-      {/* 底部胶囊浮岛 */}
+      {/* 底部胶囊浮岛（保持不变） */}
       <BottomBar
         isFavorited={isFavorited}
         isLiked={isLiked}

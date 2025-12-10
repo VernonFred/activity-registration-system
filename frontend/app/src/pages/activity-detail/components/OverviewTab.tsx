@@ -18,14 +18,18 @@ interface OverviewTabProps {
 const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
   return (
     <View className={`tab-content overview theme-${theme}`}>
-      {/* Banner 封面图 */}
-      <View className="banner-section">
-        <Image
-          className="banner-image"
-          src={activity.cover_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
-          mode="aspectFill"
-        />
-        <View className="banner-gradient" />
+      {/* 标题卡片（Lovable 风格） */}
+      <View className="title-card">
+        <View className="title-row">
+          <Text className="city-text">{activity.location_city || '长沙'}</Text>
+          <Text className="divider">|</Text>
+          <Text className="activity-title">{activity.title}</Text>
+        </View>
+        {activity.fee_type === 'free' && (
+          <View className="fee-tag free">
+            <Text className="fee-text">免费</Text>
+          </View>
+        )}
       </View>
 
       {/* 活动信息卡片 */}

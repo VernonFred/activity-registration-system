@@ -44,79 +44,107 @@
 }
 
 // ============================================================
-// 顶部导航（方案一：现代精致风格）
+// Hero Banner 区域（Lovable 风格）
 // ============================================================
 
-.nav-header {
-  display: flex;
-  align-items: center;
-  padding: 28rpx 36rpx 24rpx;
-  gap: 20rpx;
-  transition: all 0.3s ease;
+.hero-section {
+  position: relative;
+  height: 576rpx;
+  overflow: hidden;
 }
-  
-  .nav-back {
-  width: 56rpx;
-  height: 56rpx;
+
+.banner-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 400rpx;
+  pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+// 浮动返回按钮（圆形毛玻璃效果）
+.floating-back-btn {
+  position: absolute;
+  left: 32rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-  border-radius: 50%;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   transition: all 0.3s ease;
-  flex-shrink: 0;
+  z-index: 10;
 
   &:active { 
     transform: scale(0.9); 
-    opacity: 0.6;
   }
 }
 
 .back-icon {
-  width: 36rpx;
-  height: 36rpx;
+  width: 40rpx;
+  height: 40rpx;
   transition: filter 0.3s ease;
 }
-  
-  .nav-title {
-    flex: 1;
-  font-size: 36rpx;
-  font-weight: 600;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+
+// 标题 Overlay
+.title-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 40rpx 32rpx;
+  z-index: 5;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  font-weight: 500;
   transition: color 0.3s ease;
-  letter-spacing: 0.5rpx;
+  opacity: 0.9;
 }
 
-.nav-placeholder { width: 56rpx; flex-shrink: 0; }
-
 // ============================================================
-// Tab 切换（方案一：现代胶囊式 - 简洁精致）
+// Tab 切换（粘性定位 + 毛玻璃效果）
 // ============================================================
 
-.tabs-wrapper {
-  padding: 20rpx 32rpx 24rpx;
+.tabs-sticky-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
   transition: all 0.3s ease;
+  border-bottom: 1rpx solid;
 }
 
-.tabs-card {
+.tabs-content {
   display: flex;
-  gap: 8rpx;
-  padding: 8rpx;
-  transition: all 0.3s ease;
 }
   
   .tab-item {
     flex: 1;
     position: relative;
-  padding: 20rpx 12rpx;
+  padding: 24rpx 0;
     text-align: center;
-  border-radius: 24rpx;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:active { 
-    transform: scale(0.96);
+    opacity: 0.7;
   }
 }
 
@@ -124,8 +152,16 @@
   font-size: 28rpx;
   font-weight: 500;
   transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
+    }
+    
+    .tab-indicator {
+      position: absolute;
+      bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4rpx;
+      border-radius: $radius-full;
+  transition: background 0.3s ease;
 }
 
 // ============================================================
@@ -196,30 +232,31 @@
   &.activity-detail { background: $light-background; }
   .status-bar { background: $light-background; }
   
-  // 导航（方案一：现代精致风格）
-  .nav-back { 
-    background: rgba($light-border, 0.3); 
-    &:active { background: rgba($light-border, 0.5); }
+  // Hero Banner（Lovable 风格）
+  .banner-gradient { 
+    background: linear-gradient(to top, $light-background 0%, rgba($light-background, 0.8) 40%, transparent 100%); 
   }
-  .back-icon { filter: brightness(0); opacity: 0.7; }
-  .nav-title { color: $light-foreground; }
+  .floating-back-btn { 
+    background: rgba(255, 255, 255, 0.35); 
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    &:active { background: rgba(255, 255, 255, 0.5); }
+  }
+  .back-icon { filter: brightness(0); opacity: 0.8; }
+  .subtitle { color: rgba($light-muted-foreground, 0.9); }
   
-  // Tab（方案一：胶囊式）
-  .tabs-card { background: rgba($light-muted, 0.3); border-radius: $radius-xl; }
-  .tab-item { 
-    &:hover { background: rgba($light-muted, 0.5); }
-  }
-  .tab-item.active { 
-    background: rgba($light-primary, 0.12); 
-    box-shadow: 0 2px 8px rgba($light-primary, 0.15);
+  // Tab（粘性定位 + 毛玻璃）
+  .tabs-sticky-wrapper { 
+    background: rgba($light-background, 0.85); 
+    border-color: rgba($light-border, 0.4);
   }
   .tab-text { color: $light-muted-foreground; }
   .tab-item.active .tab-text { color: $light-primary; font-weight: 600; }
+  .tab-indicator { background: $light-primary; }
   
-  // 活动速览
+  // 活动速览（Lovable 卡片化）
   .overview {
-    .banner-gradient { background: linear-gradient(transparent, $light-background); }
-    .info-card { background: $light-card; box-shadow: $light-shadow-card; }
+    .title-card { }
+    .info-card { background: $light-card; box-shadow: $light-shadow-card; border: 1rpx solid rgba($light-border, 0.5); }
     .city-text, .divider { color: $light-primary; }
     .activity-title { color: $light-foreground; }
     .info-divider { background: $light-border; }
@@ -306,30 +343,31 @@
   &.activity-detail { background: $dark-background; }
   .status-bar { background: $dark-background; }
   
-  // 导航（方案一：现代精致风格）
-  .nav-back { 
-    background: rgba($dark-border, 0.5); 
-    &:active { background: rgba($dark-border, 0.8); }
+  // Hero Banner（Lovable 风格）
+  .banner-gradient { 
+    background: linear-gradient(to top, $dark-background 0%, rgba($dark-background, 0.8) 40%, transparent 100%); 
+  }
+  .floating-back-btn { 
+    background: rgba(255, 255, 255, 0.08); 
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    &:active { background: rgba(255, 255, 255, 0.15); }
   }
   .back-icon { filter: brightness(0) invert(1); opacity: 0.9; }
-  .nav-title { color: $dark-foreground; }
+  .subtitle { color: rgba($dark-muted-foreground, 0.9); }
   
-  // Tab（方案一：胶囊式）
-  .tabs-card { background: rgba($dark-muted, 0.4); border-radius: $radius-xl; }
-  .tab-item { 
-    &:hover { background: rgba($dark-muted, 0.6); }
-  }
-  .tab-item.active { 
-    background: rgba($dark-primary, 0.15); 
-    box-shadow: 0 2px 8px rgba($dark-primary, 0.2);
+  // Tab（粘性定位 + 毛玻璃）
+  .tabs-sticky-wrapper { 
+    background: rgba($dark-background, 0.85); 
+    border-color: rgba($dark-border, 0.5);
   }
   .tab-text { color: $dark-muted-foreground; }
   .tab-item.active .tab-text { color: $dark-primary; font-weight: 600; }
+  .tab-indicator { background: $dark-primary; }
   
-  // 活动速览
+  // 活动速览（Lovable 卡片化）
   .overview {
-    .banner-gradient { background: linear-gradient(transparent, $dark-background); }
-    .info-card { background: $dark-card; box-shadow: $dark-shadow-card; }
+    .title-card { }
+    .info-card { background: $dark-card; box-shadow: $dark-shadow-card; border: 1rpx solid rgba($dark-border, 0.5); }
     .city-text, .divider { color: $dark-primary; }
     .activity-title { color: $dark-foreground; }
     .info-divider { background: $dark-border; }
