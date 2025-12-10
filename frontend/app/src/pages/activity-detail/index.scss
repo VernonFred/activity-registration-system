@@ -282,6 +282,14 @@
   
   // 议程（重构版 - 分组结构）
   .agenda-grouped, .agenda-flat {
+    // 工具栏
+    .toolbar-btn {
+      background: rgba($light-primary, 0.08);
+      &:active { background: rgba($light-primary, 0.15); }
+    }
+    .toolbar-text { color: $light-primary; }
+    .toolbar-icon { color: $light-primary; }
+    
     // 分组卡片
     .agenda-group {
       background: $light-card;
@@ -439,6 +447,14 @@
   
   // 议程（重构版 - 分组结构）
   .agenda-grouped, .agenda-flat {
+    // 工具栏
+    .toolbar-btn {
+      background: rgba($dark-primary, 0.12);
+      &:active { background: rgba($dark-primary, 0.2); }
+    }
+    .toolbar-text { color: $dark-primary; }
+    .toolbar-icon { color: $dark-primary; }
+    
     // 分组卡片
     .agenda-group {
       background: $dark-card;

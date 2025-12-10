@@ -13,6 +13,39 @@
   padding: 32rpx 32rpx 0;
 }
 
+// 工具栏（全部展开/折叠）
+.agenda-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 32rpx 24rpx;
+  margin-top: -16rpx;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  border-radius: $radius-full;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.toolbar-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.toolbar-icon {
+  font-size: 20rpx;
+  transition: transform 0.3s ease;
+}
+
 .agenda-group {
   margin-bottom: 48rpx;
   border-radius: $radius-xl;
@@ -24,11 +57,18 @@
   }
 }
 
-// 分组头部（橙色渐变）
+// 分组头部（橙色渐变 - 可点击）
 .group-header {
   background: linear-gradient(135deg, #FF8A1A 0%, #FF6B00 100%);
   padding: 28rpx 32rpx;
   position: relative;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  
+  &:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
   
   &::after {
     content: '';
@@ -42,6 +82,30 @@
 }
 
 .header-content {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+// 展开/折叠图标
+.expand-icon {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-text {
+  font-size: 24rpx;
+  color: white;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+}
+
+.header-info {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;

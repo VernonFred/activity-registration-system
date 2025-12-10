@@ -310,7 +310,7 @@ export default function ActivityDetail() {
       {/* 内容区域 - 卡片化布局 */}
       <ScrollView className="content-scroll" scrollY enhanced showScrollbar={false}>
         {activeTab === 'overview' && <OverviewTab activity={activity} theme={theme} />}
-        {activeTab === 'agenda' && <AgendaTab agenda={activity.agenda || []} theme={theme} />}
+        {activeTab === 'agenda' && <AgendaTab agenda={activity.agenda || []} theme={theme} activityId={activity.id} />}
         {activeTab === 'hotel' && <HotelTab hotels={activity.hotels || []} onCall={handleCall} theme={theme} />}
         {activeTab === 'live' && <LiveTab coverUrl={activity.cover_url} onViewLive={handleViewLive} theme={theme} />}
         
