@@ -119,14 +119,14 @@
   transition: color 0.3s ease;
     }
     
-    .tab-indicator {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
+.tab-indicator {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 48rpx;
   height: 4rpx;
-      border-radius: $radius-full;
+  border-radius: $radius-full;
   transition: background 0.3s ease;
 }
 
