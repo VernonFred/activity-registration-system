@@ -96,7 +96,7 @@
 // ============================================================
 
 .tabs-wrapper {
-  padding: 0 32rpx 20rpx;
+  padding: 20rpx 32rpx 24rpx;
   transition: all 0.3s ease;
 }
 
@@ -132,8 +132,8 @@
 // 内容区域
 // ============================================================
 
-.content-scroll { 
-  flex: 1; 
+.content-scroll {
+  flex: 1;
   padding-top: 8rpx;
 }
 .tab-content { padding: 0 32rpx; }
