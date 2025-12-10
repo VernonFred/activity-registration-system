@@ -5,9 +5,30 @@
 .overview {
   padding: 40rpx;
   
-  // 标题卡片
-  .title-card {
-    margin-bottom: 32rpx;
+  // 标题区域（Lovable 风格）
+  .title-section {
+    margin-bottom: 48rpx;
+  }
+  
+  .main-title {
+    font-size: 40rpx;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 16rpx;
+    transition: color 0.3s ease;
+  }
+  
+  .free-badge {
+    display: inline-flex;
+    padding: 8rpx 24rpx;
+    border-radius: $radius-full;
+    transition: all 0.3s ease;
+  }
+  
+  .badge-text {
+    font-size: 24rpx;
+    font-weight: 600;
+    transition: color 0.3s ease;
   }
   
   // 信息卡片
@@ -16,6 +37,7 @@
     border-radius: $radius-xl;
     transition: all 0.3s ease;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+    margin-bottom: 32rpx;
   }
     
   .info-header { margin-bottom: 20rpx; }

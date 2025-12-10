@@ -18,35 +18,18 @@ interface OverviewTabProps {
 const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
   return (
     <View className={`tab-content overview theme-${theme}`}>
-      {/* 标题卡片（Lovable 风格） */}
-      <View className="title-card">
-        <View className="title-row">
-          <Text className="city-text">{activity.location_city || '长沙'}</Text>
-          <Text className="divider">|</Text>
-          <Text className="activity-title">{activity.title}</Text>
-        </View>
+      {/* 标题区域（Lovable 风格 - 只显示一次） */}
+      <View className="title-section">
+        <Text className="main-title">{activity.location_city || '长沙'} | {activity.title}</Text>
         {activity.fee_type === 'free' && (
-          <View className="fee-tag free">
-            <Text className="fee-text">免费</Text>
+          <View className="free-badge">
+            <Text className="badge-text">免费</Text>
           </View>
         )}
       </View>
 
-      {/* 活动信息卡片 */}
+      {/* 日期时间卡片 */}
       <View className="info-card">
-        {/* 标题区 */}
-        <View className="info-header">
-          <View className="title-row">
-            <Text className="city-text">{activity.location_city || '长沙'}</Text>
-            <Text className="divider">|</Text>
-            <Text className="activity-title">{activity.title}</Text>
-          </View>
-          <View className={`fee-tag ${activity.fee_type === 'free' ? 'free' : 'paid'}`}>
-            <Text className="fee-text">{activity.fee_type === 'free' ? '免费' : `¥${activity.fee_amount}`}</Text>
-          </View>
-        </View>
-
-        <View className="info-divider" />
 
         {/* 时间信息 */}
         <View className="info-row">

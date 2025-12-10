@@ -171,9 +171,9 @@ export default function ActivityDetail() {
           <Image src={iconArrowLeft} className="back-icon" mode="aspectFit" />
         </View>
 
-        {/* 标题 Overlay */}
+        {/* 标题 Overlay（显示副标题或分类） */}
         <View className="title-overlay">
-          <Text className="subtitle">{activity.location_city || '暑期培训会'}</Text>
+          <Text className="subtitle">暑期培训会</Text>
         </View>
       </View>
 
