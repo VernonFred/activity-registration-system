@@ -21,7 +21,7 @@ const isAgendaGroups = (agenda: AgendaItem[] | AgendaGroup[]): agenda is AgendaG
 const AgendaTab: React.FC<AgendaTabProps> = ({ agenda, theme }) => {
   // 如果是分组结构，渲染分组卡片
   if (isAgendaGroups(agenda)) {
-    return (
+  return (
       <View className={`tab-content agenda agenda-grouped theme-${theme}`}>
         {agenda.map((group, index) => (
           <AgendaGroupCard
