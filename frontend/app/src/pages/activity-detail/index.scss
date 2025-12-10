@@ -280,18 +280,54 @@
     .description-text { color: $light-muted-foreground; }
         }
   
-  // 议程
-  .agenda {
-    .timeline-dot { border-color: $light-border; background: $light-card; }
-    .timeline-dot.active { background: $light-primary; }
-    .timeline-line { background: $light-border; }
-    .agenda-card { background: $light-card; box-shadow: $light-shadow-card; }
+  // 议程（重构版 - 分组结构）
+  .agenda-grouped, .agenda-flat {
+    // 分组卡片
+    .agenda-group {
+      background: $light-card;
+      box-shadow: $light-shadow-card;
+    }
+    
+    // 主持人信息条
+    .moderator-bar {
+      background: rgba($light-primary, 0.03);
+      border-color: rgba($light-border, 0.5);
+    }
+    .moderator-label { color: $light-primary; }
+    .moderator-name { color: $light-foreground; }
+    .moderator-title { color: $light-muted-foreground; }
+    
+    // 议程项卡片
+    .agenda-item {
+      border-color: rgba($light-border, 0.4);
+      
+      &.break {
+        background: rgba($light-muted, 0.3);
+        .break-time, .break-title { color: $light-muted-foreground; }
+      }
+    }
+    
+    // 时间标签
+    .item-time-badge {
+      background: rgba($light-primary, 0.08);
+    }
     .time-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
     .time-text { color: $light-primary; }
-    .agenda-title { color: $light-foreground; }
-    .info-icon { filter: brightness(0); opacity: 0.5; }
-    .info-label, .info-text { color: $light-muted-foreground; }
-    .agenda-tag { background: rgba($light-primary, 0.1); }
+    
+    // 演讲人
+    .speaker-avatar { border-color: rgba($light-border, 0.5); }
+    .speaker-name { color: $light-foreground; }
+    .speaker-title { color: $light-muted-foreground; }
+    
+    // 演讲主题
+    .speech-title { color: $light-foreground; }
+    
+    // 地点
+    .location-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
+    .location-text { color: $light-muted-foreground; }
+    
+    // 标签
+    .item-tag { background: rgba($light-primary, 0.1); }
     .tag-text { color: $light-primary; }
     }
   
@@ -401,18 +437,54 @@
     .description-text { color: $dark-muted-foreground; }
   }
   
-  // 议程
-  .agenda {
-    .timeline-dot { border-color: $dark-border; background: $dark-card; }
-    .timeline-dot.active { background: $dark-primary; }
-    .timeline-line { background: $dark-border; }
-    .agenda-card { background: $dark-card; box-shadow: $dark-shadow-card; }
+  // 议程（重构版 - 分组结构）
+  .agenda-grouped, .agenda-flat {
+    // 分组卡片
+    .agenda-group {
+      background: $dark-card;
+      box-shadow: $dark-shadow-card;
+    }
+    
+    // 主持人信息条
+    .moderator-bar {
+      background: rgba($dark-primary, 0.08);
+      border-color: rgba($dark-border, 0.5);
+    }
+    .moderator-label { color: $dark-primary; }
+    .moderator-name { color: $dark-foreground; }
+    .moderator-title { color: $dark-muted-foreground; }
+    
+    // 议程项卡片
+    .agenda-item {
+      border-color: rgba($dark-border, 0.4);
+      
+      &.break {
+        background: rgba($dark-muted, 0.3);
+        .break-time, .break-title { color: $dark-muted-foreground; }
+      }
+    }
+    
+    // 时间标签
+    .item-time-badge {
+      background: rgba($dark-primary, 0.12);
+    }
     .time-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); }
     .time-text { color: $dark-primary; }
-    .agenda-title { color: $dark-foreground; }
-    .info-icon { filter: brightness(0) invert(1); opacity: 0.5; }
-    .info-label, .info-text { color: $dark-muted-foreground; }
-    .agenda-tag { background: rgba($dark-primary, 0.15); }
+    
+    // 演讲人
+    .speaker-avatar { border-color: rgba($dark-border, 0.5); }
+    .speaker-name { color: $dark-foreground; }
+    .speaker-title { color: $dark-muted-foreground; }
+    
+    // 演讲主题
+    .speech-title { color: $dark-foreground; }
+    
+    // 地点
+    .location-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); }
+    .location-text { color: $dark-muted-foreground; }
+    
+    // 标签
+    .item-tag { background: rgba($dark-primary, 0.15); }
     .tag-text { color: $dark-primary; }
   }
   

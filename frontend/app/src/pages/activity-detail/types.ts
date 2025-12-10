@@ -23,21 +23,46 @@ export interface Activity {
   current_participants?: number
   fee_type?: string
   fee_amount?: number
-  agenda?: AgendaItem[]
+  agenda?: AgendaItem[] | AgendaGroup[]  // 支持扁平数组或分组数组
   hotels?: Hotel[]
   live_url?: string
   extra?: Record<string, any>
 }
 
-// 议程项
+// 演讲人/主持人信息
+export interface Speaker {
+  name: string
+  title: string        // 职位/介绍
+  avatar?: string      // 头像 URL
+}
+
+export type Moderator = Speaker  // 主持人类型与演讲人相同
+
+// 议程项类型
+export type AgendaItemType = 'speech' | 'break' | 'discussion' | 'activity'
+
+// 议程项（扩展版 - 支持嵌套结构）
 export interface AgendaItem {
   id: number
   time_start: string
   time_end: string
   title: string
-  speaker?: string
+  type?: AgendaItemType        // 新增：类型（演讲/茶歇/讨论等）
+  speaker?: Speaker | string   // 扩展：支持对象或字符串（兼容旧数据）
   location?: string
   tag?: string
+  description?: string         // 新增：详细描述
+}
+
+// 议程分组（新增 - 支持嵌套结构）
+export interface AgendaGroup {
+  id: number
+  title: string                // 分组标题（如"开幕仪式"、"主旨报告"）
+  time_start?: string          // 分组开始时间（可选）
+  time_end?: string            // 分组结束时间（可选）
+  moderator?: Moderator        // 主持人信息（可选）
+  items: AgendaItem[]          // 该分组下的议程项列表
+  description?: string         // 分组描述（可选）
 }
 
 // 酒店信息
