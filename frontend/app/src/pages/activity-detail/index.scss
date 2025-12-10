@@ -44,7 +44,7 @@
 }
 
 // ============================================================
-// 顶部导航（参照设计稿：< + 标题居中）
+// 顶部导航（参照设计稿：分隔线在上方 + < + 标题居中）
 // ============================================================
 
 .nav-header {
@@ -52,36 +52,36 @@
   align-items: center;
   padding: 24rpx 32rpx;
   gap: 16rpx;
-  border-bottom: 1rpx solid;
+  border-top: 1rpx solid;
   transition: border-color 0.3s ease;
 }
-
-.nav-back {
+  
+  .nav-back {
   width: 48rpx;
   height: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   transition: all 0.25s ease;
   flex-shrink: 0;
-
+    
   &:active { transform: scale(0.9); }
-}
+    }
 
 .back-icon {
   width: 32rpx;
   height: 32rpx;
   transition: filter 0.3s ease;
-}
-
-.nav-title {
-  flex: 1;
+  }
+  
+  .nav-title {
+    flex: 1;
   font-size: 34rpx;
   font-weight: 600;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   transition: color 0.3s ease;
 }
 
@@ -195,14 +195,14 @@
   &.activity-detail { background: $light-background; }
   .status-bar { background: $light-background; }
   
-  // 导航
-  .nav-header { border-color: rgba($light-border, 0.3); }
+  // 导航（分隔线在上方）
+  .nav-header { border-color: rgba($light-border, 0.4); }
   .nav-back { background: transparent; }
   .back-icon { filter: brightness(0); opacity: 0.6; }
   .nav-title { color: $light-foreground; }
   
   // Tab
-  .tabs-wrapper { border-color: rgba($light-border, 0.3); }
+  .tabs-wrapper { border-color: rgba($light-border, 0.4); }
   .tabs-card { background: transparent; }
   .tab-text { color: $light-muted-foreground; }
   .tab-item.active .tab-text { color: $light-primary; font-weight: 600; }
@@ -271,11 +271,11 @@
   // 直播
   .live { .live-button { background: $light-primary; } }
   
-  // 底部浮岛（苹果液态玻璃效果 - 更高透明度）
+  // 底部浮岛（苹果液态玻璃效果 - 高透明度）
   .island-capsule { 
-    background: rgba(255, 255, 255, 0.45);
-    border-color: rgba(200, 200, 200, 0.3);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(200, 200, 200, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
   }
   .action-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); opacity: 0.85; }
   .action-text { color: $light-primary; }
@@ -298,14 +298,14 @@
   &.activity-detail { background: $dark-background; }
   .status-bar { background: $dark-background; }
   
-  // 导航
-  .nav-header { border-color: rgba($dark-border, 0.3); }
+  // 导航（分隔线在上方）
+  .nav-header { border-color: rgba($dark-border, 0.5); }
   .nav-back { background: transparent; }
   .back-icon { filter: brightness(0) invert(1); opacity: 0.8; }
   .nav-title { color: $dark-foreground; }
   
   // Tab
-  .tabs-wrapper { border-color: rgba($dark-border, 0.3); }
+  .tabs-wrapper { border-color: rgba($dark-border, 0.5); }
   .tabs-card { background: transparent; }
   .tab-text { color: $dark-muted-foreground; }
   .tab-item.active .tab-text { color: $dark-primary; font-weight: 600; }
@@ -374,19 +374,18 @@
   // 直播
   .live { .live-button { background: $dark-primary; } }
   
-  // 底部浮岛（深色胶囊 + 金黄色按钮/图标）
+  // 底部浮岛（采用首页胶囊样式 - 半透明渐变）
   .island-capsule { 
-    background: linear-gradient(145deg, rgba(30, 60, 40, 0.95) 0%, rgba(20, 45, 30, 0.98) 100%);
-    border-color: rgba(60, 100, 70, 0.4);
-    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: $dark-border;
+    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.3);
   }
-  .action-icon { filter: brightness(0) saturate(100%) invert(75%) sepia(80%) saturate(600%) hue-rotate(5deg); opacity: 0.9; }
-  .action-text { color: #D4A853; }
-  .action-item.active { background: rgba(212, 168, 83, 0.15); }
+  .action-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); opacity: 0.9; }
+  .action-text { color: $dark-primary; }
+  .action-item.active { background: rgba($dark-primary, 0.15); }
   .action-item.active .action-icon { opacity: 1; }
-  .action-item.active .action-text { color: #F5C563; }
-  .signup-btn { background: linear-gradient(135deg, #D4A853 0%, #C49843 100%); box-shadow: 0 4px 16px -4px rgba(212, 168, 83, 0.4); }
-  .signup-text { color: #1A2E1F; }
+  .signup-btn { background: $dark-primary; box-shadow: 0 4px 16px -4px rgba($dark-primary, 0.4); }
+  .signup-text { color: #18181B; }
   
   // 骨架屏
   .skeleton-header, .skeleton-tabs, .skeleton-line {
