@@ -26,7 +26,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
             <Text className="badge-text">免费</Text>
           </View>
         )}
-      </View>
+        </View>
 
       {/* 日期时间卡片 */}
       <View className="info-card">
