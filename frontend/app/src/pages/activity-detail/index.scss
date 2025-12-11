@@ -280,34 +280,17 @@
     .description-text { color: $light-muted-foreground; }
         }
   
-  // 议程（重构版 - 分组结构）
-  .agenda-grouped, .agenda-flat {
-    // 工具栏
-    .toolbar-btn {
-      background: rgba($light-primary, 0.08);
-      &:active { background: rgba($light-primary, 0.15); }
-    }
-    .toolbar-text { color: $light-primary; }
-    .toolbar-icon { color: $light-primary; }
-    
-    // 分组卡片
+  // 议程样式已在 _agenda.scss 中定义（更精致的浅色主题）
+  .agenda-grouped, .agenda-flat, .agenda-multi-day {
+    // 基础容器
     .agenda-group {
-      background: $light-card;
-      box-shadow: $light-shadow-card;
+      background: white;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
     }
-    
-    // 主持人信息条
-    .moderator-bar {
-      background: rgba($light-primary, 0.03);
-      border-color: rgba($light-border, 0.5);
-    }
-    .moderator-label { color: $light-primary; }
-    .moderator-name { color: $light-foreground; }
-    .moderator-title { color: $light-muted-foreground; }
     
     // 议程项卡片
     .agenda-item {
-      border-color: rgba($light-border, 0.4);
+      border-color: rgba($light-border, 0.3);
       
       &.break {
         background: rgba($light-muted, 0.3);
@@ -376,10 +359,14 @@
     border-color: rgba(200, 200, 200, 0.2);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
   }
-  .action-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); opacity: 0.85; }
-  .action-text { color: $light-primary; }
-  .action-item.active { background: rgba($light-primary, 0.1); }
-  .action-item.active .action-icon { opacity: 1; }
+  .action-icon { filter: brightness(0) saturate(0%) invert(50%); opacity: 0.5; }  // 柔和的灰色
+  .action-text { color: #999; }  // 柔和的灰色文字
+  .action-item.active { background: rgba($light-primary, 0.08); }
+  .action-item.active .action-icon { 
+    filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg);  // 选中时变橙色
+    opacity: 1; 
+  }
+  .action-item.active .action-text { color: $light-primary; }  // 选中时文字变橙色
   .signup-btn { background: $light-primary; box-shadow: 0 4px 16px -4px rgba($light-primary, 0.4); }
   
   // 骨架屏
