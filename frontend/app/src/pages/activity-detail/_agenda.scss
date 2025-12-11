@@ -17,18 +17,19 @@
 .agenda-toolbar {
   display: flex;
   justify-content: flex-end;
-  padding: 0 32rpx 24rpx;
-  margin-top: -16rpx;
+  padding: 16rpx 32rpx 24rpx;  // 修复：增加顶部padding，移除负margin
+  margin-top: 0;  // 修复：移除负margin，避免被截断
 }
 
 .toolbar-btn {
   display: inline-flex;
   align-items: center;
   gap: 8rpx;
-  padding: 12rpx 24rpx;
+  padding: 14rpx 28rpx;  // 增加padding，让按钮更饱满
   border-radius: $radius-full;
   transition: all 0.25s ease;
   cursor: pointer;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);  // 添加阴影
   
   &:active {
     transform: scale(0.95);
@@ -36,13 +37,13 @@
 }
 
 .toolbar-text {
-  font-size: 24rpx;
+  font-size: 26rpx;  // 增大字体
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .toolbar-icon {
-  font-size: 20rpx;
+  font-size: 22rpx;  // 增大图标
   transition: transform 0.3s ease;
 }
 
@@ -325,4 +326,40 @@
 
 .agenda-flat {
   padding: 32rpx 32rpx 0;
+}
+
+// ============================================================
+// 主题适配
+// ============================================================
+
+// 浅色主题
+.theme-light {
+  .toolbar-btn {
+    background: rgba(255, 138, 26, 0.1);  // 浅橙色背景
+    color: #FF6B00;
+  }
+  
+  .toolbar-text {
+    color: #FF6B00;
+  }
+  
+  .toolbar-icon {
+    color: #FF8A1A;
+  }
+}
+
+// 深色主题
+.theme-dark {
+  .toolbar-btn {
+    background: rgba(255, 138, 26, 0.15);  // 稍深的橙色背景
+    color: #FFB46E;
+  }
+  
+  .toolbar-text {
+    color: #FFB46E;
+  }
+  
+  .toolbar-icon {
+    color: #FF8A1A;
+  }
 }
