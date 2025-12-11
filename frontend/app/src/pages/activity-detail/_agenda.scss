@@ -13,6 +13,63 @@
   padding: 32rpx 32rpx 0;
 }
 
+// ============================================================
+// 多天会议结构
+// ============================================================
+
+.agenda-multi-day {
+  padding: 0;
+}
+
+// 日期Tab容器
+.day-tabs {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx 32rpx;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  border-bottom: 2rpx solid;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// 单个日期Tab
+.day-tab {
+  flex-shrink: 0;
+  padding: 16rpx 32rpx;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2rpx solid transparent;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  &.active {
+    border-color: #FF8A1A;
+    box-shadow: 0 4rpx 16rpx rgba(255, 138, 26, 0.2);
+  }
+}
+
+.day-tab-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+// 日期内容区域
+.day-content {
+  padding: 0 32rpx;
+}
+
+// ============================================================
+// 分组结构（嵌套结构）
+// ============================================================
+
 // 工具栏（全部展开/折叠）
 .agenda-toolbar {
   display: flex;
@@ -346,6 +403,28 @@
   .toolbar-icon {
     color: #FF8A1A;
   }
+  
+  // 日期Tab
+  .day-tabs {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+  }
+  
+  .day-tab {
+    background: #F5F5F5;
+    
+    &.active {
+      background: rgba(255, 138, 26, 0.1);
+    }
+  }
+  
+  .day-tab-text {
+    color: #666;
+    
+    .active & {
+      color: #FF6B00;
+      font-weight: 600;
+    }
+  }
 }
 
 // 深色主题
@@ -361,5 +440,27 @@
   
   .toolbar-icon {
     color: #FF8A1A;
+  }
+  
+  // 日期Tab
+  .day-tabs {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .day-tab {
+    background: rgba(255, 255, 255, 0.05);
+    
+    &.active {
+      background: rgba(255, 138, 26, 0.15);
+    }
+  }
+  
+  .day-tab-text {
+    color: #999;
+    
+    .active & {
+      color: #FFB46E;
+      font-weight: 600;
+    }
   }
 }

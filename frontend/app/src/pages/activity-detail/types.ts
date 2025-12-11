@@ -23,7 +23,7 @@ export interface Activity {
   current_participants?: number
   fee_type?: string
   fee_amount?: number
-  agenda?: AgendaItem[] | AgendaGroup[]  // 支持扁平数组或分组数组
+  agenda?: AgendaItem[] | AgendaGroup[] | AgendaDay[]  // 支持扁平数组、分组数组或多天数组
   hotels?: Hotel[]
   live_url?: string
   extra?: Record<string, any>
@@ -63,6 +63,14 @@ export interface AgendaGroup {
   moderator?: Moderator        // 主持人信息（可选）
   items: AgendaItem[]          // 该分组下的议程项列表
   description?: string         // 分组描述（可选）
+}
+
+// 议程日期分组（多天会议支持）
+export interface AgendaDay {
+  id: number
+  date: string                 // 日期（YYYY-MM-DD格式）
+  display_date: string         // 显示文本（如"2025年11月12日（第一天）"）
+  groups: AgendaGroup[]        // 该天的议程分组列表
 }
 
 // 酒店信息
