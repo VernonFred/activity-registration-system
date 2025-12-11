@@ -117,7 +117,7 @@ const AgendaTab: React.FC<AgendaTabProps> = ({ agenda, theme, activityId }) => {
   const renderGroupedContent = (groups: AgendaGroup[]) => {
     const isAllExpanded = expandedGroups.size === groups.length
     
-    return (
+  return (
       <>
         {/* 全部展开/折叠按钮 */}
         {groups.length > 1 && (

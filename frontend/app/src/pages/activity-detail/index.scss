@@ -278,8 +278,8 @@
     .avatar-img { border-color: $light-card; }
     .section-title { color: $light-foreground; }
     .description-text { color: $light-muted-foreground; }
-        }
-  
+      }
+      
   // 议程样式已在 _agenda.scss 中定义（更精致的浅色主题）
   .agenda-grouped, .agenda-flat, .agenda-multi-day {
     // 基础容器
@@ -517,8 +517,8 @@
     .facility-item { background: $dark-muted; }
     .facility-text { color: $dark-muted-foreground; }
     .booking-button { background: $dark-primary; }
-}
-
+      }
+      
   // 直播
   .live { .live-button { background: $dark-primary; } }
   

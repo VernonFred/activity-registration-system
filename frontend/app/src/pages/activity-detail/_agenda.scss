@@ -536,11 +536,12 @@
   }
 }
 
-// 深色主题
+// 深色主题 - 高对比度优化
 .theme-dark {
   .toolbar-btn {
-    background: rgba(255, 138, 26, 0.15);  // 稍深的橙色背景
-    color: #FFB46E;
+    background: rgba(255, 138, 26, 0.15);
+    border: 1.5rpx solid rgba(255, 138, 26, 0.3);
+    box-shadow: 0 2rpx 8rpx rgba(255, 138, 26, 0.1);
   }
   
   .toolbar-text {
@@ -558,18 +559,130 @@
   
   .day-tab {
     background: rgba(255, 255, 255, 0.05);
+    border: 1.5rpx solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
     
     &.active {
       background: rgba(255, 138, 26, 0.15);
+      border-color: #FF8A1A;
+      box-shadow: 0 4rpx 12rpx rgba(255, 138, 26, 0.2);
     }
   }
   
   .day-tab-text {
-    color: #999;
+    color: #B3B3B3;
     
     .active & {
       color: #FFB46E;
       font-weight: 600;
+    }
+  }
+  
+  // 分组头部 - 深色橙色渐变
+  .group-header {
+    background: linear-gradient(135deg, 
+      rgba(255, 138, 26, 0.25) 0%, 
+      rgba(255, 107, 0, 0.35) 100%);
+    border-left: 6rpx solid #FF8A1A;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+    
+    &::after {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    &:active {
+      background: linear-gradient(135deg, 
+        rgba(255, 138, 26, 0.3) 0%, 
+        rgba(255, 107, 0, 0.4) 100%);
+    }
+  }
+  
+  .icon-text {
+    color: #FFB46E;
+  }
+  
+  .group-title {
+    color: #FFFFFF;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
+  }
+  
+  .group-time {
+    color: rgba(255, 255, 255, 0.75);
+  }
+  
+  // 主持人信息条 - 深色背景
+  .moderator-bar {
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1rpx solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .moderator-label {
+    color: #B3B3B3;
+  }
+  
+  .moderator-name {
+    color: #FFB46E;
+  }
+  
+  .moderator-title {
+    color: #999;
+  }
+  
+  // 议程项容器
+  .group-items {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  
+  // 议程项卡片 - 深色背景 + 高对比度
+  .agenda-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1rpx solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
+  }
+  
+  // 时间徽章 - 橙色边框
+  .time-badge {
+    background: rgba(255, 138, 26, 0.12);
+    border: 1.5rpx solid #FF8A1A;
+    color: #FFB46E;
+    box-shadow: 0 2rpx 6rpx rgba(255, 138, 26, 0.15);
+  }
+  
+  .time-text {
+    color: #FFB46E;
+  }
+  
+  // 演讲人信息 - 高对比度
+  .speaker-name {
+    color: #FFFFFF;
+  }
+  
+  .speaker-title {
+    color: #B3B3B3;
+  }
+  
+  // 演讲主题 - 高亮显示
+  .speech-title {
+    color: #FFFFFF;
+  }
+  
+  // 地点信息
+  .location-text {
+    color: #999;
+  }
+  
+  // 茶歇样式 - 深色版本
+  .agenda-item.break {
+    background: rgba(255, 138, 26, 0.08);
+    border: 1.5rpx dashed rgba(255, 138, 26, 0.4);
+    
+    .time-badge {
+      background: rgba(255, 138, 26, 0.15);
+      border-color: rgba(255, 138, 26, 0.5);
+    }
+    
+    .speech-title {
+      color: #FFB46E;
     }
   }
 }
