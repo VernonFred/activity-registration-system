@@ -1,0 +1,1124 @@
+/**
+ * 独立议程页面样式
+ * 创建时间: 2025年12月12日
+ * 
+ * 设计原则：
+ * - 精致的视觉效果
+ * - 清晰的信息层级
+ * - 流畅的动画过渡
+ * - 完整的主题适配
+ */
+
+// ============================================================
+// 变量定义
+// ============================================================
+
+// 橙色配色（匹配系统主色）
+$primary-orange: #FF8A1A;
+$primary-orange-light: #FFB46E;
+$primary-orange-dark: #E67A0A;
+
+// 间距
+$spacing-xs: 8rpx;
+$spacing-sm: 12rpx;
+$spacing-md: 16rpx;
+$spacing-lg: 24rpx;
+$spacing-xl: 32rpx;
+$spacing-2xl: 40rpx;
+
+// 圆角
+$radius-sm: 8rpx;
+$radius-md: 12rpx;
+$radius-lg: 16rpx;
+$radius-xl: 20rpx;
+$radius-full: 9999rpx;
+
+// ============================================================
+// 页面容器
+// ============================================================
+
+.agenda-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s ease;
+
+  &.empty {
+    align-items: center;
+    justify-content: center;
+    
+    .empty-text {
+      font-size: 28rpx;
+      opacity: 0.5;
+    }
+  }
+}
+
+.status-bar {
+  flex-shrink: 0;
+}
+
+// ============================================================
+// 顶部导航
+// ============================================================
+
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(40rpx);
+  -webkit-backdrop-filter: blur(40rpx);
+  border-bottom: 1rpx solid;
+  transition: all 0.3s ease;
+}
+
+.header-content {
+  padding: 24rpx 40rpx;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.back-button {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.header-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.header-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.header-subtitle {
+  font-size: 24rpx;
+  font-weight: 500;
+  opacity: 0.6;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 日期切换 Tab
+// ============================================================
+
+.date-tabs-scroll {
+  padding: 16rpx 40rpx 24rpx;
+  white-space: nowrap;
+}
+
+.date-tabs-container {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.date-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  min-width: 200rpx;
+  padding: 24rpx 32rpx;
+  border-radius: $radius-xl;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.day-label {
+  font-size: 22rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.day-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.active-dot {
+  position: absolute;
+  bottom: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+// ============================================================
+// 主内容区域
+// ============================================================
+
+.page-content {
+  flex: 1;
+  padding: 0 40rpx;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 32rpx;
+  padding-top: 16rpx;
+}
+
+.expand-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 28rpx;
+  border-radius: $radius-full;
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.expand-icon {
+  width: 32rpx;
+  height: 32rpx;
+  transition: transform 0.3s ease;
+}
+
+.expand-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 议程分组
+// ============================================================
+
+.groups-container {
+  display: flex;
+  flex-direction: column;
+  gap: 48rpx;
+  padding-bottom: 40rpx;
+}
+
+.group-section {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  padding: 8rpx 0;
+  transition: all 0.3s ease;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  flex: 1;
+}
+
+.timeline-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timeline-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  border: 4rpx solid;
+  transition: all 0.3s ease;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 24rpx;
+  width: 2rpx;
+  height: 40rpx;
+  opacity: 0.3;
+  transition: background 0.3s ease;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.group-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.group-time-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+
+.time-icon {
+  width: 28rpx;
+  height: 28rpx;
+  opacity: 0.8;
+}
+
+.group-time {
+  font-size: 24rpx;
+  font-weight: 500;
+  opacity: 0.7;
+  transition: color 0.3s ease;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.sessions-badge {
+  padding: 8rpx 20rpx;
+  border-radius: $radius-full;
+  transition: all 0.3s ease;
+}
+
+.badge-text {
+  font-size: 22rpx;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.chevron-icon {
+  width: 40rpx;
+  height: 40rpx;
+  transition: all 0.5s ease;
+  opacity: 0.6;
+
+  &.expanded {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+}
+
+// ============================================================
+// 主持人信息条
+// ============================================================
+
+.moderator-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+  border-radius: $radius-lg;
+  transition: all 0.5s ease;
+
+  &.hidden {
+    opacity: 0.4;
+  }
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.moderator-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.moderator-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.moderator-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+  font-size: 26rpx;
+}
+
+.moderator-label {
+  opacity: 0.6;
+}
+
+.moderator-divider {
+  width: 2rpx;
+  height: 32rpx;
+  opacity: 0.3;
+}
+
+.moderator-name {
+  font-weight: 600;
+}
+
+.moderator-title {
+  opacity: 0.7;
+}
+
+// ============================================================
+// 议程项列表（折叠动画）
+// ============================================================
+
+.items-container {
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  &.expanded {
+    max-height: 10000rpx;
+    opacity: 1;
+  }
+}
+
+.items-wrapper {
+  min-height: 0;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 8rpx 0 8rpx 48rpx;
+  border-left: 2rpx solid;
+  margin-left: 12rpx;
+  opacity: 0.3;
+}
+
+// ============================================================
+// 议程项卡片
+// ============================================================
+
+.agenda-item-card {
+  padding: 32rpx;
+  border-radius: $radius-lg;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+
+  &:active {
+    transform: translateY(2rpx);
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.time-badge {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.time-badge-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.time-text {
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.type-badge {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: $radius-full;
+  flex-shrink: 0;
+}
+
+.type-emoji {
+  font-size: 24rpx;
+}
+
+.type-label {
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.item-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 24rpx;
+  transition: color 0.3s ease;
+}
+
+// 演讲人卡片
+.speaker-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  border-radius: $radius-md;
+  transition: all 0.3s ease;
+}
+
+.speaker-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.speaker-avatar-placeholder {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, $primary-orange 0%, $primary-orange-light 100%);
+}
+
+.avatar-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.speaker-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.speaker-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.speaker-title {
+  font-size: 24rpx;
+  opacity: 0.7;
+  transition: color 0.3s ease;
+}
+
+// 地点
+.location-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.location-icon {
+  width: 28rpx;
+  height: 28rpx;
+  opacity: 0.7;
+}
+
+.location-text {
+  font-size: 24rpx;
+  opacity: 0.7;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 茶歇/休息卡片（特殊样式）
+// ============================================================
+
+.agenda-break-card {
+  padding: 32rpx;
+  border-radius: $radius-lg;
+  transition: all 0.3s ease;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.break-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+.break-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: $radius-md;
+  flex-shrink: 0;
+}
+
+.break-icon {
+  font-size: 48rpx;
+}
+
+.break-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.break-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.break-time {
+  font-size: 24rpx;
+  opacity: 0.6;
+  transition: color 0.3s ease;
+}
+
+// ============================================================
+// 页脚
+// ============================================================
+
+.page-footer {
+  padding: 48rpx 0 32rpx;
+  text-align: center;
+  border-top: 1rpx solid;
+  margin-top: 40rpx;
+  opacity: 0.5;
+}
+
+.footer-text {
+  font-size: 24rpx;
+}
+
+.bottom-spacer {
+  height: 80rpx;
+}
+
+// ============================================================
+// 动画
+// ============================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================================
+// 浅色主题
+// ============================================================
+
+.theme-light {
+  &.agenda-page {
+    background: #F9F9F9;
+  }
+
+  .page-header {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .back-button {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .back-icon {
+    filter: brightness(0) saturate(100%) invert(0%);
+  }
+
+  .header-title {
+    color: #1A1A1A;
+  }
+
+  .header-subtitle {
+    color: #666666;
+  }
+
+  // 日期Tab
+  .date-tab {
+    background: rgba(255, 255, 255, 0.5);
+    
+    &.active {
+      background: linear-gradient(135deg, $primary-orange 0%, $primary-orange-light 100%);
+      box-shadow: 0 8rpx 24rpx rgba($primary-orange, 0.3);
+      
+      .day-label,
+      .day-text {
+        color: #FFFFFF;
+      }
+    }
+    
+    &:not(.active) {
+      .day-label,
+      .day-text {
+        color: #666666;
+      }
+    }
+  }
+
+  .active-dot {
+    background: #FFFFFF;
+  }
+
+  // 工具栏
+  .expand-all-btn {
+    background: rgba(0, 0, 0, 0.05);
+    
+    .expand-text {
+      color: #666666;
+    }
+  }
+
+  .expand-icon {
+    filter: brightness(0) saturate(100%) invert(40%);
+  }
+
+  // 分组
+  .timeline-dot {
+    background: #FFFFFF;
+    border-color: $primary-orange;
+  }
+
+  .timeline-line {
+    background: rgba($primary-orange, 0.3);
+  }
+
+  .group-title {
+    color: #1A1A1A;
+  }
+
+  .time-icon {
+    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
+  }
+
+  .group-time {
+    color: #666666;
+  }
+
+  .sessions-badge {
+    background: rgba(0, 0, 0, 0.05);
+    
+    .badge-text {
+      color: #666666;
+    }
+  }
+
+  .chevron-icon {
+    filter: brightness(0) saturate(100%) invert(40%);
+    
+    &.expanded {
+      filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
+    }
+  }
+
+  // 主持人
+  .moderator-bar {
+    background: linear-gradient(to right, rgba($primary-orange, 0.08), rgba($primary-orange, 0.04));
+    border: 1rpx solid rgba($primary-orange, 0.15);
+  }
+
+  .moderator-icon-wrapper {
+    background: rgba($primary-orange, 0.1);
+    
+    .moderator-icon {
+      filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
+    }
+  }
+
+  .moderator-label,
+  .moderator-title {
+    color: #666666;
+  }
+
+  .moderator-divider {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .moderator-name {
+    color: #1A1A1A;
+  }
+
+  // 议程项列表
+  .items-list {
+    border-color: rgba($primary-orange, 0.2);
+  }
+
+  // 议程项卡片
+  .agenda-item-card {
+    background: #FFFFFF;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+    
+    &:hover {
+      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .time-badge-icon {
+    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
+  }
+
+  .time-text {
+    color: $primary-orange;
+  }
+
+  .type-badge {
+    &.badge-speech {
+      background: rgba($primary-orange, 0.1);
+      color: $primary-orange;
+    }
+    
+    &.badge-discussion {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3B82F6;
+    }
+    
+    &.badge-activity {
+      background: rgba(168, 85, 247, 0.1);
+      color: #A855F7;
+    }
+  }
+
+  .item-title {
+    color: #1A1A1A;
+  }
+
+  .speaker-card {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .speaker-name {
+    color: #1A1A1A;
+  }
+
+  .speaker-title {
+    color: #666666;
+  }
+
+  .location-icon {
+    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
+  }
+
+  .location-text {
+    color: #666666;
+  }
+
+  // 茶歇卡片
+  .agenda-break-card {
+    background: linear-gradient(135deg, rgba($primary-orange, 0.05), rgba($primary-orange, 0.1));
+    border: 2rpx dashed rgba($primary-orange, 0.3);
+  }
+
+  .break-icon-wrapper {
+    background: rgba($primary-orange, 0.1);
+  }
+
+  .break-title {
+    color: #1A1A1A;
+  }
+
+  .break-time {
+    color: #666666;
+  }
+
+  // 页脚
+  .page-footer {
+    border-color: rgba(0, 0, 0, 0.08);
+    
+    .footer-text {
+      color: #999999;
+    }
+  }
+}
+
+// ============================================================
+// 暗黑主题
+// ============================================================
+
+.theme-dark {
+  &.agenda-page {
+    background: #0A0A0A;
+  }
+
+  .page-header {
+    background: rgba(26, 26, 27, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .back-button {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .back-icon {
+    filter: brightness(0) saturate(100%) invert(100%);
+  }
+
+  .header-title {
+    color: #FAFAFA;
+  }
+
+  .header-subtitle {
+    color: #A3A3A3;
+  }
+
+  // 日期Tab
+  .date-tab {
+    background: rgba(255, 255, 255, 0.05);
+    
+    &.active {
+      background: linear-gradient(135deg, $primary-orange 0%, $primary-orange-light 100%);
+      box-shadow: 0 8rpx 24rpx rgba($primary-orange, 0.2);
+      
+      .day-label,
+      .day-text {
+        color: #1A1A1A;
+      }
+    }
+    
+    &:not(.active) {
+      .day-label,
+      .day-text {
+        color: #A3A3A3;
+      }
+    }
+  }
+
+  .active-dot {
+    background: #1A1A1A;
+  }
+
+  // 工具栏
+  .expand-all-btn {
+    background: rgba(255, 255, 255, 0.05);
+    
+    .expand-text {
+      color: #A3A3A3;
+    }
+  }
+
+  .expand-icon {
+    filter: brightness(0) saturate(100%) invert(60%);
+  }
+
+  // 分组
+  .timeline-dot {
+    background: #1A1A1B;
+    border-color: $primary-orange-light;
+  }
+
+  .timeline-line {
+    background: rgba($primary-orange-light, 0.2);
+  }
+
+  .group-title {
+    color: #FAFAFA;
+  }
+
+  .time-icon {
+    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
+  }
+
+  .group-time {
+    color: #A3A3A3;
+  }
+
+  .sessions-badge {
+    background: rgba(255, 255, 255, 0.05);
+    
+    .badge-text {
+      color: #A3A3A3;
+    }
+  }
+
+  .chevron-icon {
+    filter: brightness(0) saturate(100%) invert(60%);
+    
+    &.expanded {
+      filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
+    }
+  }
+
+  // 主持人
+  .moderator-bar {
+    background: linear-gradient(to right, rgba($primary-orange-light, 0.08), rgba($primary-orange-light, 0.04));
+    border: 1rpx solid rgba($primary-orange-light, 0.15);
+  }
+
+  .moderator-icon-wrapper {
+    background: rgba($primary-orange-light, 0.1);
+    
+    .moderator-icon {
+      filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
+    }
+  }
+
+  .moderator-label,
+  .moderator-title {
+    color: #A3A3A3;
+  }
+
+  .moderator-divider {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .moderator-name {
+    color: #FAFAFA;
+  }
+
+  // 议程项列表
+  .items-list {
+    border-color: rgba($primary-orange-light, 0.15);
+  }
+
+  // 议程项卡片
+  .agenda-item-card {
+    background: #18181B;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+    
+    &:hover {
+      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .time-badge-icon {
+    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
+  }
+
+  .time-text {
+    color: $primary-orange-light;
+  }
+
+  .type-badge {
+    &.badge-speech {
+      background: rgba($primary-orange-light, 0.15);
+      color: $primary-orange-light;
+    }
+    
+    &.badge-discussion {
+      background: rgba(96, 165, 250, 0.15);
+      color: #60A5FA;
+    }
+    
+    &.badge-activity {
+      background: rgba(192, 132, 252, 0.15);
+      color: #C084FC;
+    }
+  }
+
+  .item-title {
+    color: #FAFAFA;
+  }
+
+  .speaker-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .speaker-name {
+    color: #FAFAFA;
+  }
+
+  .speaker-title {
+    color: #A3A3A3;
+  }
+
+  .location-icon {
+    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
+  }
+
+  .location-text {
+    color: #A3A3A3;
+  }
+
+  // 茶歇卡片
+  .agenda-break-card {
+    background: linear-gradient(135deg, rgba($primary-orange-light, 0.05), rgba($primary-orange-light, 0.08));
+    border: 2rpx dashed rgba($primary-orange-light, 0.2);
+  }
+
+  .break-icon-wrapper {
+    background: rgba($primary-orange-light, 0.1);
+  }
+
+  .break-title {
+    color: #FAFAFA;
+  }
+
+  .break-time {
+    color: #A3A3A3;
+  }
+
+  // 页脚
+  .page-footer {
+    border-color: rgba(255, 255, 255, 0.08);
+    
+    .footer-text {
+      color: #737373;
+    }
+  }
+}
+

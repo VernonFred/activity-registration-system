@@ -60,15 +60,19 @@ const AgendaPreviewCard: React.FC<AgendaPreviewCardProps> = ({
   })
 
   const handleViewFullAgenda = () => {
-    // TODO: 跳转到独立议程页面
-    Taro.navigateTo({ 
-      url: `/pages/agenda/index?activity_id=${activityId}` 
-    }).catch(() => {
+    // 将议程数据存储到 localStorage，供议程页面使用
+    try {
+      Taro.setStorageSync('current_agenda_data', JSON.stringify(agenda))
+      Taro.navigateTo({ 
+        url: `/pages/agenda/index?activity_id=${activityId}` 
+      })
+    } catch (e) {
+      console.error('跳转失败', e)
       Taro.showToast({ 
-        title: '议程页面开发中...', 
+        title: '跳转失败', 
         icon: 'none' 
       })
-    })
+    }
   }
 
   if (!firstDay || previewItems.length === 0) {
