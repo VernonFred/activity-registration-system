@@ -14,6 +14,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
 import { addRecentView } from '../../utils/storage'
 import { OverviewTab, AgendaTab, HotelTab, LiveTab, BottomBar } from './components'
+import AgendaPreviewCard from './components/AgendaPreviewCard'
 import type { TabKey, Activity } from './types'
 import { formatDate, formatTime } from './utils'
 import './index.scss'
@@ -559,10 +560,11 @@ export default function ActivityDetail() {
             <Text className="section-icon">📅</Text>
             <Text className="section-title">活动议程</Text>
           </View>
-          {/* TODO: 创建议程预览组件 */}
-          <View className="agenda-preview-card">
-            <Text className="preview-hint">议程预览功能开发中...</Text>
-          </View>
+          <AgendaPreviewCard 
+            agenda={activity.agenda || []} 
+            theme={theme}
+            activityId={activity.id}
+          />
         </View>
 
         {/* 酒店信息 */}

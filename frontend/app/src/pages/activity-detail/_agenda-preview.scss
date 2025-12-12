@@ -1,0 +1,261 @@
+/**
+ * 议程预览卡片样式
+ * 创建时间: 2025年12月12日
+ */
+
+.agenda-preview-wrapper {
+  padding: 40rpx;
+  border-radius: $radius-lg;
+  transition: all 0.3s ease;
+}
+
+.preview-header {
+  margin-bottom: 32rpx;
+  
+  .preview-date {
+    font-size: 32rpx;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+}
+
+.preview-items {
+  margin-bottom: 32rpx;
+}
+
+.preview-item {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid;
+  transition: all 0.3s ease;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.item-time {
+  flex-shrink: 0;
+  width: 140rpx;
+  
+  .time-text {
+    font-size: 24rpx;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+}
+
+.item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.item-group {
+  font-size: 24rpx;
+  font-weight: 600;
+  opacity: 0.8;
+  transition: color 0.3s ease;
+}
+
+.item-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.item-speaker {
+  font-size: 24rpx;
+  opacity: 0.6;
+  transition: color 0.3s ease;
+}
+
+.preview-stats {
+  padding: 24rpx 0;
+  text-align: center;
+  border-top: 1rpx solid;
+  border-bottom: 1rpx solid;
+  transition: border-color 0.3s ease;
+  
+  .stats-text {
+    font-size: 26rpx;
+    opacity: 0.7;
+    transition: color 0.3s ease;
+  }
+}
+
+.view-full-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 32rpx;
+  padding: 24rpx;
+  border-radius: $radius-md;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  .btn-text {
+    font-size: 28rpx;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .btn-arrow {
+    font-size: 32rpx;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover .btn-arrow {
+    transform: translateX(4rpx);
+  }
+}
+
+.agenda-preview-empty {
+  padding: 60rpx 40rpx;
+  text-align: center;
+  border-radius: $radius-lg;
+  transition: background 0.3s ease;
+  
+  .empty-text {
+    font-size: 28rpx;
+    opacity: 0.5;
+    transition: color 0.3s ease;
+  }
+}
+
+// ============================================================
+// 浅色主题
+// ============================================================
+
+.theme-light {
+  .agenda-preview-wrapper {
+    background: $light-card;
+    box-shadow: $light-shadow-card;
+  }
+  
+  .preview-date {
+    color: $light-text;
+  }
+  
+  .preview-item {
+    border-color: rgba($light-border, 0.5);
+  }
+  
+  .item-time .time-text {
+    color: $light-primary;
+  }
+  
+  .item-group {
+    color: $light-primary;
+  }
+  
+  .item-title {
+    color: $light-text;
+  }
+  
+  .item-speaker {
+    color: $light-muted-foreground;
+  }
+  
+  .preview-stats {
+    border-color: rgba($light-border, 0.5);
+    
+    .stats-text {
+      color: $light-muted-foreground;
+    }
+  }
+  
+  .view-full-btn {
+    background: $light-primary;
+    
+    .btn-text,
+    .btn-arrow {
+      color: #FFFFFF;
+    }
+    
+    &:hover {
+      box-shadow: 0 8rpx 24rpx rgba($light-primary, 0.3);
+    }
+  }
+  
+  .agenda-preview-empty {
+    background: $light-card;
+    
+    .empty-text {
+      color: $light-muted-foreground;
+    }
+  }
+}
+
+// ============================================================
+// 暗黑主题
+// ============================================================
+
+.theme-dark {
+  .agenda-preview-wrapper {
+    background: $dark-card;
+    box-shadow: $dark-shadow-card;
+  }
+  
+  .preview-date {
+    color: $dark-text;
+  }
+  
+  .preview-item {
+    border-color: rgba($dark-border, 0.3);
+  }
+  
+  .item-time .time-text {
+    color: $dark-primary;
+  }
+  
+  .item-group {
+    color: $dark-primary;
+  }
+  
+  .item-title {
+    color: $dark-text;
+  }
+  
+  .item-speaker {
+    color: $dark-muted-foreground;
+  }
+  
+  .preview-stats {
+    border-color: rgba($dark-border, 0.3);
+    
+    .stats-text {
+      color: $dark-muted-foreground;
+    }
+  }
+  
+  .view-full-btn {
+    background: $dark-primary;
+    
+    .btn-text,
+    .btn-arrow {
+      color: #1A1A1A;
+    }
+    
+    &:hover {
+      box-shadow: 0 8rpx 24rpx rgba($dark-primary, 0.2);
+    }
+  }
+  
+  .agenda-preview-empty {
+    background: $dark-card;
+    
+    .empty-text {
+      color: $dark-muted-foreground;
+    }
+  }
+}
+

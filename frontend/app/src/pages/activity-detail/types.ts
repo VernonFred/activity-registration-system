@@ -52,6 +52,7 @@ export interface AgendaItem {
   location?: string
   tag?: string
   description?: string         // 新增：详细描述
+  groupTitle?: string          // 新增：所属分组标题（用于预览卡片）
 }
 
 // 议程分组（新增 - 支持嵌套结构）
