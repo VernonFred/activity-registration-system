@@ -7,12 +7,13 @@
  * - 显示议程总数统计
  * - 提供"查看完整议程"按钮
  */
-import { View, Text } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { AgendaDay, AgendaItem } from '../types'
 
 // 图标
 import iconCalendar from '../../../assets/icons/calendar.png'
+import iconArrowRight from '../../../assets/icons/arrow-right.png'
 
 interface AgendaPreviewCardProps {
   agenda: AgendaDay[]
@@ -127,7 +128,11 @@ const AgendaPreviewCard: React.FC<AgendaPreviewCardProps> = ({
         onClick={handleViewFullAgenda}
       >
         <Text className="btn-text">查看完整议程</Text>
-        <Text className="btn-arrow">→</Text>
+        <Image 
+          src={iconArrowRight} 
+          className="btn-arrow-icon" 
+          mode="aspectFit"
+        />
       </View>
     </View>
   )

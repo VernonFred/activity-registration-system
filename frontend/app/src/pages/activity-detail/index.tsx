@@ -14,7 +14,6 @@ import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
 import { addRecentView } from '../../utils/storage'
 import { OverviewTab, AgendaTab, HotelTab, LiveTab, BottomBar } from './components'
-import AgendaPreviewCard from './components/AgendaPreviewCard'
 import type { TabKey, Activity } from './types'
 import { formatDate, formatTime } from './utils'
 import './index.scss'
@@ -22,7 +21,13 @@ import './index.scss'
 // PNG 图标
 import iconArrowLeft from '../../assets/icons/arrow-left.png'
 
-// 移除Tab配置（改为滚动式布局）
+// Tab 配置
+const TABS: { key: TabKey; label: string }[] = [
+  { key: 'overview', label: '活动速览' },
+  { key: 'agenda', label: '活动议程' },
+  { key: 'hotel', label: '酒店信息' },
+  { key: 'live', label: '图片直播' },
+]
 
 // 默认议程数据（分组结构 - 参考纸质版会议手册）
 const DEFAULT_AGENDA = [
@@ -430,6 +435,7 @@ export default function ActivityDetail() {
   
   const [activity, setActivity] = useState<Activity | null>(null)
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<TabKey>('overview')
   const [isFavorited, setIsFavorited] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
   const [statusBarHeight, setStatusBarHeight] = useState(44)
@@ -472,6 +478,7 @@ export default function ActivityDetail() {
 
   // 事件处理
   const handleBack = useCallback(() => Taro.navigateBack(), [])
+  const handleTabChange = useCallback((tab: TabKey) => setActiveTab(tab), [])
   const handleFavorite = useCallback(() => {
     setIsFavorited(!isFavorited)
     Taro.showToast({ title: isFavorited ? '已取消收藏' : '已收藏', icon: 'none' })
@@ -547,43 +554,28 @@ export default function ActivityDetail() {
         </View>
       </View>
 
-      {/* 内容区域 - 滚动式布局 */}
-      <ScrollView className="content-scroll-view" scrollY enhanced showScrollbar={false}>
-        {/* 活动速览 */}
-        <View className="module-section overview-section">
-          <OverviewTab activity={activity} theme={theme} />
+      {/* Tab 切换 - 粘性定位 + 毛玻璃效果 */}
+      <View className="tabs-sticky-wrapper">
+        <View className="tabs-content">
+          {TABS.map((tab) => (
+            <View
+              key={tab.key}
+              className={`tab-item ${activeTab === tab.key ? 'active' : ''}`}
+              onClick={() => handleTabChange(tab.key)}
+            >
+              <Text className="tab-text">{tab.label}</Text>
+              {activeTab === tab.key && <View className="tab-indicator" />}
+            </View>
+          ))}
         </View>
+      </View>
 
-        {/* 议程预览 */}
-        <View className="module-section agenda-preview-section">
-          <View className="section-header">
-            <Text className="section-icon">📅</Text>
-            <Text className="section-title">活动议程</Text>
-          </View>
-          <AgendaPreviewCard 
-            agenda={activity.agenda || []} 
-            theme={theme}
-            activityId={activity.id}
-          />
-        </View>
-
-        {/* 酒店信息 */}
-        <View className="module-section hotel-section">
-          <View className="section-header">
-            <Text className="section-icon">🏨</Text>
-            <Text className="section-title">酒店信息</Text>
-          </View>
-          <HotelTab hotels={activity.hotels || []} onCall={handleCall} theme={theme} />
-        </View>
-
-        {/* 图片直播 */}
-        <View className="module-section live-section">
-          <View className="section-header">
-            <Text className="section-icon">📸</Text>
-            <Text className="section-title">图片直播</Text>
-          </View>
-          <LiveTab coverUrl={activity.cover_url} onViewLive={handleViewLive} theme={theme} />
-        </View>
+      {/* 内容区域 - 卡片化布局 */}
+      <ScrollView className="content-scroll" scrollY enhanced showScrollbar={false}>
+        {activeTab === 'overview' && <OverviewTab activity={activity} theme={theme} />}
+        {activeTab === 'agenda' && <AgendaTab agenda={activity.agenda || []} theme={theme} activityId={activity.id} />}
+        {activeTab === 'hotel' && <HotelTab hotels={activity.hotels || []} onCall={handleCall} theme={theme} />}
+        {activeTab === 'live' && <LiveTab coverUrl={activity.cover_url} onViewLive={handleViewLive} theme={theme} />}
         
         {/* 底部安全区 */}
         <View className="bottom-spacer" />

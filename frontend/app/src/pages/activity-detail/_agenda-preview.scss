@@ -107,13 +107,13 @@
     transition: color 0.3s ease;
   }
   
-  .btn-arrow {
-    font-size: 32rpx;
-    font-weight: 600;
+  .btn-arrow-icon {
+    width: 32rpx;
+    height: 32rpx;
     transition: transform 0.3s ease;
   }
   
-  &:hover .btn-arrow {
+  &:active .btn-arrow-icon {
     transform: translateX(4rpx);
   }
 }
@@ -142,7 +142,7 @@
   }
   
   .preview-date {
-    color: $light-text;
+    color: $light-foreground;
   }
   
   .preview-item {
@@ -158,7 +158,7 @@
   }
   
   .item-title {
-    color: $light-text;
+    color: $light-foreground;
   }
   
   .item-speaker {
@@ -206,7 +206,7 @@
   }
   
   .preview-date {
-    color: $dark-text;
+    color: $dark-foreground;
   }
   
   .preview-item {
@@ -222,7 +222,7 @@
   }
   
   .item-title {
-    color: $dark-text;
+    color: $dark-foreground;
   }
   
   .item-speaker {

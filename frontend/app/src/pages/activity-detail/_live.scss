@@ -1,293 +1,62 @@
 /**
- * 图片直播样式 - 大背景图+按钮/二维码
- * 更新时间: 2025年12月12日
+ * 图片直播 Tab 样式
  */
 
-.live-section {
-  padding: 0 40rpx;
-}
-
-.live-hero {
-  position: relative;
-  height: 560rpx;
-  border-radius: $radius-xl;
-  overflow: hidden;
-}
-
-.live-background {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.live-gradient {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
-}
-
-.live-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24rpx;
-  padding: 60rpx 40rpx;
-}
-
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  padding: 12rpx 24rpx;
-  border-radius: $radius-full;
-  background: rgba(255, 138, 26, 0.2);
-  backdrop-filter: blur(20rpx);
-  -webkit-backdrop-filter: blur(20rpx);
-  border: 2rpx solid rgba(255, 138, 26, 0.4);
-  
-  .badge-icon {
-    font-size: 32rpx;
-  }
-  
-  .badge-text {
-    font-size: 24rpx;
-    font-weight: 600;
-    color: #FFB46E;
-    letter-spacing: 2rpx;
-  }
-}
-
-.live-title {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #FFFFFF;
-  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
-}
-
-.live-subtitle {
-  font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.9);
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
-}
-
-.live-enter-btn {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin-top: 32rpx;
-  padding: 24rpx 48rpx;
-  border-radius: $radius-full;
-  background: #FF8A1A;
-  box-shadow: 0 8rpx 24rpx rgba(255, 138, 26, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  
-  &:active {
-    transform: scale(0.96);
-  }
-  
-  .btn-text {
-    font-size: 30rpx;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-  
-  .btn-icon {
-    font-size: 32rpx;
-    font-weight: 600;
-    color: #FFFFFF;
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover .btn-icon {
-    transform: translateX(4rpx);
-  }
-}
-
-// ============================================================
-// 二维码弹窗
-// ============================================================
-
-.qrcode-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(10rpx);
-  -webkit-backdrop-filter: blur(10rpx);
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-  width: 560rpx;
-  padding: 60rpx 40rpx;
-  border-radius: $radius-xl;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32rpx;
-  transition: all 0.3s ease;
-  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.modal-title {
-  font-size: 36rpx;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.qrcode-container {
-  width: 400rpx;
-  height: 400rpx;
+.live {
   padding: 24rpx;
-  border-radius: $radius-lg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
 
-.qrcode-image {
-  width: 100%;
-  height: 100%;
-}
-
-.modal-hint {
-  font-size: 26rpx;
-  opacity: 0.7;
-  transition: color 0.3s ease;
-}
-
-.modal-close-btn {
-  margin-top: 16rpx;
-  padding: 20rpx 60rpx;
-  border-radius: $radius-full;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  
-  &:active {
-    transform: scale(0.96);
+  .live-container {
+    position: relative;
+    border-radius: $radius-xl;
+    overflow: hidden;
   }
-  
-  .close-text {
-    font-size: 28rpx;
-    font-weight: 500;
-    transition: color 0.3s ease;
-  }
-}
-
-// ============================================================
-// 动画
-// ============================================================
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(60rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// ============================================================
-// 浅色主题
-// ============================================================
-
-.theme-light {
-  .modal-content {
-    background: $light-card;
-    box-shadow: $light-shadow-card;
-  }
-  
-  .modal-title {
-    color: $light-text;
-  }
-  
-  .qrcode-container {
-    background: $light-background;
-    border: 2rpx solid $light-border;
-  }
-  
-  .modal-hint {
-    color: $light-muted-foreground;
-  }
-  
-  .modal-close-btn {
-    background: $light-muted;
     
-    .close-text {
-      color: $light-muted-foreground;
-    }
+  .live-cover {
+    width: 100%;
+    height: 460rpx;
+    object-fit: cover;
+  }
     
-    &:hover {
-      background: rgba($light-border, 0.8);
-    }
+  .live-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16rpx;
+  }
+
+  .live-icon { font-size: 56rpx; }
+
+  .live-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .live-desc {
+    font-size: 24rpx;
+    color: rgba(255, 255, 255, 0.8);
+  }
+      
+  .live-button {
+    margin-top: 20rpx;
+    padding: 18rpx 44rpx;
+    border-radius: $radius-full;
+    transition: all 0.25s ease;
+        
+    &:active { transform: scale(0.95); }
+  }
+
+  .btn-text {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: #FFFFFF;
   }
 }
 
-// ============================================================
-// 暗黑主题
-// ============================================================
-
-.theme-dark {
-  .modal-content {
-    background: $dark-card;
-    box-shadow: $dark-shadow-card;
-  }
-  
-  .modal-title {
-    color: $dark-text;
-  }
-  
-  .qrcode-container {
-    background: $dark-background;
-    border: 2rpx solid $dark-border;
-  }
-  
-  .modal-hint {
-    color: $dark-muted-foreground;
-  }
-  
-  .modal-close-btn {
-    background: $dark-muted;
-    
-    .close-text {
-      color: $dark-muted-foreground;
-    }
-    
-    &:hover {
-      background: rgba($dark-border, 0.5);
-    }
-  }
-}

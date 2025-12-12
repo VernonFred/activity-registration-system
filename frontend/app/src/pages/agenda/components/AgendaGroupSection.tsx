@@ -1,16 +1,15 @@
 /**
- * 议程分组展示组件
- * 创建时间: 2025年12月12日
+ * 议程分组组件 - Lovable 风格
  */
 import { View, Text, Image } from '@tarojs/components'
 import { useState, useEffect } from 'react'
-import type { AgendaGroup } from '../../../pages/activity-detail/types'
+import type { AgendaGroup } from '../../activity-detail/types'
 import { AgendaItemCard } from './AgendaItemCard'
 
 // 图标
 import iconClock from '../../../assets/icons/calendar.png'
 import iconUser from '../../../assets/icons/user.png'
-import iconChevronDown from '../../../assets/icons/chevron-down.png'
+import iconChevronDown from '../../../assets/icons/arrow-right.png'
 
 interface AgendaGroupSectionProps {
   group: AgendaGroup
@@ -20,13 +19,13 @@ interface AgendaGroupSectionProps {
   theme: string
 }
 
-export const AgendaGroupSection: React.FC<AgendaGroupSectionProps> = ({ 
+export function AgendaGroupSection({ 
   group, 
   isExpanded, 
   onToggle, 
-  index,
+  index, 
   theme 
-}) => {
+}: AgendaGroupSectionProps) {
   const [shouldAnimate, setShouldAnimate] = useState(false)
 
   useEffect(() => {
@@ -43,13 +42,12 @@ export const AgendaGroupSection: React.FC<AgendaGroupSectionProps> = ({
       {/* 分组头部 */}
       <View className="group-header" onClick={onToggle}>
         <View className="header-left">
-          {/* 时间线指示点 */}
-          <View className="timeline-container">
+          {/* 时间线指示器 */}
+          <View className="timeline-indicator">
             <View className="timeline-dot" />
             {!isExpanded && <View className="timeline-line" />}
           </View>
           
-          {/* 标题和时间 */}
           <View className="header-content">
             <Text className="group-title">{group.title}</Text>
             <View className="group-time-row">
@@ -61,10 +59,9 @@ export const AgendaGroupSection: React.FC<AgendaGroupSectionProps> = ({
           </View>
         </View>
         
-        {/* 右侧信息 */}
         <View className="header-right">
           <View className="sessions-badge">
-            <Text className="badge-text">{group.items?.length || 0} 项</Text>
+            <Text className="badge-text">{group.items?.length || 0} 场</Text>
           </View>
           <Image 
             src={iconChevronDown} 
@@ -74,7 +71,7 @@ export const AgendaGroupSection: React.FC<AgendaGroupSectionProps> = ({
         </View>
       </View>
 
-      {/* 主持人信息条 */}
+      {/* 主持人信息 */}
       {group.moderator && (
         <View className={`moderator-bar ${isExpanded ? 'visible' : 'hidden'}`}>
           <View className="moderator-icon-wrapper">
@@ -89,7 +86,7 @@ export const AgendaGroupSection: React.FC<AgendaGroupSectionProps> = ({
         </View>
       )}
 
-      {/* 议程项列表（可折叠） */}
+      {/* 议程项列表 */}
       <View className={`items-container ${isExpanded ? 'expanded' : 'collapsed'}`}>
         <View className="items-wrapper">
           <View className="items-list">
@@ -107,4 +104,6 @@ export const AgendaGroupSection: React.FC<AgendaGroupSectionProps> = ({
     </View>
   )
 }
+
+export default AgendaGroupSection
 

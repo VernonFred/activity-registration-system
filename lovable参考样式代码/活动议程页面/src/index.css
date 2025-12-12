@@ -1,0 +1,394 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 220 30% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 10%;
+
+    --primary: 250 85% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 94%;
+    --secondary-foreground: 220 30% 20%;
+
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 340 80% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 250 85% 60%;
+
+    --radius: 1rem;
+
+    /* Premium tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(250 85% 60%), hsl(280 80% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(340 80% 60%), hsl(20 85% 55%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100% / 0.9), hsl(0 0% 100% / 0.7));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.6), hsl(0 0% 100% / 0.3));
+    --gradient-mesh: radial-gradient(at 40% 20%, hsl(250 85% 95%) 0px, transparent 50%),
+                     radial-gradient(at 80% 0%, hsl(340 80% 95%) 0px, transparent 50%),
+                     radial-gradient(at 0% 50%, hsl(200 80% 95%) 0px, transparent 50%);
+    
+    --shadow-sm: 0 2px 8px -2px hsl(220 30% 10% / 0.05);
+    --shadow-md: 0 8px 24px -8px hsl(220 30% 10% / 0.08);
+    --shadow-lg: 0 16px 48px -12px hsl(220 30% 10% / 0.12);
+    --shadow-glow: 0 0 60px -10px hsl(250 85% 60% / 0.25);
+    --shadow-glow-accent: 0 0 40px -10px hsl(340 80% 60% / 0.3);
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Agenda specific */
+    --agenda-break: 250 60% 97%;
+    --agenda-break-border: 250 40% 85%;
+    --agenda-time: 250 85% 55%;
+    --agenda-location: 220 10% 50%;
+    --agenda-badge-speech: 250 85% 60%;
+    --agenda-badge-discussion: 200 80% 50%;
+    --agenda-badge-activity: 340 80% 60%;
+  }
+
+  .dark {
+    --background: 230 25% 7%;
+    --foreground: 220 20% 95%;
+
+    --card: 230 20% 12%;
+    --card-foreground: 220 20% 95%;
+
+    --popover: 230 20% 12%;
+    --popover-foreground: 220 20% 95%;
+
+    --primary: 250 80% 65%;
+    --primary-foreground: 230 25% 7%;
+
+    --secondary: 230 15% 18%;
+    --secondary-foreground: 220 20% 85%;
+
+    --muted: 230 15% 15%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 340 75% 65%;
+    --accent-foreground: 230 25% 7%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 230 15% 20%;
+    --input: 230 15% 20%;
+    --ring: 250 80% 65%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(250 80% 65%), hsl(280 75% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(340 75% 65%), hsl(20 80% 60%));
+    --gradient-card: linear-gradient(180deg, hsl(230 20% 14% / 0.9), hsl(230 20% 12% / 0.8));
+    --gradient-glass: linear-gradient(135deg, hsl(230 20% 20% / 0.6), hsl(230 20% 15% / 0.3));
+    --gradient-mesh: radial-gradient(at 40% 20%, hsl(250 80% 15%) 0px, transparent 50%),
+                     radial-gradient(at 80% 0%, hsl(340 75% 15%) 0px, transparent 50%),
+                     radial-gradient(at 0% 50%, hsl(200 75% 12%) 0px, transparent 50%);
+    
+    --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.2);
+    --shadow-md: 0 8px 24px -8px hsl(0 0% 0% / 0.35);
+    --shadow-lg: 0 16px 48px -12px hsl(0 0% 0% / 0.5);
+    --shadow-glow: 0 0 80px -10px hsl(250 80% 65% / 0.35);
+    --shadow-glow-accent: 0 0 60px -10px hsl(340 75% 65% / 0.3);
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --agenda-break: 250 30% 15%;
+    --agenda-break-border: 250 25% 30%;
+    --agenda-time: 250 80% 70%;
+    --agenda-location: 220 10% 55%;
+    --agenda-badge-speech: 250 80% 65%;
+    --agenda-badge-discussion: 200 75% 55%;
+    --agenda-badge-activity: 340 75% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply tracking-tight;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply relative overflow-hidden rounded-2xl border border-border/50;
+    background: var(--gradient-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Premium agenda card */
+  .agenda-card {
+    @apply relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 transition-all duration-500;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .agenda-card::before {
+    @apply absolute inset-0 opacity-0 transition-opacity duration-500;
+    content: '';
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.03), transparent);
+  }
+
+  .agenda-card:hover {
+    @apply border-primary/30 -translate-y-1;
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+  }
+
+  .agenda-card:hover::before {
+    @apply opacity-100;
+  }
+
+  .agenda-card:active {
+    @apply scale-[0.98] translate-y-0;
+    transition-duration: 100ms;
+  }
+
+  /* Break card with special styling */
+  .agenda-break-card {
+    @apply relative overflow-hidden rounded-2xl p-6 text-center transition-all duration-500;
+    background: linear-gradient(135deg, hsl(var(--agenda-break)), hsl(var(--agenda-break) / 0.5));
+    border: 1px solid hsl(var(--agenda-break-border) / 0.5);
+  }
+
+  .agenda-break-card::before {
+    @apply absolute inset-0;
+    content: '';
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Date tab */
+  .date-tab {
+    @apply relative px-6 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer;
+    @apply text-muted-foreground hover:text-foreground;
+  }
+
+  .date-tab::before {
+    @apply absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300;
+    content: '';
+    background: hsl(var(--secondary));
+  }
+
+  .date-tab:hover::before {
+    @apply opacity-100;
+  }
+
+  .date-tab-active {
+    @apply text-primary-foreground;
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .date-tab-active::before {
+    @apply opacity-0;
+  }
+
+  /* Group header */
+  .group-header {
+    @apply relative flex items-center justify-between p-5 rounded-2xl cursor-pointer transition-all duration-300;
+    @apply border border-transparent;
+    background: linear-gradient(135deg, hsl(var(--secondary) / 0.6), hsl(var(--secondary) / 0.3));
+  }
+
+  .group-header:hover {
+    @apply border-primary/20;
+    background: linear-gradient(135deg, hsl(var(--secondary) / 0.9), hsl(var(--secondary) / 0.6));
+    box-shadow: var(--shadow-md);
+  }
+
+  .group-header:active {
+    @apply scale-[0.995];
+    transition-duration: 100ms;
+  }
+
+  /* Expand button */
+  .expand-btn {
+    @apply px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300;
+    @apply border border-border bg-card text-foreground;
+  }
+
+  .expand-btn:hover {
+    @apply border-primary/30;
+    background: var(--gradient-primary);
+    @apply text-primary-foreground;
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Avatar with glow */
+  .avatar-premium {
+    @apply ring-2 ring-primary/20 ring-offset-2 ring-offset-background transition-all duration-300;
+  }
+
+  .avatar-premium:hover {
+    @apply ring-primary/40;
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Badge variants */
+  .badge-speech {
+    background: linear-gradient(135deg, hsl(var(--agenda-badge-speech) / 0.15), hsl(var(--agenda-badge-speech) / 0.05));
+    @apply text-primary border border-primary/20;
+  }
+
+  .badge-discussion {
+    background: linear-gradient(135deg, hsl(var(--agenda-badge-discussion) / 0.15), hsl(var(--agenda-badge-discussion) / 0.05));
+    color: hsl(var(--agenda-badge-discussion));
+    border: 1px solid hsl(var(--agenda-badge-discussion) / 0.2);
+  }
+
+  .badge-activity {
+    background: linear-gradient(135deg, hsl(var(--agenda-badge-activity) / 0.15), hsl(var(--agenda-badge-activity) / 0.05));
+    color: hsl(var(--accent));
+    border: 1px solid hsl(var(--accent) / 0.2);
+  }
+
+  /* Mesh gradient background */
+  .mesh-gradient {
+    background: var(--gradient-mesh);
+    @apply fixed inset-0 -z-10;
+  }
+
+  /* Floating orb decorations */
+  .floating-orb {
+    @apply absolute rounded-full blur-3xl opacity-30 pointer-events-none;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  /* Timeline connector */
+  .timeline-dot {
+    @apply relative w-3 h-3 rounded-full;
+    background: var(--gradient-primary);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+  }
+
+  .timeline-line {
+    @apply absolute left-1.5 top-6 w-px h-full -translate-x-1/2;
+    background: linear-gradient(180deg, hsl(var(--primary) / 0.3), transparent);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  .text-gradient-accent {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-accent);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(0) translateX(20px);
+  }
+  75% {
+    transform: translateY(20px) translateX(10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}

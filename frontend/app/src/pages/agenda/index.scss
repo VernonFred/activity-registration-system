@@ -1,19 +1,13 @@
 /**
- * 独立议程页面样式
- * 创建时间: 2025年12月12日
- * 
- * 设计原则：
- * - 精致的视觉效果
- * - 清晰的信息层级
- * - 流畅的动画过渡
- * - 完整的主题适配
+ * 独立议程页面样式 - Lovable 风格
+ * 配色：橙色主题 #FF8A1A
  */
 
 // ============================================================
 // 变量定义
 // ============================================================
 
-// 橙色配色（匹配系统主色）
+// 橙色配色（系统主色）
 $primary-orange: #FF8A1A;
 $primary-orange-light: #FFB46E;
 $primary-orange-dark: #E67A0A;
@@ -31,6 +25,7 @@ $radius-sm: 8rpx;
 $radius-md: 12rpx;
 $radius-lg: 16rpx;
 $radius-xl: 20rpx;
+$radius-2xl: 32rpx;
 $radius-full: 9999rpx;
 
 // ============================================================
@@ -38,9 +33,11 @@ $radius-full: 9999rpx;
 // ============================================================
 
 .agenda-page {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   transition: background 0.3s ease;
 
   &.empty {
@@ -59,6 +56,48 @@ $radius-full: 9999rpx;
 }
 
 // ============================================================
+// 背景装饰
+// ============================================================
+
+.mesh-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120rpx);
+  opacity: 0.3;
+  pointer-events: none;
+  animation: float 20s ease-in-out infinite;
+  
+  &.orb-1 {
+    width: 600rpx;
+    height: 600rpx;
+    top: 100rpx;
+    right: -200rpx;
+  }
+  
+  &.orb-2 {
+    width: 500rpx;
+    height: 500rpx;
+    bottom: 200rpx;
+    left: -250rpx;
+    animation-delay: -5s;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-40rpx) translateX(20rpx); }
+  50% { transform: translateY(0) translateX(40rpx); }
+  75% { transform: translateY(40rpx) translateX(20rpx); }
+}
+
+// ============================================================
 // 顶部导航
 // ============================================================
 
@@ -72,19 +111,16 @@ $radius-full: 9999rpx;
   transition: all 0.3s ease;
 }
 
-.header-content {
-  padding: 24rpx 40rpx;
-}
-
-.header-left {
+// 返回按钮行
+.nav-row {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  padding: 16rpx 32rpx 8rpx;
 }
 
 .back-button {
-  width: 72rpx;
-  height: 72rpx;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,8 +133,13 @@ $radius-full: 9999rpx;
 }
 
 .back-icon {
-  width: 40rpx;
-  height: 40rpx;
+  width: 36rpx;
+  height: 36rpx;
+}
+
+// 标题区域 - 放在返回按钮下方
+.title-row {
+  padding: 8rpx 32rpx 24rpx;
 }
 
 .header-title-wrapper {
@@ -108,16 +149,19 @@ $radius-full: 9999rpx;
 }
 
 .header-title {
-  font-size: 40rpx;
+  font-size: 44rpx;
   font-weight: 700;
-  transition: color 0.3s ease;
+  background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .header-subtitle {
   font-size: 24rpx;
   font-weight: 500;
   opacity: 0.6;
-  transition: color 0.3s ease;
+  letter-spacing: 2rpx;
 }
 
 // ============================================================
@@ -125,7 +169,7 @@ $radius-full: 9999rpx;
 // ============================================================
 
 .date-tabs-scroll {
-  padding: 16rpx 40rpx 24rpx;
+  padding: 16rpx 32rpx 24rpx;
   white-space: nowrap;
 }
 
@@ -142,7 +186,7 @@ $radius-full: 9999rpx;
   gap: 8rpx;
   min-width: 200rpx;
   padding: 24rpx 32rpx;
-  border-radius: $radius-xl;
+  border-radius: $radius-2xl;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
@@ -162,7 +206,7 @@ $radius-full: 9999rpx;
 }
 
 .day-text {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 600;
   transition: color 0.3s ease;
 }
@@ -175,7 +219,6 @@ $radius-full: 9999rpx;
   width: 12rpx;
   height: 12rpx;
   border-radius: 50%;
-  transition: background 0.3s ease;
 }
 
 // ============================================================
@@ -184,22 +227,23 @@ $radius-full: 9999rpx;
 
 .page-content {
   flex: 1;
-  padding: 0 40rpx;
+  padding: 0;  // 去掉padding让标题条挨着屏幕
 }
 
 .toolbar {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 32rpx;
-  padding-top: 16rpx;
+  margin-bottom: 24rpx;
+  padding-top: 12rpx;
+  padding-right: 24rpx;  // 往左移
 }
 
 .expand-all-btn {
   display: flex;
   align-items: center;
-  gap: 12rpx;
-  padding: 16rpx 28rpx;
-  border-radius: $radius-full;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;  // 胶囊形状
   transition: all 0.3s ease;
 
   &:active {
@@ -207,16 +251,9 @@ $radius-full: 9999rpx;
   }
 }
 
-.expand-icon {
-  width: 32rpx;
-  height: 32rpx;
-  transition: transform 0.3s ease;
-}
-
 .expand-text {
-  font-size: 26rpx;
+  font-size: 24rpx;
   font-weight: 500;
-  transition: color 0.3s ease;
 }
 
 // ============================================================
@@ -226,8 +263,8 @@ $radius-full: 9999rpx;
 .groups-container {
   display: flex;
   flex-direction: column;
-  gap: 48rpx;
-  padding-bottom: 40rpx;
+  gap: 28rpx;  // 增加分组间距
+  padding-bottom: 32rpx;
 }
 
 .group-section {
@@ -235,66 +272,82 @@ $radius-full: 9999rpx;
   animation: fadeInUp 0.6s ease forwards;
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24rpx;
-  padding: 8rpx 0;
+  padding: 12rpx 0;
+  margin: 0;  // 两边挨着屏幕
+  margin-bottom: 8rpx;
+  border-radius: 0;
   transition: all 0.3s ease;
+  gap: 8rpx;
 
   &:active {
-    opacity: 0.7;
+    transform: scale(0.995);
   }
 }
 
-.header-left {
+.group-header .header-left {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 8rpx;
   flex: 1;
+  min-width: 0;
+  padding-left: 24rpx;  // 往右移，对齐主持人条图标
 }
 
-.timeline-container {
+// 时间线指示器
+.timeline-indicator {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .timeline-dot {
-  width: 24rpx;
-  height: 24rpx;
+  width: 12rpx;
+  height: 12rpx;
   border-radius: 50%;
-  border: 4rpx solid;
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
+  box-shadow: 0 0 12rpx rgba($primary-orange, 0.4);
 }
 
 .timeline-line {
   position: absolute;
-  top: 24rpx;
+  top: 12rpx;
+  left: 50%;
+  transform: translateX(-50%);
   width: 2rpx;
-  height: 40rpx;
-  opacity: 0.3;
-  transition: background 0.3s ease;
+  height: 32rpx;
+  background: linear-gradient(180deg, rgba($primary-orange, 0.3), transparent);
 }
 
-.header-content {
+.group-header .header-content {
   flex: 1;
+  min-width: 0;
 }
 
 .group-title {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 700;
   line-height: 1.3;
-  transition: color 0.3s ease;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .group-time-row {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  margin-top: 8rpx;
 }
 
 .time-icon {
@@ -307,35 +360,38 @@ $radius-full: 9999rpx;
   font-size: 24rpx;
   font-weight: 500;
   opacity: 0.7;
-  transition: color 0.3s ease;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 16rpx;
+  gap: 6rpx;
+  flex-shrink: 0;
+  padding-right: 48rpx;  // 继续往左移，对齐"演讲"小图标右边
 }
 
 .sessions-badge {
-  padding: 8rpx 20rpx;
+  padding: 6rpx 16rpx;
   border-radius: $radius-full;
-  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .badge-text {
-  font-size: 22rpx;
+  font-size: 20rpx;
   font-weight: 500;
   opacity: 0.7;
 }
 
 .chevron-icon {
-  width: 40rpx;
-  height: 40rpx;
+  width: 28rpx;
+  height: 28rpx;
   transition: all 0.5s ease;
   opacity: 0.6;
+  transform: rotate(90deg);
+  flex-shrink: 0;
 
   &.expanded {
-    transform: rotate(180deg);
+    transform: rotate(-90deg);
     opacity: 1;
   }
 }
@@ -347,60 +403,64 @@ $radius-full: 9999rpx;
 .moderator-bar {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  padding: 20rpx 24rpx;
-  margin-bottom: 24rpx;
-  border-radius: $radius-lg;
+  gap: 10rpx;
+  padding: 12rpx 16rpx;
+  margin: 16rpx 24rpx;  // 上下间距 + 左右收窄
+  border-radius: $radius-md;
   transition: all 0.5s ease;
 
-  &.hidden {
-    opacity: 0.4;
-  }
-
-  &.visible {
-    opacity: 1;
-  }
+  &.hidden { opacity: 0.4; }
+  &.visible { opacity: 1; }
 }
 
 .moderator-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64rpx;
-  height: 64rpx;
+  width: 48rpx;
+  height: 48rpx;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .moderator-icon {
-  width: 32rpx;
-  height: 32rpx;
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .moderator-info {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 8rpx;
   flex-wrap: wrap;
-  font-size: 26rpx;
+  font-size: 24rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .moderator-label {
   opacity: 0.6;
+  flex-shrink: 0;
 }
 
 .moderator-divider {
   width: 2rpx;
-  height: 32rpx;
+  height: 24rpx;
   opacity: 0.3;
+  flex-shrink: 0;
 }
 
 .moderator-name {
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .moderator-title {
   opacity: 0.7;
+  font-size: 22rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // ============================================================
@@ -429,11 +489,10 @@ $radius-full: 9999rpx;
 .items-list {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
-  padding: 8rpx 0 8rpx 48rpx;
+  gap: 16rpx;
+  padding: 12rpx 0 12rpx 8rpx;
+  margin-left: 32rpx;  // 轴线继续往右移
   border-left: 2rpx solid;
-  margin-left: 12rpx;
-  opacity: 0.3;
 }
 
 // ============================================================
@@ -441,8 +500,9 @@ $radius-full: 9999rpx;
 // ============================================================
 
 .agenda-item-card {
-  padding: 32rpx;
-  border-radius: $radius-lg;
+  padding: 16rpx;
+  margin: 0 32rpx;  // 恢复原来的卡片位置
+  border-radius: $radius-md;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
@@ -452,83 +512,87 @@ $radius-full: 9999rpx;
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16rpx;
-  margin-bottom: 20rpx;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  flex-wrap: wrap;
 }
 
 .time-badge {
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 6rpx;
 }
 
 .time-badge-icon {
-  width: 32rpx;
-  height: 32rpx;
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .time-text {
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 600;
 }
 
 .type-badge {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  padding: 8rpx 16rpx;
+  gap: 6rpx;
+  padding: 6rpx 12rpx;
   border-radius: $radius-full;
   flex-shrink: 0;
 }
 
 .type-emoji {
-  font-size: 24rpx;
+  font-size: 20rpx;
 }
 
 .type-label {
-  font-size: 22rpx;
+  font-size: 20rpx;
   font-weight: 600;
 }
 
 .item-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  line-height: 1.5;
-  margin-bottom: 24rpx;
-  transition: color 0.3s ease;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
 }
 
 // 演讲人卡片
 .speaker-card {
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  padding: 20rpx;
-  margin-bottom: 20rpx;
+  gap: 16rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
   border-radius: $radius-md;
-  transition: all 0.3s ease;
 }
 
 .speaker-avatar {
-  width: 96rpx;
-  height: 96rpx;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .speaker-avatar-placeholder {
-  width: 96rpx;
-  height: 96rpx;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: linear-gradient(135deg, $primary-orange 0%, $primary-orange-light 100%);
+  background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
 }
 
 .avatar-text {
@@ -542,18 +606,22 @@ $radius-full: 9999rpx;
   display: flex;
   flex-direction: column;
   gap: 4rpx;
+  min-width: 0;  // 防止溢出
 }
 
 .speaker-name {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 600;
-  transition: color 0.3s ease;
 }
 
 .speaker-title {
-  font-size: 24rpx;
+  font-size: 22rpx;
   opacity: 0.7;
-  transition: color 0.3s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 // 地点
@@ -572,17 +640,16 @@ $radius-full: 9999rpx;
 .location-text {
   font-size: 24rpx;
   opacity: 0.7;
-  transition: color 0.3s ease;
 }
 
 // ============================================================
-// 茶歇/休息卡片（特殊样式）
+// 茶歇/休息卡片
 // ============================================================
 
 .agenda-break-card {
   padding: 32rpx;
-  border-radius: $radius-lg;
-  transition: all 0.3s ease;
+  border-radius: $radius-xl;
+  text-align: center;
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
 }
@@ -600,30 +667,29 @@ $radius-full: 9999rpx;
   justify-content: center;
   width: 80rpx;
   height: 80rpx;
-  border-radius: $radius-md;
+  border-radius: $radius-lg;
   flex-shrink: 0;
 }
 
 .break-icon {
-  font-size: 48rpx;
+  font-size: 40rpx;
 }
 
 .break-info {
   display: flex;
   flex-direction: column;
   gap: 4rpx;
+  text-align: left;
 }
 
 .break-title {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 600;
-  transition: color 0.3s ease;
 }
 
 .break-time {
   font-size: 24rpx;
   opacity: 0.6;
-  transition: color 0.3s ease;
 }
 
 // ============================================================
@@ -647,41 +713,29 @@ $radius-full: 9999rpx;
 }
 
 // ============================================================
-// 动画
-// ============================================================
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// ============================================================
 // 浅色主题
 // ============================================================
 
 .theme-light {
   &.agenda-page {
-    background: #F9F9F9;
+    background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+  }
+
+  .mesh-gradient {
+    background: 
+      radial-gradient(at 40% 20%, rgba($primary-orange, 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba($primary-orange-light, 0.06) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(200, 230, 255, 0.1) 0px, transparent 50%);
+  }
+
+  .floating-orb {
+    &.orb-1 { background: rgba($primary-orange, 0.15); }
+    &.orb-2 { background: rgba($primary-orange-light, 0.12); }
   }
 
   .page-header {
     background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.06);
   }
 
   .back-button {
@@ -689,210 +743,136 @@ $radius-full: 9999rpx;
   }
 
   .back-icon {
-    filter: brightness(0) saturate(100%) invert(0%);
+    filter: brightness(0);
+    opacity: 0.7;
   }
 
-  .header-title {
-    color: #1A1A1A;
-  }
-
-  .header-subtitle {
-    color: #666666;
-  }
+  .header-subtitle { color: #666666; }
 
   // 日期Tab
   .date-tab {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.04);  // 未选中有浅灰背景
     
     &.active {
-      background: linear-gradient(135deg, $primary-orange 0%, $primary-orange-light 100%);
-      box-shadow: 0 8rpx 24rpx rgba($primary-orange, 0.3);
+      background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
+      box-shadow: 0 8rpx 32rpx rgba($primary-orange, 0.3);
       
-      .day-label,
-      .day-text {
-        color: #FFFFFF;
-      }
+      .day-label, .day-text { color: #FFFFFF; }
     }
     
     &:not(.active) {
-      .day-label,
-      .day-text {
-        color: #666666;
-      }
+      .day-label, .day-text { color: #666666; }
     }
   }
 
-  .active-dot {
-    background: #FFFFFF;
-  }
+  .active-dot { background: #FFFFFF; }
 
   // 工具栏
   .expand-all-btn {
-    background: rgba(0, 0, 0, 0.05);
+    background: #FFFFFF;
+    border: 1rpx solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
     
-    .expand-text {
-      color: #666666;
+    .expand-text { color: #333333; }
+    
+    &:active {
+      background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
+      border-color: transparent;
+      box-shadow: 0 8rpx 24rpx rgba($primary-orange, 0.3);
+      .expand-text { color: #FFFFFF; }
     }
-  }
-
-  .expand-icon {
-    filter: brightness(0) saturate(100%) invert(40%);
   }
 
   // 分组
-  .timeline-dot {
-    background: #FFFFFF;
-    border-color: $primary-orange;
-  }
-
-  .timeline-line {
-    background: rgba($primary-orange, 0.3);
-  }
-
-  .group-title {
-    color: #1A1A1A;
-  }
-
-  .time-icon {
-    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
-  }
-
-  .group-time {
-    color: #666666;
-  }
-
-  .sessions-badge {
-    background: rgba(0, 0, 0, 0.05);
+  .group-header {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.01));
+    border: 1rpx solid rgba(0, 0, 0, 0.04);
     
-    .badge-text {
-      color: #666666;
+    &:hover {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.02));
+      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
     }
   }
 
-  .chevron-icon {
-    filter: brightness(0) saturate(100%) invert(40%);
-    
-    &.expanded {
-      filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
+  .group-title { color: #1A1A1A; }
+  .time-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
+  .group-time { color: #666666; }
+  .sessions-badge { background: rgba(0, 0, 0, 0.05); }
+  .badge-text { color: #666666; }
+  .chevron-icon { 
+    filter: brightness(0); 
+    opacity: 0.4;
+    &.expanded { 
+      filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); 
+      opacity: 1;
     }
   }
 
   // 主持人
   .moderator-bar {
-    background: linear-gradient(to right, rgba($primary-orange, 0.08), rgba($primary-orange, 0.04));
-    border: 1rpx solid rgba($primary-orange, 0.15);
+    background: linear-gradient(135deg, rgba($primary-orange, 0.08), rgba($primary-orange, 0.04));
+    border: 1rpx solid rgba($primary-orange, 0.12);
   }
-
-  .moderator-icon-wrapper {
-    background: rgba($primary-orange, 0.1);
-    
-    .moderator-icon {
-      filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
-    }
-  }
-
-  .moderator-label,
-  .moderator-title {
-    color: #666666;
-  }
-
-  .moderator-divider {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  .moderator-name {
-    color: #1A1A1A;
-  }
+  .moderator-icon-wrapper { background: rgba($primary-orange, 0.1); }
+  .moderator-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
+  .moderator-label, .moderator-title { color: #666666; }
+  .moderator-divider { background: rgba(0, 0, 0, 0.1); }
+  .moderator-name { color: #1A1A1A; }
 
   // 议程项列表
-  .items-list {
-    border-color: rgba($primary-orange, 0.2);
-  }
+  .items-list { border-color: rgba($primary-orange, 0.15); }
 
   // 议程项卡片
   .agenda-item-card {
     background: #FFFFFF;
-    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+    border: 1rpx solid rgba(0, 0, 0, 0.04);
     
-    &:hover {
-      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+    &:active {
+      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+      border-color: rgba($primary-orange, 0.2);
     }
   }
 
-  .time-badge-icon {
-    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
-  }
+  .time-badge-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
+  .time-text { color: $primary-orange; }
 
-  .time-text {
+  .badge-speech {
+    background: linear-gradient(135deg, rgba($primary-orange, 0.12), rgba($primary-orange, 0.06));
     color: $primary-orange;
+    border: 1rpx solid rgba($primary-orange, 0.15);
+  }
+  .badge-discussion {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.06));
+    color: #3B82F6;
+    border: 1rpx solid rgba(59, 130, 246, 0.15);
+  }
+  .badge-activity {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(168, 85, 247, 0.06));
+    color: #A855F7;
+    border: 1rpx solid rgba(168, 85, 247, 0.15);
   }
 
-  .type-badge {
-    &.badge-speech {
-      background: rgba($primary-orange, 0.1);
-      color: $primary-orange;
-    }
-    
-    &.badge-discussion {
-      background: rgba(59, 130, 246, 0.1);
-      color: #3B82F6;
-    }
-    
-    &.badge-activity {
-      background: rgba(168, 85, 247, 0.1);
-      color: #A855F7;
-    }
-  }
-
-  .item-title {
-    color: #1A1A1A;
-  }
-
-  .speaker-card {
-    background: rgba(0, 0, 0, 0.03);
-  }
-
-  .speaker-name {
-    color: #1A1A1A;
-  }
-
-  .speaker-title {
-    color: #666666;
-  }
-
-  .location-icon {
-    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
-  }
-
-  .location-text {
-    color: #666666;
-  }
+  .item-title { color: #1A1A1A; }
+  .speaker-card { background: rgba(0, 0, 0, 0.03); }
+  .speaker-name { color: #1A1A1A; }
+  .speaker-title { color: #666666; }
+  .location-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
+  .location-text { color: #666666; }
 
   // 茶歇卡片
   .agenda-break-card {
-    background: linear-gradient(135deg, rgba($primary-orange, 0.05), rgba($primary-orange, 0.1));
-    border: 2rpx dashed rgba($primary-orange, 0.3);
+    background: linear-gradient(135deg, rgba($primary-orange, 0.06), rgba($primary-orange, 0.03));
+    border: 2rpx dashed rgba($primary-orange, 0.2);
   }
-
-  .break-icon-wrapper {
-    background: rgba($primary-orange, 0.1);
-  }
-
-  .break-title {
-    color: #1A1A1A;
-  }
-
-  .break-time {
-    color: #666666;
-  }
+  .break-icon-wrapper { background: rgba($primary-orange, 0.1); }
+  .break-title { color: #1A1A1A; }
+  .break-time { color: #666666; }
 
   // 页脚
   .page-footer {
-    border-color: rgba(0, 0, 0, 0.08);
-    
-    .footer-text {
-      color: #999999;
-    }
+    border-color: rgba(0, 0, 0, 0.06);
+    .footer-text { color: #999999; }
   }
 }
 
@@ -902,12 +882,24 @@ $radius-full: 9999rpx;
 
 .theme-dark {
   &.agenda-page {
-    background: #0A0A0A;
+    background: linear-gradient(180deg, #0A0A0A 0%, #121212 100%);
+  }
+
+  .mesh-gradient {
+    background: 
+      radial-gradient(at 40% 20%, rgba($primary-orange, 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba($primary-orange-light, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(100, 150, 200, 0.05) 0px, transparent 50%);
+  }
+
+  .floating-orb {
+    &.orb-1 { background: rgba($primary-orange, 0.12); }
+    &.orb-2 { background: rgba($primary-orange-light, 0.08); }
   }
 
   .page-header {
-    background: rgba(26, 26, 27, 0.85);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(18, 18, 18, 0.85);
+    border-color: rgba(255, 255, 255, 0.06);
   }
 
   .back-button {
@@ -915,210 +907,135 @@ $radius-full: 9999rpx;
   }
 
   .back-icon {
-    filter: brightness(0) saturate(100%) invert(100%);
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
   }
 
-  .header-title {
-    color: #FAFAFA;
-  }
-
-  .header-subtitle {
-    color: #A3A3A3;
-  }
+  .header-subtitle { color: #A3A3A3; }
 
   // 日期Tab
   .date-tab {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);  // 未选中有浅灰背景
     
     &.active {
-      background: linear-gradient(135deg, $primary-orange 0%, $primary-orange-light 100%);
-      box-shadow: 0 8rpx 24rpx rgba($primary-orange, 0.2);
+      background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
+      box-shadow: 0 8rpx 32rpx rgba($primary-orange, 0.25);
       
-      .day-label,
-      .day-text {
-        color: #1A1A1A;
-      }
+      .day-label, .day-text { color: #1A1A1A; }
     }
     
     &:not(.active) {
-      .day-label,
-      .day-text {
-        color: #A3A3A3;
-      }
+      .day-label, .day-text { color: #A3A3A3; }
     }
   }
 
-  .active-dot {
-    background: #1A1A1A;
-  }
+  .active-dot { background: #1A1A1A; }
 
   // 工具栏
   .expand-all-btn {
     background: rgba(255, 255, 255, 0.05);
+    border: 1rpx solid rgba(255, 255, 255, 0.08);
     
-    .expand-text {
-      color: #A3A3A3;
+    .expand-text { color: #E5E5E5; }
+    
+    &:active {
+      background: linear-gradient(135deg, $primary-orange, $primary-orange-light);
+      border-color: transparent;
+      box-shadow: 0 8rpx 24rpx rgba($primary-orange, 0.25);
+      .expand-text { color: #1A1A1A; }
     }
-  }
-
-  .expand-icon {
-    filter: brightness(0) saturate(100%) invert(60%);
   }
 
   // 分组
-  .timeline-dot {
-    background: #1A1A1B;
-    border-color: $primary-orange-light;
-  }
-
-  .timeline-line {
-    background: rgba($primary-orange-light, 0.2);
-  }
-
-  .group-title {
-    color: #FAFAFA;
-  }
-
-  .time-icon {
-    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
-  }
-
-  .group-time {
-    color: #A3A3A3;
-  }
-
-  .sessions-badge {
-    background: rgba(255, 255, 255, 0.05);
+  .group-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1rpx solid rgba(255, 255, 255, 0.06);
     
-    .badge-text {
-      color: #A3A3A3;
+    &:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
     }
   }
 
-  .chevron-icon {
-    filter: brightness(0) saturate(100%) invert(60%);
-    
-    &.expanded {
-      filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
+  .group-title { color: #FAFAFA; }
+  .time-icon { filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg); }
+  .group-time { color: #A3A3A3; }
+  .sessions-badge { background: rgba(255, 255, 255, 0.05); }
+  .badge-text { color: #A3A3A3; }
+  .chevron-icon { 
+    filter: brightness(0) invert(1); 
+    opacity: 0.4;
+    &.expanded { 
+      filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg);
+      opacity: 1;
     }
   }
 
   // 主持人
   .moderator-bar {
-    background: linear-gradient(to right, rgba($primary-orange-light, 0.08), rgba($primary-orange-light, 0.04));
-    border: 1rpx solid rgba($primary-orange-light, 0.15);
+    background: linear-gradient(135deg, rgba($primary-orange-light, 0.1), rgba($primary-orange-light, 0.05));
+    border: 1rpx solid rgba($primary-orange-light, 0.12);
   }
-
-  .moderator-icon-wrapper {
-    background: rgba($primary-orange-light, 0.1);
-    
-    .moderator-icon {
-      filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
-    }
-  }
-
-  .moderator-label,
-  .moderator-title {
-    color: #A3A3A3;
-  }
-
-  .moderator-divider {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .moderator-name {
-    color: #FAFAFA;
-  }
+  .moderator-icon-wrapper { background: rgba($primary-orange-light, 0.12); }
+  .moderator-icon { filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg); }
+  .moderator-label, .moderator-title { color: #A3A3A3; }
+  .moderator-divider { background: rgba(255, 255, 255, 0.1); }
+  .moderator-name { color: #FAFAFA; }
 
   // 议程项列表
-  .items-list {
-    border-color: rgba($primary-orange-light, 0.15);
-  }
+  .items-list { border-color: rgba($primary-orange-light, 0.12); }
 
   // 议程项卡片
   .agenda-item-card {
-    background: #18181B;
-    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+    background: #1A1A1A;
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.3);
+    border: 1rpx solid rgba(255, 255, 255, 0.06);
     
-    &:hover {
-      box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.5);
+    &:active {
+      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.5);
+      border-color: rgba($primary-orange-light, 0.2);
     }
   }
 
-  .time-badge-icon {
-    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
-  }
+  .time-badge-icon { filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg); }
+  .time-text { color: $primary-orange-light; }
 
-  .time-text {
+  .badge-speech {
+    background: linear-gradient(135deg, rgba($primary-orange-light, 0.15), rgba($primary-orange-light, 0.08));
     color: $primary-orange-light;
+    border: 1rpx solid rgba($primary-orange-light, 0.2);
+  }
+  .badge-discussion {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.08));
+    color: #60A5FA;
+    border: 1rpx solid rgba(96, 165, 250, 0.2);
+  }
+  .badge-activity {
+    background: linear-gradient(135deg, rgba(192, 132, 252, 0.15), rgba(192, 132, 252, 0.08));
+    color: #C084FC;
+    border: 1rpx solid rgba(192, 132, 252, 0.2);
   }
 
-  .type-badge {
-    &.badge-speech {
-      background: rgba($primary-orange-light, 0.15);
-      color: $primary-orange-light;
-    }
-    
-    &.badge-discussion {
-      background: rgba(96, 165, 250, 0.15);
-      color: #60A5FA;
-    }
-    
-    &.badge-activity {
-      background: rgba(192, 132, 252, 0.15);
-      color: #C084FC;
-    }
-  }
-
-  .item-title {
-    color: #FAFAFA;
-  }
-
-  .speaker-card {
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .speaker-name {
-    color: #FAFAFA;
-  }
-
-  .speaker-title {
-    color: #A3A3A3;
-  }
-
-  .location-icon {
-    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
-  }
-
-  .location-text {
-    color: #A3A3A3;
-  }
+  .item-title { color: #FAFAFA; }
+  .speaker-card { background: rgba(255, 255, 255, 0.05); }
+  .speaker-name { color: #FAFAFA; }
+  .speaker-title { color: #A3A3A3; }
+  .location-icon { filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg); }
+  .location-text { color: #A3A3A3; }
 
   // 茶歇卡片
   .agenda-break-card {
-    background: linear-gradient(135deg, rgba($primary-orange-light, 0.05), rgba($primary-orange-light, 0.08));
-    border: 2rpx dashed rgba($primary-orange-light, 0.2);
+    background: linear-gradient(135deg, rgba($primary-orange-light, 0.08), rgba($primary-orange-light, 0.04));
+    border: 2rpx dashed rgba($primary-orange-light, 0.15);
   }
-
-  .break-icon-wrapper {
-    background: rgba($primary-orange-light, 0.1);
-  }
-
-  .break-title {
-    color: #FAFAFA;
-  }
-
-  .break-time {
-    color: #A3A3A3;
-  }
+  .break-icon-wrapper { background: rgba($primary-orange-light, 0.12); }
+  .break-title { color: #FAFAFA; }
+  .break-time { color: #A3A3A3; }
 
   // 页脚
   .page-footer {
-    border-color: rgba(255, 255, 255, 0.08);
-    
-    .footer-text {
-      color: #737373;
-    }
+    border-color: rgba(255, 255, 255, 0.06);
+    .footer-text { color: #737373; }
   }
 }
 

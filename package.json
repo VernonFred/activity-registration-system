@@ -3,6 +3,7 @@
     "@tarojs/plugin-platform-h5": "^4.1.9",
     "@tarojs/shared": "^4.1.9",
     "form-render": "^2.5.6",
-    "fr-generator": "^2.8.9"
+    "fr-generator": "^2.8.9",
+    "sharp": "^0.34.5"
   }
 }

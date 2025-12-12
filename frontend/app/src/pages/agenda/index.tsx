@@ -1,26 +1,25 @@
 /**
- * 独立议程页面 - 参考 Lovable 设计
+ * 独立议程页面 - 完全照搬 Lovable 设计
  * 创建时间: 2025年12月12日
  * 
  * 功能：
- * - 多天会议切换
- * - 分组折叠/展开
- * - 完整议程展示
+ * - 多天会议切换（DateTabs）
+ * - 分组折叠/展开（AgendaGroupSection）
+ * - 完整议程展示（AgendaItemCard）
  * - 浅色/暗黑主题适配
  */
-import { View, Text, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { useState, useEffect, useCallback } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
-import type { AgendaDay } from '../../pages/activity-detail/types'
+import type { AgendaDay } from '../activity-detail/types'
 import { DateTabs } from './components/DateTabs'
 import { AgendaGroupSection } from './components/AgendaGroupSection'
 import './index.scss'
 
 // 图标
 import iconArrowLeft from '../../assets/icons/arrow-left.png'
-import iconChevronDown from '../../assets/icons/chevron-down.png'
-import iconChevronUp from '../../assets/icons/chevron-up.png'
+import iconCalendar from '../../assets/icons/calendar.png'
 
 const STORAGE_KEY = 'agenda-expanded-groups'
 
@@ -29,8 +28,6 @@ export default function AgendaPage() {
   const { theme } = useTheme()
   const activityId = Number(router.params.activity_id)
   
-  // 从详情页传递过来的议程数据（实际应用中需要从API获取）
-  // 这里先使用 localStorage 临时存储
   const [agendaData, setAgendaData] = useState<AgendaDay[]>([])
   const [activeDay, setActiveDay] = useState<string>('')
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
@@ -141,20 +138,28 @@ export default function AgendaPage() {
 
   return (
     <View className={`agenda-page theme-${theme}`}>
+      {/* 背景装饰 */}
+      <View className="mesh-gradient" />
+      <View className="floating-orb orb-1" />
+      <View className="floating-orb orb-2" />
+
       {/* 状态栏占位 */}
       <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
 
       {/* 顶部导航 */}
       <View className="page-header">
-        <View className="header-content">
-          <View className="header-left">
-            <View className="back-button" onClick={handleBack}>
-              <image src={iconArrowLeft} className="back-icon" mode="aspectFit" />
-            </View>
-            <View className="header-title-wrapper">
-              <Text className="header-title">活动议程</Text>
-              <Text className="header-subtitle">Conference Agenda</Text>
-            </View>
+        {/* 返回按钮行 */}
+        <View className="nav-row">
+          <View className="back-button" onClick={handleBack}>
+            <Image src={iconArrowLeft} className="back-icon" mode="aspectFit" />
+          </View>
+        </View>
+        
+        {/* 标题区域 - 放在返回按钮下方 */}
+        <View className="title-row">
+          <View className="header-title-wrapper">
+            <Text className="header-title">活动议程</Text>
+            <Text className="header-subtitle">Conference Agenda</Text>
           </View>
         </View>
 
@@ -180,11 +185,6 @@ export default function AgendaPage() {
             className="expand-all-btn" 
             onClick={allExpanded ? collapseAll : expandAll}
           >
-            <image 
-              src={allExpanded ? iconChevronUp : iconChevronDown} 
-              className="expand-icon" 
-              mode="aspectFit" 
-            />
             <Text className="expand-text">
               {allExpanded ? '收起全部' : '展开全部'}
             </Text>
@@ -208,7 +208,7 @@ export default function AgendaPage() {
         {/* 页脚 */}
         <View className="page-footer">
           <Text className="footer-text">
-            © 2025 强智科技 · 精心设计
+            © 2025 强智科技 · Crafted with precision
           </Text>
         </View>
 

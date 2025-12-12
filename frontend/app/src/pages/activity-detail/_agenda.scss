@@ -232,52 +232,18 @@
 }
 
 .agenda-item {
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  border-radius: 20rpx;  // 圆润的边角
-  position: relative;
-  overflow: hidden;
-  
-  // 平滑过渡动画
-  transition: 
-    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.2s ease;
-  
-  // 微妙的内部阴影（增强层次）
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20rpx;
-    box-shadow: inset 0 1rpx 2rpx rgba(0, 0, 0, 0.02);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-  
-  // 悬停效果（参考 Lovable/飞书）
-  &:hover {
-    transform: translateY(-4rpx);
-    
-    &::after {
-      opacity: 1;
-    }
-  }
-  
-  // 按压反馈
-  &:active {
-    transform: translateY(-2rpx) scale(0.995);
-  }
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx dashed;
+  transition: all 0.3s ease;
   
   &.last {
-    margin-bottom: 0;
+    border-bottom: none;
   }
   
-  // 茶歇类型 - 特殊设计
+  // 茶歇类型（简化样式）
   &.break {
     text-align: center;
-    padding: 40rpx;
+    padding: 32rpx;
     
     .break-content {
       display: inline-flex;
@@ -516,33 +482,11 @@
     background: white;
   }
   
-  // 议程项卡片 - 精致卡片设计（参考飞书/Notion）
+  // 议程项卡片 - 白色背景 + 精致阴影
   .agenda-item {
     background: white;
-    border: 1rpx solid rgba(0, 0, 0, 0.06);
-    
-    // 多层阴影系统（更有层次感）
-    box-shadow: 
-      0 1rpx 2rpx rgba(0, 0, 0, 0.04),
-      0 2rpx 4rpx rgba(0, 0, 0, 0.03),
-      0 4rpx 8rpx rgba(0, 0, 0, 0.02);
-    
-    // 悬停时增强阴影和光晕
-    &:hover {
-      border-color: rgba(255, 138, 26, 0.15);
-      box-shadow: 
-        0 2rpx 4rpx rgba(0, 0, 0, 0.06),
-        0 4rpx 8rpx rgba(0, 0, 0, 0.05),
-        0 8rpx 16rpx rgba(0, 0, 0, 0.04),
-        0 12rpx 24rpx rgba(255, 138, 26, 0.08);  // 橙色光晕
-    }
-    
-    // 按压时收缩阴影
-    &:active {
-      box-shadow: 
-        0 1rpx 2rpx rgba(0, 0, 0, 0.05),
-        0 2rpx 4rpx rgba(0, 0, 0, 0.04);
-    }
+    border: 1rpx solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.02);
   }
   
   // 时间徽章 - 橙色边框
@@ -551,10 +495,6 @@
     border: 1.5rpx solid #FF8A1A;
     color: #FF6B00;
     box-shadow: 0 2rpx 6rpx rgba(255, 138, 26, 0.08);
-  }
-  
-  .time-icon {
-    filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1500%) hue-rotate(5deg);
   }
   
   .time-text {
@@ -580,27 +520,10 @@
     color: #666;
   }
   
-  // 茶歇样式 - 精致渐变背景
+  // 茶歇样式
   .agenda-item.break {
-    background: linear-gradient(135deg, 
-      rgba(255, 250, 245, 1) 0%, 
-      rgba(255, 245, 235, 1) 100%);
+    background: #F8F8F8;
     border: 1.5rpx dashed rgba(255, 138, 26, 0.3);
-    box-shadow: 
-      0 1rpx 2rpx rgba(255, 138, 26, 0.04),
-      0 2rpx 4rpx rgba(255, 138, 26, 0.03),
-      0 4rpx 8rpx rgba(255, 138, 26, 0.02);
-    
-    &:hover {
-      background: linear-gradient(135deg, 
-        rgba(255, 248, 240, 1) 0%, 
-        rgba(255, 240, 225, 1) 100%);
-      border-color: rgba(255, 138, 26, 0.4);
-      box-shadow: 
-        0 2rpx 4rpx rgba(255, 138, 26, 0.06),
-        0 4rpx 8rpx rgba(255, 138, 26, 0.05),
-        0 8rpx 16rpx rgba(255, 138, 26, 0.04);
-    }
     
     .time-badge {
       background: rgba(255, 138, 26, 0.08);
@@ -613,12 +536,11 @@
   }
 }
 
-// 深色主题 - 高对比度优化
+// 深色主题
 .theme-dark {
   .toolbar-btn {
-    background: rgba(255, 138, 26, 0.15);
-    border: 1.5rpx solid rgba(255, 138, 26, 0.3);
-    box-shadow: 0 2rpx 8rpx rgba(255, 138, 26, 0.1);
+    background: rgba(255, 138, 26, 0.15);  // 稍深的橙色背景
+    color: #FFB46E;
   }
   
   .toolbar-text {
@@ -636,176 +558,315 @@
   
   .day-tab {
     background: rgba(255, 255, 255, 0.05);
-    border: 1.5rpx solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
     
     &.active {
       background: rgba(255, 138, 26, 0.15);
-      border-color: #FF8A1A;
-      box-shadow: 0 4rpx 12rpx rgba(255, 138, 26, 0.2);
     }
   }
   
   .day-tab-text {
-    color: #B3B3B3;
+    color: #999;
     
     .active & {
       color: #FFB46E;
       font-weight: 600;
     }
   }
+}
+
+// ============================================================
+// 议程预览卡片样式
+// ============================================================
+
+.agenda-preview {
+  padding: 32rpx;
+}
+
+.preview-card {
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid;
   
-  // 分组头部 - 深色橙色渐变
-  .group-header {
-    background: linear-gradient(135deg, 
-      rgba(255, 138, 26, 0.25) 0%, 
-      rgba(255, 107, 0, 0.35) 100%);
-    border-left: 6rpx solid #FF8A1A;
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
-    
-    &::after {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    &:active {
-      background: linear-gradient(135deg, 
-        rgba(255, 138, 26, 0.3) 0%, 
-        rgba(255, 107, 0, 0.4) 100%);
-    }
+  .header-icon {
+    width: 36rpx;
+    height: 36rpx;
   }
   
-  .icon-text {
-    color: #FFB46E;
+  .header-date {
+    font-size: 30rpx;
+    font-weight: 600;
+    flex: 1;
   }
+}
+
+.preview-items {
+  padding: 16rpx 0;
+}
+
+.preview-item {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid;
+  transition: all 0.3s ease;
   
-  .group-title {
-    color: #FFFFFF;
-    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
+  &:last-child {
+    border-bottom: none;
   }
-  
-  .group-time {
-    color: rgba(255, 255, 255, 0.75);
-  }
-  
-  // 主持人信息条 - 深色背景
-  .moderator-bar {
-    background: rgba(255, 255, 255, 0.03);
-    border-top: 1rpx solid rgba(255, 255, 255, 0.08);
-  }
-  
-  .moderator-label {
-    color: #B3B3B3;
-  }
-  
-  .moderator-name {
-    color: #FFB46E;
-  }
-  
-  .moderator-title {
-    color: #999;
-  }
-  
-  // 议程项容器
-  .group-items {
-    background: rgba(255, 255, 255, 0.02);
-  }
-  
-  // 议程项卡片 - 深色精致设计（参考 Lovable 暗黑模式）
-  .agenda-item {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1rpx solid rgba(255, 255, 255, 0.08);
-    
-    // 深色多层阴影
-    box-shadow: 
-      0 1rpx 2rpx rgba(0, 0, 0, 0.3),
-      0 2rpx 4rpx rgba(0, 0, 0, 0.25),
-      0 4rpx 8rpx rgba(0, 0, 0, 0.2);
-    
-    // 悬停效果 - 边框发光 + 阴影增强
-    &:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 138, 26, 0.3);
-      box-shadow: 
-        0 2rpx 4rpx rgba(0, 0, 0, 0.35),
-        0 4rpx 8rpx rgba(0, 0, 0, 0.3),
-        0 8rpx 16rpx rgba(0, 0, 0, 0.25),
-        0 0 24rpx rgba(255, 138, 26, 0.15);  // 橙色发光效果
-    }
-    
-    // 按压反馈
-    &:active {
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: 
-        0 1rpx 2rpx rgba(0, 0, 0, 0.3),
-        0 2rpx 4rpx rgba(0, 0, 0, 0.25);
-    }
-  }
-  
-  // 时间徽章 - 橙色边框
-  .time-badge {
-    background: rgba(255, 138, 26, 0.12);
-    border: 1.5rpx solid #FF8A1A;
-    color: #FFB46E;
-    box-shadow: 0 2rpx 6rpx rgba(255, 138, 26, 0.15);
-  }
-  
-  .time-icon {
-    filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(1000%) hue-rotate(360deg);
-    opacity: 1;
-  }
+}
+
+.item-time {
+  flex-shrink: 0;
+  width: 140rpx;
   
   .time-text {
-    color: #FFB46E;
+    font-size: 24rpx;
+    font-weight: 600;
+  }
+}
+
+.item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.item-group {
+  font-size: 22rpx;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.item-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-speaker {
+  font-size: 24rpx;
+  opacity: 0.6;
+}
+
+.preview-stats {
+  padding: 24rpx 32rpx;
+  text-align: center;
+  border-top: 1rpx solid;
+  border-bottom: 1rpx solid;
+  
+  .stats-text {
+    font-size: 26rpx;
+    opacity: 0.7;
+  }
+}
+
+.view-full-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 24rpx 28rpx;
+  margin: 24rpx 32rpx 32rpx;
+  border-radius: $radius-lg;
+  border: 2rpx solid;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:active {
+    transform: scale(0.98);
   }
   
-  // 演讲人信息 - 高对比度
-  .speaker-name {
-    color: #FFFFFF;
+  .btn-text {
+    font-size: 28rpx;
+    font-weight: 600;
   }
   
-  .speaker-title {
-    color: #B3B3B3;
+  .btn-icon {
+    width: 28rpx;
+    height: 28rpx;
+    transition: transform 0.3s ease;
   }
   
-  // 演讲主题 - 高亮显示
-  .speech-title {
-    color: #FFFFFF;
+  &:active .btn-icon {
+    transform: translateX(4rpx);
   }
+}
+
+.preview-empty {
+  padding: 80rpx 40rpx;
+  text-align: center;
   
-  // 地点信息
-  .location-text {
-    color: #999;
+  .empty-text {
+    font-size: 28rpx;
+    opacity: 0.5;
   }
-  
-  // 茶歇样式 - 深色渐变版本
-  .agenda-item.break {
-    background: linear-gradient(135deg, 
-      rgba(255, 138, 26, 0.08) 0%, 
-      rgba(255, 107, 0, 0.12) 100%);
-    border: 1.5rpx dashed rgba(255, 138, 26, 0.4);
-    box-shadow: 
-      0 1rpx 2rpx rgba(0, 0, 0, 0.3),
-      0 2rpx 4rpx rgba(255, 138, 26, 0.1),
-      0 4rpx 8rpx rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-      background: linear-gradient(135deg, 
-        rgba(255, 138, 26, 0.12) 0%, 
-        rgba(255, 107, 0, 0.16) 100%);
-      border-color: rgba(255, 138, 26, 0.5);
-      box-shadow: 
-        0 2rpx 4rpx rgba(0, 0, 0, 0.35),
-        0 4rpx 8rpx rgba(255, 138, 26, 0.15),
-        0 8rpx 16rpx rgba(0, 0, 0, 0.25);
+}
+
+// 浅色主题 - 议程预览
+.theme-light {
+  .agenda-preview {
+    .preview-card {
+      background: #FFFFFF;
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
     }
     
-    .time-badge {
-      background: rgba(255, 138, 26, 0.15);
-      border-color: rgba(255, 138, 26, 0.5);
+    .preview-header {
+      background: linear-gradient(135deg, rgba($light-primary, 0.08), rgba($light-primary, 0.04));
+      border-color: rgba($light-border, 0.5);
+      
+      .header-icon {
+        filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg);
+      }
+      
+      .header-date {
+        color: $light-foreground;
+      }
     }
     
-    .speech-title {
-      color: #FFB46E;
+    .preview-item {
+      border-color: rgba($light-border, 0.5);
+      
+      .time-text {
+        color: $light-primary;
+      }
+      
+      .item-group {
+        color: $light-primary;
+      }
+      
+      .item-title {
+        color: $light-foreground;
+      }
+      
+      .item-speaker {
+        color: $light-muted-foreground;
+      }
+    }
+    
+    .preview-stats {
+      border-color: rgba($light-border, 0.5);
+      
+      .stats-text {
+        color: $light-muted-foreground;
+      }
+    }
+    
+    .view-full-btn {
+      background: transparent;
+      border-color: rgba($light-primary, 0.3);
+      
+      .btn-text {
+        color: $light-primary;
+      }
+      
+      .btn-icon {
+        filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg);
+      }
+      
+      &:active {
+        background: rgba($light-primary, 0.05);
+        border-color: $light-primary;
+      }
+    }
+    
+    .preview-empty {
+      background: $light-card;
+      border-radius: $radius-lg;
+      
+      .empty-text {
+        color: $light-muted-foreground;
+      }
+    }
+  }
+}
+
+// 深色主题 - 议程预览
+.theme-dark {
+  .agenda-preview {
+    .preview-card {
+      background: #1A1A1A;
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.3);
+    }
+    
+    .preview-header {
+      background: linear-gradient(135deg, rgba($dark-primary, 0.12), rgba($dark-primary, 0.06));
+      border-color: rgba($dark-border, 0.3);
+      
+      .header-icon {
+        filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg);
+      }
+      
+      .header-date {
+        color: $dark-foreground;
+      }
+    }
+    
+    .preview-item {
+      border-color: rgba($dark-border, 0.3);
+      
+      .time-text {
+        color: $dark-primary;
+      }
+      
+      .item-group {
+        color: $dark-primary;
+      }
+      
+      .item-title {
+        color: $dark-foreground;
+      }
+      
+      .item-speaker {
+        color: $dark-muted-foreground;
+      }
+    }
+    
+    .preview-stats {
+      border-color: rgba($dark-border, 0.3);
+      
+      .stats-text {
+        color: $dark-muted-foreground;
+      }
+    }
+    
+    .view-full-btn {
+      background: transparent;
+      border-color: rgba($dark-primary, 0.4);
+      
+      .btn-text {
+        color: $dark-primary;
+      }
+      
+      .btn-icon {
+        filter: brightness(0) saturate(100%) invert(75%) sepia(50%) saturate(800%) hue-rotate(360deg);
+      }
+      
+      &:active {
+        background: rgba($dark-primary, 0.1);
+        border-color: $dark-primary;
+      }
+    }
+    
+    .preview-empty {
+      background: $dark-card;
+      border-radius: $radius-lg;
+      
+      .empty-text {
+        color: $dark-muted-foreground;
+      }
     }
   }
 }
