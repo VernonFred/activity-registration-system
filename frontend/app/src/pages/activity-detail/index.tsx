@@ -413,18 +413,84 @@ const DEFAULT_MULTI_DAY_AGENDA = [
   },
 ]
 
-// 默认酒店数据
+// 默认酒店数据（多个酒店）
 const DEFAULT_HOTELS = [
   {
     id: 1,
-    name: '喜来登大酒店',
+    name: '喜来登酒店',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
     room_type: '商务标准间',
     price: 328,
+    price_note: '单双同价',
     booking_tip: '预订时请报"强智科技"名称享受优惠价格',
     contact_name: '邓经理',
     contact_phone: '18176792056',
     facilities: ['免费WiFi', '咖啡厅', '洗衣房', '免费停车', '餐厅', '会议厅'],
     address: '长沙市江发路12号园博园东门',
+    map_image: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800',
+    transport: [
+      { type: 'subway' as const, title: '地铁', description: '地铁2号线/4号线/6号线 世纪大道站，3号出口步行5分钟' },
+      { type: 'bus' as const, title: '公交', description: '81路、985路、583路 世纪大道站下车' },
+      { type: 'drive' as const, title: '自驾', description: '酒店提供免费地下停车场，车位充足' },
+    ],
+    weather: {
+      temperature: 22,
+      condition: '多云',
+      humidity: 65,
+      wind_speed: 12,
+      visibility: 10,
+    },
+  },
+  {
+    id: 2,
+    name: '步步高酒店',
+    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800',
+    room_type: '豪华大床房',
+    price: 268,
+    price_note: '含早餐',
+    booking_tip: '预订时请报"强智科技"名称享受优惠价格',
+    contact_name: '李经理',
+    contact_phone: '18888888888',
+    facilities: ['免费WiFi', '咖啡厅', '餐厅', '会议厅'],
+    address: '长沙市五一广场步步高商业中心',
+    map_image: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800',
+    transport: [
+      { type: 'subway' as const, title: '地铁', description: '地铁1号线/2号线 五一广场站，A出口直达' },
+      { type: 'bus' as const, title: '公交', description: '多路公交直达五一广场站' },
+    ],
+    weather: {
+      temperature: 22,
+      condition: '多云',
+      humidity: 65,
+      wind_speed: 12,
+      visibility: 10,
+    },
+  },
+  {
+    id: 3,
+    name: '万达嘉华酒店',
+    image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800',
+    room_type: '行政套房',
+    price: 458,
+    price_note: '含双早',
+    booking_tip: '预订时请报"强智科技"名称享受优惠价格',
+    contact_name: '王经理',
+    contact_phone: '19999999999',
+    facilities: ['免费WiFi', '咖啡厅', '洗衣房', '免费停车', '餐厅', '会议厅'],
+    address: '长沙市开福区万达广场',
+    map_image: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800',
+    transport: [
+      { type: 'subway' as const, title: '地铁', description: '地铁1号线 开福寺站，B出口步行3分钟' },
+      { type: 'bus' as const, title: '公交', description: '9路、159路 万达广场站' },
+      { type: 'drive' as const, title: '自驾', description: '万达广场地下停车场，前2小时免费' },
+    ],
+    weather: {
+      temperature: 22,
+      condition: '多云',
+      humidity: 65,
+      wind_speed: 12,
+      visibility: 10,
+    },
   },
 ]
 

@@ -73,6 +73,28 @@ export interface AgendaDay {
   groups: AgendaGroup[]        // 该天的议程分组列表
 }
 
+// 酒店设施
+export interface HotelFacility {
+  icon: string       // 图标名称
+  label: string      // 设施名称
+}
+
+// 交通指南
+export interface TransportInfo {
+  type: 'subway' | 'bus' | 'drive'  // 地铁/公交/自驾
+  title: string                      // 标题（如"地铁"）
+  description: string                // 详细描述
+}
+
+// 天气信息
+export interface WeatherInfo {
+  temperature: number    // 温度（摄氏度）
+  condition: string      // 天气状况（多云、晴天等）
+  humidity: number       // 湿度（%）
+  wind_speed: number     // 风速（km/h）
+  visibility: number     // 能见度（km）
+}
+
 // 酒店信息
 export interface Hotel {
   id: number
@@ -81,11 +103,15 @@ export interface Hotel {
   image?: string
   room_type: string
   price: number
+  price_note?: string              // 价格备注（如"单双同价"）
   booking_tip?: string
   contact_name?: string
   contact_phone?: string
-  facilities?: string[]
+  facilities?: HotelFacility[]     // 设施列表（改为对象数组）
   address?: string
   map_url?: string
+  map_image?: string               // 静态地图图片
+  transport?: TransportInfo[]      // 交通指南
+  weather?: WeatherInfo            // 当地天气
 }
 
