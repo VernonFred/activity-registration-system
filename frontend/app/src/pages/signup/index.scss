@@ -65,7 +65,7 @@ $dark-text: #f8fafc;
 .signup-header {
   display: flex;
   align-items: center;
-  padding: 20rpx 36rpx;
+  padding: 32rpx 36rpx 20rpx;
   gap: 24rpx;
   position: sticky;
   top: 0;
@@ -246,7 +246,7 @@ $dark-text: #f8fafc;
     }
     
     .btn-icon {
-      filter: brightness(0) saturate(100%) invert(29%) sepia(87%) saturate(1598%) hue-rotate(139deg) brightness(97%) contrast(97%);
+      filter: invert(28%) sepia(96%) saturate(1639%) hue-rotate(139deg) brightness(93%) contrast(101%);
     }
   }
 
@@ -331,8 +331,7 @@ $dark-text: #f8fafc;
 
 .theme-light {
   .signup-header {
-    background: #fff;
-    border-bottom: 2rpx solid rgba(15, 23, 42, 0.05);
+    background: transparent;
     color: #0f172a;
 
     .header-back,
