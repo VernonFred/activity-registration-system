@@ -20,6 +20,34 @@ $dark-text: #f8fafc;
 
   &.theme-dark {
     background: linear-gradient(180deg, #030303 0%, #090b13 70%, #040405 100%);
+
+    .step-wrapper {
+      background-color: #1e293b;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 15rpx 40rpx rgba(0, 0, 0, 0.4);
+    }
+
+    .signup-header {
+      .header-title {
+        color: #f8fafc;
+      }
+      .header-subtitle {
+        color: rgba(248, 250, 252, 0.6);
+      }
+      .header-back, .header-close {
+        background: rgba(255, 255, 255, 0.1);
+        
+        .header-back-icon, .close-icon {
+          filter: invert(1) brightness(2);
+        }
+      }
+    }
+
+    .step-header {
+      .step-activity {
+        color: #f8fafc;
+      }
+    }
   }
 }
 
