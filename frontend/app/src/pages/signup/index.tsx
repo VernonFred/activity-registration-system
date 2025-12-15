@@ -31,12 +31,22 @@ const SignupPage = () => {
   const router = useRouter()
   const activityId = Number(router.params.activityId || router.params.activity_id)
   const { theme } = useTheme()
+  const [statusBarHeight, setStatusBarHeight] = useState(0)
+  const [navBarHeight, setNavBarHeight] = useState(0)
 
   const [activity, setActivity] = useState<ActivityInfo | null>(null)
   const [formData, setFormData] = useState<SignupFormData>(DEFAULT_FORM_DATA)
   const [currentStep, setCurrentStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+
+  // 计算导航栏高度
+  useEffect(() => {
+    const systemInfo = Taro.getSystemInfoSync()
+    const menuButtonInfo = Taro.getMenuButtonBoundingClientRect()
+    setStatusBarHeight(systemInfo.statusBarHeight || 0)
+    setNavBarHeight((menuButtonInfo.top - (systemInfo.statusBarHeight || 0)) * 2 + menuButtonInfo.height)
+  }, [])
 
   // 加载活动数据
   useEffect(() => {
@@ -174,8 +184,8 @@ const SignupPage = () => {
   const isTransportStep = currentStepConfig.key === 'transport'
 
   return (
-    <View className={`signup-page theme-${theme}`}>
-      <View className="signup-header">
+    <View className={`signup-page theme-${theme}`} style={{ paddingTop: `${statusBarHeight + navBarHeight}px` }}>
+      <View className="signup-header" style={{ paddingTop: `${statusBarHeight}px`, height: `${navBarHeight}px` }}>
         <View 
           className="header-back" 
           onClick={currentStep === 0 ? handleClose : handlePrev}

@@ -54,11 +54,15 @@ $dark-text: #f8fafc;
 .signup-header {
   display: flex;
   align-items: center;
-  padding: 28rpx 36rpx;
+  padding-left: 36rpx;
+  padding-right: 36rpx;
   gap: 24rpx;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  box-sizing: content-box;
 
   .header-back,
   .header-close {
@@ -227,7 +231,15 @@ $dark-text: #f8fafc;
 
   .action-button.secondary {
     background: rgba(15, 23, 42, 0.04);
-    color: #0f172a;
+    color: #047857 !important;
+    
+    .btn-text {
+      color: #047857 !important;
+    }
+    
+    .btn-icon {
+      filter: brightness(0) saturate(100%) invert(29%) sepia(87%) saturate(1598%) hue-rotate(139deg) brightness(97%) contrast(97%);
+    }
   }
 
   .action-button.outline {
