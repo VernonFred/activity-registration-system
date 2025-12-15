@@ -135,6 +135,7 @@ $dark-text: #f8fafc;
   margin-bottom: 32rpx;
   box-shadow: 0 15rpx 40rpx rgba(15, 23, 42, 0.08);
   border: 2rpx solid rgba(15, 23, 42, 0.04);
+  gap: 24rpx;
 }
 
 .section-card-icon {
@@ -212,11 +213,15 @@ $dark-text: #f8fafc;
 
   .action-button.primary {
     background: linear-gradient(90deg, #ff9a3c 0%, #ff7d2b 100%);
-    color: #fff;
+    color: #ffffff !important;
     box-shadow: 0 15rpx 25rpx rgba(255, 158, 60, 0.35);
 
     .btn-icon {
       filter: brightness(0) invert(1);
+    }
+    
+    .btn-text {
+      color: #ffffff !important;
     }
   }
 

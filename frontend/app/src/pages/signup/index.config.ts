@@ -1,3 +1,4 @@
 export default {
-  navigationBarTitleText: '填写报名信息'
+  navigationBarTitleText: '活动报名',
+  navigationStyle: 'custom'
 }
