@@ -1,0 +1,170 @@
+/**
+ * 步骤指示器样式
+ */
+
+$accent-orange: #ff7a31;
+$dark-bg: #0f172a;
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 0;
+  column-gap: 8rpx;
+  background-color: transparent !important;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0; // Allow flex items to shrink below content size
+}
+
+.step-tab {
+  flex: 1;
+  border-radius: 30rpx;
+  padding: 12rpx 4rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.25s ease;
+  min-width: 0; // Allow shrinking
+}
+
+.tab-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-icon-img {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.tab-label {
+  font-size: 22rpx;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.step-connector {
+  width: 24rpx;
+  height: 2rpx;
+  margin: 0 4rpx;
+  border-radius: 999rpx;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.theme-light {
+  .step-tab {
+    background-color: transparent !important;
+    border-color: rgba(15, 23, 42, 0.06);
+    
+    .tab-label {
+      color: #475569;
+    }
+  }
+  
+  .tab-icon {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2rpx solid rgba(15, 23, 42, 0.08);
+  }
+  
+  .step-tab.active {
+    background: linear-gradient(180deg, #ffecd6 0%, #ffe1c2 100%);
+    border-color: rgba(255, 122, 49, 0.3);
+    
+    .tab-label {
+      color: $accent-orange;
+    }
+    
+    .tab-icon {
+      background: #ff8a3d;
+      border-color: transparent;
+      
+      .tab-icon-img {
+        filter: brightness(0) invert(1);
+      }
+    }
+  }
+  
+  .step-tab.completed {
+    border-color: rgba(15, 23, 42, 0.1);
+    background: rgba(15, 23, 42, 0.02);
+    
+    .tab-label {
+      color: #1f2937;
+    }
+  }
+  
+  .step-connector {
+    background: rgba(148, 163, 184, 0.5);
+    
+    &.completed {
+      background: #1f2937;
+    }
+  }
+}
+
+.theme-dark {
+  .step-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    
+    .tab-label {
+      color: #cbd5f5;
+    }
+  }
+  
+  .tab-icon {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2rpx solid rgba(255, 255, 255, 0.08);
+    
+    .tab-icon-img {
+      filter: brightness(0) invert(1);
+    }
+  }
+  
+  .step-tab.active {
+    background: linear-gradient(180deg, rgba(255, 138, 61, 0.25) 0%, rgba(255, 138, 61, 0.12) 100%);
+    border-color: rgba(255, 138, 61, 0.4);
+    
+    .tab-label {
+      color: #ffd7b0;
+    }
+    
+    .tab-icon {
+      background: #ff8a3d;
+      border-color: transparent;
+    }
+  }
+  
+  .step-tab.completed {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    
+    .tab-label {
+      color: #f8fafc;
+    }
+  }
+  
+  .step-connector {
+    background: rgba(255, 255, 255, 0.12);
+    
+    &.completed {
+      background: #ff8a3d;
+    }
+  }
+}

@@ -1,303 +1,296 @@
-@import '../../styles/variables';
+/**
+ * 报名页面 - 浅色橙色 UI
+ */
+
+$light-bg: #f4f5f9;
+$light-card: #fff;
+$orange: #ff8533;
+$dark-bg: #050608;
+$dark-card: #10121a;
+$dark-text: #f8fafc;
 
 .signup-page {
-  padding: 32rpx;
-  padding-bottom: 120rpx;
-  padding-top: calc(32rpx + constant(safe-area-inset-top)); // iOS < 11.2
-  padding-top: calc(32rpx + env(safe-area-inset-top)); // iOS >= 11.2
-  
-  &.loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  &.theme-light {
+    background: #f8f9fc;
+  }
+
+  &.theme-dark {
+    background: linear-gradient(180deg, #030303 0%, #090b13 70%, #040405 100%);
+  }
+}
+
+.signup-header {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 36rpx;
+  gap: 24rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  .header-back,
+  .header-close {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 24rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+  }
+
+  .header-back-icon,
+  .close-icon {
+    width: 32rpx;
+    height: 32rpx;
+  }
+
+  .header-titles {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4rpx;
+  }
+
+  .header-title {
+    font-size: 32rpx;
+    font-weight: 700;
+  }
+
+  .header-subtitle {
+    font-size: 24rpx;
+    opacity: 0.7;
   }
 }
 
-.activity-summary {
-  background: $background-blur;
-  padding: 32rpx;
-  border-radius: 24rpx;
-  box-shadow: $card-shadow;
-  margin-bottom: 32rpx;
-}
-
-.title {
-  font-size: 32rpx;
-  font-weight: 600;
-  margin-bottom: 16rpx;
-  color: $secondary-color;
-}
-
-.meta {
-  font-size: 26rpx;
-  color: rgba(29, 33, 41, 0.6);
-  margin-top: 8rpx;
-  display: block;
-}
-
-// Step indicator
-.step-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 32rpx;
-  padding: 24rpx;
-  background: $background-blur;
-  border-radius: 24rpx;
-  box-shadow: $card-shadow;
-}
-
-.step-item {
+.signup-body {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  
-  &.active .step-number {
-    background: $primary-color;
-    color: #fff;
-}
-
-  &.completed .step-number {
-    background: #52c41a;
-    color: #fff;
-  }
-}
-
-.step-number {
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 82, 217, 0.1);
-  color: $primary-color;
-  font-size: 24rpx;
-  font-weight: 600;
-  margin-bottom: 8rpx;
-}
-
-.step-title {
-  font-size: 22rpx;
-  color: rgba(29, 33, 41, 0.65);
-}
-
-.step-line {
-  position: absolute;
-  top: 24rpx;
-  left: 50%;
-  width: 100%;
-  height: 2rpx;
-  background: rgba(0, 82, 217, 0.2);
-  z-index: -1;
-}
-
-// Form section
-.form-section {
-  max-height: calc(100vh - 500rpx);
-  overflow-y: auto;
-}
-
-.section-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: $secondary-color;
-  margin-bottom: 24rpx;
-}
-
-.form-item {
-  margin-bottom: 32rpx;
-}
-
-.label {
-  font-size: 28rpx;
-  color: $secondary-color;
-  margin-bottom: 12rpx;
-  display: block;
-}
-
-.required {
-  color: #ff4d4f;
-  margin-left: 6rpx;
-}
-
-.input, .picker-value, .textarea-input {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 20rpx;
-  border: 1px solid rgba(0, 82, 217, 0.12);
-  font-size: 28rpx;
-  color: $secondary-color;
-  width: 100%;
+  padding: 16rpx 36rpx 32rpx;
   box-sizing: border-box;
 }
 
-.textarea-input {
-  min-height: 120rpx;
+.step-wrapper {
+  border-radius: 32rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  background-color: #ffffff !important;
+  box-shadow: 0 15rpx 40rpx rgba(15, 23, 42, 0.12);
+  border: 2rpx solid rgba(15, 23, 42, 0.04);
 }
 
-.picker-value {
-  color: rgba(29, 33, 41, 0.65);
+.step-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+  margin-bottom: 24rpx;
 
-.picker-arrow {
-  font-size: 20rpx;
-  color: rgba(29, 33, 41, 0.45);
-}
+  .step-tag {
+    font-size: 24rpx;
+    color: #94a3b8;
+  }
 
-// Checkbox group
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  padding: 20rpx;
-  background: #fff;
-  border-radius: 16rpx;
-  border: 1px solid rgba(0, 82, 217, 0.12);
-  
-  &.checked {
-    border-color: $primary-color;
-    background: rgba(0, 82, 217, 0.05);
+  .step-activity {
+    font-size: 26rpx;
+    font-weight: 600;
   }
 }
 
-.checkbox-box {
+.section-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff !important;
+  border-radius: 32rpx;
+  padding: 24rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 15rpx 40rpx rgba(15, 23, 42, 0.08);
+  border: 2rpx solid rgba(15, 23, 42, 0.04);
+}
+
+.section-card-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 133, 51, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-icon-img {
   width: 40rpx;
   height: 40rpx;
-  border: 2rpx solid rgba(0, 82, 217, 0.3);
-  border-radius: 8rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 16rpx;
-  
-  .checked & {
-    border-color: $primary-color;
-    background: $primary-color;
+}
+
+.section-card-info {
+  flex: 1;
+
+  .section-card-title {
+    font-size: 32rpx;
+    font-weight: 700;
+  }
+
+  .section-card-desc {
+    margin-top: 8rpx;
+    font-size: 24rpx;
+    color: #6b7280;
   }
 }
 
-.checkbox-check {
-  color: #fff;
-  font-size: 28rpx;
-  font-weight: bold;
+.section-card-step {
+  padding: 0 24rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #6b7280;
 }
 
-.checkbox-label {
-  flex: 1;
-  font-size: 28rpx;
-  color: $secondary-color;
-}
-
-// Switch
-.switch-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.switch-label {
-  font-size: 28rpx;
-  color: rgba(29, 33, 41, 0.65);
-}
-
-// Datetime picker
-.datetime-picker {
-  display: flex;
-  gap: 16rpx;
-  
-  .picker-value.half {
-    flex: 1;
-  }
-}
-
-// Bottom actions
-.bottom-actions {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 24rpx 32rpx;
-  background: #fff;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
-  display: flex;
-  gap: 16rpx;
-  z-index: 100;
-}
-
-.btn-primary, .btn-secondary {
-  flex: 1;
-  height: 88rpx;
-  border-radius: 999rpx;
-  font-size: 30rpx;
-  font-weight: 600;
-  border: none;
-}
-
-.btn-primary {
-  background: $primary-color;
-  color: #fff;
-}
-
-.btn-secondary {
-  background: rgba(0, 82, 217, 0.1);
-  color: $primary-color;
-}
-
-// Success modal
-.success-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
+.form-panel {
   border-radius: 32rpx;
-  padding: 64rpx 48rpx;
-  box-shadow: 0 24rpx 64rpx rgba(0, 0, 0, 0.12);
-  text-align: center;
-  min-width: 560rpx;
+  padding: 28rpx 24rpx 8rpx;
+  background-color: #ffffff !important;
+  box-shadow: 0 20rpx 60rpx rgba(15, 23, 42, 0.08);
+  border: 2rpx solid rgba(15, 23, 42, 0.04);
 }
 
-.success-icon {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  background: #52c41a;
-  color: #fff;
-  font-size: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 32rpx;
-}
-
-.success-title {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: $secondary-color;
-  display: block;
-  margin-bottom: 16rpx;
-}
-
-.success-subtitle {
-  font-size: 28rpx;
-  color: rgba(29, 33, 41, 0.65);
-  display: block;
-  margin-bottom: 48rpx;
-}
-
-.success-actions {
+.bottom-actions {
   display: flex;
   gap: 16rpx;
+  padding: 24rpx 36rpx 36rpx;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 2rpx solid rgba(15, 23, 42, 0.06);
+
+  .action-button {
+    border-radius: 999rpx;
+    height: 100rpx;
+    font-size: 32rpx;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12rpx;
+    transition: all 0.2s ease;
+    flex: 1;
+
+    .btn-icon {
+      width: 32rpx !important;
+      height: 32rpx !important;
+      flex-shrink: 0;
+      display: block;
+    }
+  }
+
+  .action-button.primary {
+    background: linear-gradient(90deg, #ff9a3c 0%, #ff7d2b 100%);
+    color: #fff;
+    box-shadow: 0 15rpx 25rpx rgba(255, 158, 60, 0.35);
+  }
+
+  .action-button.secondary {
+    background: rgba(15, 23, 42, 0.04);
+    color: #0f172a;
+  }
+
+  .action-button.outline {
+    border: 2rpx dashed rgba(15, 23, 42, 0.2);
+    color: #475569;
+  }
+}
+
+.action-button.loading {
+  opacity: 0.6;
+}
+
+.theme-dark {
+  .signup-header {
+    color: $dark-text;
+
+    .header-back,
+    .header-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2rpx solid rgba(255, 255, 255, 0.12);
+
+      .header-back-icon,
+      .close-icon {
+        filter: brightness(0) invert(1);
+      }
+    }
+  }
+
+  .signup-body {
+    color: $dark-text;
+  }
+
+  .step-wrapper {
+    background: $dark-card;
+    border: 2rpx solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.5);
+
+    .step-tag {
+      color: #8f9ab8;
+    }
+  }
+
+  .section-card,
+  .form-panel {
+    background: $dark-card;
+    border: 2rpx solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.45);
+  }
+
+  .section-card-desc {
+    color: #9aa3bf;
+  }
+
+  .section-card-step-text {
+    color: #a3b1d5;
+  }
+
+  .section-card-icon {
+    background: rgba(255, 133, 51, 0.25);
+
+    .section-icon-img {
+      filter: brightness(0) invert(1);
+    }
+  }
+
+  .bottom-actions {
+    background: rgba(5, 6, 8, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.08);
+
+    .action-button.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
+    }
+
+    .action-button.outline {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #cbd5f5;
+    }
+  }
+}
+
+.theme-light {
+  .signup-header {
+    background: #fff;
+    border-bottom: 2rpx solid rgba(15, 23, 42, 0.05);
+    color: #0f172a;
+
+    .header-back,
+    .header-close {
+      background: rgba(15, 23, 42, 0.04);
+      border: 2rpx solid rgba(15, 23, 42, 0.08);
+
+      .header-back-icon,
+      .close-icon {
+        filter: brightness(0);
+      }
+    }
+  }
+
+  .step-wrapper {
+    background: $light-card;
+  }
 }
