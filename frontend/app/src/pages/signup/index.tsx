@@ -43,10 +43,9 @@ const SignupPage = () => {
 
   // 计算导航栏高度
   useEffect(() => {
-    const systemInfo = Taro.getSystemInfoSync()
-    const menuButtonInfo = Taro.getMenuButtonBoundingClientRect()
-    setStatusBarHeight(systemInfo.statusBarHeight || 0)
-    setNavBarHeight((menuButtonInfo.top - (systemInfo.statusBarHeight || 0)) * 2 + menuButtonInfo.height)
+    const sysInfo = Taro.getSystemInfoSync()
+    setStatusBarHeight(sysInfo.statusBarHeight || 44)
+    // 移除动态计算 navBarHeight，使用固定高度或 CSS 控制
   }, [])
 
   // 加载活动数据
@@ -200,8 +199,11 @@ const SignupPage = () => {
   const isTransportStep = currentStepConfig.key === 'transport'
 
   return (
-    <View className={`signup-page theme-${theme}`} style={{ paddingTop: `${statusBarHeight + navBarHeight}px` }}>
-      <View className="signup-header" style={{ paddingTop: `${statusBarHeight}px`, height: `${navBarHeight}px` }}>
+    <View className={`signup-page theme-${theme}`}>
+      {/* 状态栏占位 */}
+      <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
+
+      <View className="signup-header">
         <View 
           className="header-back" 
           onClick={currentStep === 0 ? handleClose : handlePrev}
