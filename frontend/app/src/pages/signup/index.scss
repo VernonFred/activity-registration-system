@@ -13,6 +13,8 @@ $dark-text: #f8fafc;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 
   &.theme-light {
     background: #f8f9fc;
@@ -51,18 +53,24 @@ $dark-text: #f8fafc;
   }
 }
 
+.status-bar {
+  width: 100%;
+  background: transparent;
+  flex-shrink: 0;
+  z-index: 100;
+  position: sticky;
+  top: 0;
+}
+
 .signup-header {
   display: flex;
   align-items: center;
-  padding-left: 36rpx;
-  padding-right: 36rpx;
+  padding: 20rpx 36rpx;
   gap: 24rpx;
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 100;
-  box-sizing: content-box;
+  background: transparent;
 
   .header-back,
   .header-close {
@@ -192,8 +200,8 @@ $dark-text: #f8fafc;
   gap: 16rpx;
   padding: 24rpx 36rpx 36rpx;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.95);
-  border-top: 2rpx solid rgba(15, 23, 42, 0.06);
+  background: transparent !important;
+  border-top: none !important;
 
   .action-button {
     border-radius: 999rpx;
@@ -306,8 +314,8 @@ $dark-text: #f8fafc;
   }
 
   .bottom-actions {
-    background: rgba(5, 6, 8, 0.9);
-    border-top-color: rgba(255, 255, 255, 0.08);
+    background: transparent !important;
+    border-top: none !important;
 
     .action-button.secondary {
       background: rgba(255, 255, 255, 0.08);
