@@ -184,10 +184,6 @@ const SignupPage = () => {
         </View>
         <View className="header-titles">
           <Text className="header-title">活动报名</Text>
-          <Text className="header-subtitle">第 {currentStep + 1} / {STEPS.length} 步</Text>
-        </View>
-        <View className="header-close" onClick={handleClose}>
-          <Image src={iconClose} className="close-icon" mode="aspectFit" />
         </View>
       </View>
 
@@ -195,7 +191,6 @@ const SignupPage = () => {
         <View className="step-wrapper">
           <View className="step-header">
             <Text className="step-tag">填写报名信息</Text>
-            <Text className="step-activity">{activity.title}</Text>
           </View>
           <StepIndicator steps={STEPS} currentStep={currentStep} theme={theme} />
         </View>
@@ -207,7 +202,6 @@ const SignupPage = () => {
             )}
           </View>
           <View className="section-card-info">
-            <Text className="section-card-title">{currentStepConfig.title}</Text>
             <Text className="section-card-desc">
               {currentStepConfig.description || '请准确填写，信息将用于审核与通知'}
             </Text>

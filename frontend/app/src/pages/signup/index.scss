@@ -214,6 +214,10 @@ $dark-text: #f8fafc;
     background: linear-gradient(90deg, #ff9a3c 0%, #ff7d2b 100%);
     color: #fff;
     box-shadow: 0 15rpx 25rpx rgba(255, 158, 60, 0.35);
+
+    .btn-icon {
+      filter: brightness(0) invert(1);
+    }
   }
 
   .action-button.secondary {

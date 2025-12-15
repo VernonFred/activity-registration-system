@@ -80,5 +80,8 @@ export const DEFAULT_FORM_DATA = {
     pickup_point: 't2',
     arrival_time: '',
     flight_train_number: '',
+    dropoff_point: 't2',
+    return_time: '',
+    return_flight_train_number: '',
   },
 }

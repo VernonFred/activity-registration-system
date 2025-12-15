@@ -89,6 +89,56 @@ const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = '
           onInput={(e) => handleChange('flight_train_number', e.detail.value)}
         />
       </View>
+
+      {/* 送站点 */}
+      <View className="form-item">
+        <View className="form-label">
+          <Text className="label-text">送站点</Text>
+        </View>
+        <Picker
+          mode="selector"
+          range={PICKUP_OPTIONS}
+          rangeKey="label"
+          value={PICKUP_OPTIONS.findIndex(o => o.value === data.dropoff_point)}
+          onChange={(e) => handleChange('dropoff_point', PICKUP_OPTIONS[Number(e.detail.value)].value)}
+        >
+          <View className="form-select">
+            <Text className="select-text">{getPickupLabel(data.dropoff_point)}</Text>
+            <Image src={iconChevronDown} className="select-icon" mode="aspectFit" />
+          </View>
+        </Picker>
+      </View>
+
+      {/* 返程时间 */}
+      <View className="form-item">
+        <View className="form-label">
+          <Text className="label-text">返程时间</Text>
+        </View>
+        <Picker
+          mode="date"
+          value={data.return_time || ''}
+          onChange={(e) => handleChange('return_time', e.detail.value)}
+        >
+          <View className="form-select date-select">
+            <Text className="select-text">{formatDateTime(data.return_time)}</Text>
+            <Image src={iconCalendar} className="select-icon" mode="aspectFit" />
+          </View>
+        </Picker>
+      </View>
+
+      {/* 返程车次/航班号 */}
+      <View className="form-item">
+        <View className="form-label">
+          <Text className="label-text">返程车次/航班号</Text>
+        </View>
+        <Input
+          className="form-input"
+          placeholder="例如：G123或CA1234"
+          placeholderClass="placeholder"
+          value={data.return_flight_train_number || ''}
+          onInput={(e) => handleChange('return_flight_train_number', e.detail.value)}
+        />
+      </View>
     </View>
   )
 }

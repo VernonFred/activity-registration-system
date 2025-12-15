@@ -65,6 +65,9 @@ export interface TransportFormData {
   pickup_point?: string
   arrival_time?: string
   flight_train_number?: string
+  dropoff_point?: string
+  return_time?: string
+  return_flight_train_number?: string
 }
 
 // 完整报名表单数据
