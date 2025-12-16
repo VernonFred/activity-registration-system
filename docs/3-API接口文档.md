@@ -1,8 +1,8 @@
 # API 接口文档
 
-> **创建时间**: 2025年12月02日 23:50  
-> **最后更新**: 2025年12月10日 08:00  
-> **维护人**: Cursor AI  
+> **创建时间**: 2025年12月02日 23:50
+> **最后更新**: 2025年12月16日 15:00
+> **维护人**: Cursor AI + Claude AI
 > **API 基础路径**: `http://localhost:8000/api/v1`
 
 ---
@@ -11,6 +11,8 @@
 
 | 时间 | 变更类型 | 接口路径 | 变更内容 | 操作人 |
 |------|----------|----------|----------|--------|
+| 2025年12月16日 15:00 | 新增 | `/registrations` | 前端报名表单提交接口 | Claude AI |
+| 2025年12月16日 15:00 | 新增 | `/wechat/decrypt-phone` | 微信手机号解密接口 | Claude AI |
 | 2025年12月09日 19:30 | 修改 | `/activities/{id}` | 返回的 agenda 字段支持嵌套结构 | Cursor AI |
 | 2025年12月02日 23:50 | 整合 | - | 从 api_overview.md 整合所有接口 | Cursor AI |
 | 2024年01月28日 | 新增 | `/signups/bulk-review` | 批量审核报名 | - |
@@ -89,6 +91,55 @@
 | POST | `/signups/{id}/companions` | 添加同行人员 | 用户 |
 | PATCH | `/signups/{id}/companions/{companion_id}` | 更新同行人员 | 用户 |
 | DELETE | `/signups/{id}/companions/{companion_id}` | 删除同行人员 | 用户 |
+| **POST** | **`/registrations`** | **前端报名表单提交（新）** | **用户** |
+
+### 3.1 报名提交接口详情
+
+**POST** `/api/v1/registrations`
+
+前端报名表单提交接口，接收前端结构化表单数据并创建报名记录。
+
+**请求体**:
+```json
+{
+  "activity_id": 1,
+  "personal": {
+    "name": "张三",
+    "school": "清华大学",
+    "department": "计算机学院",
+    "position": "教授",
+    "phone": "13800138000"
+  },
+  "payment": {
+    "invoice_title": "清华大学",
+    "email": "zhangsan@example.com",
+    "payment_screenshot": "https://example.com/payment.jpg"
+  },
+  "accommodation": {
+    "accommodation_type": "organizer",
+    "hotel": "喜来登酒店",
+    "room_type": "standard",
+    "stay_type": "single"
+  },
+  "transport": {
+    "pickup_point": "火车南站",
+    "arrival_time": "2025-12-20 10:00",
+    "flight_train_number": "G1234",
+    "dropoff_point": "火车南站",
+    "return_time": "2025-12-22 15:00",
+    "return_flight_train_number": "G5678"
+  }
+}
+```
+
+**响应**:
+```json
+{
+  "success": true,
+  "signup_id": 123,
+  "message": "报名成功"
+}
+```
 
 ### 4. 用户模块 (Users)
 
@@ -144,6 +195,47 @@
 |------|------|------|------|
 | GET | `/scheduler/tasks` | 周期任务列表 | 管理员 |
 | POST | `/scheduler/run` | 立即运行任务 | 管理员 |
+
+### 11. 微信模块 (WeChat)
+
+| 方法 | 路径 | 描述 | 权限 |
+|------|------|------|------|
+| **POST** | **`/wechat/decrypt-phone`** | **微信手机号解密（新）** | **公开** |
+
+#### 11.1 微信手机号解密接口详情
+
+**POST** `/api/v1/wechat/decrypt-phone`
+
+解密微信小程序授权获取的用户手机号。
+
+**配置模式**:
+- **Mock模式** (开发环境): 返回模拟手机号 `13800138000`
+- **真实模式** (生产环境): 调用微信API解密
+
+**请求体**:
+```json
+{
+  "code": "wx_code_from_frontend"
+}
+```
+
+**响应** (成功):
+```json
+{
+  "success": true,
+  "phone_number": "13800138000",
+  "error_message": null
+}
+```
+
+**响应** (失败):
+```json
+{
+  "success": false,
+  "phone_number": null,
+  "error_message": "微信API请求超时"
+}
+```
 
 ---
 
