@@ -12,7 +12,7 @@ import Taro from '@tarojs/taro'
 import CustomTabBar from '../../components/CustomTabBar'
 import { useTheme } from '../../context/ThemeContext'
 import { FilterBar, StatusTabs, ActivityCard } from './components'
-import { mockActivities } from './mockData'
+import { fetchActivityList } from '../../services/activities'
 import type { ActivityItem, ActivityStatus, FilterState } from './types'
 import './index.scss'
 
@@ -39,14 +39,27 @@ const ActivitiesPage = () => {
     loadData()
   }, [])
 
-  // 加载数据（使用 Mock 数据）
+  // 加载数据（使用统一的 services）
   const loadData = async () => {
+    try {
       setLoading(true)
-    // 模拟网络请求延迟
-    await new Promise(resolve => setTimeout(resolve, 500))
-    setActivities(mockActivities)
-        setLoading(false)
-      }
+      const data = await fetchActivityList({
+        status: activeStatus,
+        city: filters.city && filters.city !== 'all' ? filters.city : undefined,
+      }) as ActivityItem[]
+      setActivities(data)
+    } catch (error) {
+      console.error('加载活动列表失败:', error)
+      Taro.showToast({
+        title: '加载失败，请稍后重试',
+        icon: 'none',
+        duration: 2000
+      })
+      setActivities([])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // 筛选后的数据
   const filteredActivities = useMemo(() => {
