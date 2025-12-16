@@ -514,7 +514,19 @@ export default function ActivityDetail() {
 
   // 加载活动数据
   useEffect(() => {
-    if (!activityId) return
+    // 参数校验：如果缺少 activityId，提示并返回上一页
+    if (!activityId || isNaN(activityId)) {
+      Taro.showToast({
+        title: '活动信息有误',
+        icon: 'none',
+        duration: 2000
+      })
+      setTimeout(() => {
+        Taro.navigateBack({ delta: 1 })
+      }, 2000)
+      return
+    }
+
     setLoading(true)
     fetchActivityDetail(activityId)
       .then((data) => {
