@@ -3,3 +3,4 @@ dist/
 .temp/
 .project
 .DS_Store
+.swc/
