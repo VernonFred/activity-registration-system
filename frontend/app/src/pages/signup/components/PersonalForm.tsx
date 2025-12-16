@@ -1,8 +1,9 @@
 /**
  * 个人信息表单组件
  * 按设计稿实现: 2025年12月15日
+ * 更新: 2025年12月16日 - 添加微信一键获取手机号功能
  */
-import { View, Text, Input, Image } from '@tarojs/components'
+import { View, Text, Input, Image, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { PersonalFormData } from '../types'
 import './FormStyles.scss'
@@ -21,9 +22,29 @@ const PersonalForm: React.FC<PersonalFormProps> = ({ data, onChange, theme = 'li
     onChange({ ...data, [field]: value })
   }
 
-  const handleGetPhoneNumber = () => {
-    // 微信小程序快速获取手机号
-    Taro.showToast({ title: '请手动输入手机号', icon: 'none' })
+  // 微信一键获取手机号
+  const handleGetPhoneNumber = (e: any) => {
+    console.log('获取手机号结果:', e.detail)
+
+    if (e.detail.errMsg === 'getPhoneNumber:ok') {
+      // 获取成功，需要将 code 发送到后端解密
+      const { code } = e.detail
+
+      // TODO: 调用后端 API 解密手机号
+      // 临时方案：提示用户手动输入
+      Taro.showModal({
+        title: '提示',
+        content: '获取手机号成功！请联系后端开发配置解密接口',
+        showCancel: false
+      })
+
+      // 示例：如果后端返回了手机号，可以这样设置
+      // onChange({ ...data, phone: decryptedPhoneNumber })
+    } else if (e.detail.errMsg === 'getPhoneNumber:fail user deny') {
+      Taro.showToast({ title: '您取消了授权', icon: 'none' })
+    } else {
+      Taro.showToast({ title: '获取失败，请手动输入', icon: 'none' })
+    }
   }
 
   return (
@@ -105,9 +126,13 @@ const PersonalForm: React.FC<PersonalFormProps> = ({ data, onChange, theme = 'li
             value={data.phone}
             onInput={(e) => handleChange('phone', e.detail.value)}
           />
-          <View className="quick-button" onClick={handleGetPhoneNumber}>
+          <Button
+            className="quick-button"
+            openType="getPhoneNumber"
+            onGetPhoneNumber={handleGetPhoneNumber}
+          >
             <Text className="quick-text">快速获取号码</Text>
-          </View>
+          </Button>
         </View>
       </View>
     </View>

@@ -181,7 +181,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
+    // 重置 Button 组件默认样式
+    &::after {
+      border: none;
+    }
+
     .quick-text {
       font-size: 26rpx;
       white-space: nowrap;

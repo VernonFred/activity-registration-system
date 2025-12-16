@@ -10,13 +10,14 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
-import { 
-  StepIndicator, 
-  PersonalForm, 
-  PaymentForm, 
-  AccommodationForm, 
+import { submitRegistration } from '../../services/signups'
+import {
+  StepIndicator,
+  PersonalForm,
+  PaymentForm,
+  AccommodationForm,
   TransportForm,
-  SuccessPage 
+  SuccessPage
 } from './components'
 import { STEPS, DEFAULT_FORM_DATA, VALIDATION_RULES } from './constants'
 import type { SignupFormData, ActivityInfo, SignupSuccessData } from './types'
@@ -140,12 +141,27 @@ const SignupPage = () => {
   const handleSubmit = async () => {
     try {
       setSubmitting(true)
-      // TODO: 调用真实API提交报名
-      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // 调用真实API提交报名
+      await submitRegistration({
+        activity_id: activityId,
+        personal: formData.personal,
+        payment: formData.payment,
+        accommodation: formData.accommodation,
+        transport: formData.transport,
+      })
+
       setShowSuccess(true)
-    } catch (error) {
+    } catch (error: any) {
       console.error('提交失败:', error)
-      Taro.showToast({ title: '提交失败，请重试', icon: 'none' })
+
+      // 根据错误类型显示不同提示
+      const errorMessage = error?.response?.data?.message || error?.message || '提交失败，请重试'
+      Taro.showToast({
+        title: errorMessage,
+        icon: 'none',
+        duration: 3000
+      })
     } finally {
       setSubmitting(false)
     }

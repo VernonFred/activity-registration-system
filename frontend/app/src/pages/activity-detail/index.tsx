@@ -9,7 +9,7 @@
  */
 import { useState, useEffect, useCallback } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
 import { addRecentView } from '../../utils/storage'
@@ -506,6 +506,15 @@ export default function ActivityDetail() {
   const [isLiked, setIsLiked] = useState(false)
   const [statusBarHeight, setStatusBarHeight] = useState(44)
 
+  // 配置微信分享（符合微信官方规范）
+  useShareAppMessage(() => {
+    return {
+      title: activity?.title || '精彩活动邀您参与',
+      path: `/pages/activity-detail/index?id=${activityId}`,
+      imageUrl: activity?.cover_url || undefined,
+    }
+  })
+
   // 初始化
   useEffect(() => {
     const sysInfo = Taro.getSystemInfoSync()
@@ -514,7 +523,19 @@ export default function ActivityDetail() {
 
   // 加载活动数据
   useEffect(() => {
-    if (!activityId) return
+    // 参数校验：如果缺少 activityId，提示并返回上一页
+    if (!activityId || isNaN(activityId)) {
+      Taro.showToast({
+        title: '活动信息有误',
+        icon: 'none',
+        duration: 2000
+      })
+      setTimeout(() => {
+        Taro.navigateBack({ delta: 1 })
+      }, 2000)
+      return
+    }
+
     setLoading(true)
     fetchActivityDetail(activityId)
       .then((data) => {
@@ -551,7 +572,15 @@ export default function ActivityDetail() {
   }, [isFavorited])
   const handleLike = useCallback(() => setIsLiked(!isLiked), [isLiked])
   const handleComment = useCallback(() => Taro.showToast({ title: '评论功能开发中', icon: 'none' }), [])
-  const handleShare = useCallback(() => Taro.showShareMenu({ withShareTicket: true }), [])
+
+  // 分享功能（符合微信官方规范：引导用户点击右上角分享）
+  const handleShare = useCallback(() => {
+    Taro.showToast({
+      title: '请点击右上角 ··· 分享',
+      icon: 'none',
+      duration: 2000
+    })
+  }, [])
   const handleSignup = useCallback(() => {
     if (!activityId) return
     Taro.navigateTo({ url: `/pages/signup/index?activity_id=${activityId}` })

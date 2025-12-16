@@ -45,6 +45,14 @@ const IndexPage = () => {
       setHistoryActivities(history)
     } catch (error) {
       console.error('加载数据失败:', error)
+      Taro.showToast({
+        title: '加载失败，请稍后重试',
+        icon: 'none',
+        duration: 2000
+      })
+      // 设置为空数组，避免后续渲染错误
+      setFeaturedActivities([])
+      setHistoryActivities([])
     } finally {
       setLoading(false)
     }
@@ -156,6 +164,11 @@ const IndexPage = () => {
             <View className="skeleton-cards">
               {[1, 2, 3].map(i => <View key={i} className="skeleton-card" />)}
             </View>
+          ) : featuredActivities.length === 0 ? (
+            <View className="empty-state">
+              <Text className="empty-text">暂无热门活动</Text>
+              <Text className="empty-desc">敬请期待更多精彩活动</Text>
+            </View>
           ) : (
             <>
               {/* 使用 Swiper 实现居中放大效果 - 两侧露出部分 */}
@@ -232,6 +245,11 @@ const IndexPage = () => {
           {loading ? (
             <View className="skeleton-list">
               {[1, 2, 3].map(i => <View key={i} className="skeleton-item" />)}
+            </View>
+          ) : historyActivities.length === 0 ? (
+            <View className="empty-state">
+              <Text className="empty-text">暂无历史活动</Text>
+              <Text className="empty-desc">历史活动记录将在此展示</Text>
             </View>
           ) : (
             <View className="history-list">
