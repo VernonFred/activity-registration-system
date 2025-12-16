@@ -17,7 +17,8 @@ import {
   PaymentForm,
   AccommodationForm,
   TransportForm,
-  SuccessPage
+  SuccessPage,
+  AddCompanionDialog
 } from './components'
 import { STEPS, DEFAULT_FORM_DATA, VALIDATION_RULES } from './constants'
 import type { SignupFormData, ActivityInfo, SignupSuccessData } from './types'
@@ -40,6 +41,7 @@ const SignupPage = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showCompanionDialog, setShowCompanionDialog] = useState(false)
 
   // 计算导航栏高度
   useEffect(() => {
@@ -172,8 +174,31 @@ const SignupPage = () => {
     Taro.navigateBack()
   }
 
-  // 完成
+  // 完成（点击成功页面的完成按钮）
   const handleFinish = () => {
+    // 弹出添加同行人员对话框
+    setShowCompanionDialog(true)
+  }
+
+  // 添加同行人员
+  const handleAddCompanion = () => {
+    setShowCompanionDialog(false)
+    // TODO: 跳转到添加同行人员页面
+    Taro.showToast({
+      title: '同行人员功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+    // 延迟返回
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 2000)
+  }
+
+  // 暂不添加同行人员
+  const handleSkipCompanion = () => {
+    setShowCompanionDialog(false)
+    // 直接返回上一页
     Taro.navigateBack()
   }
 
@@ -192,7 +217,17 @@ const SignupPage = () => {
       activity,
       personal: formData.personal,
     }
-    return <SuccessPage data={successData} onFinish={handleFinish} theme={theme} />
+    return (
+      <>
+        <SuccessPage data={successData} onFinish={handleFinish} theme={theme} />
+        <AddCompanionDialog
+          visible={showCompanionDialog}
+          onAddCompanion={handleAddCompanion}
+          onSkip={handleSkipCompanion}
+          theme={theme}
+        />
+      </>
+    )
   }
 
   const currentStepConfig = STEPS[currentStep]

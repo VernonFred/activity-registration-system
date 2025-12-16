@@ -187,12 +187,12 @@ $primary-orange: #FF8A1A;
   .tip-desc { color: #999999; }
   
   .finish-button {
-    background: #1A1A1A;
-    
+    background: $primary-green;
+
     .finish-text { color: #FFFFFF; }
-    
+
     &:active {
-      background: #333333;
+      opacity: 0.9;
     }
   }
 }
