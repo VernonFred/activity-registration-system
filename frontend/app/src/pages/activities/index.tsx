@@ -63,6 +63,10 @@ const ActivitiesPage = () => {
 
   // 筛选后的数据
   const filteredActivities = useMemo(() => {
+    // 确保 activities 是数组
+    if (!Array.isArray(activities)) {
+      return []
+    }
     return activities.filter(activity => {
       // 状态筛选
       if (activeStatus && activity.status !== activeStatus) {
