@@ -29,8 +29,8 @@ const ActivitiesPage = () => {
     status: '',
   })
   
-  // 状态标签（已开始、已结束、延期）
-  const [activeStatus, setActiveStatus] = useState<ActivityStatus>('started')
+  // 状态标签（未开始、进行中、已结束）
+  const [activeStatus, setActiveStatus] = useState<ActivityStatus>('ongoing')
 
   // 初始化
   useEffect(() => {

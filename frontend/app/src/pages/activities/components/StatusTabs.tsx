@@ -1,8 +1,8 @@
 /**
  * 状态标签切换组件
  * 创建时间: 2025年12月09日 12:00
- * 
- * 已开始 | 已结束 | 延期
+ *
+ * 未开始 | 进行中 | 已结束
  */
 
 import { View, Text } from '@tarojs/components'
@@ -15,9 +15,9 @@ interface StatusTabsProps {
 }
 
 const STATUS_OPTIONS: { label: string; value: ActivityStatus }[] = [
-  { label: '已开始', value: 'started' },
-  { label: '已结束', value: 'ended' },
-  { label: '延期', value: 'postponed' },
+  { label: '未开始', value: 'upcoming' },
+  { label: '进行中', value: 'ongoing' },
+  { label: '已结束', value: 'finished' },
 ]
 
 const StatusTabs = ({ activeStatus, onStatusChange }: StatusTabsProps) => {
