@@ -21,7 +21,14 @@ const AddCompanionDialog: React.FC<AddCompanionDialogProps> = ({
   onSkip,
   theme = 'light'
 }) => {
-  if (!visible) return null
+  console.log('✅ AddCompanionDialog 渲染，visible=', visible, 'theme=', theme)
+
+  if (!visible) {
+    console.log('⚠️ AddCompanionDialog: visible=false，返回 null')
+    return null
+  }
+
+  console.log('✅ AddCompanionDialog: 正在渲染弹窗')
 
   return (
     <View className={`companion-dialog-overlay theme-${theme}`}>

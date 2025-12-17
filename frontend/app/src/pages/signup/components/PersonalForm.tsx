@@ -5,6 +5,7 @@
  */
 import { View, Text, Input, Image, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { decryptWechatPhone } from '../../../services/wechat'
 import type { PersonalFormData } from '../types'
 import './FormStyles.scss'
 
@@ -23,23 +24,41 @@ const PersonalForm: React.FC<PersonalFormProps> = ({ data, onChange, theme = 'li
   }
 
   // 微信一键获取手机号
-  const handleGetPhoneNumber = (e: any) => {
+  const handleGetPhoneNumber = async (e: any) => {
     console.log('获取手机号结果:', e.detail)
 
     if (e.detail.errMsg === 'getPhoneNumber:ok') {
       // 获取成功，需要将 code 发送到后端解密
       const { code } = e.detail
 
-      // TODO: 调用后端 API 解密手机号
-      // 临时方案：提示用户手动输入
-      Taro.showModal({
-        title: '提示',
-        content: '获取手机号成功！请联系后端开发配置解密接口',
-        showCancel: false
-      })
+      try {
+        Taro.showLoading({ title: '获取中...', mask: true })
 
-      // 示例：如果后端返回了手机号，可以这样设置
-      // onChange({ ...data, phone: decryptedPhoneNumber })
+        // 调用后端 API 解密手机号
+        const result = await decryptWechatPhone(code)
+
+        Taro.hideLoading()
+
+        if (result.success && result.phone_number) {
+          // 设置手机号到表单
+          onChange({ ...data, phone: result.phone_number })
+          Taro.showToast({
+            title: '获取成功',
+            icon: 'success',
+            duration: 1500
+          })
+        } else {
+          throw new Error(result.error_message || '解密失败')
+        }
+      } catch (error: any) {
+        console.error('解密手机号失败:', error)
+        Taro.hideLoading()
+        Taro.showToast({
+          title: error?.message || '获取失败，请手动输入',
+          icon: 'none',
+          duration: 2000
+        })
+      }
     } else if (e.detail.errMsg === 'getPhoneNumber:fail user deny') {
       Taro.showToast({ title: '您取消了授权', icon: 'none' })
     } else {

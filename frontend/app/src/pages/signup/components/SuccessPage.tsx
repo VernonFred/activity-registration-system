@@ -28,6 +28,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanio
     return `${start}-${end}`
   }
 
+  // 处理完成按钮点击
+  const handleFinishClick = () => {
+    console.log('✅ SuccessPage: 完成按钮被点击')
+    onFinish()
+  }
+
   return (
     <View className={`success-page theme-${theme}`}>
       <View className="success-card">
@@ -80,7 +86,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanio
         <Text className="tip-desc">您可以随时在个人中心查看和修改报名信息</Text>
 
         {/* 完成按钮 */}
-        <View className="finish-button" onClick={onFinish}>
+        <View className="finish-button" onClick={handleFinishClick}>
           <Text className="finish-text">完成</Text>
         </View>
       </View>

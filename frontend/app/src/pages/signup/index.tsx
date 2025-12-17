@@ -176,8 +176,11 @@ const SignupPage = () => {
 
   // 完成（点击成功页面的完成按钮）
   const handleFinish = () => {
+    console.log('✅ handleFinish: 被调用，准备显示弹窗')
+    console.log('✅ 当前 showCompanionDialog 状态:', showCompanionDialog)
     // 弹出添加同行人员对话框
     setShowCompanionDialog(true)
+    console.log('✅ 已调用 setShowCompanionDialog(true)')
   }
 
   // 添加同行人员
@@ -213,6 +216,7 @@ const SignupPage = () => {
 
   // 成功页面
   if (showSuccess) {
+    console.log('✅ 渲染成功页面，showCompanionDialog=', showCompanionDialog)
     const successData: SignupSuccessData = {
       activity,
       personal: formData.personal,
