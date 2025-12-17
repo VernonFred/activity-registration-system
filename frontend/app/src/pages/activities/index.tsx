@@ -43,10 +43,15 @@ const ActivitiesPage = () => {
   const loadData = async () => {
     try {
       setLoading(true)
-      const data = await fetchActivityList({
+      const response = await fetchActivityList({
         status: activeStatus,
         city: filters.city && filters.city !== 'all' ? filters.city : undefined,
-      }) as ActivityItem[]
+      }) as any
+
+      // 处理返回数据格式
+      // Mock 模式返回 { items: [...], total, page, ... }
+      // 真实 API 可能直接返回数组
+      const data = Array.isArray(response) ? response : (response.items || [])
       setActivities(data)
     } catch (error) {
       console.error('加载活动列表失败:', error)
