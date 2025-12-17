@@ -1,4 +1,5 @@
 import api from './http'
+import { CONFIG } from '../config'
 
 export interface SignupPayload {
   activity_id: number
@@ -48,7 +49,24 @@ export const createSignup = async (payload: SignupPayload) => {
 
 // 提交报名表单（使用前端数据结构）
 export const submitRegistration = async (formData: RegistrationFormData) => {
-  const { data } = await api.post('/api/v1/registrations', formData)
+  // Mock 模式：返回模拟成功响应
+  if (CONFIG.USE_MOCK) {
+    console.log('📝 Mock模式：报名提交', formData)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          message: '报名成功',
+          registration_id: Math.floor(Math.random() * 10000),
+          registration_number: `REG${Date.now()}`,
+          data: formData
+        })
+      }, 800) // 模拟网络延迟
+    })
+  }
+
+  // 真实 API 模式：修复 URL（baseURL 已包含 /api/v1）
+  const { data } = await api.post('/registrations', formData)
   return data
 }
 
