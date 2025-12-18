@@ -222,7 +222,10 @@ const SignupPage = () => {
     }
     return (
       <>
-        <SuccessPage data={successData} onFinish={handleFinish} theme={theme} />
+        {/* 当弹窗显示时，隐藏成功页面，避免重叠 */}
+        {!showCompanionDialog && (
+          <SuccessPage data={successData} onFinish={handleFinish} theme={theme} />
+        )}
         <AddCompanionDialog
           visible={showCompanionDialog}
           onAddCompanion={handleAddCompanion}

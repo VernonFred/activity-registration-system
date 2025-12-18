@@ -4,7 +4,7 @@
  */
 
 // 活动状态类型
-export type ActivityStatus = 'started' | 'ended' | 'postponed'
+export type ActivityStatus = 'upcoming' | 'ongoing' | 'finished'
 
 // 筛选选项
 export interface FilterOption {
