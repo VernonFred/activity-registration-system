@@ -156,11 +156,13 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
     recordShare(Number(activity.id), 'wechat')
   }, [activity.id])
 
-  // 评论按钮 - 跳转到详情页评论区
+  // 评论按钮 - 功能开发中
   const handleComment = useCallback((e: any) => {
     e.stopPropagation()
-    Taro.navigateTo({
-      url: `/pages/activity-detail/index?id=${activity.id}&tab=comments`
+    Taro.showToast({
+      title: '评论功能开发中',
+      icon: 'none',
+      duration: 2000
     })
   }, [activity.id])
 
