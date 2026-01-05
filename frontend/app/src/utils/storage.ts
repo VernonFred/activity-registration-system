@@ -227,3 +227,61 @@ export function setFavorites(activityIds: number[]): void {
   }
 }
 
+// ==========================================
+// 点赞状态管理（本地缓存）
+// ==========================================
+
+const LIKES_KEY = 'liked_activities'
+
+/**
+ * 获取本地点赞列表
+ */
+export function getLikes(): Set<number> {
+  try {
+    const data = Taro.getStorageSync(LIKES_KEY)
+    if (!data) return new Set()
+    const ids: number[] = JSON.parse(data)
+    return new Set(ids)
+  } catch (error) {
+    console.error('读取点赞列表失败:', error)
+    return new Set()
+  }
+}
+
+/**
+ * 添加点赞（本地）
+ */
+export function addLike(activityId: number): void {
+  try {
+    const likes = getLikes()
+    likes.add(activityId)
+    Taro.setStorageSync(LIKES_KEY, JSON.stringify(Array.from(likes)))
+  } catch (error) {
+    console.error('保存点赞失败:', error)
+  }
+}
+
+/**
+ * 移除点赞（本地）
+ */
+export function removeLike(activityId: number): void {
+  try {
+    const likes = getLikes()
+    likes.delete(activityId)
+    Taro.setStorageSync(LIKES_KEY, JSON.stringify(Array.from(likes)))
+  } catch (error) {
+    console.error('移除点赞失败:', error)
+  }
+}
+
+/**
+ * 批量设置点赞状态（用于从服务器同步）
+ */
+export function setLikes(activityIds: number[]): void {
+  try {
+    Taro.setStorageSync(LIKES_KEY, JSON.stringify(activityIds))
+  } catch (error) {
+    console.error('设置点赞列表失败:', error)
+  }
+}
+
