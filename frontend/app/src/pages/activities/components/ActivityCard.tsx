@@ -130,7 +130,12 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
       await toggleLike(Number(activity.id), originalState)
       // 触觉反馈
       Taro.vibrateShort({ type: 'light' })
-      // 点赞成功不显示 Toast，保持简洁
+      // 显示点赞反馈
+      Taro.showToast({
+        title: originalState ? '已取消点赞' : '已点赞',
+        icon: 'none',
+        duration: 1000
+      })
     } catch (error) {
       // 失败时回滚状态
       setIsLiked(originalState)
