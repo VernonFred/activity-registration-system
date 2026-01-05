@@ -198,9 +198,61 @@ const SignupPage = () => {
     }
   }
 
-  // 关闭页面
+  // 检查表单是否有填写内容（对比当前表单和默认表单）
+  const isFormDirty = (): boolean => {
+    // 检查个人信息
+    if (formData.personal.name.trim() !== '') return true
+    if (formData.personal.school.trim() !== '') return true
+    if (formData.personal.department.trim() !== '') return true
+    if (formData.personal.position?.trim() !== '') return true
+    if (formData.personal.phone.trim() !== '') return true
+
+    // 检查缴费信息
+    if (formData.payment.invoice_title.trim() !== '') return true
+    if (formData.payment.email.trim() !== '') return true
+    if (formData.payment.payment_screenshot?.trim() !== '') return true
+
+    // 检查住宿信息（对比默认值）
+    if (formData.accommodation.accommodation_type !== DEFAULT_FORM_DATA.accommodation.accommodation_type) return true
+    if (formData.accommodation.hotel !== DEFAULT_FORM_DATA.accommodation.hotel) return true
+    if (formData.accommodation.room_type !== DEFAULT_FORM_DATA.accommodation.room_type) return true
+    if (formData.accommodation.stay_type !== DEFAULT_FORM_DATA.accommodation.stay_type) return true
+
+    // 检查交通信息（对比默认值）
+    if (formData.transport.pickup_point !== DEFAULT_FORM_DATA.transport.pickup_point) return true
+    if (formData.transport.arrival_time?.trim() !== '') return true
+    if (formData.transport.flight_train_number?.trim() !== '') return true
+    if (formData.transport.dropoff_point !== DEFAULT_FORM_DATA.transport.dropoff_point) return true
+    if (formData.transport.return_time?.trim() !== '') return true
+    if (formData.transport.return_flight_train_number?.trim() !== '') return true
+
+    return false
+  }
+
+  // 关闭页面（右上角 ✕ 按钮）
   const handleClose = () => {
-    Taro.navigateBack()
+    // 智能退出逻辑
+    if (isFormDirty()) {
+      // 表单有内容，显示确认弹窗
+      Taro.showModal({
+        title: '您确定要退出报名填写的页面吗？',
+        content: '',
+        confirmText: '确定',
+        cancelText: '取消',
+        confirmColor: '#1E5A3C',
+        cancelColor: '#E74C3C',
+        success: (res) => {
+          if (res.confirm) {
+            // 用户确认退出
+            Taro.navigateBack()
+          }
+          // 用户取消，不做任何操作
+        }
+      })
+    } else {
+      // 表单为空，直接退出
+      Taro.navigateBack()
+    }
   }
 
   // 完成（点击成功页面的完成按钮）
@@ -293,14 +345,17 @@ const SignupPage = () => {
       <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
 
       <View className="signup-header">
-        <View 
-          className="header-back" 
+        <View
+          className="header-back"
           onClick={currentStep === 0 ? handleClose : handlePrev}
         >
           <Image src={iconArrowLeft} className="header-back-icon" mode="aspectFit" />
         </View>
         <View className="header-titles">
           <Text className="header-title">活动报名</Text>
+        </View>
+        <View className="header-close" onClick={handleClose}>
+          <Image src={iconClose} className="close-icon" mode="aspectFit" />
         </View>
       </View>
 
