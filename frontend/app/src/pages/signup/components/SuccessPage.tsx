@@ -18,7 +18,7 @@ interface SuccessPageProps {
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanion, theme = 'light' }) => {
-  const { activity, personal } = data
+  const { activity, personal, companionCount } = data
 
   // 格式化日期
   const formatDateRange = () => {
@@ -26,6 +26,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanio
     const start = activity.start_time.split('T')[0].replace(/-/g, '.')
     const end = activity.end_time.split('T')[0].replace(/-/g, '.')
     return `${start}-${end}`
+  }
+
+  // 根据同行人员数量显示不同标题
+  const getTitle = () => {
+    if (companionCount !== undefined && companionCount > 0) {
+      return `已添加同行人员 ${companionCount}`
+    }
+    return '报名成功！'
   }
 
   // 处理完成按钮点击
@@ -45,7 +53,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanio
         </View>
 
         {/* 标题 */}
-        <Text className="success-title">报名成功！</Text>
+        <Text className="success-title">{getTitle()}</Text>
 
         {/* 活动信息 */}
         <Text className="activity-title">{activity.title}</Text>

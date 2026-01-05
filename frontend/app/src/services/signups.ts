@@ -83,3 +83,32 @@ export const reviewSignup = async (
   const { data } = await api.post(`/signups/${signupId}/review`, { action, message })
   return data
 }
+
+/**
+ * 创建同行人员
+ * @param signupId 主报名ID
+ * @param companionData 同行人员数据（不包含 activity_id，继承主报名的活动ID）
+ */
+export const createCompanion = async (
+  signupId: number,
+  companionData: Omit<RegistrationFormData, 'activity_id'>
+) => {
+  // Mock 模式：返回模拟成功响应
+  if (CONFIG.USE_MOCK) {
+    console.log('📝 Mock模式：同行人员创建', { signupId, companionData })
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          message: '已添加同行人员',
+          companion_id: Math.floor(Math.random() * 10000),
+          data: companionData
+        })
+      }, 600) // 模拟网络延迟
+    })
+  }
+
+  // 真实 API 模式
+  const { data } = await api.post(`/signups/${signupId}/companions`, companionData)
+  return data
+}

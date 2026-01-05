@@ -10,7 +10,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
-import { submitRegistration } from '../../services/signups'
+import { submitRegistration, createCompanion } from '../../services/signups'
 import {
   StepIndicator,
   PersonalForm,
@@ -42,6 +42,11 @@ const SignupPage = () => {
   const [submitting, setSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showCompanionDialog, setShowCompanionDialog] = useState(false)
+
+  // 同行人员状态
+  const [isAddingCompanion, setIsAddingCompanion] = useState(false)
+  const [companionCount, setCompanionCount] = useState(0)
+  const [signupId, setSignupId] = useState<number | null>(null)
 
   // 计算导航栏高度
   useEffect(() => {
@@ -143,16 +148,41 @@ const SignupPage = () => {
     try {
       setSubmitting(true)
 
-      // 调用真实API提交报名
-      await submitRegistration({
-        activity_id: activityId,
-        personal: formData.personal,
-        payment: formData.payment,
-        accommodation: formData.accommodation,
-        transport: formData.transport,
-      })
+      if (isAddingCompanion && signupId) {
+        // 同行人员模式：提交同行人员
+        await createCompanion(signupId, {
+          personal: formData.personal,
+          payment: formData.payment,
+          accommodation: formData.accommodation,
+          transport: formData.transport,
+        })
 
-      setShowSuccess(true)
+        // 增加同行人员计数
+        setCompanionCount(prev => prev + 1)
+
+        Taro.showToast({
+          title: '已添加同行人员',
+          icon: 'success',
+          duration: 1500
+        })
+
+        // 显示成功页面
+        setShowSuccess(true)
+      } else {
+        // 主报名模式：提交主报名
+        const result: any = await submitRegistration({
+          activity_id: activityId,
+          personal: formData.personal,
+          payment: formData.payment,
+          accommodation: formData.accommodation,
+          transport: formData.transport,
+        })
+
+        // 保存报名ID，用于后续添加同行人员
+        setSignupId(result?.registration_id || result?.id)
+
+        setShowSuccess(true)
+      }
     } catch (error: any) {
       console.error('提交失败:', error)
 
@@ -184,22 +214,38 @@ const SignupPage = () => {
 
   // 添加同行人员
   const handleAddCompanion = () => {
+    console.log('✅ handleAddCompanion: 进入同行人员模式')
     setShowCompanionDialog(false)
-    // TODO: 跳转到添加同行人员页面
+
+    // 进入同行人员模式
+    setIsAddingCompanion(true)
+
+    // 重置表单数据
+    setFormData(DEFAULT_FORM_DATA)
+
+    // 重置到第一步
+    setCurrentStep(0)
+
+    // 隐藏成功页面，显示表单
+    setShowSuccess(false)
+
     Taro.showToast({
-      title: '同行人员功能开发中',
+      title: '请填写同行人员信息',
       icon: 'none',
-      duration: 2000
+      duration: 1500
     })
-    // 延迟返回
-    setTimeout(() => {
-      Taro.navigateBack()
-    }, 2000)
   }
 
   // 暂不添加同行人员
   const handleSkipCompanion = () => {
+    console.log('✅ handleSkipCompanion: 用户选择暂不添加')
     setShowCompanionDialog(false)
+
+    // 重置同行人员状态
+    setIsAddingCompanion(false)
+    setCompanionCount(0)
+    setSignupId(null)
+
     // 直接返回上一页
     Taro.navigateBack()
   }
@@ -219,6 +265,7 @@ const SignupPage = () => {
     const successData: SignupSuccessData = {
       activity,
       personal: formData.personal,
+      companionCount: isAddingCompanion ? companionCount : undefined,
     }
     return (
       <>

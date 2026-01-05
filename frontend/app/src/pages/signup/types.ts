@@ -92,4 +92,5 @@ export interface ActivityInfo {
 export interface SignupSuccessData {
   activity: ActivityInfo
   personal: PersonalFormData
+  companionCount?: number  // 已添加的同行人员数量
 }
