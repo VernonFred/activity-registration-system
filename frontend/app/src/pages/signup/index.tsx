@@ -35,6 +35,7 @@ const SignupPage = () => {
   const { theme } = useTheme()
   const [statusBarHeight, setStatusBarHeight] = useState(0)
   const [navBarHeight, setNavBarHeight] = useState(0)
+  const [windowWidth, setWindowWidth] = useState(375)
   const [menuButtonRect, setMenuButtonRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
 
   const [activity, setActivity] = useState<ActivityInfo | null>(null)
@@ -53,6 +54,7 @@ const SignupPage = () => {
   useEffect(() => {
     const sysInfo = Taro.getSystemInfoSync()
     setStatusBarHeight(sysInfo.statusBarHeight || 44)
+    setWindowWidth(sysInfo.windowWidth || 375)
 
     // 获取微信胶囊按钮位置（用于避免退出按钮重叠）
     try {
@@ -373,7 +375,7 @@ const SignupPage = () => {
           className="header-close"
           onClick={handleClose}
           style={{
-            right: menuButtonRect.left > 0 ? `${menuButtonRect.width + 16}px` : '100px'
+            right: menuButtonRect.left > 0 ? `${windowWidth - menuButtonRect.left + 16}px` : '100px'
           }}
         >
           <Image src={iconClose} className="close-icon" mode="aspectFit" />
