@@ -35,6 +35,7 @@ const SignupPage = () => {
   const { theme } = useTheme()
   const [statusBarHeight, setStatusBarHeight] = useState(0)
   const [navBarHeight, setNavBarHeight] = useState(0)
+  const [menuButtonRect, setMenuButtonRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
 
   const [activity, setActivity] = useState<ActivityInfo | null>(null)
   const [formData, setFormData] = useState<SignupFormData>(DEFAULT_FORM_DATA)
@@ -48,11 +49,25 @@ const SignupPage = () => {
   const [companionCount, setCompanionCount] = useState(0)
   const [signupId, setSignupId] = useState<number | null>(null)
 
-  // 计算导航栏高度
+  // 计算导航栏高度和胶囊按钮位置
   useEffect(() => {
     const sysInfo = Taro.getSystemInfoSync()
     setStatusBarHeight(sysInfo.statusBarHeight || 44)
-    // 移除动态计算 navBarHeight，使用固定高度或 CSS 控制
+
+    // 获取微信胶囊按钮位置（用于避免退出按钮重叠）
+    try {
+      const rect = Taro.getMenuButtonBoundingClientRect()
+      setMenuButtonRect(rect)
+    } catch (error) {
+      console.error('获取胶囊按钮位置失败:', error)
+      // 降级方案：使用默认值
+      setMenuButtonRect({
+        left: sysInfo.windowWidth - 87,
+        top: sysInfo.statusBarHeight || 44,
+        width: 87,
+        height: 32
+      })
+    }
   }, [])
 
   // 加载活动数据
@@ -354,7 +369,13 @@ const SignupPage = () => {
         <View className="header-titles">
           <Text className="header-title">活动报名</Text>
         </View>
-        <View className="header-close" onClick={handleClose}>
+        <View
+          className="header-close"
+          onClick={handleClose}
+          style={{
+            right: menuButtonRect.left > 0 ? `${menuButtonRect.width + 16}px` : '100px'
+          }}
+        >
           <Image src={iconClose} className="close-icon" mode="aspectFit" />
         </View>
       </View>
