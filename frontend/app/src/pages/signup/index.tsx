@@ -375,7 +375,10 @@ const SignupPage = () => {
           className="header-close"
           onClick={handleClose}
           style={{
-            right: menuButtonRect.left > 0 ? `${windowWidth - menuButtonRect.left + 16}px` : '100px'
+            position: 'absolute',
+            top: menuButtonRect.top > 0 ? `${menuButtonRect.top}px` : `${statusBarHeight + 6}px`,
+            right: menuButtonRect.left > 0 ? `${windowWidth - menuButtonRect.left + 16}px` : '120px',
+            height: menuButtonRect.height > 0 ? `${menuButtonRect.height}px` : '32px',
           }}
         >
           <Image src={iconClose} className="close-icon" mode="aspectFit" />
