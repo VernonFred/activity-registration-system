@@ -1,8 +1,11 @@
 /**
  * 步骤指示器组件 - 圆形数字 + 连接线
- * 按设计稿实现: 2025年12月15日
+ * 按设计稿重构: 2026年1月6日
+ *
+ * 设计参考: 小程序端设计/立即报名-*.png
+ * 样式: 圆形数字 1-2-3-4，当前步骤高亮，连接线
  */
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import type { StepConfig } from '../types'
 import './StepIndicator.scss'
 
@@ -22,15 +25,16 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep, theme
 
         return (
           <View key={step.key} className="step-item">
-            <View className={`step-tab ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}>
-              <View className="tab-icon">
-                {step.icon && <Image src={step.icon} className="tab-icon-img" mode="aspectFit" />}
-              </View>
-              <Text className="tab-label">{step.title}</Text>
+            {/* 步骤圆圈 */}
+            <View
+              className={`step-circle ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+            >
+              <Text className="step-number">{step.number}</Text>
             </View>
-            
+
+            {/* 连接线 */}
             {!isLast && (
-              <View className={`step-connector ${isCompleted ? 'completed' : ''}`}></View>
+              <View className={`step-line ${isCompleted ? 'completed' : ''}`} />
             )}
           </View>
         )

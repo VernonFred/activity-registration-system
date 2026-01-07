@@ -1,7 +1,7 @@
 /**
- * 报名页面 - 按设计稿重构
- * 重构时间: 2025年12月15日
- * 
+ * 报名页面 - 弹窗式卡片设计
+ * 重构时间: 2026年1月6日
+ *
  * 设计参考: 小程序端设计/立即报名-*.png
  * 分步表单: 个人信息 → 缴费信息 → 住宿信息 → 交通信息 → 成功
  */
@@ -34,9 +34,6 @@ const SignupPage = () => {
   const activityId = Number(router.params.activityId || router.params.activity_id)
   const { theme } = useTheme()
   const [statusBarHeight, setStatusBarHeight] = useState(0)
-  const [navBarHeight, setNavBarHeight] = useState(0)
-  const [windowWidth, setWindowWidth] = useState(375)
-  const [menuButtonRect, setMenuButtonRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
 
   const [activity, setActivity] = useState<ActivityInfo | null>(null)
   const [formData, setFormData] = useState<SignupFormData>(DEFAULT_FORM_DATA)
@@ -50,26 +47,10 @@ const SignupPage = () => {
   const [companionCount, setCompanionCount] = useState(0)
   const [signupId, setSignupId] = useState<number | null>(null)
 
-  // 计算导航栏高度和胶囊按钮位置
+  // 获取状态栏高度（用于安全区域）
   useEffect(() => {
     const sysInfo = Taro.getSystemInfoSync()
     setStatusBarHeight(sysInfo.statusBarHeight || 44)
-    setWindowWidth(sysInfo.windowWidth || 375)
-
-    // 获取微信胶囊按钮位置（用于避免退出按钮重叠）
-    try {
-      const rect = Taro.getMenuButtonBoundingClientRect()
-      setMenuButtonRect(rect)
-    } catch (error) {
-      console.error('获取胶囊按钮位置失败:', error)
-      // 降级方案：使用默认值
-      setMenuButtonRect({
-        left: sysInfo.windowWidth - 87,
-        top: sysInfo.statusBarHeight || 44,
-        width: 87,
-        height: 32
-      })
-    }
   }, [])
 
   // 加载活动数据
@@ -101,7 +82,7 @@ const SignupPage = () => {
   // 验证当前步骤
   const validateStep = (): boolean => {
     const step = STEPS[currentStep]
-    
+
     if (step.key === 'personal') {
       const { name, school, department, phone } = formData.personal
       if (!name.trim()) {
@@ -121,7 +102,7 @@ const SignupPage = () => {
         return false
       }
     }
-    
+
     if (step.key === 'payment') {
       const { invoice_title, email } = formData.payment
       if (!invoice_title.trim()) {
@@ -133,14 +114,14 @@ const SignupPage = () => {
         return false
       }
     }
-    
+
     return true
   }
 
   // 下一步
   const handleNext = () => {
     if (!validateStep()) return
-    
+
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(prev => prev + 1)
     } else {
@@ -274,16 +255,12 @@ const SignupPage = () => {
 
   // 完成（点击成功页面的完成按钮）
   const handleFinish = () => {
-    console.log('✅ handleFinish: 被调用，准备显示弹窗')
-    console.log('✅ 当前 showCompanionDialog 状态:', showCompanionDialog)
     // 弹出添加同行人员对话框
     setShowCompanionDialog(true)
-    console.log('✅ 已调用 setShowCompanionDialog(true)')
   }
 
   // 添加同行人员
   const handleAddCompanion = () => {
-    console.log('✅ handleAddCompanion: 进入同行人员模式')
     setShowCompanionDialog(false)
 
     // 进入同行人员模式
@@ -307,7 +284,6 @@ const SignupPage = () => {
 
   // 暂不添加同行人员
   const handleSkipCompanion = () => {
-    console.log('✅ handleSkipCompanion: 用户选择暂不添加')
     setShowCompanionDialog(false)
 
     // 重置同行人员状态
@@ -330,12 +306,12 @@ const SignupPage = () => {
 
   // 成功页面
   if (showSuccess) {
-    console.log('✅ 渲染成功页面，showCompanionDialog=', showCompanionDialog)
     const successData: SignupSuccessData = {
       activity,
       personal: formData.personal,
       companionCount: isAddingCompanion ? companionCount : undefined,
     }
+
     return (
       <>
         {/* 当弹窗显示时，隐藏成功页面，避免重叠 */}
@@ -358,118 +334,93 @@ const SignupPage = () => {
 
   return (
     <View className={`signup-page theme-${theme}`}>
-      {/* 状态栏占位 */}
+      {/* 状态栏占位 - 保持顶部安全区域 */}
       <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
 
-      <View className="signup-header">
-        <View
-          className="header-back"
-          onClick={currentStep === 0 ? handleClose : handlePrev}
-        >
-          <Image src={iconArrowLeft} className="header-back-icon" mode="aspectFit" />
-        </View>
-        <View className="header-titles">
-          <Text className="header-title">活动报名</Text>
-        </View>
-        <View
-          className="header-close"
-          onClick={handleClose}
-          style={{
-            position: 'absolute',
-            top: menuButtonRect.top > 0 ? `${menuButtonRect.top}px` : `${statusBarHeight + 6}px`,
-            right: menuButtonRect.left > 0 ? `${windowWidth - menuButtonRect.left + 16}px` : '120px',
-            height: menuButtonRect.height > 0 ? `${menuButtonRect.height}px` : '32px',
-          }}
-        >
-          <Image src={iconClose} className="close-icon" mode="aspectFit" />
-        </View>
-      </View>
-
-      <ScrollView className="signup-body" scrollY enhanced showScrollbar={false}>
-        <View className="step-wrapper">
-          <View className="step-header">
-            <Text className="step-tag">填写报名信息</Text>
+      {/* 弹窗式主卡片容器 */}
+      <View className="modal-card">
+        {/* 卡片头部：标题 + 关闭按钮 */}
+        <View className="card-header">
+          <View className="card-header-info">
+            <Text className="card-title">活动报名</Text>
+            <Text className="card-subtitle">{activity.title}</Text>
           </View>
-          <StepIndicator steps={STEPS} currentStep={currentStep} theme={theme} />
+          <View className="card-close" onClick={handleClose}>
+            <Image src={iconClose} className="close-icon" mode="aspectFit" />
+          </View>
         </View>
 
-        <View className="section-card">
-          <View className="section-card-icon">
-            {currentStepConfig.icon && (
-              <Image src={currentStepConfig.icon} className="section-icon-img" mode="aspectFit" />
+        {/* 步骤指示器 */}
+        <View className="step-section">
+          <StepIndicator steps={STEPS} currentStep={currentStep} theme={theme} />
+          <Text className="step-title">{currentStepConfig.title}</Text>
+        </View>
+
+        {/* 表单内容区域 - 可滚动 */}
+        <ScrollView className="form-scroll" scrollY enhanced showScrollbar={false}>
+          <View className="form-content">
+            {currentStepConfig.key === 'personal' && (
+              <PersonalForm
+                data={formData.personal}
+                onChange={(data) => setFormData(prev => ({ ...prev, personal: data }))}
+                theme={theme}
+              />
+            )}
+            {currentStepConfig.key === 'payment' && (
+              <PaymentForm
+                data={formData.payment}
+                onChange={(data) => setFormData(prev => ({ ...prev, payment: data }))}
+                theme={theme}
+              />
+            )}
+            {currentStepConfig.key === 'accommodation' && (
+              <AccommodationForm
+                data={formData.accommodation}
+                onChange={(data) => setFormData(prev => ({ ...prev, accommodation: data }))}
+                theme={theme}
+              />
+            )}
+            {currentStepConfig.key === 'transport' && (
+              <TransportForm
+                data={formData.transport}
+                onChange={(data) => setFormData(prev => ({ ...prev, transport: data }))}
+                theme={theme}
+              />
             )}
           </View>
-          <View className="section-card-info">
-            <Text className="section-card-desc">
-              {currentStepConfig.description || '请准确填写，信息将用于审核与通知'}
-            </Text>
-          </View>
-          <View className="section-card-step">
-            <Text className="section-card-step-text">{currentStep + 1}/{STEPS.length}</Text>
-          </View>
-        </View>
+        </ScrollView>
 
-        <View className="form-panel">
-          {currentStepConfig.key === 'personal' && (
-            <PersonalForm
-              data={formData.personal}
-              onChange={(data) => setFormData(prev => ({ ...prev, personal: data }))}
-              theme={theme}
-            />
-          )}
-          {currentStepConfig.key === 'payment' && (
-            <PaymentForm
-              data={formData.payment}
-              onChange={(data) => setFormData(prev => ({ ...prev, payment: data }))}
-              theme={theme}
-            />
-          )}
-          {currentStepConfig.key === 'accommodation' && (
-            <AccommodationForm
-              data={formData.accommodation}
-              onChange={(data) => setFormData(prev => ({ ...prev, accommodation: data }))}
-              theme={theme}
-            />
-          )}
-          {currentStepConfig.key === 'transport' && (
-            <TransportForm
-              data={formData.transport}
-              onChange={(data) => setFormData(prev => ({ ...prev, transport: data }))}
-              theme={theme}
-            />
-          )}
-        </View>
-      </ScrollView>
-
-      <View className="bottom-actions">
-        {currentStep > 0 && (
-          <View className="action-button secondary" onClick={handlePrev}>
-            <Image src={iconArrowLeft} className="btn-icon" mode="aspectFit" />
-            <Text className="btn-text">上一步</Text>
-          </View>
-        )}
-
-        {isTransportStep ? (
-          <>
-            <View className="action-button outline" onClick={handleSkip}>
-              <Text className="btn-text">稍后填写</Text>
+        {/* 底部操作按钮 */}
+        <View className="card-actions">
+          {currentStep > 0 && (
+            <View className="action-button secondary" onClick={handlePrev}>
+              <Image src={iconArrowLeft} className="btn-icon" mode="aspectFit" />
+              <Text className="btn-text">上一步</Text>
             </View>
-            <View 
-              className={`action-button primary ${submitting ? 'loading' : ''}`}
-              onClick={handleSubmit}
+          )}
+
+          {isTransportStep ? (
+            <>
+              <View className="action-button outline" onClick={handleSkip}>
+                <Text className="btn-text">稍后填写</Text>
+              </View>
+              <View
+                className={`action-button primary ${submitting ? 'loading' : ''}`}
+                onClick={handleSubmit}
+              >
+                <Text className="btn-text">提交报名</Text>
+              </View>
+            </>
+          ) : (
+            <View
+              className={`action-button primary ${currentStep === 0 ? 'full' : ''}`}
+              onClick={handleNext}
             >
-              <Text className="btn-text">提交报名</Text>
+              <Text className="btn-text">{isLastStep ? '提交报名' : '下一步'}</Text>
+              {!isLastStep && <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />}
             </View>
-          </>
-        ) : (
-          <View 
-            className={`action-button primary ${currentStep === 0 ? 'full' : ''}`}
-            onClick={handleNext}
-          >
-            <Text className="btn-text">{isLastStep ? '提交报名' : '下一步'}</Text>
-            {!isLastStep && <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />}
-          </View>
-        )}
+          )}
+        </View>
       </View>
     </View>
   )

@@ -1,105 +1,26 @@
 /**
- * 表单通用样式
+ * 表单通用样式 - 弹窗式设计
+ * 重构时间: 2026年1月6日
  */
 
+// 品牌色
+$primary-green: #1E5A3C;
+$primary-green-light: #2d7a52;
+
 .form-container {
-  padding: 0 16rpx 8rpx;
+  padding: 0;
   background-color: transparent !important;
 }
 
-.form-card {
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  .form-card-header {
-    display: flex;
-    align-items: center;
-    gap: 16rpx;
-    margin-bottom: 24rpx;
-
-    .header-icon {
-      width: 48rpx;
-      height: 48rpx;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      
-      .icon-img {
-        width: 24rpx;
-        height: 24rpx;
-      }
-    }
-
-    .header-title {
-      font-size: 30rpx;
-      font-weight: 600;
-    }
-  }
-}
+// ============================================================
+// 表单项
+// ============================================================
 
 .form-item {
-  margin-bottom: 56rpx;
-  
+  margin-bottom: 24rpx; // 从32rpx减少到24rpx
+
   &:last-child {
     margin-bottom: 0;
-  }
-}
-
-.theme-light {
-  .form-card {
-    &.green {
-      background: #effcf6;
-      border: 2rpx solid #dcfce7;
-      
-      .header-icon {
-        background: #10b981;
-        .icon-img { filter: brightness(0) invert(1); }
-      }
-      .header-title { color: #047857; }
-    }
-
-    &.red {
-      background: #fef2f2;
-      border: 2rpx solid #fee2e2;
-      
-      .header-icon {
-        background: #ef4444;
-        .icon-img { filter: brightness(0) invert(1); }
-      }
-      .header-title { color: #b91c1c; }
-    }
-  }
-}
-
-.theme-dark {
-  .form-card {
-    &.green {
-      background: rgba(16, 185, 129, 0.1);
-      border: 2rpx solid rgba(16, 185, 129, 0.2);
-      
-      .header-icon {
-        background: rgba(16, 185, 129, 0.2);
-        .icon-img { filter: brightness(0) invert(1); }
-      }
-      .header-title { color: #34d399; }
-    }
-
-    &.red {
-      background: rgba(239, 68, 68, 0.1);
-      border: 2rpx solid rgba(239, 68, 68, 0.2);
-      
-      .header-icon {
-        background: rgba(239, 68, 68, 0.2);
-        .icon-img { filter: brightness(0) invert(1); }
-      }
-      .header-title { color: #f87171; }
-    }
   }
 }
 
@@ -117,172 +38,213 @@
   }
 }
 
+// ============================================================
+// 表单标签
+// ============================================================
+
 .form-label {
   display: flex;
   align-items: center;
   margin-bottom: 16rpx;
-  
+
   .label-text {
     font-size: 28rpx;
     font-weight: 600;
   }
-  
+
   .required {
-    color: #FF4D4F;
+    color: #e53935;
     margin-left: 6rpx;
+    font-weight: 500;
   }
 }
 
+// ============================================================
+// 输入框
+// ============================================================
+
 .form-input,
-.file-upload,
-.form-select {
+.form-select,
+.file-upload {
   width: 100%;
   height: 96rpx;
   padding: 0 28rpx;
   font-size: 28rpx;
-  border-radius: 24rpx;
+  border-radius: 20rpx;
   box-sizing: border-box;
-  transition: all 0.25s ease;
-}
-
-.form-select {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  
-  .select-text {
-    font-size: 28rpx;
-  }
-  
-  .select-icon {
-    width: 32rpx;
-    height: 32rpx;
-  }
+  transition: all 0.2s ease;
 }
 
 .placeholder {
-  color: #9CA3AF;
+  color: #9ca3af;
 }
+
+// ============================================================
+// 带按钮的输入框
+// ============================================================
 
 .input-with-button {
   display: flex;
   gap: 16rpx;
-  
+
   .flex-1 {
     flex: 1;
   }
-  
+
   .quick-button {
     flex-shrink: 0;
-    padding: 0 32rpx;
+    padding: 0 28rpx;
     height: 96rpx;
-    border-radius: 24rpx;
-    border: 2rpx solid transparent;
+    border-radius: 20rpx;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
 
-    // 重置 Button 组件默认样式
     &::after {
       border: none;
     }
 
+    &:active {
+      transform: scale(0.98);
+    }
+
     .quick-text {
       font-size: 26rpx;
+      font-weight: 500;
       white-space: nowrap;
     }
   }
 }
 
+// ============================================================
+// 选择器
+// ============================================================
+
+.form-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .select-text {
+    font-size: 28rpx;
+  }
+
+  .select-icon {
+    width: 28rpx;
+    height: 28rpx;
+  }
+}
+
+// ============================================================
+// 单选按钮组
+// ============================================================
+
 .radio-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 32rpx;
+  gap: 24rpx;
 }
 
 .radio-item {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  
+  padding: 4rpx 0;
+
   .radio-circle {
-    width: 44rpx;
-    height: 44rpx;
+    width: 40rpx;
+    height: 40rpx;
     border-radius: 50%;
-    border: 2rpx solid;
+    border: 3rpx solid;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
   }
-  
+
   .radio-dot {
-    width: 18rpx;
-    height: 18rpx;
+    width: 16rpx;
+    height: 16rpx;
     border-radius: 50%;
+    transition: all 0.2s ease;
   }
-  
+
   .radio-label {
     font-size: 28rpx;
   }
 }
 
+// ============================================================
+// 文件上传
+// ============================================================
+
 .file-upload {
   display: flex;
   align-items: center;
   gap: 16rpx;
-  
+
   .upload-text {
     font-size: 28rpx;
   }
-  
+
   .upload-preview {
     height: 80rpx;
+    border-radius: 12rpx;
   }
 }
 
+// ============================================================
+// 提示信息
+// ============================================================
+
 .info-tip {
-  padding: 28rpx;
-  border-radius: 28rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
   margin-bottom: 32rpx;
-  
+
   .tip-text {
     font-size: 26rpx;
     line-height: 1.6;
   }
 }
 
+// ============================================================
+// 二维码区域
+// ============================================================
+
 .qrcode-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32rpx 0;
-  margin-bottom: 32rpx;
-  
+  padding: 16rpx 0 8rpx; // 大幅减少padding
+  margin-bottom: 24rpx; // 减少margin
+
   .qrcode-wrapper {
-    width: 320rpx;
-    height: 320rpx;
+    width: 200rpx; // 从320rpx缩小到200rpx
+    height: 200rpx; // 从320rpx缩小到200rpx
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
+
   .qrcode-placeholder {
-    width: 280rpx;
-    height: 280rpx;
-    border-radius: 32rpx;
+    width: 180rpx; // 从280rpx缩小到180rpx
+    height: 180rpx; // 从280rpx缩小到180rpx
+    border-radius: 16rpx; // 相应缩小圆角
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     .qrcode-text {
-      font-size: 28rpx;
+      font-size: 24rpx; // 缩小字体
     }
   }
-  
+
   .qrcode-tip {
-    margin-top: 24rpx;
-    font-size: 26rpx;
+    margin-top: 12rpx; // 减少间距
+    font-size: 24rpx; // 缩小字体
   }
 }
 
@@ -291,132 +253,304 @@
 // ============================================================
 
 .theme-light {
-  .form-label .label-text { color: #111827; }
-  
+  .form-label .label-text {
+    color: #1a1a1a;
+  }
+
   .form-input,
   .form-select,
   .file-upload {
-    background: #ffffff;
-    border: 2rpx solid #e2e8f0;
-    color: #0f172a;
-    box-shadow: none;
-    
+    background: #f8f9fa;
+    border: 2rpx solid transparent;
+    color: #1a1a1a;
+
     &:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 4rpx rgba(99, 102, 241, 0.15);
+      background: #ffffff;
+      border-color: $primary-green;
+      box-shadow: 0 0 0 4rpx rgba(30, 90, 60, 0.1);
     }
   }
-  
+
   .form-select {
-    .select-text { color: #0f172a; }
-    .select-icon { filter: brightness(0); opacity: 0.45; }
+    .select-text {
+      color: #1a1a1a;
+    }
+
+    .select-icon {
+      opacity: 0.4;
+    }
   }
-  
+
   .quick-button {
-    background: linear-gradient(90deg, #0f172a 0%, #111010 100%);
-    border-color: transparent;
-    
-    .quick-text { color: #ffffff; }
+    background: $primary-green;
+
+    &:active {
+      background: $primary-green-light;
+    }
+
+    .quick-text {
+      color: #ffffff;
+    }
   }
-  
+
   .radio-item {
     .radio-circle {
-      border-color: #d6dae3;
+      border-color: #d1d5db;
+      background: #ffffff;
     }
-    
-    .radio-label { color: #0f172a; }
-    
+
+    .radio-label {
+      color: #1a1a1a;
+    }
+
     &.active {
       .radio-circle {
-        border-color: #111827;
+        border-color: $primary-green;
+        background: #ffffff;
       }
+
       .radio-dot {
-        background: #111827;
+        background: $primary-green;
       }
     }
   }
-  
+
   .file-upload {
-    color: #334155;
+    color: #6b7280;
   }
-  
+
   .info-tip {
-    background: #eefcf4;
-    
-    .tip-text { color: #047857; }
+    background: rgba(30, 90, 60, 0.08);
+
+    .tip-text {
+      color: $primary-green;
+    }
   }
-  
+
   .qrcode-placeholder {
     background: #ffffff;
-    border: 2rpx dashed #d6dae3;
-    
-    .qrcode-text { color: #475569; }
+    border: 2rpx dashed #d1d5db;
+
+    .qrcode-text {
+      color: #6b7280;
+    }
   }
-  
-  .qrcode-tip { color: #7c879b; }
+
+  .qrcode-tip {
+    color: #9ca3af;
+  }
+}
+
+// ============================================================
+// 深色主题
+// ============================================================
+
+.theme-dark {
+  .form-label .label-text {
+    color: #f5f5f7;
+  }
+
+  .form-input,
+  .form-select,
+  .file-upload {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2rpx solid rgba(255, 255, 255, 0.1);
+    color: #f5f5f7;
+
+    &:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: $primary-green-light;
+      box-shadow: 0 0 0 4rpx rgba(45, 122, 82, 0.2);
+    }
+  }
+
+  .placeholder {
+    color: #6b7280;
+  }
+
+  .form-select {
+    .select-text {
+      color: #f5f5f7;
+    }
+
+    .select-icon {
+      filter: invert(1);
+      opacity: 0.5;
+    }
+  }
+
+  .quick-button {
+    background: $primary-green-light;
+
+    &:active {
+      background: $primary-green;
+    }
+
+    .quick-text {
+      color: #ffffff;
+    }
+  }
+
+  .radio-item {
+    .radio-circle {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: transparent;
+    }
+
+    .radio-label {
+      color: #f5f5f7;
+    }
+
+    &.active {
+      .radio-circle {
+        border-color: #4ade80;
+        background: transparent;
+      }
+
+      .radio-dot {
+        background: #4ade80;
+      }
+    }
+  }
+
+  .file-upload {
+    color: #8e8e93;
+  }
+
+  .info-tip {
+    background: rgba(45, 122, 82, 0.15);
+
+    .tip-text {
+      color: #4ade80;
+    }
+  }
+
+  .qrcode-placeholder {
+    background: rgba(255, 255, 255, 0.04);
+    border: 2rpx dashed rgba(255, 255, 255, 0.15);
+
+    .qrcode-text {
+      color: #8e8e93;
+    }
+  }
+
+  .qrcode-tip {
+    color: #6b7280;
+  }
+}
+
+// ============================================================
+// 兼容旧的卡片样式（如有使用）
+// ============================================================
+
+.form-card {
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    margin-bottom: 24rpx;
+
+    .header-icon {
+      width: 44rpx;
+      height: 44rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .icon-img {
+        width: 22rpx;
+        height: 22rpx;
+      }
+    }
+
+    .header-title {
+      font-size: 28rpx;
+      font-weight: 600;
+    }
+  }
+}
+
+.theme-light {
+  .form-card {
+    &.green {
+      background: rgba(30, 90, 60, 0.06);
+      border: 2rpx solid rgba(30, 90, 60, 0.12);
+
+      .header-icon {
+        background: $primary-green;
+
+        .icon-img {
+          filter: brightness(0) invert(1);
+        }
+      }
+
+      .header-title {
+        color: $primary-green;
+      }
+    }
+
+    &.red {
+      background: #fef2f2;
+      border: 2rpx solid #fee2e2;
+
+      .header-icon {
+        background: #ef4444;
+
+        .icon-img {
+          filter: brightness(0) invert(1);
+        }
+      }
+
+      .header-title {
+        color: #b91c1c;
+      }
+    }
+  }
 }
 
 .theme-dark {
-  .form-label .label-text { color: #f8fafc; }
-  
-  .form-input,
-  .form-select,
-  .file-upload {
-    background: #171921;
-    border: 2rpx solid #2d3342;
-    color: #f8fafc;
-    
-    &:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 4rpx rgba(56, 189, 248, 0.2);
-    }
-  }
-  
-  .form-select {
-    .select-text { color: #f8fafc; }
-    .select-icon { filter: brightness(0) invert(1); opacity: 0.5; }
-  }
-  
-  .quick-button {
-    background: linear-gradient(90deg, #2563eb 0%, #0f172a 100%);
-    border-color: rgba(255, 255, 255, 0.08);
-    
-    .quick-text { color: #ffffff; }
-  }
-  
-  .radio-item {
-    .radio-circle {
-      border-color: #3b4154;
-    }
-    
-    .radio-label { color: #f8fafc; }
-    
-    &.active {
-      .radio-circle {
-        border-color: #38bdf8;
+  .form-card {
+    &.green {
+      background: rgba(45, 122, 82, 0.1);
+      border: 2rpx solid rgba(45, 122, 82, 0.2);
+
+      .header-icon {
+        background: rgba(45, 122, 82, 0.3);
+
+        .icon-img {
+          filter: brightness(0) invert(1);
+        }
       }
-      .radio-dot {
-        background: #38bdf8;
+
+      .header-title {
+        color: #4ade80;
+      }
+    }
+
+    &.red {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2rpx solid rgba(239, 68, 68, 0.2);
+
+      .header-icon {
+        background: rgba(239, 68, 68, 0.2);
+
+        .icon-img {
+          filter: brightness(0) invert(1);
+        }
+      }
+
+      .header-title {
+        color: #f87171;
       }
     }
   }
-  
-  .file-upload {
-    color: #cbd5f5;
-  }
-  
-  .info-tip {
-    background: rgba(56, 189, 248, 0.08);
-    
-    .tip-text { color: #38bdf8; }
-  }
-  
-  .qrcode-placeholder {
-    background: #0f1016;
-    border: 2rpx dashed rgba(255, 255, 255, 0.15);
-    
-    .qrcode-text { color: #cbd5f5; }
-  }
-  
-  .qrcode-tip { color: #94a3b8; }
 }

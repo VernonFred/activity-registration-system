@@ -1,352 +1,533 @@
 /**
- * 报名页面 - 浅色橙色 UI
+ * 报名页面 - 弹窗式卡片设计
+ * 设计参考: 小程序端设计/立即报名-*.png
+ * 重构时间: 2026年1月6日
  */
 
-$light-bg: #f4f5f9;
-$light-card: #fff;
-$orange: #ff8533;
-$dark-bg: #050608;
-$dark-card: #10121a;
-$dark-text: #f8fafc;
+// ============================================================
+// 设计令牌
+// ============================================================
+
+// 浅色主题
+$light-overlay: rgba(30, 90, 60, 0.08);
+$light-card: #ffffff;
+$light-text-primary: #1a1a1a;
+$light-text-secondary: #6b7280;
+$light-border: rgba(0, 0, 0, 0.06);
+
+// 深色主题
+$dark-overlay: rgba(0, 0, 0, 0.85);
+$dark-card: #1c1c1e;
+$dark-text-primary: #f5f5f7;
+$dark-text-secondary: #8e8e93;
+$dark-border: rgba(255, 255, 255, 0.1);
+
+// 品牌色
+$primary-green: #1E5A3C;
+$primary-orange: #ff8a1a;
+$primary-gradient: linear-gradient(135deg, #1E5A3C 0%, #2d7a52 100%);
+$orange-gradient: linear-gradient(135deg, #ff9a3c 0%, #ff7d2b 100%);
+
+// 圆角
+$radius-sm: 12rpx;
+$radius-md: 20rpx;
+$radius-lg: 32rpx;
+$radius-xl: 40rpx;
+
+// ============================================================
+// 页面容器
+// ============================================================
 
 .signup-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  z-index: 1;
+  overflow: hidden;
 
+  // 浅色主题背景 - 模拟弹窗遮罩
   &.theme-light {
-    background: #f8f9fc;
+    background: linear-gradient(
+      180deg,
+      rgba(236, 240, 236, 0.98) 0%,
+      rgba(232, 238, 234, 0.95) 100%
+    );
   }
 
+  // 深色主题背景
   &.theme-dark {
-    background: linear-gradient(180deg, #030303 0%, #090b13 70%, #040405 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(10, 10, 12, 0.98) 0%,
+      rgba(15, 15, 18, 0.95) 100%
+    );
+  }
 
-    .step-wrapper {
-      background-color: #1e293b;
-      border-color: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 15rpx 40rpx rgba(0, 0, 0, 0.4);
-    }
+  // 加载状态
+  &.loading {
+    justify-content: center;
+    align-items: center;
 
-    .signup-header {
-      .header-title {
-        color: #f8fafc;
-      }
-      .header-subtitle {
-        color: rgba(248, 250, 252, 0.6);
-      }
-      .header-back, .header-close {
-        background: rgba(255, 255, 255, 0.1);
-        
-        .header-back-icon, .close-icon {
-          filter: invert(1) brightness(2);
-        }
-      }
-    }
-
-    .step-header {
-      .step-activity {
-        color: #f8fafc;
-      }
+    .loading-text {
+      font-size: 28rpx;
+      color: $light-text-secondary;
     }
   }
 }
 
+// 状态栏占位
 .status-bar {
   width: 100%;
-  background: transparent;
   flex-shrink: 0;
-  z-index: 100;
-  position: sticky;
-  top: 0;
 }
 
-.signup-header {
-  display: flex;
-  align-items: center;
-  padding: 32rpx 36rpx 20rpx;
-  gap: 24rpx;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: transparent;
+// ============================================================
+// 弹窗式主卡片
+// ============================================================
 
-  .header-back,
-  .header-close {
-    width: 72rpx;
-    height: 72rpx;
-    border-radius: 24rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .header-back-icon,
-  .close-icon {
-    width: 32rpx;
-    height: 32rpx;
-  }
-
-  .header-titles {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4rpx;
-  }
-
-  .header-title {
-    font-size: 32rpx;
-    font-weight: 700;
-  }
-
-  .header-subtitle {
-    font-size: 24rpx;
-    opacity: 0.7;
-  }
-}
-
-.signup-body {
+.modal-card {
   flex: 1;
-  padding: 16rpx 36rpx 32rpx;
-  box-sizing: border-box;
-}
-
-.step-wrapper {
-  border-radius: 32rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  background-color: #ffffff;
-  box-shadow: 0 15rpx 40rpx rgba(15, 23, 42, 0.12);
-  border: 2rpx solid rgba(15, 23, 42, 0.04);
-}
-
-.step-header {
   display: flex;
+  flex-direction: column;
+  margin: 48rpx; // 四周边距
+  margin-top: 120rpx; // 大幅增加顶部间距，避免与胶囊重合
+  margin-bottom: 48rpx; // 底部间距
+  border-radius: $radius-xl;
+  overflow: hidden;
+  position: relative;
+  max-height: calc(100vh - 240rpx); // 相应限制最大高度
+
+  // 浅色主题卡片
+  .theme-light & {
+    background: $light-card;
+    box-shadow:
+      0 4rpx 20rpx rgba(0, 0, 0, 0.03),
+      0 12rpx 40rpx rgba(0, 0, 0, 0.06),
+      0 24rpx 80rpx rgba(30, 90, 60, 0.08);
+  }
+
+  // 深色主题卡片
+  .theme-dark & {
+    background: $dark-card;
+    border: 1rpx solid $dark-border;
+    box-shadow:
+      0 8rpx 32rpx rgba(0, 0, 0, 0.4),
+      0 24rpx 80rpx rgba(0, 0, 0, 0.5);
+  }
+}
+
+// ============================================================
+// 卡片头部
+// ============================================================
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24rpx;
-
-  .step-tag {
-    font-size: 24rpx;
-    color: #94a3b8;
-  }
-
-  .step-activity {
-    font-size: 26rpx;
-    font-weight: 600;
-  }
+  padding: 56rpx 36rpx 24rpx; // 增加顶部内边距
+  flex-shrink: 0;
 }
 
-.section-card {
+.card-header-info {
+  flex: 1;
   display: flex;
-  align-items: center;
-  background-color: #ffffff;
-  border-radius: 32rpx;
-  padding: 24rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 15rpx 40rpx rgba(15, 23, 42, 0.08);
-  border: 2rpx solid rgba(15, 23, 42, 0.04);
-  gap: 24rpx;
+  flex-direction: column;
+  gap: 8rpx;
 }
 
-.section-card-icon {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 24rpx;
-  background: rgba(255, 133, 51, 0.15);
+.card-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  .theme-light & {
+    color: $light-text-primary;
+  }
+
+  .theme-dark & {
+    color: $dark-text-primary;
+  }
+}
+
+.card-subtitle {
+  font-size: 26rpx;
+  font-weight: 400;
+
+  .theme-light & {
+    color: $light-text-secondary;
+  }
+
+  .theme-dark & {
+    color: $dark-text-secondary;
+  }
+}
+
+// 关闭按钮 - 在卡片内部右上角
+.card-close {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  flex-shrink: 0;
+  margin-top: -4rpx;
+  margin-right: -8rpx;
+  transition: all 0.2s ease;
 
-.section-icon-img {
-  width: 40rpx;
-  height: 40rpx;
-}
+  .theme-light & {
+    background: rgba(0, 0, 0, 0.04);
 
-.section-card-info {
-  flex: 1;
-
-  .section-card-title {
-    font-size: 32rpx;
-    font-weight: 700;
+    &:active {
+      background: rgba(0, 0, 0, 0.08);
+      transform: scale(0.95);
+    }
   }
 
-  .section-card-desc {
-    margin-top: 8rpx;
-    font-size: 24rpx;
-    color: #6b7280;
+  .theme-dark & {
+    background: rgba(255, 255, 255, 0.08);
+
+    &:active {
+      background: rgba(255, 255, 255, 0.12);
+      transform: scale(0.95);
+    }
+  }
+
+  .close-icon {
+    width: 28rpx;
+    height: 28rpx;
+
+    .theme-light & {
+      opacity: 0.6;
+    }
+
+    .theme-dark & {
+      filter: invert(1);
+      opacity: 0.7;
+    }
   }
 }
 
-.section-card-step {
-  padding: 0 24rpx;
-  font-size: 26rpx;
-  font-weight: 500;
-  color: #6b7280;
-}
+// ============================================================
+// 步骤指示器区域
+// ============================================================
 
-.form-panel {
-  border-radius: 32rpx;
-  padding: 28rpx 24rpx 8rpx;
-  background-color: #ffffff;
-  box-shadow: 0 20rpx 60rpx rgba(15, 23, 42, 0.08);
-  border: 2rpx solid rgba(15, 23, 42, 0.04);
-}
-
-.bottom-actions {
+.step-section {
+  padding: 0 36rpx 16rpx;
   display: flex;
-  gap: 16rpx;
-  padding: 24rpx 36rpx 36rpx;
-  box-sizing: border-box;
-  background: transparent !important;
-  border-top: none !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx; // 缩小步骤器与标题的间距
+  flex-shrink: 0;
+}
 
-  .action-button {
-    border-radius: 999rpx;
-    height: 100rpx;
-    font-size: 32rpx;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12rpx;
-    transition: all 0.2s ease;
-    flex: 1;
+.step-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
 
-    .btn-icon {
-      width: 32rpx !important;
-      height: 32rpx !important;
-      flex-shrink: 0;
-      display: block;
-    }
+  .theme-light & {
+    color: $light-text-primary;
   }
 
-  .action-button.primary {
-    background: linear-gradient(90deg, #ff9a3c 0%, #ff7d2b 100%);
-    color: #ffffff !important;
-    box-shadow: 0 15rpx 25rpx rgba(255, 158, 60, 0.35);
+  .theme-dark & {
+    color: $dark-text-primary;
+  }
+}
 
-    .btn-icon {
-      filter: brightness(0) invert(1);
-    }
-    
+// ============================================================
+// 表单滚动区域
+// ============================================================
+
+.form-scroll {
+  flex: 1;
+  min-height: 0; // 关键：允许 flex 子元素收缩
+  position: relative; // 添加定位上下文
+  z-index: 1; // 确保低于按钮层级
+  pointer-events: auto; // 允许滚动
+}
+
+.form-content {
+  padding: 0 36rpx 120rpx; // 底部增加更多间距，防止与按钮重叠
+  pointer-events: auto; // 确保表单内容可交互
+}
+
+// ============================================================
+// 底部操作按钮
+// ============================================================
+
+.card-actions {
+  display: flex;
+  gap: 12rpx; // 减小按钮间距
+  padding: 16rpx 24rpx 24rpx; // 缩小左右内边距，给按钮更多空间
+  flex-shrink: 0;
+  position: relative; // 添加定位上下文
+  z-index: 100; // 确保按钮在最上层
+  pointer-events: auto; // 确保可以接收点击事件
+
+  .theme-light & {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 20%
+    );
+  }
+
+  .theme-dark & {
+    background: linear-gradient(
+      180deg,
+      rgba(28, 28, 30, 0) 0%,
+      rgba(28, 28, 30, 1) 20%
+    );
+  }
+}
+
+.action-button {
+  flex: 1;
+  height: 88rpx; // 稍微减小高度
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  font-size: 28rpx; // 稍微减小字体
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap; // 防止文字换行
+  min-width: 0; // 允许flex收缩
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .btn-icon {
+    width: 28rpx;
+    height: 28rpx;
+    flex-shrink: 0;
+  }
+
+  .btn-text {
+    font-size: 28rpx;
+    font-weight: 600;
+    white-space: nowrap; // 防止文字换行
+  }
+
+  // 主按钮 - 深绿渐变
+  &.primary {
+    background: $primary-gradient;
+    box-shadow: 0 8rpx 24rpx rgba(30, 90, 60, 0.3);
+
     .btn-text {
       color: #ffffff !important;
     }
-  }
 
-  .action-button.secondary {
-    background: rgba(15, 23, 42, 0.04);
-    color: #047857 !important;
-    
-    .btn-text {
-      color: #047857 !important;
-    }
-    
     .btn-icon {
-      filter: invert(28%) sepia(96%) saturate(1639%) hue-rotate(139deg) brightness(93%) contrast(101%);
-    }
-  }
-
-  .action-button.outline {
-    border: 2rpx dashed rgba(15, 23, 42, 0.2);
-    color: #475569;
-  }
-}
-
-.action-button.loading {
-  opacity: 0.6;
-}
-
-.theme-dark {
-  .signup-header {
-    color: $dark-text;
-
-    .header-back,
-    .header-close {
-      background: rgba(255, 255, 255, 0.08);
-      border: 2rpx solid rgba(255, 255, 255, 0.12);
-
-      .header-back-icon,
-      .close-icon {
-        filter: brightness(0) invert(1);
-      }
-    }
-  }
-
-  .signup-body {
-    color: $dark-text;
-  }
-
-  .step-wrapper {
-    background: $dark-card;
-    border: 2rpx solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.5);
-
-    .step-tag {
-      color: #8f9ab8;
-    }
-  }
-
-  .section-card,
-  .form-panel {
-    background: $dark-card;
-    border: 2rpx solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.45);
-  }
-
-  .section-card-desc {
-    color: #9aa3bf;
-  }
-
-  .section-card-step-text {
-    color: #a3b1d5;
-  }
-
-  .section-card-icon {
-    background: rgba(255, 133, 51, 0.25);
-
-    .section-icon-img {
       filter: brightness(0) invert(1);
     }
-  }
 
-  .bottom-actions {
-    background: transparent !important;
-    border-top: none !important;
-
-    .action-button.secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: #f8fafc;
+    &:active {
+      box-shadow: 0 4rpx 12rpx rgba(30, 90, 60, 0.4);
     }
 
-    .action-button.outline {
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #cbd5f5;
+    &.full {
+      flex: 1;
     }
   }
-}
 
-.theme-light {
-  .signup-header {
-    background: transparent;
-    color: #0f172a;
+  // 次要按钮 - 上一步
+  &.secondary {
+    .theme-light & {
+      background: rgba(30, 90, 60, 0.08);
 
-    .header-back,
-    .header-close {
-      background: rgba(15, 23, 42, 0.04);
-      border: 2rpx solid rgba(15, 23, 42, 0.08);
+      .btn-text {
+        color: $primary-green !important;
+      }
 
-      .header-back-icon,
-      .close-icon {
-        filter: brightness(0);
+      .btn-icon {
+        filter: invert(27%) sepia(15%) saturate(1500%) hue-rotate(100deg) brightness(95%) contrast(90%);
+      }
+    }
+
+    .theme-dark & {
+      background: rgba(255, 255, 255, 0.1);
+
+      .btn-text {
+        color: #ffffff !important;
+      }
+
+      .btn-icon {
+        filter: invert(1);
       }
     }
   }
 
-  .step-wrapper {
-    background: $light-card;
+  // 轮廓按钮 - 稍后填写
+  &.outline {
+    background: transparent;
+
+    .theme-light & {
+      border: 2rpx dashed rgba(0, 0, 0, 0.2);
+
+      .btn-text {
+        color: $light-text-secondary !important;
+      }
+    }
+
+    .theme-dark & {
+      border: 2rpx dashed rgba(255, 255, 255, 0.2);
+
+      .btn-text {
+        color: $dark-text-secondary !important;
+      }
+    }
   }
+
+  // 加载状态
+  &.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+// ============================================================
+// 表单组件样式覆盖（确保与弹窗风格一致）
+// ============================================================
+
+// 表单字段标签
+.form-label,
+.field-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+
+  .theme-light & {
+    color: $light-text-primary;
+  }
+
+  .theme-dark & {
+    color: $dark-text-primary;
+  }
+}
+
+// 必填标记
+.required-mark {
+  color: #e53935;
+  margin-left: 4rpx;
+}
+
+// 输入框
+.form-input,
+input {
+  height: 96rpx;
+  border-radius: $radius-md;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  transition: all 0.2s ease;
+
+  .theme-light & {
+    background: #f8f9fa;
+    border: 2rpx solid transparent;
+    color: $light-text-primary;
+
+    &:focus {
+      background: #ffffff;
+      border-color: $primary-green;
+      box-shadow: 0 0 0 4rpx rgba(30, 90, 60, 0.1);
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  .theme-dark & {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2rpx solid transparent;
+    color: $dark-text-primary;
+
+    &:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    &::placeholder {
+      color: #6b7280;
+    }
+  }
+}
+
+// 选择器
+.form-select,
+.picker {
+  height: 96rpx;
+  border-radius: $radius-md;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .theme-light & {
+    background: #f8f9fa;
+    border: 2rpx solid transparent;
+    color: $light-text-primary;
+  }
+
+  .theme-dark & {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2rpx solid transparent;
+    color: $dark-text-primary;
+  }
+}
+
+// 单选按钮组
+.radio-group {
+  display: flex;
+  gap: 24rpx;
+  flex-wrap: wrap;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 28rpx;
+  border-radius: $radius-md;
+  font-size: 28rpx;
+  transition: all 0.2s ease;
+
+  .theme-light & {
+    background: #f8f9fa;
+    color: $light-text-primary;
+
+    &.active {
+      background: rgba(30, 90, 60, 0.1);
+      color: $primary-green;
+    }
+  }
+
+  .theme-dark & {
+    background: rgba(255, 255, 255, 0.06);
+    color: $dark-text-primary;
+
+    &.active {
+      background: rgba(30, 90, 60, 0.2);
+      color: #4ade80;
+    }
+  }
+}
+
+// ============================================================
+// 保留旧的类名兼容（防止子组件样式丢失）
+// ============================================================
+
+.signup-header,
+.signup-body,
+.step-wrapper,
+.step-header,
+.section-card,
+.form-panel,
+.bottom-actions {
+  // 这些类名不再使用，但保留以防万一
+  display: none;
 }

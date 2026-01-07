@@ -1,55 +1,83 @@
 /**
- * 报名成功页面样式
+ * 报名成功页面样式 - 弹窗式设计
+ * 重构时间: 2026年1月6日
  */
 
-// 主色变量
-$primary-green: #2D5A3D;
-$primary-orange: #FF8A1A;
+// 品牌色
+$primary-green: #1E5A3C;
+$primary-green-light: #2d7a52;
 
 .success-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32rpx;
+  padding: 40rpx;
+
+  // 浅色主题背景 - 模拟弹窗遮罩
+  &.theme-light {
+    background: linear-gradient(
+      180deg,
+      rgba(236, 240, 236, 0.98) 0%,
+      rgba(232, 238, 234, 0.95) 100%
+    );
+  }
+
+  // 深色主题背景
+  &.theme-dark {
+    background: linear-gradient(
+      180deg,
+      rgba(10, 10, 12, 0.98) 0%,
+      rgba(15, 15, 18, 0.95) 100%
+    );
+  }
 }
 
 .success-card {
   width: 100%;
   max-width: 640rpx;
-  padding: 48rpx 32rpx;
-  border-radius: 32rpx;
+  padding: 56rpx 40rpx 48rpx;
+  border-radius: 40rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+// ============================================================
+// 成功图标
+// ============================================================
+
 .success-icon {
-  margin-bottom: 24rpx;
-  
+  margin-bottom: 28rpx;
+
   .icon-circle {
-    width: 120rpx;
-    height: 120rpx;
+    width: 112rpx;
+    height: 112rpx;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
+
   .check-icon {
-    width: 60rpx;
-    height: 60rpx;
+    width: 56rpx;
+    height: 56rpx;
   }
 }
+
+// ============================================================
+// 标题和活动信息
+// ============================================================
 
 .success-title {
   font-size: 40rpx;
   font-weight: 700;
-  margin-bottom: 32rpx;
+  margin-bottom: 28rpx;
+  letter-spacing: -0.02em;
 }
 
 .activity-title {
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 600;
   text-align: center;
   margin-bottom: 16rpx;
@@ -61,12 +89,12 @@ $primary-orange: #FF8A1A;
   align-items: center;
   gap: 8rpx;
   margin-bottom: 8rpx;
-  
+
   .info-icon {
     width: 28rpx;
     height: 28rpx;
   }
-  
+
   .info-text {
     font-size: 26rpx;
   }
@@ -74,14 +102,18 @@ $primary-orange: #FF8A1A;
 
 .activity-date {
   font-size: 26rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 28rpx;
 }
+
+// ============================================================
+// 分隔线
+// ============================================================
 
 .divider {
   width: 100%;
   height: 2rpx;
   margin: 24rpx 0;
-  
+
   &.dashed {
     border-style: dashed;
     border-width: 2rpx 0 0 0;
@@ -90,29 +122,37 @@ $primary-orange: #FF8A1A;
   }
 }
 
+// ============================================================
+// 报名信息
+// ============================================================
+
 .signup-info {
   width: 100%;
   padding: 16rpx 0;
-  
+
   .info-row {
     display: flex;
     margin-bottom: 12rpx;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
   }
-  
+
   .info-label {
     font-size: 28rpx;
     white-space: nowrap;
   }
-  
+
   .info-value {
     font-size: 28rpx;
     font-weight: 500;
   }
 }
+
+// ============================================================
+// 提示文字
+// ============================================================
 
 .tip-title {
   font-size: 28rpx;
@@ -125,17 +165,27 @@ $primary-orange: #FF8A1A;
   font-size: 24rpx;
   text-align: center;
   margin-bottom: 32rpx;
+  line-height: 1.5;
 }
+
+// ============================================================
+// 完成按钮
+// ============================================================
 
 .finish-button {
   width: 100%;
-  height: 96rpx;
+  height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20rpx;
+  border-radius: 999rpx;
   margin-top: 16rpx;
-  
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
   .finish-text {
     font-size: 32rpx;
     font-weight: 600;
@@ -147,108 +197,160 @@ $primary-orange: #FF8A1A;
 // ============================================================
 
 .theme-light {
-  background: rgba(0, 0, 0, 0.3);
-  
   .success-card {
-    background: #FFFFFF;
-    box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    box-shadow:
+      0 4rpx 20rpx rgba(0, 0, 0, 0.03),
+      0 12rpx 40rpx rgba(0, 0, 0, 0.06),
+      0 24rpx 80rpx rgba(30, 90, 60, 0.08);
   }
-  
+
   .icon-circle {
     background: $primary-green;
-    
+
     .check-icon {
       filter: brightness(0) invert(1);
     }
   }
-  
-  .success-title { color: #1A1A1A; }
-  .activity-title { color: #1A1A1A; }
-  
-  .activity-info {
-    .info-icon { filter: brightness(0); opacity: 0.5; }
-    .info-text { color: #666666; }
+
+  .success-title {
+    color: #1a1a1a;
   }
-  
-  .activity-date { color: #666666; }
-  
-  .divider {
-    background: #E0E0E0;
-    
-    &.dashed {
-      border-color: #E0E0E0;
+
+  .activity-title {
+    color: #1a1a1a;
+  }
+
+  .activity-info {
+    .info-icon {
+      opacity: 0.5;
+    }
+
+    .info-text {
+      color: #6b7280;
     }
   }
-  
-  .info-label { color: #666666; }
-  .info-value { color: #1A1A1A; }
-  
-  .tip-title { color: #1A1A1A; }
-  .tip-desc { color: #999999; }
-  
-  .finish-button {
-    background: $primary-green;
 
-    .finish-text { color: #FFFFFF; }
+  .activity-date {
+    color: #6b7280;
+  }
+
+  .divider {
+    background: #e5e7eb;
+
+    &.dashed {
+      border-color: #e5e7eb;
+    }
+  }
+
+  .info-label {
+    color: #6b7280;
+  }
+
+  .info-value {
+    color: #1a1a1a;
+  }
+
+  .tip-title {
+    color: #1a1a1a;
+  }
+
+  .tip-desc {
+    color: #9ca3af;
+  }
+
+  .finish-button {
+    background: linear-gradient(135deg, $primary-green 0%, $primary-green-light 100%);
+    box-shadow: 0 8rpx 24rpx rgba(30, 90, 60, 0.3);
+
+    .finish-text {
+      color: #ffffff;
+    }
 
     &:active {
-      opacity: 0.9;
+      box-shadow: 0 4rpx 12rpx rgba(30, 90, 60, 0.4);
     }
   }
 }
 
 // ============================================================
-// 暗黑主题
+// 深色主题
 // ============================================================
 
 .theme-dark {
-  background: rgba(0, 0, 0, 0.7);
-  
   .success-card {
-    background: #1A1A1A;
-    box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.3);
+    background: #1c1c1e;
+    border: 1rpx solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 8rpx 32rpx rgba(0, 0, 0, 0.4),
+      0 24rpx 80rpx rgba(0, 0, 0, 0.5);
   }
-  
+
   .icon-circle {
-    background: $primary-orange;
-    
+    background: $primary-green-light;
+
     .check-icon {
-      filter: brightness(0);
+      filter: brightness(0) invert(1);
     }
   }
-  
-  .success-title { color: #FAFAFA; }
-  .activity-title { color: #FAFAFA; }
-  
+
+  .success-title {
+    color: #f5f5f7;
+  }
+
+  .activity-title {
+    color: #f5f5f7;
+  }
+
   .activity-info {
-    .info-icon { filter: brightness(0) invert(1); opacity: 0.5; }
-    .info-text { color: #AAAAAA; }
-  }
-  
-  .activity-date { color: #AAAAAA; }
-  
-  .divider {
-    background: #333333;
-    
-    &.dashed {
-      border-color: #333333;
+    .info-icon {
+      filter: invert(1);
+      opacity: 0.5;
+    }
+
+    .info-text {
+      color: #8e8e93;
     }
   }
-  
-  .info-label { color: #AAAAAA; }
-  .info-value { color: #FAFAFA; }
-  
-  .tip-title { color: #FAFAFA; }
-  .tip-desc { color: #808080; }
-  
+
+  .activity-date {
+    color: #8e8e93;
+  }
+
+  .divider {
+    background: rgba(255, 255, 255, 0.1);
+
+    &.dashed {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .info-label {
+    color: #8e8e93;
+  }
+
+  .info-value {
+    color: #f5f5f7;
+  }
+
+  .tip-title {
+    color: #f5f5f7;
+  }
+
+  .tip-desc {
+    color: #6b7280;
+  }
+
   .finish-button {
-    background: $primary-orange;
-    
-    .finish-text { color: #1A1A1A; }
-    
+    background: linear-gradient(135deg, $primary-green-light 0%, $primary-green 100%);
+    box-shadow: 0 8rpx 24rpx rgba(45, 122, 82, 0.35);
+
+    .finish-text {
+      color: #ffffff;
+    }
+
     &:active {
-      opacity: 0.9;
+      box-shadow: 0 4rpx 12rpx rgba(45, 122, 82, 0.45);
     }
   }
 }
-
