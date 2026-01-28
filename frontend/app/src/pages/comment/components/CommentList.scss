@@ -64,30 +64,20 @@
           z-index: 2;
         }
 
-        // YouTube风格平滑弧线 - 连接到"xx条回复"
+        // YouTube风格平滑弧线 - 真正连续的曲线
         .reply-connector-curve {
           position: absolute;
-          left: 38rpx;  // 头像中心偏左
-          top: 80rpx;   // 头像底部
-          width: 50rpx;
-          height: 140rpx;
-          border: none;
-          background: transparent;
+          left: 40rpx;  // 头像中心
+          top: 84rpx;   // 头像底部
+          width: 48rpx;
+          height: 136rpx;
           z-index: 1;
-          
-          // 使用伪元素创建平滑弧线
-          &::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            border: 2rpx solid transparent;
-            border-left-color: #e0e0e0;
-            border-bottom-color: #e0e0e0;
-            border-bottom-left-radius: 40rpx;  // 大圆角实现平滑弧线
-          }
+          // 使用单一边框实现连续弧线
+          border-style: solid;
+          border-color: #d8d8d8;
+          border-width: 0 0 2rpx 2rpx;
+          border-bottom-left-radius: 24rpx;
+          background: transparent;
         }
       }
 

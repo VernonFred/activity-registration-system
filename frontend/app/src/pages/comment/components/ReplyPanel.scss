@@ -189,42 +189,33 @@
 
     .reply-item-wrapper {
       position: relative;
-      margin-left: 32rpx;
+      margin-left: 40rpx;
+      padding-top: 8rpx;
 
-      // YouTube风格平滑弧线
-      .reply-connector-curve {
-        position: absolute;
-        left: -32rpx;
-        top: -16rpx;
-        width: 32rpx;
-        height: 60rpx;
-        border: none;
-        background: transparent;
-        
-        // 平滑弧线
-        &::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          border: 2rpx solid transparent;
-          border-left-color: #e0e0e0;
-          border-bottom-color: #e0e0e0;
-          border-bottom-left-radius: 32rpx;  // 大圆角实现平滑弧线
-        }
-      }
-
-      // 非最后一个回复：显示垂直延伸线
-      &:not(:last-child) .reply-connector-curve::before {
+      // 垂直主线（非最后一个回复显示）
+      &:not(:last-child)::before {
         content: '';
         position: absolute;
-        left: 0;
-        top: 60rpx;
+        left: -40rpx;
+        top: 0;
+        bottom: -8rpx;
         width: 2rpx;
-        height: calc(100% + 16rpx);
-        background: #e0e0e0;
+        background: #d8d8d8;
+      }
+
+      // YouTube风格平滑弧线 - 真正连续的曲线
+      .reply-connector-curve {
+        position: absolute;
+        left: -40rpx;
+        top: 0;
+        width: 40rpx;
+        height: 48rpx;
+        // 使用单一边框实现连续弧线
+        border-style: solid;
+        border-color: #d8d8d8;
+        border-width: 0 0 2rpx 2rpx;
+        border-bottom-left-radius: 20rpx;
+        background: transparent;
       }
 
       .reply-item {
