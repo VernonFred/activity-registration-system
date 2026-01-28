@@ -202,15 +202,11 @@
       max-height: calc(100vh - 800rpx);
 
       .comment-item {
-        padding: 32rpx 0;
-        border-bottom: 1rpx solid #f0f0f0;
+        padding: 24rpx 0;
         display: flex;
-        gap: 20rpx;
+        gap: 16rpx;
         position: relative;
-
-        &:last-child {
-          border-bottom: none;
-        }
+        // 移除分隔线，按YouTube风格
 
         .comment-avatar {
           width: 80rpx;
@@ -451,7 +447,7 @@
   }
 
   // ============================================================
-  // 评论输入面板
+  // 评论输入面板 - 按设计稿简洁单行输入设计
   // ============================================================
   .comment-input-overlay {
     position: fixed;
@@ -482,83 +478,87 @@
       .panel-title {
         font-size: 28rpx;
         color: #8e8e8e;
-        text-align: center;
         margin-bottom: 24rpx;
       }
 
       .panel-user {
         display: flex;
         align-items: center;
-        gap: 20rpx;
-        margin-bottom: 24rpx;
+        gap: 16rpx;
+        margin-bottom: 32rpx;
 
         .panel-avatar {
-          width: 80rpx;
-          height: 80rpx;
+          width: 72rpx;
+          height: 72rpx;
           border-radius: 50%;
+          flex-shrink: 0;
         }
 
         .panel-user-info {
           flex: 1;
+          display: flex;
+          align-items: baseline;
+          gap: 8rpx;
 
           .panel-user-name {
             font-size: 30rpx;
             font-weight: 600;
             color: #262626;
-            margin-bottom: 4rpx;
           }
 
           .panel-user-org {
-            font-size: 26rpx;
+            font-size: 24rpx;
             color: #8e8e8e;
           }
         }
       }
 
-      .panel-input {
-        position: relative;
-        margin-bottom: 24rpx;
+      // 单行输入框 + 发送按钮 - 按设计稿
+      .panel-input-row {
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
 
-        .panel-textarea {
-          width: 100%;
-          min-height: 240rpx;
-          padding: 20rpx;
+        // 输入框容器 - 灰色背景圆角矩形
+        .panel-input-field {
+          flex: 1;
+          height: 80rpx;
           font-size: 28rpx;
-          line-height: 1.6;
-          color: #262626;
-          background: #fafafa;
-          border: 1rpx solid #dbdbdb;
-          border-radius: 16rpx;
+          color: #333333;
+          background: #f5f5f5;
+          border-radius: 12rpx;
+          padding: 0 24rpx;
+          border: 1rpx solid #e8e8e8;
         }
 
-        .char-count {
-          position: absolute;
-          bottom: 16rpx;
-          right: 20rpx;
-          font-size: 24rpx;
-          color: #8e8e8e;
+        .input-placeholder {
+          color: #999999;
+          font-size: 28rpx;
         }
-      }
 
-      .panel-submit {
-        padding: 20rpx 48rpx;
-        background: #0095f6;
-        border-radius: 12rpx;
-        text-align: center;
-        font-size: 28rpx;
-        font-weight: 600;
-        color: #ffffff;
-        opacity: 0.3;
-        pointer-events: none;
-        transition: all 0.2s ease;
+        // 发送按钮 - 纸飞机图标
+        .panel-send-btn {
+          width: 80rpx;
+          height: 80rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          opacity: 0.3;
+          transition: all 0.2s ease;
 
-        &.active {
-          opacity: 1;
-          pointer-events: auto;
+          &.active {
+            opacity: 1;
 
-          &:active {
-            transform: scale(0.95);
-            opacity: 0.9;
+            .send-icon {
+              color: #333333;
+            }
+          }
+
+          .send-icon {
+            font-size: 44rpx;
+            color: #cccccc;
+            transform: rotate(-45deg);
           }
         }
       }

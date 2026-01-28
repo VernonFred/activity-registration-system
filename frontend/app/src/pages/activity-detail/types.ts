@@ -3,8 +3,8 @@
  * 创建时间: 2025年12月9日
  */
 
-// Tab 类型
-export type TabKey = 'overview' | 'agenda' | 'hotel' | 'live' | 'comment'
+// Tab 类型（评论评分通过底部胶囊浮岛进入独立页面，不在Tab中）
+export type TabKey = 'overview' | 'agenda' | 'hotel' | 'live'
 
 // 活动数据类型
 export interface Activity {
