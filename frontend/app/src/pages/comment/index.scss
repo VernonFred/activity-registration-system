@@ -1,0 +1,567 @@
+/**
+ * 评论页面样式 - 严格按照设计稿
+ * 创建时间: 2026年1月8日
+ */
+
+.comment-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 120rpx;
+
+  // ============================================================
+  // 顶部活动封面图片
+  // ============================================================
+  .header-cover {
+    position: relative;
+    width: 100%;
+    height: 420rpx;
+    overflow: hidden;
+
+    .cover-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    .cover-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200rpx;
+      background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+    }
+  }
+
+  // ============================================================
+  // 评分区域 - 深绿色背景（按照设计稿）
+  // ============================================================
+  .rating-section {
+    background: #2D5A3D;  // 深绿色背景
+    padding: 40rpx 32rpx;
+    position: relative;
+
+    .rating-title {
+      font-size: 32rpx;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 32rpx;  // 增加间距：24rpx → 32rpx
+    }
+
+    // 评分主行：左侧分数和星星，右侧评分按钮
+    .rating-main-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16rpx;
+
+      .rating-left {
+        display: flex;
+        align-items: center;
+        gap: 16rpx;
+
+        .rating-score {
+          font-size: 64rpx;  // 继续缩小：80rpx → 64rpx
+          font-weight: 800;
+          color: #ffffff;
+          line-height: 1;
+        }
+
+        .rating-stars {
+          display: flex;
+          gap: 8rpx;
+          align-items: center;
+
+          .star-icon {
+            font-size: 36rpx;  // 继续缩小：44rpx → 36rpx
+            color: #ffc107;
+          }
+        }
+      }
+
+      .rating-button {
+        display: flex;
+        align-items: center;
+        gap: 8rpx;
+        padding: 12rpx 24rpx;
+        background: #ffffff;
+        border-radius: 24rpx;
+        transition: all 0.2s ease;
+
+        &:active {
+          transform: scale(0.95);
+          opacity: 0.9;
+        }
+
+        .rating-button-icon {
+          width: 28rpx;
+          height: 28rpx;
+        }
+
+        .rating-button-text {
+          font-size: 28rpx;
+          font-weight: 600;
+          color: #333333;
+        }
+      }
+    }
+
+    .rating-count {
+      font-size: 28rpx;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 48rpx;  // 增加间距：32rpx → 48rpx
+    }
+
+    // 我的评分 - 在同一个卡片内部（灰色半透明背景）
+    .my-rating-row {
+      padding: 28rpx 32rpx;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10rpx);
+      border-radius: 16rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .my-rating-label {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .my-rating-value {
+        display: flex;
+        align-items: center;
+        gap: 16rpx;
+
+        .my-rating-stars {
+          display: flex;
+          gap: 4rpx;
+
+          .star-icon {
+            font-size: 32rpx;
+            color: #ffc107;
+          }
+        }
+
+        .my-rating-date {
+          font-size: 26rpx;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .my-rating-empty {
+          font-size: 28rpx;
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
+  }
+
+  // ============================================================
+  // 评论区域 - 白色背景
+  // ============================================================
+  .comments-section {
+    background: #ffffff;
+    border-radius: 32rpx 32rpx 0 0;
+    padding: 32rpx 32rpx 0;
+    min-height: 60vh;
+
+    // 评论标题 - 单独一行
+    .comments-title {
+      font-size: 36rpx;
+      font-weight: 700;
+      color: #000000;
+      margin-bottom: 24rpx;  // 增加间距：16rpx → 24rpx
+    }
+
+    // 排序按钮 - 下一行
+    .sort-tabs {
+      display: flex;
+      gap: 12rpx;
+      margin-bottom: 24rpx;
+
+      .sort-tab {
+        padding: 10rpx 24rpx;
+        border-radius: 24rpx;
+        font-size: 26rpx;
+        font-weight: 500;
+        background: #f0f0f0;
+        color: #666666;
+        transition: all 0.2s ease;
+
+        &.active {
+          background: #000000;
+          color: #ffffff;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+
+    .comments-list {
+      max-height: calc(100vh - 800rpx);
+
+      .comment-item {
+        padding: 32rpx 0;
+        border-bottom: 1rpx solid #f0f0f0;
+        display: flex;
+        gap: 20rpx;
+        position: relative;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .comment-avatar {
+          width: 80rpx;
+          height: 80rpx;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .comment-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 12rpx;
+
+          .comment-top {
+            display: flex;
+            align-items: center;
+            gap: 8rpx;
+
+            .comment-user {
+              font-size: 28rpx;
+              font-weight: 600;
+              color: #000000;
+            }
+
+            .comment-time {
+              font-size: 26rpx;
+              color: #999999;
+            }
+          }
+
+          .comment-text {
+            font-size: 28rpx;
+            line-height: 1.6;
+            color: #333333;
+          }
+
+          .comment-actions {
+            display: flex;
+            align-items: center;
+            gap: 32rpx;
+            margin-top: 8rpx;
+
+            .action-item {
+              display: flex;
+              align-items: center;
+              gap: 8rpx;
+
+              .action-icon {
+                font-size: 32rpx;
+              }
+
+              .action-count {
+                font-size: 26rpx;
+                color: #666666;
+              }
+            }
+          }
+
+          .reply-link {
+            font-size: 26rpx;
+            color: #666666;
+            margin-top: 8rpx;
+          }
+        }
+
+        // 三点菜单
+        .comment-menu {
+          position: absolute;
+          top: 32rpx;
+          right: 0;
+
+          .menu-trigger {
+            padding: 8rpx;
+
+            .menu-dots {
+              font-size: 32rpx;
+              color: #999999;
+              transform: rotate(90deg);
+              display: block;
+            }
+          }
+
+          .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #ffffff;
+            border-radius: 12rpx;
+            box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            min-width: 160rpx;
+            overflow: hidden;
+
+            .menu-item {
+              padding: 24rpx 32rpx;
+              font-size: 28rpx;
+              color: #262626;
+              transition: background 0.2s ease;
+
+              &:active {
+                background: #f5f5f5;
+              }
+
+              &.danger {
+                color: #ed4956;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // ============================================================
+  // 底部评论输入触发器
+  // ============================================================
+  .comment-input-trigger {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20rpx 32rpx;
+    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+    background: #ffffff;
+    border-top: 1rpx solid #efefef;
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+    z-index: 100;
+
+    .trigger-avatar {
+      width: 72rpx;
+      height: 72rpx;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .trigger-placeholder {
+      flex: 1;
+      height: 72rpx;
+      background: #f5f5f5;
+      border-radius: 36rpx;
+      display: flex;
+      align-items: center;
+      padding: 0 24rpx;
+      font-size: 28rpx;
+      color: #999999;
+    }
+  }
+
+  // ============================================================
+  // 评分弹窗
+  // ============================================================
+  .rating-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80rpx;
+
+    .rating-dialog {
+      background: #ffffff;
+      border-radius: 28rpx;
+      padding: 64rpx 48rpx;
+      width: 100%;
+      max-width: 560rpx;
+
+      .dialog-title {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #262626;
+        text-align: center;
+        margin-bottom: 48rpx;
+      }
+
+      .dialog-stars {
+        display: flex;
+        justify-content: center;
+        gap: 16rpx;
+        margin-bottom: 56rpx;
+
+        .star-item {
+          transition: transform 0.2s ease;
+
+          &:active {
+            transform: scale(1.2);
+          }
+
+          .star-icon {
+            font-size: 72rpx;
+            color: #dbdbdb;
+
+            &.filled {
+              color: #ffc107;
+            }
+          }
+        }
+      }
+
+      .dialog-actions {
+        display: flex;
+        justify-content: center;
+
+        .dialog-confirm {
+          padding: 20rpx 80rpx;
+          background: #262626;
+          border-radius: 12rpx;
+          font-size: 28rpx;
+          font-weight: 600;
+          color: #ffffff;
+          transition: all 0.2s ease;
+
+          &:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+          }
+        }
+      }
+
+      .dialog-close {
+        margin-top: 32rpx;
+        text-align: center;
+        font-size: 48rpx;
+        color: #8e8e8e;
+
+        &:active {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+
+  // ============================================================
+  // 评论输入面板
+  // ============================================================
+  .comment-input-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 3000;
+    display: flex;
+    align-items: flex-end;
+
+    .comment-input-panel {
+      background: #ffffff;
+      border-radius: 32rpx 32rpx 0 0;
+      width: 100%;
+      padding: 24rpx 32rpx;
+      padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+
+      .panel-drag-bar {
+        width: 80rpx;
+        height: 8rpx;
+        background: #dbdbdb;
+        border-radius: 4rpx;
+        margin: 0 auto 24rpx;
+      }
+
+      .panel-title {
+        font-size: 28rpx;
+        color: #8e8e8e;
+        text-align: center;
+        margin-bottom: 24rpx;
+      }
+
+      .panel-user {
+        display: flex;
+        align-items: center;
+        gap: 20rpx;
+        margin-bottom: 24rpx;
+
+        .panel-avatar {
+          width: 80rpx;
+          height: 80rpx;
+          border-radius: 50%;
+        }
+
+        .panel-user-info {
+          flex: 1;
+
+          .panel-user-name {
+            font-size: 30rpx;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 4rpx;
+          }
+
+          .panel-user-org {
+            font-size: 26rpx;
+            color: #8e8e8e;
+          }
+        }
+      }
+
+      .panel-input {
+        position: relative;
+        margin-bottom: 24rpx;
+
+        .panel-textarea {
+          width: 100%;
+          min-height: 240rpx;
+          padding: 20rpx;
+          font-size: 28rpx;
+          line-height: 1.6;
+          color: #262626;
+          background: #fafafa;
+          border: 1rpx solid #dbdbdb;
+          border-radius: 16rpx;
+        }
+
+        .char-count {
+          position: absolute;
+          bottom: 16rpx;
+          right: 20rpx;
+          font-size: 24rpx;
+          color: #8e8e8e;
+        }
+      }
+
+      .panel-submit {
+        padding: 20rpx 48rpx;
+        background: #0095f6;
+        border-radius: 12rpx;
+        text-align: center;
+        font-size: 28rpx;
+        font-weight: 600;
+        color: #ffffff;
+        opacity: 0.3;
+        pointer-events: none;
+        transition: all 0.2s ease;
+
+        &.active {
+          opacity: 1;
+          pointer-events: auto;
+
+          &:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+          }
+        }
+      }
+    }
+  }
+}

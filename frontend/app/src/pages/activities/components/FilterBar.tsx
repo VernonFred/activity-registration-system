@@ -5,7 +5,7 @@
  * 包含：城市、时间、状态三个下拉筛选 + 排序按钮
  */
 
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text, Image, Picker } from '@tarojs/components'
 import { useTheme } from '../../../context/ThemeContext'
 import type { FilterState } from '../types'
 import { CITY_FILTERS, TIME_FILTERS, STATUS_FILTERS } from '../constants'
@@ -28,47 +28,74 @@ const FilterBar = ({ filters, onFilterChange, onSortClick }: FilterBarProps) => 
     return option?.label || options[0].label
   }
 
+  // 获取当前选中的索引
+  const getCityIndex = () => {
+    const index = CITY_FILTERS.findIndex(c => c.value === filters.city)
+    return index >= 0 ? index : 0
+  }
+
+  const getTimeIndex = () => {
+    const index = TIME_FILTERS.findIndex(t => t.value === filters.timeRange)
+    return index >= 0 ? index : 0
+  }
+
+  const getStatusIndex = () => {
+    const index = STATUS_FILTERS.findIndex(s => s.value === filters.status)
+    return index >= 0 ? index : 0
+  }
+
   return (
     <View className={`filter-bar theme-${theme}`}>
       {/* 城市筛选 */}
-      <View 
-        className={`filter-item ${filters.city ? 'active' : ''}`}
-        onClick={() => {
-          // TODO: 弹出选择器
-          const currentIndex = CITY_FILTERS.findIndex(c => c.value === filters.city)
-          const nextIndex = (currentIndex + 1) % CITY_FILTERS.length
-          onFilterChange('city', CITY_FILTERS[nextIndex].value)
+      <Picker
+        mode="selector"
+        range={CITY_FILTERS}
+        rangeKey="label"
+        value={getCityIndex()}
+        onChange={(e) => {
+          const index = Number(e.detail.value)
+          onFilterChange('city', CITY_FILTERS[index].value)
         }}
       >
-        <Text className="filter-text">{getFilterLabel(CITY_FILTERS, filters.city)}</Text>
-        <View className="filter-arrow" />
-      </View>
+        <View className={`filter-item ${filters.city && filters.city !== 'all' ? 'active' : ''}`}>
+          <Text className="filter-text">{getFilterLabel(CITY_FILTERS, filters.city)}</Text>
+          <View className="filter-arrow" />
+        </View>
+      </Picker>
 
       {/* 时间筛选 */}
-      <View 
-        className={`filter-item ${filters.timeRange ? 'active' : ''}`}
-        onClick={() => {
-          const currentIndex = TIME_FILTERS.findIndex(t => t.value === filters.timeRange)
-          const nextIndex = (currentIndex + 1) % TIME_FILTERS.length
-          onFilterChange('timeRange', TIME_FILTERS[nextIndex].value)
+      <Picker
+        mode="selector"
+        range={TIME_FILTERS}
+        rangeKey="label"
+        value={getTimeIndex()}
+        onChange={(e) => {
+          const index = Number(e.detail.value)
+          onFilterChange('timeRange', TIME_FILTERS[index].value)
         }}
       >
-        <Text className="filter-text">{getFilterLabel(TIME_FILTERS, filters.timeRange)}</Text>
-        <View className="filter-arrow" />
-      </View>
+        <View className={`filter-item ${filters.timeRange && filters.timeRange !== 'all' ? 'active' : ''}`}>
+          <Text className="filter-text">{getFilterLabel(TIME_FILTERS, filters.timeRange)}</Text>
+          <View className="filter-arrow" />
+        </View>
+      </Picker>
 
       {/* 状态筛选 */}
-      <View 
-        className={`filter-item ${filters.status ? 'active' : ''}`}
-        onClick={() => {
-          const currentIndex = STATUS_FILTERS.findIndex(s => s.value === filters.status)
-          const nextIndex = (currentIndex + 1) % STATUS_FILTERS.length
-          onFilterChange('status', STATUS_FILTERS[nextIndex].value)
+      <Picker
+        mode="selector"
+        range={STATUS_FILTERS}
+        rangeKey="label"
+        value={getStatusIndex()}
+        onChange={(e) => {
+          const index = Number(e.detail.value)
+          onFilterChange('status', STATUS_FILTERS[index].value)
         }}
       >
-        <Text className="filter-text">{getFilterLabel(STATUS_FILTERS, filters.status)}</Text>
-        <View className="filter-arrow" />
-      </View>
+        <View className={`filter-item ${filters.status && filters.status !== 'all' ? 'active' : ''}`}>
+          <Text className="filter-text">{getFilterLabel(STATUS_FILTERS, filters.status)}</Text>
+          <View className="filter-arrow" />
+        </View>
+      </Picker>
 
       {/* 排序按钮 */}
       <View className="filter-sort" onClick={onSortClick}>

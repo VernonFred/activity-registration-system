@@ -6,6 +6,7 @@ export { default as OverviewTab } from './OverviewTab'
 export { default as AgendaTab } from './AgendaTab'
 export { default as HotelTab } from './HotelTab'
 export { default as LiveTab } from './LiveTab'
+export { default as CommentTab } from './CommentTab'
 export { default as BottomBar } from './BottomBar'
 
 // 议程相关组件（新增）

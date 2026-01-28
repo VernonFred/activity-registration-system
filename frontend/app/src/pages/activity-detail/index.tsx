@@ -13,7 +13,7 @@ import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
 import { addRecentView } from '../../utils/storage'
-import { OverviewTab, AgendaTab, HotelTab, LiveTab, BottomBar } from './components'
+import { OverviewTab, AgendaTab, HotelTab, LiveTab, CommentTab, BottomBar } from './components'
 import type { TabKey, Activity } from './types'
 import { formatDate, formatTime } from './utils'
 import './index.scss'
@@ -27,6 +27,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'agenda', label: '活动议程' },
   { key: 'hotel', label: '酒店信息' },
   { key: 'live', label: '图片直播' },
+  { key: 'comment', label: '评论评分' },
 ]
 
 // 默认议程数据（分组结构 - 参考纸质版会议手册）
@@ -565,13 +566,27 @@ export default function ActivityDetail() {
 
   // 事件处理
   const handleBack = useCallback(() => Taro.navigateBack(), [])
-  const handleTabChange = useCallback((tab: TabKey) => setActiveTab(tab), [])
+  const handleTabChange = useCallback((tab: TabKey) => {
+    // 如果点击评论Tab，跳转到独立的评论页面
+    if (tab === 'comment') {
+      Taro.navigateTo({
+        url: `/pages/comment/index?id=${activityId}&cover=${encodeURIComponent(activity?.cover_url || '')}`
+      })
+      return
+    }
+    setActiveTab(tab)
+  }, [activityId, activity])
   const handleFavorite = useCallback(() => {
     setIsFavorited(!isFavorited)
     Taro.showToast({ title: isFavorited ? '已取消收藏' : '已收藏', icon: 'none' })
   }, [isFavorited])
   const handleLike = useCallback(() => setIsLiked(!isLiked), [isLiked])
-  const handleComment = useCallback(() => Taro.showToast({ title: '评论功能开发中', icon: 'none' }), [])
+  const handleComment = useCallback(() => {
+    // 跳转到独立的评论页面
+    Taro.navigateTo({
+      url: `/pages/comment/index?id=${activityId}&cover=${encodeURIComponent(activity?.cover_url || '')}`
+    })
+  }, [activityId, activity])
 
   // 分享功能（符合微信官方规范：引导用户点击右上角分享）
   const handleShare = useCallback(() => {
@@ -671,7 +686,8 @@ export default function ActivityDetail() {
         {activeTab === 'agenda' && <AgendaTab agenda={activity.agenda || []} theme={theme} activityId={activity.id} />}
         {activeTab === 'hotel' && <HotelTab hotels={activity.hotels || []} onCall={handleCall} theme={theme} />}
         {activeTab === 'live' && <LiveTab coverUrl={activity.cover_url} onViewLive={handleViewLive} theme={theme} />}
-        
+        {activeTab === 'comment' && <CommentTab activityId={activityId} theme={theme} />}
+
         {/* 底部安全区 */}
         <View className="bottom-spacer" />
       </ScrollView>

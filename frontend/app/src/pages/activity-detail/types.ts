@@ -4,7 +4,7 @@
  */
 
 // Tab 类型
-export type TabKey = 'overview' | 'agenda' | 'hotel' | 'live'
+export type TabKey = 'overview' | 'agenda' | 'hotel' | 'live' | 'comment'
 
 // 活动数据类型
 export interface Activity {
@@ -113,5 +113,48 @@ export interface Hotel {
   map_image?: string               // 静态地图图片
   transport?: TransportInfo[]      // 交通指南
   weather?: WeatherInfo            // 当地天气
+}
+
+// 评分信息
+export interface Rating {
+  average: number              // 平均分 (0-5)
+  total_count: number          // 总评分数
+  user_rating?: number         // 当前用户的评分 (0-5，0表示未评分)
+  distribution: {              // 评分分布
+    5: number
+    4: number
+    3: number
+    2: number
+    1: number
+  }
+}
+
+// 评论排序类型
+export type CommentSortType = 'hottest' | 'time' | 'newest'
+
+// 评论回复
+export interface CommentReply {
+  id: number
+  comment_id: number
+  user_name: string
+  user_avatar?: string
+  content: string
+  created_at: string
+  reply_to?: string            // 回复给谁（用户名）
+}
+
+// 评论
+export interface Comment {
+  id: number
+  user_name: string
+  user_avatar?: string
+  rating: number               // 用户给的评分 (1-5)
+  content: string
+  images?: string[]            // 评论图片
+  created_at: string
+  like_count: number
+  reply_count: number
+  is_liked: boolean           // 当前用户是否已点赞
+  replies?: CommentReply[]    // 回复列表
 }
 
