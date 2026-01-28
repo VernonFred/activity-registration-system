@@ -48,6 +48,7 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
   const [replyText, setReplyText] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
   const [activeMenu, setActiveMenu] = useState<number | null>(null)
+  const [showOriginalMenu, setShowOriginalMenu] = useState(false)
 
   // 格式化时间
   const formatTime = (time: string) => {
@@ -93,10 +94,33 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     setActiveMenu(null)
   }
 
-  // 菜单点击
+  // 原评论菜单点击
+  const handleOriginalMenuClick = (e: any) => {
+    e.stopPropagation()
+    setShowOriginalMenu(!showOriginalMenu)
+    setActiveMenu(null)
+  }
+
+  // 回复菜单点击
   const handleMenuClick = (replyId: number, e: any) => {
     e.stopPropagation()
     setActiveMenu(activeMenu === replyId ? null : replyId)
+    setShowOriginalMenu(false)
+  }
+
+  // 删除回复
+  const handleDeleteReply = (replyId: number) => {
+    Taro.showModal({
+      title: '确认删除',
+      content: '确定要删除这条回复吗？',
+      success: (res) => {
+        if (res.confirm) {
+          setReplies(replies.filter(r => r.id !== replyId))
+          setActiveMenu(null)
+          Taro.showToast({ title: '删除成功', icon: 'success' })
+        }
+      }
+    })
   }
 
   return (
@@ -136,6 +160,24 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
               </View>
             </View>
           </View>
+          {/* 原评论三点菜单 */}
+          <View className="comment-menu">
+            <View className="menu-trigger" onClick={handleOriginalMenuClick}>
+              <Text className="menu-dots">⋮</Text>
+            </View>
+            {showOriginalMenu && (
+              <View className="menu-dropdown">
+                <View className="menu-item" onClick={() => { handleReplyTo(comment.user_name); setShowOriginalMenu(false) }}>
+                  <Text>回复</Text>
+                </View>
+                {comment.user_name === currentUser.name && (
+                  <View className="menu-item danger">
+                    <Text>删除</Text>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
         </View>
 
         {/* 回复列表 - YouTube风格带弯曲连接线 */}
@@ -171,11 +213,13 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
                   {activeMenu === reply.id && (
                     <View className="menu-dropdown">
                       <View className="menu-item" onClick={() => handleReplyTo(reply.user_name)}>
-                        <Text>○ 回复</Text>
+                        <Text>回复</Text>
                       </View>
-                      <View className="menu-item danger">
-                        <Text>🗑 取消</Text>
-                      </View>
+                      {reply.user_name === currentUser.name && (
+                        <View className="menu-item danger" onClick={() => handleDeleteReply(reply.id)}>
+                          <Text>删除</Text>
+                        </View>
+                      )}
                     </View>
                   )}
                 </View>

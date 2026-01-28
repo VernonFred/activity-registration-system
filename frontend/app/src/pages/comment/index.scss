@@ -465,7 +465,9 @@
       border-radius: 32rpx 32rpx 0 0;
       width: 100%;
       padding: 24rpx 32rpx;
-      padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+      padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
+      // 避免与键盘重叠
+      margin-bottom: env(safe-area-inset-bottom);
 
       .panel-drag-bar {
         width: 80rpx;
@@ -517,18 +519,18 @@
       .panel-input-row {
         display: flex;
         align-items: center;
-        gap: 12rpx;
+        gap: 16rpx;
 
-        // 输入框容器 - 灰色背景圆角矩形
+        // 输入框 - 白色背景+浅灰边框+圆角
         .panel-input-field {
           flex: 1;
           height: 80rpx;
           font-size: 28rpx;
           color: #333333;
-          background: #f5f5f5;
-          border-radius: 12rpx;
-          padding: 0 24rpx;
-          border: 1rpx solid #e8e8e8;
+          background: #ffffff;
+          border-radius: 40rpx;
+          padding: 0 32rpx;
+          border: 2rpx solid #e5e5e5;
         }
 
         .input-placeholder {
@@ -536,10 +538,10 @@
           font-size: 28rpx;
         }
 
-        // 发送按钮 - 纸飞机图标
+        // 发送按钮 - 箭头图标
         .panel-send-btn {
-          width: 80rpx;
-          height: 80rpx;
+          width: 64rpx;
+          height: 64rpx;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -551,14 +553,13 @@
             opacity: 1;
 
             .send-icon {
-              color: #333333;
+              color: #666666;
             }
           }
 
           .send-icon {
-            font-size: 44rpx;
+            font-size: 40rpx;
             color: #cccccc;
-            transform: rotate(-45deg);
           }
         }
       }

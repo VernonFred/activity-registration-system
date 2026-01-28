@@ -54,6 +54,7 @@
       .avatar-area {
         position: relative;
         flex-shrink: 0;
+        align-self: flex-start;  // 顶部对齐
 
         .comment-avatar {
           width: 80rpx;
@@ -63,17 +64,30 @@
           z-index: 2;
         }
 
-        // YouTube风格弯曲连接线
+        // YouTube风格平滑弧线 - 连接到"xx条回复"
         .reply-connector-curve {
           position: absolute;
-          left: 40rpx;  // 头像中心
+          left: 38rpx;  // 头像中心偏左
           top: 80rpx;   // 头像底部
-          width: 40rpx;
-          height: 60rpx;
-          border-left: 2rpx solid #e0e0e0;
-          border-bottom: 2rpx solid #e0e0e0;
-          border-bottom-left-radius: 16rpx;  // 圆角弯曲
+          width: 50rpx;
+          height: 140rpx;
+          border: none;
+          background: transparent;
           z-index: 1;
+          
+          // 使用伪元素创建平滑弧线
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 2rpx solid transparent;
+            border-left-color: #e0e0e0;
+            border-bottom-color: #e0e0e0;
+            border-bottom-left-radius: 40rpx;  // 大圆角实现平滑弧线
+          }
         }
       }
 

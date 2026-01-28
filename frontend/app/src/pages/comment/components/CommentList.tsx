@@ -1,5 +1,5 @@
 /**
- * 评论列表组件 - 带YouTube风格弯曲连接线
+ * 评论列表组件 - 带YouTube风格平滑弧线
  * 创建时间: 2026年1月28日
  */
 import { View, Text, Image, ScrollView } from '@tarojs/components'
@@ -14,7 +14,8 @@ interface CommentListProps {
   currentUserName: string
   onSortChange: (type: CommentSortType) => void
   onLike: (commentId: number) => void
-  onReply: (commentId: number) => void
+  onViewReplies: (commentId: number) => void  // 查看回复列表
+  onQuickReply: (userName: string) => void    // 快捷回复（弹出输入框@用户）
   onDelete: (commentId: number) => void
   onMenuClick: (commentId: number, e: any) => void
 }
@@ -26,7 +27,8 @@ export default function CommentList({
   currentUserName,
   onSortChange,
   onLike,
-  onReply,
+  onViewReplies,
+  onQuickReply,
   onDelete,
   onMenuClick
 }: CommentListProps) {
@@ -61,7 +63,7 @@ export default function CommentList({
                 className="comment-avatar"
                 mode="aspectFill"
               />
-              {/* 弯曲连接线 - 仅当有回复时显示 */}
+              {/* 平滑弧线 - 仅当有回复时显示 */}
               {comment.reply_count > 0 && (
                 <View className="reply-connector-curve" />
               )}
@@ -82,10 +84,10 @@ export default function CommentList({
                   <Text className="action-icon">👎</Text>
                 </View>
               </View>
-              {/* 回复链接 */}
+              {/* 查看回复链接 */}
               {comment.reply_count > 0 && (
                 <View className="reply-link-wrapper">
-                  <Text className="reply-link" onClick={() => onReply(comment.id)}>
+                  <Text className="reply-link" onClick={() => onViewReplies(comment.id)}>
                     {comment.reply_count}条回复 &gt;
                   </Text>
                 </View>
@@ -102,12 +104,13 @@ export default function CommentList({
               </View>
               {activeCommentMenu === comment.id && (
                 <View className="menu-dropdown">
-                  <View className="menu-item" onClick={() => onReply(comment.id)}>
+                  {/* 回复 - 弹出输入框@该用户 */}
+                  <View className="menu-item" onClick={() => onQuickReply(comment.user_name)}>
                     <Text>回复</Text>
                   </View>
                   {comment.user_name === currentUserName && (
                     <View className="menu-item danger" onClick={() => onDelete(comment.id)}>
-                      <Text>取消</Text>
+                      <Text>删除</Text>
                     </View>
                   )}
                 </View>

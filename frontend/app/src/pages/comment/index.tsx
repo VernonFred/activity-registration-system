@@ -24,6 +24,7 @@ export default function CommentPage() {
   const [tempRating, setTempRating] = useState(0)
   const [showCommentInput, setShowCommentInput] = useState(false)
   const [commentText, setCommentText] = useState('')
+  const [replyToUser, setReplyToUser] = useState<string | null>(null)  // 被回复的用户
   const [activeCommentMenu, setActiveCommentMenu] = useState<number | null>(null)
   const [currentUser] = useState(MOCK_CURRENT_USER)
   const [showReplyPanel, setShowReplyPanel] = useState(false)
@@ -50,9 +51,18 @@ export default function CommentPage() {
     Taro.showToast({ title: '评分成功', icon: 'success' })
   }
 
-  // 打开评论输入
+  // 打开评论输入（普通评论）
   const handleOpenCommentInput = () => {
+    setReplyToUser(null)
     setCommentText('')
+    setShowCommentInput(true)
+  }
+
+  // 快捷回复 - 点击三点菜单的"回复"
+  const handleQuickReply = (userName: string) => {
+    setReplyToUser(userName)
+    setCommentText('')
+    setActiveCommentMenu(null)
     setShowCommentInput(true)
   }
 
@@ -62,12 +72,13 @@ export default function CommentPage() {
       Taro.showToast({ title: '请输入评论内容', icon: 'none' })
       return
     }
+    const content = replyToUser ? `@${replyToUser} ${commentText}` : commentText
     const newComment: Comment = {
       id: Date.now(),
       user_name: currentUser.name,
       user_avatar: currentUser.avatar,
       rating: rating.user_rating || 5,
-      content: commentText,
+      content,
       created_at: new Date().toISOString(),
       like_count: 0,
       reply_count: 0,
@@ -76,6 +87,7 @@ export default function CommentPage() {
     }
     setComments([newComment, ...comments])
     setCommentText('')
+    setReplyToUser(null)
     setShowCommentInput(false)
     Taro.showToast({ title: '评论成功', icon: 'success' })
   }
@@ -109,8 +121,8 @@ export default function CommentPage() {
     })
   }
 
-  // 打开回复弹窗
-  const handleReplyComment = (commentId: number) => {
+  // 查看回复列表
+  const handleViewReplies = (commentId: number) => {
     const comment = comments.find(c => c.id === commentId)
     if (comment) {
       setSelectedComment(comment)
@@ -119,7 +131,7 @@ export default function CommentPage() {
     }
   }
 
-  // 提交回复
+  // 提交回复（在回复弹窗中）
   const handleSubmitReply = (commentId: number) => {
     setComments(comments.map(c => {
       if (c.id === commentId) {
@@ -146,6 +158,9 @@ export default function CommentPage() {
     return sorted
   }, [comments, sortType])
 
+  // 输入框placeholder
+  const inputPlaceholder = replyToUser ? `@${replyToUser} 回复...` : '添加评论......'
+
   return (
     <View className="comment-page">
       {/* 顶部活动图片 */}
@@ -165,7 +180,8 @@ export default function CommentPage() {
         currentUserName={currentUser.name}
         onSortChange={setSortType}
         onLike={handleLikeComment}
-        onReply={handleReplyComment}
+        onViewReplies={handleViewReplies}
+        onQuickReply={handleQuickReply}
         onDelete={handleDeleteComment}
         onMenuClick={handleCommentMenuClick}
       />
@@ -206,7 +222,7 @@ export default function CommentPage() {
 
       {/* 评论输入面板 */}
       {showCommentInput && (
-        <View className="comment-input-overlay" onClick={() => setShowCommentInput(false)}>
+        <View className="comment-input-overlay" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }}>
           <View className="comment-input-panel" onClick={(e) => e.stopPropagation()}>
             <View className="panel-drag-bar" />
             <Text className="panel-title">将以下面的身份进行评论</Text>
@@ -220,7 +236,7 @@ export default function CommentPage() {
             <View className="panel-input-row">
               <Input
                 className="panel-input-field"
-                placeholder="添加评论......"
+                placeholder={inputPlaceholder}
                 placeholderClass="input-placeholder"
                 value={commentText}
                 onInput={(e) => setCommentText(e.detail.value)}
@@ -228,6 +244,8 @@ export default function CommentPage() {
                 maxlength={500}
                 confirmType="send"
                 onConfirm={handleSubmitComment}
+                adjustPosition
+                cursorSpacing={120}
               />
               <View 
                 className={`panel-send-btn ${commentText.trim() ? 'active' : ''}`}
