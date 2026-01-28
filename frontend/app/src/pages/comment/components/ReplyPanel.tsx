@@ -2,7 +2,7 @@
  * 回复弹窗组件 - YouTube风格
  * 创建时间: 2026年1月28日
  */
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Comment, CommentReply } from '../types'
@@ -49,6 +49,7 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
   const [replyTo, setReplyTo] = useState<string | null>(null)
   const [activeMenu, setActiveMenu] = useState<number | null>(null)
   const [showOriginalMenu, setShowOriginalMenu] = useState(false)
+  const [inputFocus, setInputFocus] = useState(false)
 
   // 格式化时间
   const formatTime = (time: string) => {
@@ -57,7 +58,6 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     const diff = now.getTime() - replyTime.getTime()
     const hours = Math.floor(diff / (1000 * 60 * 60))
     const days = Math.floor(hours / 24)
-
     if (days > 7) return time.split(' ')[0]
     if (days > 0) return `${days}天前`
     if (hours > 0) return `${hours}小时前`
@@ -70,7 +70,6 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
       Taro.showToast({ title: '请输入回复内容', icon: 'none' })
       return
     }
-    
     const newReply: CommentReply = {
       id: Date.now(),
       comment_id: comment.id,
@@ -80,7 +79,6 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
       created_at: new Date().toISOString(),
       reply_to: replyTo || undefined
     }
-    
     setReplies([...replies, newReply])
     setReplyText('')
     setReplyTo(null)
@@ -88,10 +86,13 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     Taro.showToast({ title: '回复成功', icon: 'success' })
   }
 
-  // 点击回复某人
+  // 点击回复某人 - 弹出键盘
   const handleReplyTo = (userName: string) => {
     setReplyTo(userName)
     setActiveMenu(null)
+    setShowOriginalMenu(false)
+    // 延迟设置焦点，确保状态更新后再触发
+    setTimeout(() => setInputFocus(true), 100)
   }
 
   // 原评论菜单点击
@@ -141,7 +142,6 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
         <View className="original-comment">
           <View className="avatar-area">
             <Image src={comment.user_avatar || ''} className="comment-avatar" mode="aspectFill" />
-            {/* 从头像引出的垂直线 */}
             {replies.length > 0 && <View className="avatar-connector-line" />}
           </View>
           <View className="comment-content">
@@ -167,7 +167,7 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
             </View>
             {showOriginalMenu && (
               <View className="menu-dropdown">
-                <View className="menu-item" onClick={() => { handleReplyTo(comment.user_name); setShowOriginalMenu(false) }}>
+                <View className="menu-item" onClick={() => handleReplyTo(comment.user_name)}>
                   <Text>回复</Text>
                 </View>
                 {comment.user_name === currentUser.name && (
@@ -180,13 +180,11 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
           </View>
         </View>
 
-        {/* 回复列表 - YouTube风格带弯曲连接线 */}
+        {/* 回复列表 */}
         <ScrollView className="replies-list" scrollY>
           {replies.map((reply) => (
             <View key={reply.id} className="reply-item-wrapper">
-              {/* YouTube风格弯曲连接线（L形圆角）*/}
               <View className="reply-connector-curve" />
-              
               <View className="reply-item">
                 <Image src={reply.user_avatar || ''} className="reply-avatar" mode="aspectFill" />
                 <View className="reply-content">
@@ -205,7 +203,7 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
                     </View>
                   </View>
                 </View>
-                {/* 三点菜单 */}
+                {/* 每条回复的三点菜单 */}
                 <View className="reply-menu">
                   <View className="menu-trigger" onClick={(e) => handleMenuClick(reply.id, e)}>
                     <Text className="menu-dots">⋮</Text>
@@ -240,12 +238,17 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
           <View className="input-row">
             <Input
               className="input-field"
-              placeholder={replyTo ? `@${replyTo} 回复...` : '添加评论......'}
+              placeholder={replyTo ? `@${replyTo} 回复...` : '添加回复...'}
               placeholderClass="input-placeholder"
               value={replyText}
               onInput={(e) => setReplyText(e.detail.value)}
+              focus={inputFocus}
+              onFocus={() => setInputFocus(true)}
+              onBlur={() => setInputFocus(false)}
               confirmType="send"
               onConfirm={handleSubmitReply}
+              adjustPosition
+              cursorSpacing={16}
             />
             <View 
               className={`send-btn ${replyText.trim() ? 'active' : ''}`}

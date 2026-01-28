@@ -464,17 +464,17 @@
       background: #ffffff;
       border-radius: 32rpx 32rpx 0 0;
       width: 100%;
-      padding: 24rpx 32rpx;
-      padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
-      // 避免与键盘重叠
-      margin-bottom: env(safe-area-inset-bottom);
+      padding: 24rpx 32rpx 16rpx;
 
       .panel-drag-bar {
         width: 80rpx;
         height: 8rpx;
         background: #dbdbdb;
         border-radius: 4rpx;
-        margin: 0 auto 24rpx;
+        margin: 0 auto 20rpx;
+        // 增大点击区域
+        padding: 16rpx 0;
+        background-clip: content-box;
       }
 
       .panel-title {

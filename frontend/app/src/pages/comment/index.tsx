@@ -224,7 +224,8 @@ export default function CommentPage() {
       {showCommentInput && (
         <View className="comment-input-overlay" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }}>
           <View className="comment-input-panel" onClick={(e) => e.stopPropagation()}>
-            <View className="panel-drag-bar" />
+            {/* 拖拽条 - 点击关闭 */}
+            <View className="panel-drag-bar" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }} />
             <Text className="panel-title">将以下面的身份进行评论</Text>
             <View className="panel-user">
               <Image src={currentUser.avatar} className="panel-avatar" mode="aspectFill" />
@@ -245,7 +246,7 @@ export default function CommentPage() {
                 confirmType="send"
                 onConfirm={handleSubmitComment}
                 adjustPosition
-                cursorSpacing={120}
+                cursorSpacing={16}
               />
               <View 
                 className={`panel-send-btn ${commentText.trim() ? 'active' : ''}`}

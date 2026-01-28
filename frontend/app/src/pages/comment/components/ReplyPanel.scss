@@ -328,8 +328,7 @@
 
   // 底部回复输入
   .reply-input-area {
-    padding: 20rpx 32rpx;
-    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+    padding: 16rpx 32rpx 12rpx;
     border-top: 1rpx solid #f0f0f0;
     background: #ffffff;
 
