@@ -3,7 +3,7 @@
  * 创建时间: 2026年1月8日
  * 更新时间: 2026年1月28日 - 添加回复功能、拆分组件
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import type { Comment, CommentSortType, Rating } from './types'
@@ -29,6 +29,9 @@ export default function CommentPage() {
   const [currentUser] = useState(MOCK_CURRENT_USER)
   const [showReplyPanel, setShowReplyPanel] = useState(false)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
+  const [panelTranslateY, setPanelTranslateY] = useState(0)  // 面板下拉偏移
+  const touchStartY = useRef(0)  // 触摸起始Y坐标
+  const isDragging = useRef(false)  // 是否正在拖拽
 
   // 点击评分按钮
   const handleRateClick = () => {
@@ -161,8 +164,44 @@ export default function CommentPage() {
   // 输入框placeholder
   const inputPlaceholder = replyToUser ? `@${replyToUser} 回复...` : '添加评论......'
 
+  // 点击页面空白处关闭菜单
+  const handlePageClick = () => {
+    if (activeCommentMenu !== null) {
+      setActiveCommentMenu(null)
+    }
+  }
+
+  // 拖拽条触摸开始
+  const handleDragStart = (e: any) => {
+    touchStartY.current = e.touches[0].clientY
+    isDragging.current = true
+    setPanelTranslateY(0)
+  }
+
+  // 拖拽条触摸移动
+  const handleDragMove = (e: any) => {
+    if (!isDragging.current) return
+    const currentY = e.touches[0].clientY
+    const deltaY = currentY - touchStartY.current
+    // 只允许向下拖动
+    if (deltaY > 0) {
+      setPanelTranslateY(deltaY)
+    }
+  }
+
+  // 拖拽条触摸结束
+  const handleDragEnd = () => {
+    isDragging.current = false
+    // 下拉超过100px则关闭
+    if (panelTranslateY > 100) {
+      setShowCommentInput(false)
+      setReplyToUser(null)
+    }
+    setPanelTranslateY(0)
+  }
+
   return (
-    <View className="comment-page">
+    <View className="comment-page" onClick={handlePageClick}>
       {/* 顶部活动图片 */}
       <View className="header-cover">
         <Image src={coverUrl} className="cover-image" mode="aspectFill" />
@@ -223,15 +262,22 @@ export default function CommentPage() {
       {/* 评论输入面板 */}
       {showCommentInput && (
         <View className="comment-input-overlay" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }}>
-          <View className="comment-input-panel" onClick={(e) => e.stopPropagation()}>
-            {/* 拖拽条 - 点击关闭（需要单独处理阻止冒泡） */}
+          <View 
+            className="comment-input-panel" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ transform: `translateY(${panelTranslateY}px)` }}
+          >
+            {/* 拖拽条 - 支持点击关闭和下拉手势关闭 */}
             <View 
               className="panel-drag-bar" 
               onClick={(e) => { 
                 e.stopPropagation()
                 setShowCommentInput(false)
                 setReplyToUser(null) 
-              }} 
+              }}
+              onTouchStart={handleDragStart}
+              onTouchMove={handleDragMove}
+              onTouchEnd={handleDragEnd}
             />
             <Text className="panel-title">将以下面的身份进行评论</Text>
             <View className="panel-user">
