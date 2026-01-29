@@ -1,9 +1,9 @@
 /**
- * 回复弹窗组件 - YouTube风格
- * 创建时间: 2026年1月28日
+ * 回复弹窗组件 - 严格按设计稿
+ * 2026年1月29日 - 重写
  */
-import { useState, useRef, useEffect } from 'react'
-import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
+import { useState } from 'react'
+import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Comment, CommentReply } from '../types'
 import './ReplyPanel.scss'
@@ -22,7 +22,7 @@ interface ReplyPanelProps {
   onSubmitReply: (commentId: number, content: string, replyTo?: string) => void
 }
 
-// Mock回复数据 - 使用ISO格式日期（兼容iOS）
+// Mock回复数据
 const MOCK_REPLIES: CommentReply[] = [
   {
     id: 101,
@@ -48,16 +48,14 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
   const [replyText, setReplyText] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
   const [activeMenu, setActiveMenu] = useState<number | null>(null)
-  const [showOriginalMenu, setShowOriginalMenu] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
 
-  // 格式化时间 - 兼容iOS日期格式
+  // 格式化时间
   const formatTime = (time: string) => {
-    const now = new Date()
-    // 兼容iOS：将空格格式转换为ISO格式
     const isoTime = time.includes(' ') ? time.replace(' ', 'T') : time
-    const replyTime = new Date(isoTime)
-    const diff = now.getTime() - replyTime.getTime()
+    const date = new Date(isoTime)
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
     const hours = Math.floor(diff / (1000 * 60 * 60))
     const days = Math.floor(hours / 24)
     if (days > 7) return isoTime.split('T')[0]
@@ -66,10 +64,50 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     return '刚刚'
   }
 
+  // 判断是否是自己的评论/回复
+  const isOwnComment = (userName: string) => userName === currentUser.name
+
+  // 点击菜单
+  const handleMenuClick = (id: number, e: any) => {
+    e.stopPropagation()
+    setActiveMenu(activeMenu === id ? null : id)
+  }
+
+  // 关闭所有菜单
+  const closeMenus = () => {
+    setActiveMenu(null)
+  }
+
+  // 点击回复
+  const handleReply = (userName: string) => {
+    setReplyTo(userName)
+    setActiveMenu(null)
+    setTimeout(() => setInputFocus(true), 100)
+  }
+
+  // 删除评论/回复
+  const handleDelete = (id: number, isReply: boolean) => {
+    Taro.showModal({
+      title: '确认删除',
+      content: isReply ? '确定要删除这条回复吗？' : '确定要删除这条评论吗？',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          if (isReply) {
+            setReplies(replies.filter(r => r.id !== id))
+          }
+          setActiveMenu(null)
+          Taro.showToast({ title: '删除成功', icon: 'success' })
+        }
+      }
+    })
+  }
+
   // 提交回复
-  const handleSubmitReply = () => {
+  const handleSubmit = () => {
     if (!replyText.trim()) {
-      Taro.showToast({ title: '请输入回复内容', icon: 'none' })
+      Taro.showToast({ title: '请输入内容', icon: 'none' })
       return
     }
     const newReply: CommentReply = {
@@ -88,65 +126,18 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     Taro.showToast({ title: '回复成功', icon: 'success' })
   }
 
-  // 点击回复某人 - 弹出键盘
-  const handleReplyTo = (userName: string) => {
-    setReplyTo(userName)
-    setActiveMenu(null)
-    setShowOriginalMenu(false)
-    // 延迟设置焦点，确保状态更新后再触发
-    setTimeout(() => setInputFocus(true), 100)
-  }
-
-  // 原评论菜单点击
-  const handleOriginalMenuClick = (e: any) => {
-    e.stopPropagation()
-    setShowOriginalMenu(!showOriginalMenu)
-    setActiveMenu(null)
-  }
-
-  // 回复菜单点击
-  const handleMenuClick = (replyId: number, e: any) => {
-    e.stopPropagation()
-    setActiveMenu(activeMenu === replyId ? null : replyId)
-    setShowOriginalMenu(false)
-  }
-
-  // 删除回复
-  const handleDeleteReply = (replyId: number) => {
-    Taro.showModal({
-      title: '确认删除',
-      content: '确定要删除这条回复吗？',
-      success: (res) => {
-        if (res.confirm) {
-          setReplies(replies.filter(r => r.id !== replyId))
-          setActiveMenu(null)
-          Taro.showToast({ title: '删除成功', icon: 'success' })
-        }
-      }
-    })
-  }
-
-  const handleCloseMenus = () => {
-    if (activeMenu !== null) setActiveMenu(null)
-    if (showOriginalMenu) setShowOriginalMenu(false)
-  }
-
+  // 点击遮罩层
   const handleOverlayClick = () => {
-    if (activeMenu !== null || showOriginalMenu) {
-      handleCloseMenus()
-      return
+    if (activeMenu !== null) {
+      closeMenus()
+    } else {
+      onClose()
     }
-    onClose()
-  }
-
-  const handlePanelClick = (e: any) => {
-    e.stopPropagation()
-    handleCloseMenus()
   }
 
   return (
     <View className="reply-panel-overlay" onClick={handleOverlayClick}>
-      <View className="reply-panel" onClick={handlePanelClick}>
+      <View className="reply-panel" onClick={(e) => { e.stopPropagation(); closeMenus() }}>
         {/* 头部 */}
         <View className="panel-header">
           <View className="header-left" onClick={onClose}>
@@ -158,109 +149,119 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
           </View>
         </View>
 
-        {/* 原评论 */}
-        <View className={`original-comment ${replies.length > 0 ? 'has-replies' : ''}`}>
-          <View className="avatar-area">
-            <Image src={comment.user_avatar || ''} className="comment-avatar" mode="aspectFill" />
-          </View>
-          <View className="comment-content">
-            <View className="comment-top">
-              <Text className="comment-user">{comment.user_name}</Text>
-              <Text className="comment-time">· {formatTime(comment.created_at)}</Text>
-            </View>
-            <Text className="comment-text">{comment.content}</Text>
-            <View className="comment-actions">
-              <View className="action-item">
-                <Text className="action-icon">👍</Text>
-                <Text className="action-count">{comment.like_count}</Text>
-              </View>
-              <View className="action-item">
-                <Text className="action-icon">👎</Text>
-              </View>
-            </View>
-          </View>
-          {/* 原评论三点菜单 */}
-          <View className="comment-menu">
-            <View className="menu-trigger" onClick={handleOriginalMenuClick}>
-              <Text className="menu-dots">⋯</Text>
-            </View>
-            {showOriginalMenu && (
-              <View className="menu-action-sheet">
-                <View className="action-item reply" onClick={() => handleReplyTo(comment.user_name)}>
-                  <Text className="action-icon">💬</Text>
-                  <Text className="action-text">回复</Text>
+        {/* 评论内容区 */}
+        <View className="comment-thread">
+          {/* 原评论 */}
+          <View className="original-comment">
+            <View className="comment-row">
+              <Image src={comment.user_avatar || ''} className="comment-avatar" mode="aspectFill" />
+              <View className="comment-body">
+                <View className="comment-header">
+                  <Text className="comment-user">{comment.user_name}</Text>
+                  <Text className="comment-time">· {formatTime(comment.created_at)}</Text>
                 </View>
-                <View 
-                  className="action-item cancel" 
-                  onClick={() => setShowOriginalMenu(false)}
-                >
-                  <Text className="action-icon">🗑️</Text>
-                  <Text className="action-text">{comment.user_name === currentUser.name ? '删除' : '取消'}</Text>
+                <Text className="comment-text">{comment.content}</Text>
+                <View className="comment-footer">
+                  <View className="footer-item">
+                    <Text className="item-icon">👍</Text>
+                    <Text className="item-count">{comment.like_count}</Text>
+                  </View>
+                  <View className="footer-item">
+                    <Text className="item-icon">👎</Text>
+                  </View>
                 </View>
+              </View>
+              {/* 三点菜单按钮 */}
+              <View className="comment-menu-btn" onClick={(e) => handleMenuClick(comment.id, e)}>
+                <Text className="menu-dots">⋯</Text>
+              </View>
+            </View>
+            {/* 菜单下拉 */}
+            {activeMenu === comment.id && (
+              <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
+                <View className="menu-item reply-item" onClick={() => handleReply(comment.user_name)}>
+                  <Text className="menu-icon">💬</Text>
+                  <Text className="menu-text">回复</Text>
+                </View>
+                {isOwnComment(comment.user_name) ? (
+                  <View className="menu-item delete-item" onClick={() => handleDelete(comment.id, false)}>
+                    <Text className="menu-icon">🗑️</Text>
+                    <Text className="menu-text">删除</Text>
+                  </View>
+                ) : (
+                  <View className="menu-item" onClick={() => setActiveMenu(null)}>
+                    <Text className="menu-icon">✕</Text>
+                    <Text className="menu-text">取消</Text>
+                  </View>
+                )}
               </View>
             )}
           </View>
-        </View>
 
-        {/* 回复列表 */}
-        <ScrollView className="replies-list" scrollY>
-          {replies.map((reply) => (
-            <View key={reply.id} className="reply-item-wrapper">
-              <View className="reply-connector-curve" />
-              <View className="reply-item">
-                <Image src={reply.user_avatar || ''} className="reply-avatar" mode="aspectFill" />
-                <View className="reply-content">
-                  <View className="reply-top">
-                    <Text className="reply-user">{reply.user_name}</Text>
-                    <Text className="reply-time">· {formatTime(reply.created_at)}</Text>
-                  </View>
-                  <Text className="reply-text">{reply.content}</Text>
-                  <View className="reply-actions">
-                    <View className="action-item">
-                      <Text className="action-icon">👍</Text>
-                      <Text className="action-count">70</Text>
+          {/* 回复列表 */}
+          {replies.length > 0 && (
+            <View className="replies-container">
+              {replies.map((reply) => (
+                <View key={reply.id} className="reply-item">
+                  <View className="reply-row">
+                    <Image src={reply.user_avatar || ''} className="reply-avatar" mode="aspectFill" />
+                    <View className="reply-body">
+                      <View className="reply-header">
+                        <Text className="reply-user">{reply.user_name}</Text>
+                        <Text className="reply-time">· {formatTime(reply.created_at)}</Text>
+                      </View>
+                      <Text className="reply-text">{reply.content}</Text>
+                      <View className="reply-footer">
+                        <View className="footer-item">
+                          <Text className="item-icon">👍</Text>
+                          <Text className="item-count">70</Text>
+                        </View>
+                        <View className="footer-item">
+                          <Text className="item-icon">👎</Text>
+                        </View>
+                      </View>
                     </View>
-                    <View className="action-item">
-                      <Text className="action-icon">👎</Text>
+                    {/* 三点菜单按钮 - 始终显示 */}
+                    <View className="reply-menu-btn" onClick={(e) => handleMenuClick(reply.id, e)}>
+                      <Text className="menu-dots">⋯</Text>
                     </View>
                   </View>
-                </View>
-                {/* 每条回复的三点菜单 */}
-                <View className="reply-menu">
-                  <View className="menu-trigger" onClick={(e) => handleMenuClick(reply.id, e)}>
-                    <Text className="menu-dots">⋯</Text>
-                  </View>
+                  {/* 菜单下拉 */}
                   {activeMenu === reply.id && (
-                    <View className="menu-action-sheet">
-                      <View className="action-item reply" onClick={() => handleReplyTo(reply.user_name)}>
-                        <Text className="action-icon">💬</Text>
-                        <Text className="action-text">回复</Text>
+                    <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
+                      <View className="menu-item reply-item" onClick={() => handleReply(reply.user_name)}>
+                        <Text className="menu-icon">💬</Text>
+                        <Text className="menu-text">回复</Text>
                       </View>
-                      <View 
-                        className="action-item cancel" 
-                        onClick={() => reply.user_name === currentUser.name ? handleDeleteReply(reply.id) : setActiveMenu(null)}
-                      >
-                        <Text className="action-icon">🗑️</Text>
-                        <Text className="action-text">{reply.user_name === currentUser.name ? '删除' : '取消'}</Text>
-                      </View>
+                      {isOwnComment(reply.user_name) ? (
+                        <View className="menu-item delete-item" onClick={() => handleDelete(reply.id, true)}>
+                          <Text className="menu-icon">🗑️</Text>
+                          <Text className="menu-text">删除</Text>
+                        </View>
+                      ) : (
+                        <View className="menu-item" onClick={() => setActiveMenu(null)}>
+                          <Text className="menu-icon">✕</Text>
+                          <Text className="menu-text">取消</Text>
+                        </View>
+                      )}
                     </View>
                   )}
                 </View>
-              </View>
+              ))}
             </View>
-          ))}
-        </ScrollView>
+          )}
+        </View>
 
-        {/* 底部回复输入 */}
-        <View className="reply-input-area">
-          <View className="input-user">
+        {/* 底部输入区 */}
+        <View className="input-area">
+          <View className="input-user-row">
             <Image src={currentUser.avatar} className="input-avatar" mode="aspectFill" />
             <View className="input-user-info">
               <Text className="input-user-name">{currentUser.name}</Text>
               <Text className="input-user-org">{currentUser.organization}</Text>
             </View>
           </View>
-          <View className="input-row">
+          <View className="input-box">
             <Input
               className="input-field"
               placeholder={replyTo ? `@${replyTo} 回复...` : '添加回复...'}
@@ -271,14 +272,11 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
               onFocus={() => setInputFocus(true)}
               onBlur={() => setInputFocus(false)}
               confirmType="send"
-              onConfirm={handleSubmitReply}
+              onConfirm={handleSubmit}
               adjustPosition
               cursorSpacing={16}
             />
-            <View 
-              className={`send-btn ${replyText.trim() ? 'active' : ''}`}
-              onClick={handleSubmitReply}
-            >
+            <View className={`send-btn ${replyText.trim() ? 'active' : ''}`} onClick={handleSubmit}>
               <Text className="send-icon">➤</Text>
             </View>
           </View>

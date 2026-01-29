@@ -1,7 +1,6 @@
 /**
- * 回复弹窗样式 - YouTube风格
- * 创建时间: 2026年1月28日
- * 重构: 2026年1月29日 - 彻底修复连接线和三点菜单
+ * 回复弹窗样式 - 严格按设计稿
+ * 2026年1月29日 - 重写
  */
 
 .reply-panel-overlay {
@@ -30,6 +29,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 24rpx 32rpx;
+    border-bottom: 1rpx solid #f0f0f0;
 
     .header-left {
       display: flex;
@@ -57,192 +57,184 @@
   }
 
   // ========================================
+  // 评论容器 - 包含原评论和回复，用于画连接线
+  // ========================================
+  .comment-thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 24rpx;
+  }
+
+  // ========================================
   // 原评论 - 灰色背景卡片
   // ========================================
   .original-comment {
-    padding: 24rpx 32rpx;
-    margin: 0 16rpx 0 16rpx;
+    padding: 20rpx 24rpx;
+    margin: 16rpx 0;
     background: #f5f5f5;
     border-radius: 16rpx;
-    display: flex;
-    gap: 16rpx;
     position: relative;
 
-    .avatar-area {
-      flex-shrink: 0;
+    .comment-row {
+      display: flex;
+      gap: 12rpx;
 
       .comment-avatar {
-        width: 72rpx;
-        height: 72rpx;
+        width: 64rpx;
+        height: 64rpx;
         border-radius: 50%;
+        flex-shrink: 0;
       }
-    }
 
-    .comment-content {
-      flex: 1;
-      min-width: 0;
+      .comment-body {
+        flex: 1;
+        min-width: 0;
 
-      .comment-top {
-        display: flex;
-        align-items: center;
-        gap: 8rpx;
-        margin-bottom: 8rpx;
+        .comment-header {
+          display: flex;
+          align-items: center;
+          gap: 8rpx;
+          margin-bottom: 8rpx;
 
-        .comment-user {
-          font-size: 28rpx;
-          font-weight: 600;
-          color: #333333;
+          .comment-user {
+            font-size: 28rpx;
+            font-weight: 600;
+            color: #333333;
+          }
+
+          .comment-time {
+            font-size: 24rpx;
+            color: #999999;
+          }
         }
 
-        .comment-time {
+        .comment-text {
+          font-size: 28rpx;
+          color: #333333;
+          line-height: 1.5;
+          margin-bottom: 12rpx;
+        }
+
+        .comment-footer {
+          display: flex;
+          gap: 24rpx;
+
+          .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6rpx;
+            font-size: 24rpx;
+
+            .item-icon { font-size: 28rpx; }
+            .item-count { color: #666666; }
+          }
+        }
+      }
+
+      // 三点菜单 - 绝对定位在右上角
+      .comment-menu-btn {
+        position: absolute;
+        top: 16rpx;
+        right: 16rpx;
+        padding: 8rpx;
+
+        .menu-dots {
           font-size: 24rpx;
           color: #999999;
         }
       }
-
-      .comment-text {
-        font-size: 28rpx;
-        color: #333333;
-        line-height: 1.5;
-        margin-bottom: 12rpx;
-      }
-
-      .comment-actions {
-        display: flex;
-        gap: 24rpx;
-
-        .action-item {
-          display: flex;
-          align-items: center;
-          gap: 6rpx;
-
-          .action-icon { font-size: 28rpx; }
-          .action-count { font-size: 24rpx; color: #666666; }
-        }
-      }
     }
 
-    // 原评论三点菜单
-    .comment-menu {
+    // 三点菜单下拉
+    .menu-dropdown {
       position: absolute;
-      top: 24rpx;
-      right: 32rpx;
+      top: 48rpx;
+      right: 16rpx;
+      background: #ffffff;
+      border-radius: 12rpx;
+      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+      z-index: 100;
+      overflow: hidden;
+      min-width: 140rpx;
 
-      .menu-trigger {
-        padding: 12rpx;
-        .menu-dots {
-          font-size: 28rpx;
-          color: #999999;
-        }
-      }
-
-      .menu-action-sheet {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        margin-top: 8rpx;
-        background: #f5f5f5;
-        border-radius: 16rpx;
-        box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
-        z-index: 100;
-        min-width: 160rpx;
-        padding: 10rpx;
+      .menu-item {
         display: flex;
-        flex-direction: column;
+        align-items: center;
         gap: 8rpx;
+        padding: 20rpx 24rpx;
+        border-bottom: 1rpx solid #f5f5f5;
 
-        .action-item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8rpx;
-          padding: 16rpx 24rpx;
-          border-radius: 12rpx;
+        &:last-child { border-bottom: none; }
 
-          .action-icon { font-size: 26rpx; }
-          .action-text { font-size: 24rpx; font-weight: 500; }
+        .menu-icon { font-size: 24rpx; }
+        .menu-text { font-size: 26rpx; }
 
-          &.reply {
-            background: #ffffff;
-            .action-text { color: #333333; }
-          }
-          &.cancel {
-            background: #ffebee;
-            .action-text { color: #ff4d4f; }
-          }
+        &.reply-item {
+          .menu-text { color: #333333; }
+        }
+        &.delete-item {
+          .menu-text { color: #ff4d4f; }
         }
       }
     }
   }
 
   // ========================================
-  // 回复列表 - 带连续连接线
+  // 回复列表
   // ========================================
-  .replies-list {
-    flex: 1;
-    max-height: 50vh;
-    padding: 0 32rpx;
-    // 关键：整个回复列表区域相对定位，用于画主线
+  .replies-container {
+    padding-left: 56rpx;  // 对齐到原评论头像中心位置
     position: relative;
-    // 左边距对齐原评论头像中心
-    margin-left: 52rpx;  // 16rpx(margin) + 32rpx(padding) + 36rpx(half avatar) - 32rpx(list padding)
-    padding-top: 0;
 
-    // 主垂直连接线 - 贯穿整个回复区域
+    // 主垂直连接线
     &::before {
       content: '';
       position: absolute;
-      left: 0;
-      top: -24rpx;  // 向上延伸连接到原评论
-      bottom: 60rpx;
+      left: 56rpx;
+      top: -16rpx;
+      bottom: 0;
       width: 2rpx;
-      background: #d8d8d8;
+      background: #e0e0e0;
     }
 
-    .reply-item-wrapper {
+    .reply-item {
       position: relative;
       padding: 16rpx 0;
-      // 回复内容向右偏移，为弧线留空间
       margin-left: 24rpx;
 
-      // 弧线 - 从主线分叉到回复头像
-      .reply-connector-curve {
+      // 弧形连接线
+      &::before {
+        content: '';
         position: absolute;
         left: -24rpx;
         top: 32rpx;
-        width: 24rpx;
-        height: 24rpx;
-        border: 2rpx solid #d8d8d8;
-        border-top: none;
-        border-right: none;
-        border-bottom-left-radius: 16rpx;
+        width: 20rpx;
+        height: 20rpx;
+        border-left: 2rpx solid #e0e0e0;
+        border-bottom: 2rpx solid #e0e0e0;
+        border-bottom-left-radius: 12rpx;
       }
 
-      // ========================================
-      // 回复项 - 关键修复：确保三点菜单可见
-      // ========================================
-      .reply-item {
+      .reply-row {
         display: flex;
-        align-items: flex-start;
         gap: 12rpx;
 
         .reply-avatar {
-          width: 56rpx;
-          height: 56rpx;
+          width: 48rpx;
+          height: 48rpx;
           border-radius: 50%;
           flex-shrink: 0;
         }
 
-        // 回复内容 - 允许收缩
-        .reply-content {
+        .reply-body {
           flex: 1;
           min-width: 0;
 
-          .reply-top {
+          .reply-header {
             display: flex;
             align-items: center;
             gap: 8rpx;
-            margin-bottom: 6rpx;
+            margin-bottom: 4rpx;
 
             .reply-user {
               font-size: 26rpx;
@@ -261,119 +253,96 @@
             color: #333333;
             line-height: 1.5;
             margin-bottom: 8rpx;
-            word-break: break-all;
           }
 
-          .reply-actions {
+          .reply-footer {
             display: flex;
             gap: 20rpx;
 
-            .action-item {
+            .footer-item {
               display: flex;
               align-items: center;
               gap: 4rpx;
+              font-size: 22rpx;
 
-              .action-icon { font-size: 24rpx; }
-              .action-count { font-size: 22rpx; color: #666666; }
+              .item-icon { font-size: 24rpx; }
+              .item-count { color: #666666; }
             }
           }
         }
 
-        // ========================================
-        // 三点菜单 - 强制显示！
-        // ========================================
-        .reply-menu {
+        // 三点菜单按钮 - 始终显示
+        .reply-menu-btn {
           flex-shrink: 0;
-          width: 40rpx;
-          height: 40rpx;
-          display: flex !important;
-          align-items: center;
-          justify-content: center;
+          padding: 4rpx 8rpx;
 
-          .menu-trigger {
-            width: 40rpx;
-            height: 40rpx;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            .menu-dots {
-              font-size: 28rpx;
-              color: #666666;
-              display: block !important;
-            }
+          .menu-dots {
+            font-size: 24rpx;
+            color: #999999;
           }
+        }
+      }
 
-          .menu-action-sheet {
-            position: absolute;
-            top: 40rpx;
-            right: 0;
-            background: #f5f5f5;
-            border-radius: 16rpx;
-            box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
-            z-index: 200;
-            min-width: 160rpx;
-            padding: 10rpx;
-            display: flex;
-            flex-direction: column;
-            gap: 8rpx;
+      // 回复的菜单下拉
+      .menu-dropdown {
+        position: absolute;
+        top: 40rpx;
+        right: 0;
+        background: #ffffff;
+        border-radius: 12rpx;
+        box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+        z-index: 100;
+        overflow: hidden;
+        min-width: 140rpx;
 
-            .action-item {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 8rpx;
-              padding: 16rpx 24rpx;
-              border-radius: 12rpx;
+        .menu-item {
+          display: flex;
+          align-items: center;
+          gap: 8rpx;
+          padding: 20rpx 24rpx;
+          border-bottom: 1rpx solid #f5f5f5;
 
-              .action-icon { font-size: 26rpx; }
-              .action-text { font-size: 24rpx; font-weight: 500; }
+          &:last-child { border-bottom: none; }
 
-              &.reply {
-                background: #ffffff;
-                .action-text { color: #333333; }
-              }
-              &.cancel {
-                background: #ffebee;
-                .action-text { color: #ff4d4f; }
-              }
-            }
+          .menu-icon { font-size: 24rpx; }
+          .menu-text { font-size: 26rpx; }
+
+          &.reply-item {
+            .menu-text { color: #333333; }
+          }
+          &.delete-item {
+            .menu-text { color: #ff4d4f; }
           }
         }
       }
     }
   }
 
-  // 底部回复输入
-  .reply-input-area {
-    padding: 16rpx 32rpx;
-    padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  // 底部输入区
+  .input-area {
+    padding: 16rpx 24rpx;
+    padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
     border-top: 1rpx solid #f0f0f0;
     background: #ffffff;
 
-    .input-user {
+    .input-user-row {
       display: flex;
       align-items: center;
       gap: 12rpx;
-      margin-bottom: 16rpx;
+      margin-bottom: 12rpx;
 
       .input-avatar {
-        width: 56rpx;
-        height: 56rpx;
+        width: 48rpx;
+        height: 48rpx;
         border-radius: 50%;
       }
 
       .input-user-info {
-        display: flex;
-        align-items: baseline;
-        gap: 8rpx;
-
         .input-user-name {
-          font-size: 28rpx;
+          font-size: 26rpx;
           font-weight: 600;
           color: #333333;
         }
-
         .input-user-org {
           font-size: 22rpx;
           color: #999999;
@@ -381,30 +350,24 @@
       }
     }
 
-    .input-row {
+    .input-box {
       display: flex;
       align-items: center;
       gap: 12rpx;
       background: #f5f5f5;
-      border-radius: 12rpx;
-      padding: 16rpx 20rpx;
-      border: 1rpx solid #e8e8e8;
+      border-radius: 40rpx;
+      padding: 12rpx 20rpx;
 
       .input-field {
         flex: 1;
-        height: 48rpx;
+        height: 40rpx;
         font-size: 28rpx;
-        color: #333333;
         background: transparent;
       }
 
-      .input-placeholder {
-        color: #999999;
-      }
-
       .send-btn {
-        width: 48rpx;
-        height: 48rpx;
+        width: 40rpx;
+        height: 40rpx;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -413,9 +376,8 @@
         &.active { opacity: 1; }
 
         .send-icon {
-          font-size: 32rpx;
-          color: #666666;
-          transform: rotate(-45deg);
+          font-size: 28rpx;
+          color: #333333;
         }
       }
     }
