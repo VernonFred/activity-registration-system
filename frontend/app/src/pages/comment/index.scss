@@ -464,17 +464,26 @@
       background: #ffffff;
       border-radius: 32rpx 32rpx 0 0;
       width: 100%;
-      padding: 24rpx 32rpx 16rpx;
+      padding: 24rpx 32rpx;
+      padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
 
+      // 拖拽条 - 增大点击区域
       .panel-drag-bar {
         width: 80rpx;
-        height: 8rpx;
-        background: #dbdbdb;
-        border-radius: 4rpx;
-        margin: 0 auto 20rpx;
-        // 增大点击区域
-        padding: 16rpx 0;
-        background-clip: content-box;
+        height: 40rpx;  // 增大高度作为点击区域
+        margin: 0 auto 12rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &::after {
+          content: '';
+          width: 80rpx;
+          height: 8rpx;
+          background: #dbdbdb;
+          border-radius: 4rpx;
+        }
       }
 
       .panel-title {

@@ -163,18 +163,21 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
           {/* 原评论三点菜单 */}
           <View className="comment-menu">
             <View className="menu-trigger" onClick={handleOriginalMenuClick}>
-              <Text className="menu-dots">⋮</Text>
+              <Text className="menu-dots">⋯</Text>
             </View>
             {showOriginalMenu && (
-              <View className="menu-dropdown">
-                <View className="menu-item" onClick={() => handleReplyTo(comment.user_name)}>
-                  <Text>回复</Text>
+              <View className="menu-action-sheet">
+                <View className="action-item reply" onClick={() => handleReplyTo(comment.user_name)}>
+                  <Text className="action-icon">💬</Text>
+                  <Text className="action-text">回复</Text>
                 </View>
-                {comment.user_name === currentUser.name && (
-                  <View className="menu-item danger">
-                    <Text>删除</Text>
-                  </View>
-                )}
+                <View 
+                  className="action-item cancel" 
+                  onClick={() => setShowOriginalMenu(false)}
+                >
+                  <Text className="action-icon">🗑️</Text>
+                  <Text className="action-text">{comment.user_name === currentUser.name ? '删除' : '取消'}</Text>
+                </View>
               </View>
             )}
           </View>
@@ -206,18 +209,21 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
                 {/* 每条回复的三点菜单 */}
                 <View className="reply-menu">
                   <View className="menu-trigger" onClick={(e) => handleMenuClick(reply.id, e)}>
-                    <Text className="menu-dots">⋮</Text>
+                    <Text className="menu-dots">⋯</Text>
                   </View>
                   {activeMenu === reply.id && (
-                    <View className="menu-dropdown">
-                      <View className="menu-item" onClick={() => handleReplyTo(reply.user_name)}>
-                        <Text>回复</Text>
+                    <View className="menu-action-sheet">
+                      <View className="action-item reply" onClick={() => handleReplyTo(reply.user_name)}>
+                        <Text className="action-icon">💬</Text>
+                        <Text className="action-text">回复</Text>
                       </View>
-                      {reply.user_name === currentUser.name && (
-                        <View className="menu-item danger" onClick={() => handleDeleteReply(reply.id)}>
-                          <Text>删除</Text>
-                        </View>
-                      )}
+                      <View 
+                        className="action-item cancel" 
+                        onClick={() => reply.user_name === currentUser.name ? handleDeleteReply(reply.id) : setActiveMenu(null)}
+                      >
+                        <Text className="action-icon">🗑️</Text>
+                        <Text className="action-text">{reply.user_name === currentUser.name ? '删除' : '取消'}</Text>
+                      </View>
                     </View>
                   )}
                 </View>

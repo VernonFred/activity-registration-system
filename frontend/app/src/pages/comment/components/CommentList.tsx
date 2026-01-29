@@ -100,19 +100,23 @@ export default function CommentList({
                 className="menu-trigger"
                 onClick={(e) => onMenuClick(comment.id, e)}
               >
-                <Text className="menu-dots">⋮</Text>
+                <Text className="menu-dots">⋯</Text>
               </View>
               {activeCommentMenu === comment.id && (
-                <View className="menu-dropdown">
-                  {/* 回复 - 弹出输入框@该用户 */}
-                  <View className="menu-item" onClick={() => onQuickReply(comment.user_name)}>
-                    <Text>回复</Text>
+                <View className="menu-action-sheet">
+                  {/* 回复 - 带图标 */}
+                  <View className="action-item reply" onClick={() => onQuickReply(comment.user_name)}>
+                    <Text className="action-icon">💬</Text>
+                    <Text className="action-text">回复</Text>
                   </View>
-                  {comment.user_name === currentUserName && (
-                    <View className="menu-item danger" onClick={() => onDelete(comment.id)}>
-                      <Text>删除</Text>
-                    </View>
-                  )}
+                  {/* 取消/删除 - 红色背景 */}
+                  <View 
+                    className="action-item cancel" 
+                    onClick={() => comment.user_name === currentUserName ? onDelete(comment.id) : onMenuClick(0, { stopPropagation: () => {} })}
+                  >
+                    <Text className="action-icon">🗑️</Text>
+                    <Text className="action-text">{comment.user_name === currentUserName ? '删除' : '取消'}</Text>
+                  </View>
                 </View>
               )}
             </View>

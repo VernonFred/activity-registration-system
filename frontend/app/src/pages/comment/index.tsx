@@ -224,8 +224,15 @@ export default function CommentPage() {
       {showCommentInput && (
         <View className="comment-input-overlay" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }}>
           <View className="comment-input-panel" onClick={(e) => e.stopPropagation()}>
-            {/* 拖拽条 - 点击关闭 */}
-            <View className="panel-drag-bar" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }} />
+            {/* 拖拽条 - 点击关闭（需要单独处理阻止冒泡） */}
+            <View 
+              className="panel-drag-bar" 
+              onClick={(e) => { 
+                e.stopPropagation()
+                setShowCommentInput(false)
+                setReplyToUser(null) 
+              }} 
+            />
             <Text className="panel-title">将以下面的身份进行评论</Text>
             <View className="panel-user">
               <Image src={currentUser.avatar} className="panel-avatar" mode="aspectFill" />
