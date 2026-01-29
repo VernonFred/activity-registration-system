@@ -13,16 +13,18 @@
   z-index: 10;
 
   .comments-title {
-    font-size: 36rpx;
-    font-weight: 700;
-    color: #000000;
-    margin-bottom: 32rpx;
+    font-size: 36rpx !important;
+    font-weight: 700 !important;
+    color: #000000 !important;
+    margin-bottom: 40rpx !important;
+    display: block !important;
   }
 
   .sort-tabs {
-    display: flex;
-    gap: 16rpx;
-    margin-bottom: 48rpx;
+    display: flex !important;
+    gap: 16rpx !important;
+    margin-bottom: 56rpx !important;
+    margin-top: 0 !important;
 
     .sort-tab {
       padding: 12rpx 24rpx;
