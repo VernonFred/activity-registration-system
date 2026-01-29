@@ -199,8 +199,8 @@
               font-weight: 500;
             }
 
-            // 回复 - 白色胶囊
-            &.reply {
+            // 回复/修改 - 白色胶囊
+            &.reply, &.edit {
               background: #ffffff;
               
               .action-text {
@@ -212,7 +212,7 @@
               }
             }
 
-            // 取消/删除 - 浅红色胶囊
+            // 取消 - 白色胶囊（用于别人的评论）
             &.cancel {
               background: #ffebee;
               

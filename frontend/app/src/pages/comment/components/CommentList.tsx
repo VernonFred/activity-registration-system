@@ -104,19 +104,31 @@ export default function CommentList({
               </View>
               {activeCommentMenu === comment.id && (
                 <View className="menu-action-sheet">
-                  {/* 回复 - 带图标 */}
-                  <View className="action-item reply" onClick={() => onQuickReply(comment.user_name)}>
-                    <Text className="action-icon">💬</Text>
-                    <Text className="action-text">回复</Text>
-                  </View>
-                  {/* 取消/删除 - 红色背景 */}
-                  <View 
-                    className="action-item cancel" 
-                    onClick={() => comment.user_name === currentUserName ? onDelete(comment.id) : onMenuClick(0, { stopPropagation: () => {} })}
-                  >
-                    <Text className="action-icon">🗑️</Text>
-                    <Text className="action-text">{comment.user_name === currentUserName ? '删除' : '取消'}</Text>
-                  </View>
+                  {comment.user_name === currentUserName ? (
+                    <>
+                      {/* 自己的评论：修改 + 删除 */}
+                      <View className="action-item edit" onClick={() => onMenuClick(0, { stopPropagation: () => {} })}>
+                        <Text className="action-icon">✏️</Text>
+                        <Text className="action-text">修改</Text>
+                      </View>
+                      <View className="action-item cancel" onClick={() => onDelete(comment.id)}>
+                        <Text className="action-icon">🗑️</Text>
+                        <Text className="action-text">删除</Text>
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      {/* 别人的评论：回复 + 取消 */}
+                      <View className="action-item reply" onClick={() => onQuickReply(comment.user_name)}>
+                        <Text className="action-icon">💬</Text>
+                        <Text className="action-text">回复</Text>
+                      </View>
+                      <View className="action-item cancel" onClick={() => onMenuClick(0, { stopPropagation: () => {} })}>
+                        <Text className="action-icon">✕</Text>
+                        <Text className="action-text">取消</Text>
+                      </View>
+                    </>
+                  )}
                 </View>
               )}
             </View>

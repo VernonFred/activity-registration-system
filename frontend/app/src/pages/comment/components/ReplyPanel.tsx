@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Comment, CommentReply } from '../types'
+import ConfirmModal from './ConfirmModal'
 import './ReplyPanel.scss'
 
 interface CurrentUser {
@@ -49,6 +50,7 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
   const [replyTo, setReplyTo] = useState<string | null>(null)
   const [activeMenu, setActiveMenu] = useState<number | null>(null)
   const [inputFocus, setInputFocus] = useState(false)
+  const [deleteModal, setDeleteModal] = useState<{ visible: boolean; id: number; isReply: boolean }>({ visible: false, id: 0, isReply: false })
 
   // 格式化时间
   const formatTime = (time: string) => {
@@ -85,23 +87,19 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     setTimeout(() => setInputFocus(true), 100)
   }
 
-  // 删除评论/回复
-  const handleDelete = (id: number, isReply: boolean) => {
-    Taro.showModal({
-      title: '确认删除',
-      content: isReply ? '确定要删除这条回复吗？' : '确定要删除这条评论吗？',
-      confirmText: '确定',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          if (isReply) {
-            setReplies(replies.filter(r => r.id !== id))
-          }
-          setActiveMenu(null)
-          Taro.showToast({ title: '删除成功', icon: 'success' })
-        }
-      }
-    })
+  // 显示删除确认
+  const showDeleteConfirm = (id: number, isReply: boolean) => {
+    setActiveMenu(null)
+    setDeleteModal({ visible: true, id, isReply })
+  }
+
+  // 确认删除
+  const handleConfirmDelete = () => {
+    if (deleteModal.isReply) {
+      setReplies(replies.filter(r => r.id !== deleteModal.id))
+    }
+    setDeleteModal({ visible: false, id: 0, isReply: false })
+    Taro.showToast({ title: '删除成功', icon: 'success' })
   }
 
   // 提交回复
@@ -152,51 +150,53 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
         {/* 评论内容区 */}
         <View className="comment-thread">
           {/* 原评论 */}
-          <View className="original-comment">
-            <View className="comment-row">
+          <View className={`original-comment ${replies.length > 0 ? 'has-replies' : ''}`}>
+            <View className="avatar-col">
               <Image src={comment.user_avatar || ''} className="comment-avatar" mode="aspectFill" />
-              <View className="comment-body">
-                <View className="comment-header">
-                  <Text className="comment-user">{comment.user_name}</Text>
-                  <Text className="comment-time">· {formatTime(comment.created_at)}</Text>
-                </View>
-                <Text className="comment-text">{comment.content}</Text>
-                <View className="comment-footer">
-                  <View className="footer-item">
-                    <Text className="item-icon">👍</Text>
-                    <Text className="item-count">{comment.like_count}</Text>
-                  </View>
-                  <View className="footer-item">
-                    <Text className="item-icon">👎</Text>
-                  </View>
-                </View>
+              {/* 连接线从头像下方开始 */}
+              {replies.length > 0 && <View className="avatar-line" />}
+            </View>
+            <View className="content-col">
+              <View className="comment-header">
+                <Text className="comment-user">{comment.user_name}</Text>
+                <Text className="comment-time">· {formatTime(comment.created_at)}</Text>
               </View>
-              {/* 三点菜单按钮 */}
-              <View className="comment-menu-btn" onClick={(e) => handleMenuClick(comment.id, e)}>
-                <Text className="menu-dots">⋯</Text>
+              <Text className="comment-text">{comment.content}</Text>
+              <View className="comment-footer">
+                <View className="footer-item">
+                  <Text className="item-icon">👍</Text>
+                  <Text className="item-count">{comment.like_count}</Text>
+                </View>
+                <View className="footer-item">
+                  <Text className="item-icon">👎</Text>
+                </View>
               </View>
             </View>
-            {/* 菜单下拉 */}
+            {/* 三点菜单 */}
+            <View className="menu-col" onClick={(e) => handleMenuClick(comment.id, e)}>
+              <Text className="menu-dots">⋮</Text>
+            </View>
+            {/* 菜单下拉 - 胶囊按钮样式 */}
             {activeMenu === comment.id && (
               <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
                 {isOwnComment(comment.user_name) ? (
                   <>
-                    <View className="menu-item edit-item" onClick={() => { /* TODO: 修改功能 */ setActiveMenu(null) }}>
+                    <View className="menu-item edit" onClick={() => { setActiveMenu(null) }}>
                       <Text className="menu-icon">✏️</Text>
                       <Text className="menu-text">修改</Text>
                     </View>
-                    <View className="menu-item delete-item" onClick={() => handleDelete(comment.id, false)}>
+                    <View className="menu-item delete" onClick={() => showDeleteConfirm(comment.id, false)}>
                       <Text className="menu-icon">🗑️</Text>
                       <Text className="menu-text">删除</Text>
                     </View>
                   </>
                 ) : (
                   <>
-                    <View className="menu-item reply-item" onClick={() => handleReply(comment.user_name)}>
+                    <View className="menu-item reply" onClick={() => handleReply(comment.user_name)}>
                       <Text className="menu-icon">💬</Text>
                       <Text className="menu-text">回复</Text>
                     </View>
-                    <View className="menu-item" onClick={() => setActiveMenu(null)}>
+                    <View className="menu-item cancel" onClick={() => setActiveMenu(null)}>
                       <Text className="menu-icon">✕</Text>
                       <Text className="menu-text">取消</Text>
                     </View>
@@ -208,53 +208,59 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
 
           {/* 回复列表 */}
           {replies.length > 0 && (
-            <View className="replies-container">
-              {replies.map((reply) => (
-                <View key={reply.id} className="reply-item">
-                  <View className="reply-row">
+            <View className="replies-list">
+              {replies.map((reply, index) => (
+                <View key={reply.id} className={`reply-item ${index === replies.length - 1 ? 'last' : ''}`}>
+                  <View className="connector-col">
+                    {/* 垂直线（非最后一个才显示） */}
+                    {index < replies.length - 1 && <View className="vertical-line" />}
+                    {/* 弧形连接 */}
+                    <View className="curve-line" />
+                  </View>
+                  <View className="avatar-col">
                     <Image src={reply.user_avatar || ''} className="reply-avatar" mode="aspectFill" />
-                    <View className="reply-body">
-                      <View className="reply-header">
-                        <Text className="reply-user">{reply.user_name}</Text>
-                        <Text className="reply-time">· {formatTime(reply.created_at)}</Text>
-                      </View>
-                      <Text className="reply-text">{reply.content}</Text>
-                      <View className="reply-footer">
-                        <View className="footer-item">
-                          <Text className="item-icon">👍</Text>
-                          <Text className="item-count">70</Text>
-                        </View>
-                        <View className="footer-item">
-                          <Text className="item-icon">👎</Text>
-                        </View>
-                      </View>
+                  </View>
+                  <View className="content-col">
+                    <View className="reply-header">
+                      <Text className="reply-user">{reply.user_name}</Text>
+                      <Text className="reply-time">· {formatTime(reply.created_at)}</Text>
                     </View>
-                    {/* 三点菜单按钮 - 始终显示 */}
-                    <View className="reply-menu-btn" onClick={(e) => handleMenuClick(reply.id, e)}>
-                      <Text className="menu-dots">⋯</Text>
+                    <Text className="reply-text">{reply.content}</Text>
+                    <View className="reply-footer">
+                      <View className="footer-item">
+                        <Text className="item-icon">👍</Text>
+                        <Text className="item-count">70</Text>
+                      </View>
+                      <View className="footer-item">
+                        <Text className="item-icon">👎</Text>
+                      </View>
                     </View>
                   </View>
-                  {/* 菜单下拉 */}
+                  {/* 三点菜单 */}
+                  <View className="menu-col" onClick={(e) => handleMenuClick(reply.id, e)}>
+                    <Text className="menu-dots">⋮</Text>
+                  </View>
+                  {/* 菜单下拉 - 胶囊按钮样式 */}
                   {activeMenu === reply.id && (
                     <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
                       {isOwnComment(reply.user_name) ? (
                         <>
-                          <View className="menu-item edit-item" onClick={() => { /* TODO: 修改功能 */ setActiveMenu(null) }}>
+                          <View className="menu-item edit" onClick={() => { setActiveMenu(null) }}>
                             <Text className="menu-icon">✏️</Text>
                             <Text className="menu-text">修改</Text>
                           </View>
-                          <View className="menu-item delete-item" onClick={() => handleDelete(reply.id, true)}>
+                          <View className="menu-item delete" onClick={() => showDeleteConfirm(reply.id, true)}>
                             <Text className="menu-icon">🗑️</Text>
                             <Text className="menu-text">删除</Text>
                           </View>
                         </>
                       ) : (
                         <>
-                          <View className="menu-item reply-item" onClick={() => handleReply(reply.user_name)}>
+                          <View className="menu-item reply" onClick={() => handleReply(reply.user_name)}>
                             <Text className="menu-icon">💬</Text>
                             <Text className="menu-text">回复</Text>
                           </View>
-                          <View className="menu-item" onClick={() => setActiveMenu(null)}>
+                          <View className="menu-item cancel" onClick={() => setActiveMenu(null)}>
                             <Text className="menu-icon">✕</Text>
                             <Text className="menu-text">取消</Text>
                           </View>
@@ -298,6 +304,14 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
           </View>
         </View>
       </View>
+
+      {/* 删除确认弹窗 */}
+      <ConfirmModal
+        visible={deleteModal.visible}
+        title="您确定要删除评论吗？"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModal({ visible: false, id: 0, isReply: false })}
+      />
     </View>
   )
 }

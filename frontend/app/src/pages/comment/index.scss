@@ -119,6 +119,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 32rpx;  // 增加与下方评论区的间距
 
       .my-rating-label {
         font-size: 28rpx;
