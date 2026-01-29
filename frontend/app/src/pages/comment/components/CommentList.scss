@@ -16,13 +16,13 @@
     font-size: 32rpx;
     font-weight: 600;
     color: #262626;
-    margin-bottom: 24rpx;
+    margin-bottom: 32rpx;  // 增加间距
   }
 
   .sort-tabs {
     display: flex;
     gap: 16rpx;
-    margin-bottom: 32rpx;
+    margin-bottom: 40rpx;  // 增加间距
 
     .sort-tab {
       padding: 12rpx 24rpx;
