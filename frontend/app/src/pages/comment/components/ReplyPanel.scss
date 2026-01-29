@@ -151,36 +151,36 @@
         }
       }
 
-      // 设计稿样式 - 独立胶囊按钮
+      // 设计稿样式 - 精致小巧的胶囊按钮
       .menu-action-sheet {
         position: absolute;
         top: 100%;
         right: 0;
         margin-top: 8rpx;
         background: #f5f5f5;
-        border-radius: 20rpx;
-        box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+        border-radius: 16rpx;
+        box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
         z-index: 100;
-        min-width: 220rpx;
-        padding: 16rpx;
+        min-width: 160rpx;
+        padding: 10rpx;
         display: flex;
         flex-direction: column;
-        gap: 12rpx;
+        gap: 8rpx;
 
         .action-item {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 12rpx;
-          padding: 24rpx 32rpx;
-          border-radius: 16rpx;
+          gap: 8rpx;
+          padding: 16rpx 24rpx;
+          border-radius: 12rpx;
 
           .action-icon {
-            font-size: 32rpx;
+            font-size: 26rpx;
           }
 
           .action-text {
-            font-size: 28rpx;
+            font-size: 24rpx;
             font-weight: 500;
           }
 
@@ -243,6 +243,7 @@
         display: flex;
         gap: 12rpx;
         padding: 16rpx 0;
+        padding-right: 40rpx;  // 为三点菜单预留空间
         position: relative;
 
         .reply-avatar {
@@ -301,52 +302,53 @@
           }
         }
 
-        // 三点菜单
+        // 三点菜单 - 确保每条回复都显示
         .reply-menu {
           position: absolute;
           top: 16rpx;
           right: 0;
+          z-index: 10;
 
           .menu-trigger {
-            padding: 12rpx;
+            padding: 8rpx 12rpx;
 
             .menu-dots {
-              font-size: 28rpx;
+              font-size: 24rpx;
               color: #999999;
               letter-spacing: 2rpx;
             }
           }
 
-          // 设计稿样式 - 独立胶囊按钮
+          // 精致小巧的胶囊按钮
           .menu-action-sheet {
             position: absolute;
             top: 100%;
             right: 0;
             margin-top: 8rpx;
             background: #f5f5f5;
-            border-radius: 20rpx;
-            box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+            border-radius: 16rpx;
+            box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
             z-index: 100;
-            min-width: 220rpx;
-            padding: 16rpx;
+            min-width: 160rpx;
+            padding: 10rpx;
             display: flex;
             flex-direction: column;
-            gap: 12rpx;
+            gap: 8rpx;
 
             .action-item {
               display: flex;
               align-items: center;
               justify-content: center;
-              gap: 12rpx;
-              padding: 24rpx 32rpx;
-              border-radius: 16rpx;
+              gap: 8rpx;
+              padding: 16rpx 24rpx;
+              border-radius: 12rpx;
 
               .action-icon {
-                font-size: 32rpx;
+                font-size: 26rpx;
               }
 
               .action-text {
-                font-size: 28rpx;
+                font-size: 24rpx;
                 font-weight: 500;
               }
 

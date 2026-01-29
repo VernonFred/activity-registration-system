@@ -173,27 +173,29 @@ export default function CommentPage() {
 
   // 拖拽条触摸开始
   const handleDragStart = (e: any) => {
+    e.stopPropagation()
     touchStartY.current = e.touches[0].clientY
     isDragging.current = true
-    setPanelTranslateY(0)
   }
 
-  // 拖拽条触摸移动
+  // 拖拽条触摸移动 - 阻止默认行为防止页面滚动
   const handleDragMove = (e: any) => {
+    e.stopPropagation()
     if (!isDragging.current) return
     const currentY = e.touches[0].clientY
     const deltaY = currentY - touchStartY.current
     // 只允许向下拖动
     if (deltaY > 0) {
-      setPanelTranslateY(deltaY)
+      setPanelTranslateY(Math.min(deltaY, 200))  // 限制最大拖动距离
     }
   }
 
   // 拖拽条触摸结束
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: any) => {
+    e.stopPropagation()
     isDragging.current = false
-    // 下拉超过100px则关闭
-    if (panelTranslateY > 100) {
+    // 下拉超过80px则关闭
+    if (panelTranslateY > 80) {
       setShowCommentInput(false)
       setReplyToUser(null)
     }
@@ -263,9 +265,12 @@ export default function CommentPage() {
       {showCommentInput && (
         <View className="comment-input-overlay" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }}>
           <View 
-            className="comment-input-panel" 
+            className={`comment-input-panel ${isDragging.current ? 'dragging' : ''}`}
             onClick={(e) => e.stopPropagation()}
-            style={{ transform: `translateY(${panelTranslateY}px)` }}
+            style={{ 
+              transform: `translateY(${panelTranslateY}px)`,
+              transition: isDragging.current ? 'none' : 'transform 0.2s ease-out'
+            }}
           >
             {/* 拖拽条 - 支持点击关闭和下拉手势关闭 */}
             <View 
@@ -278,6 +283,7 @@ export default function CommentPage() {
               onTouchStart={handleDragStart}
               onTouchMove={handleDragMove}
               onTouchEnd={handleDragEnd}
+              catchMove
             />
             <Text className="panel-title">将以下面的身份进行评论</Text>
             <View className="panel-user">

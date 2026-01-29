@@ -22,7 +22,7 @@ interface ReplyPanelProps {
   onSubmitReply: (commentId: number, content: string, replyTo?: string) => void
 }
 
-// Mock回复数据
+// Mock回复数据 - 使用ISO格式日期（兼容iOS）
 const MOCK_REPLIES: CommentReply[] = [
   {
     id: 101,
@@ -30,7 +30,7 @@ const MOCK_REPLIES: CommentReply[] = [
     user_name: '王小二',
     user_avatar: 'https://i.pravatar.cc/150?img=5',
     content: '@王大二 真的就是干货满满！',
-    created_at: '2026-01-05 15:30:00',
+    created_at: '2026-01-05T15:30:00',
     reply_to: '王大二'
   },
   {
@@ -39,7 +39,7 @@ const MOCK_REPLIES: CommentReply[] = [
     user_name: '王大二',
     user_avatar: 'https://i.pravatar.cc/150?img=6',
     content: '同意楼上的观点！',
-    created_at: '2026-01-05 16:00:00'
+    created_at: '2026-01-05T16:00:00'
   }
 ]
 
@@ -51,14 +51,16 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
   const [showOriginalMenu, setShowOriginalMenu] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
 
-  // 格式化时间
+  // 格式化时间 - 兼容iOS日期格式
   const formatTime = (time: string) => {
     const now = new Date()
-    const replyTime = new Date(time)
+    // 兼容iOS：将空格格式转换为ISO格式
+    const isoTime = time.includes(' ') ? time.replace(' ', 'T') : time
+    const replyTime = new Date(isoTime)
     const diff = now.getTime() - replyTime.getTime()
     const hours = Math.floor(diff / (1000 * 60 * 60))
     const days = Math.floor(hours / 24)
-    if (days > 7) return time.split(' ')[0]
+    if (days > 7) return isoTime.split('T')[0]
     if (days > 0) return `${days}天前`
     if (hours > 0) return `${hours}小时前`
     return '刚刚'
