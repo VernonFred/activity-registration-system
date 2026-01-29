@@ -126,9 +126,27 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     })
   }
 
+  const handleCloseMenus = () => {
+    if (activeMenu !== null) setActiveMenu(null)
+    if (showOriginalMenu) setShowOriginalMenu(false)
+  }
+
+  const handleOverlayClick = () => {
+    if (activeMenu !== null || showOriginalMenu) {
+      handleCloseMenus()
+      return
+    }
+    onClose()
+  }
+
+  const handlePanelClick = (e: any) => {
+    e.stopPropagation()
+    handleCloseMenus()
+  }
+
   return (
-    <View className="reply-panel-overlay" onClick={onClose}>
-      <View className="reply-panel" onClick={(e) => e.stopPropagation()}>
+    <View className="reply-panel-overlay" onClick={handleOverlayClick}>
+      <View className="reply-panel" onClick={handlePanelClick}>
         {/* 头部 */}
         <View className="panel-header">
           <View className="header-left" onClick={onClose}>
@@ -141,10 +159,9 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
         </View>
 
         {/* 原评论 */}
-        <View className="original-comment">
+        <View className={`original-comment ${replies.length > 0 ? 'has-replies' : ''}`}>
           <View className="avatar-area">
             <Image src={comment.user_avatar || ''} className="comment-avatar" mode="aspectFill" />
-            {replies.length > 0 && <View className="avatar-connector-line" />}
           </View>
           <View className="comment-content">
             <View className="comment-top">

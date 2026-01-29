@@ -13,16 +13,16 @@
   z-index: 10;
 
   .comments-title {
-    font-size: 32rpx;
-    font-weight: 600;
-    color: #262626;
-    margin-bottom: 32rpx;  // 增加间距
+    font-size: 36rpx;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 32rpx;
   }
 
   .sort-tabs {
     display: flex;
     gap: 16rpx;
-    margin-bottom: 40rpx;  // 增加间距
+    margin-bottom: 48rpx;
 
     .sort-tab {
       padding: 12rpx 24rpx;

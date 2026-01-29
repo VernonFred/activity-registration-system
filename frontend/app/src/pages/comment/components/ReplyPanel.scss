@@ -77,16 +77,18 @@
         z-index: 2;
       }
 
-      // 从头像引出的垂直线（延伸到回复列表）
-      .avatar-connector-line {
-        position: absolute;
-        left: 36rpx;  // 头像中心
-        top: 72rpx;   // 头像底部
-        width: 2rpx;
-        height: 100rpx;  // 延伸到回复区域
-        background: #e0e0e0;
-        z-index: 1;
-      }
+    }
+
+    // 有回复时，从头像画一条线向下延伸到回复列表
+    &.has-replies::after {
+      content: '';
+      position: absolute;
+      left: calc(32rpx + 36rpx - 1rpx);  // padding-left + 头像中心 - 线宽补偿
+      top: calc(24rpx + 72rpx);  // padding-top + 头像高度
+      bottom: -24rpx;  // 延伸到原评论底部下方
+      width: 2rpx;
+      background: #d8d8d8;
+      z-index: 1;
     }
 
     .comment-content {
@@ -207,43 +209,44 @@
   .replies-list {
     flex: 1;
     padding: 0 32rpx;
-    padding-left: 68rpx;  // 对齐到原评论头像位置
+    padding-left: 32rpx;  // 基础左内边距
+    padding-top: 8rpx;
     max-height: 50vh;
     position: relative;
 
+    // 回复列表的主垂直线（对齐原评论头像中心）
+    &::before {
+      content: '';
+      position: absolute;
+      left: 83rpx;  // 对齐原评论连接线 (16rpx margin + 32rpx padding + 36rpx half avatar - 1rpx)
+      top: 0;
+      bottom: 80rpx;  // 不要到最底部
+      width: 2rpx;
+      background: #d8d8d8;
+    }
+
     .reply-item-wrapper {
       position: relative;
-      margin-left: 40rpx;
-      padding-top: 8rpx;
+      margin-left: 72rpx;  // 回复内容有缩进
+      padding-top: 16rpx;
 
-      // 垂直主线（非最后一个回复显示）
-      &:not(:last-child)::before {
-        content: '';
-        position: absolute;
-        left: -40rpx;
-        top: 0;
-        bottom: -8rpx;
-        width: 2rpx;
-        background: #d8d8d8;
-      }
-
-      // YouTube风格平滑弧线 - 真正连续的曲线
+      // YouTube风格平滑弧线
       .reply-connector-curve {
         position: absolute;
-        left: -40rpx;
-        top: 0;
-        width: 40rpx;
-        height: 48rpx;
-        // 使用单一边框实现连续弧线
+        left: -21rpx;  // 对齐主线 (104rpx wrapper边缘 - 83rpx 主线位置)
+        top: 16rpx;
+        width: 21rpx;
+        height: 28rpx;
         border-style: solid;
         border-color: #d8d8d8;
         border-width: 0 0 2rpx 2rpx;
-        border-bottom-left-radius: 20rpx;
+        border-bottom-left-radius: 14rpx;
         background: transparent;
       }
 
       .reply-item {
         display: flex;
+        align-items: flex-start;
         gap: 12rpx;
         padding: 16rpx 0;
         position: relative;
@@ -256,7 +259,9 @@
         }
 
         .reply-content {
-          flex: 1;
+          flex: 1 1 0;
+          min-width: 0;
+          overflow: hidden;
 
           .reply-top {
             display: flex;
@@ -306,23 +311,29 @@
 
         // 三点菜单 - 始终显示在每条回复右侧
         .reply-menu {
-          flex-shrink: 0;
-          margin-left: auto;
+          flex: 0 0 auto;
+          width: 48rpx;
+          display: flex;
+          justify-content: flex-end;
+          align-self: flex-start;
+          position: relative;
 
           .menu-trigger {
             padding: 8rpx;
+            cursor: pointer;
 
             .menu-dots {
               font-size: 28rpx;
-              color: #999999;
+              color: #666666;
             }
           }
 
           // 精致小巧的胶囊按钮
           .menu-action-sheet {
             position: absolute;
-            top: 32rpx;
-            right: 32rpx;
+            top: 100%;
+            right: 0;
+            margin-top: 8rpx;
             background: #f5f5f5;
             border-radius: 16rpx;
             box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
