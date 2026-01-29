@@ -179,20 +179,28 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
             {/* 菜单下拉 */}
             {activeMenu === comment.id && (
               <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
-                <View className="menu-item reply-item" onClick={() => handleReply(comment.user_name)}>
-                  <Text className="menu-icon">💬</Text>
-                  <Text className="menu-text">回复</Text>
-                </View>
                 {isOwnComment(comment.user_name) ? (
-                  <View className="menu-item delete-item" onClick={() => handleDelete(comment.id, false)}>
-                    <Text className="menu-icon">🗑️</Text>
-                    <Text className="menu-text">删除</Text>
-                  </View>
+                  <>
+                    <View className="menu-item edit-item" onClick={() => { /* TODO: 修改功能 */ setActiveMenu(null) }}>
+                      <Text className="menu-icon">✏️</Text>
+                      <Text className="menu-text">修改</Text>
+                    </View>
+                    <View className="menu-item delete-item" onClick={() => handleDelete(comment.id, false)}>
+                      <Text className="menu-icon">🗑️</Text>
+                      <Text className="menu-text">删除</Text>
+                    </View>
+                  </>
                 ) : (
-                  <View className="menu-item" onClick={() => setActiveMenu(null)}>
-                    <Text className="menu-icon">✕</Text>
-                    <Text className="menu-text">取消</Text>
-                  </View>
+                  <>
+                    <View className="menu-item reply-item" onClick={() => handleReply(comment.user_name)}>
+                      <Text className="menu-icon">💬</Text>
+                      <Text className="menu-text">回复</Text>
+                    </View>
+                    <View className="menu-item" onClick={() => setActiveMenu(null)}>
+                      <Text className="menu-icon">✕</Text>
+                      <Text className="menu-text">取消</Text>
+                    </View>
+                  </>
                 )}
               </View>
             )}
@@ -229,20 +237,28 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
                   {/* 菜单下拉 */}
                   {activeMenu === reply.id && (
                     <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
-                      <View className="menu-item reply-item" onClick={() => handleReply(reply.user_name)}>
-                        <Text className="menu-icon">💬</Text>
-                        <Text className="menu-text">回复</Text>
-                      </View>
                       {isOwnComment(reply.user_name) ? (
-                        <View className="menu-item delete-item" onClick={() => handleDelete(reply.id, true)}>
-                          <Text className="menu-icon">🗑️</Text>
-                          <Text className="menu-text">删除</Text>
-                        </View>
+                        <>
+                          <View className="menu-item edit-item" onClick={() => { /* TODO: 修改功能 */ setActiveMenu(null) }}>
+                            <Text className="menu-icon">✏️</Text>
+                            <Text className="menu-text">修改</Text>
+                          </View>
+                          <View className="menu-item delete-item" onClick={() => handleDelete(reply.id, true)}>
+                            <Text className="menu-icon">🗑️</Text>
+                            <Text className="menu-text">删除</Text>
+                          </View>
+                        </>
                       ) : (
-                        <View className="menu-item" onClick={() => setActiveMenu(null)}>
-                          <Text className="menu-icon">✕</Text>
-                          <Text className="menu-text">取消</Text>
-                        </View>
+                        <>
+                          <View className="menu-item reply-item" onClick={() => handleReply(reply.user_name)}>
+                            <Text className="menu-icon">💬</Text>
+                            <Text className="menu-text">回复</Text>
+                          </View>
+                          <View className="menu-item" onClick={() => setActiveMenu(null)}>
+                            <Text className="menu-icon">✕</Text>
+                            <Text className="menu-text">取消</Text>
+                          </View>
+                        </>
                       )}
                     </View>
                   )}

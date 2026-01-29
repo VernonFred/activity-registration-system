@@ -169,7 +169,7 @@
         .menu-icon { font-size: 24rpx; }
         .menu-text { font-size: 26rpx; }
 
-        &.reply-item {
+        &.reply-item, &.edit-item {
           .menu-text { color: #333333; }
         }
         &.delete-item {
@@ -307,7 +307,7 @@
           .menu-icon { font-size: 24rpx; }
           .menu-text { font-size: 26rpx; }
 
-          &.reply-item {
+          &.reply-item, &.edit-item {
             .menu-text { color: #333333; }
           }
           &.delete-item {
