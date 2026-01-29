@@ -1,6 +1,6 @@
 /**
  * 回复弹窗组件 - 严格按设计稿
- * 2026年1月29日 - 重写
+ * 2026年1月29日 - 重写连接线结构
  */
 import { useState } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
@@ -133,6 +133,8 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
     }
   }
 
+  const hasReplies = replies.length > 0
+
   return (
     <View className="reply-panel-overlay" onClick={handleOverlayClick}>
       <View className="reply-panel" onClick={(e) => { e.stopPropagation(); closeMenus() }}>
@@ -147,129 +149,135 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
           </View>
         </View>
 
-        {/* 评论内容区 */}
+        {/* 评论内容区 - 新结构：头像独立，连接线从头像延伸 */}
         <View className="comment-thread">
-          {/* 原评论 */}
-          <View className={`original-comment ${replies.length > 0 ? 'has-replies' : ''}`}>
-            <View className="avatar-col">
-              <Image src={comment.user_avatar || ''} className="comment-avatar" mode="aspectFill" />
-              {/* 连接线从头像下方开始 */}
-              {replies.length > 0 && <View className="avatar-line" />}
+          {/* 原评论区域 */}
+          <View className="original-wrapper">
+            {/* 左侧：头像 + 连接线 */}
+            <View className="left-col">
+              <Image src={comment.user_avatar || ''} className="avatar" mode="aspectFill" />
+              {hasReplies && <View className="vertical-line" />}
             </View>
-            <View className="content-col">
-              <View className="comment-header">
-                <Text className="comment-user">{comment.user_name}</Text>
-                <Text className="comment-time">· {formatTime(comment.created_at)}</Text>
-              </View>
-              <Text className="comment-text">{comment.content}</Text>
-              <View className="comment-footer">
-                <View className="footer-item">
-                  <Text className="item-icon">👍</Text>
-                  <Text className="item-count">{comment.like_count}</Text>
+            
+            {/* 右侧：灰色背景内容卡片 */}
+            <View className="right-col">
+              <View className="content-card">
+                <View className="card-header">
+                  <Text className="user-name">{comment.user_name}</Text>
+                  <Text className="post-time">· {formatTime(comment.created_at)}</Text>
                 </View>
-                <View className="footer-item">
-                  <Text className="item-icon">👎</Text>
+                <Text className="card-text">{comment.content}</Text>
+                <View className="card-footer">
+                  <View className="action-item">
+                    <Text className="action-icon">👍</Text>
+                    <Text className="action-count">{comment.like_count}</Text>
+                  </View>
+                  <View className="action-item">
+                    <Text className="action-icon">👎</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-            {/* 三点菜单 */}
-            <View className="menu-col" onClick={(e) => handleMenuClick(comment.id, e)}>
-              <Text className="menu-dots">⋮</Text>
-            </View>
-            {/* 菜单下拉 - 胶囊按钮样式 */}
-            {activeMenu === comment.id && (
-              <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
-                {isOwnComment(comment.user_name) ? (
-                  <>
-                    <View className="menu-item edit" onClick={() => { setActiveMenu(null) }}>
-                      <Text className="menu-icon">✏️</Text>
-                      <Text className="menu-text">修改</Text>
-                    </View>
-                    <View className="menu-item delete" onClick={() => showDeleteConfirm(comment.id, false)}>
-                      <Text className="menu-icon">🗑️</Text>
-                      <Text className="menu-text">删除</Text>
-                    </View>
-                  </>
-                ) : (
-                  <>
-                    <View className="menu-item reply" onClick={() => handleReply(comment.user_name)}>
-                      <Text className="menu-icon">💬</Text>
-                      <Text className="menu-text">回复</Text>
-                    </View>
-                    <View className="menu-item cancel" onClick={() => setActiveMenu(null)}>
-                      <Text className="menu-icon">✕</Text>
-                      <Text className="menu-text">取消</Text>
-                    </View>
-                  </>
-                )}
+              {/* 三点菜单 */}
+              <View className="menu-btn" onClick={(e) => handleMenuClick(comment.id, e)}>
+                <Text className="menu-dots">⋮</Text>
               </View>
-            )}
+              {/* 菜单下拉 */}
+              {activeMenu === comment.id && (
+                <View className="menu-popup" onClick={(e) => e.stopPropagation()}>
+                  {isOwnComment(comment.user_name) ? (
+                    <>
+                      <View className="popup-item edit" onClick={() => setActiveMenu(null)}>
+                        <Text className="popup-icon">✏️</Text>
+                        <Text className="popup-text">修改</Text>
+                      </View>
+                      <View className="popup-item delete" onClick={() => showDeleteConfirm(comment.id, false)}>
+                        <Text className="popup-icon">🗑️</Text>
+                        <Text className="popup-text">删除</Text>
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <View className="popup-item" onClick={() => handleReply(comment.user_name)}>
+                        <Text className="popup-icon">💬</Text>
+                        <Text className="popup-text">回复</Text>
+                      </View>
+                      <View className="popup-item" onClick={() => setActiveMenu(null)}>
+                        <Text className="popup-icon">✕</Text>
+                        <Text className="popup-text">取消</Text>
+                      </View>
+                    </>
+                  )}
+                </View>
+              )}
+            </View>
           </View>
 
           {/* 回复列表 */}
-          {replies.length > 0 && (
-            <View className="replies-list">
-              {replies.map((reply, index) => (
-                <View key={reply.id} className={`reply-item ${index === replies.length - 1 ? 'last' : ''}`}>
-                  <View className="connector-col">
-                    {/* 垂直线（非最后一个才显示） */}
-                    {index < replies.length - 1 && <View className="vertical-line" />}
-                    {/* 弧形连接 */}
-                    <View className="curve-line" />
-                  </View>
-                  <View className="avatar-col">
+          {hasReplies && (
+            <View className="replies-wrapper">
+              {replies.map((reply, index) => {
+                const isLast = index === replies.length - 1
+                return (
+                  <View key={reply.id} className="reply-row">
+                    {/* 左侧连接线区域 */}
+                    <View className="line-col">
+                      {!isLast && <View className="v-line" />}
+                      <View className="curve" />
+                    </View>
+                    {/* 头像 */}
                     <Image src={reply.user_avatar || ''} className="reply-avatar" mode="aspectFill" />
-                  </View>
-                  <View className="content-col">
-                    <View className="reply-header">
-                      <Text className="reply-user">{reply.user_name}</Text>
-                      <Text className="reply-time">· {formatTime(reply.created_at)}</Text>
-                    </View>
-                    <Text className="reply-text">{reply.content}</Text>
-                    <View className="reply-footer">
-                      <View className="footer-item">
-                        <Text className="item-icon">👍</Text>
-                        <Text className="item-count">70</Text>
+                    {/* 内容 */}
+                    <View className="reply-content">
+                      <View className="reply-header">
+                        <Text className="reply-user">{reply.user_name}</Text>
+                        <Text className="reply-time">· {formatTime(reply.created_at)}</Text>
                       </View>
-                      <View className="footer-item">
-                        <Text className="item-icon">👎</Text>
+                      <Text className="reply-text">{reply.content}</Text>
+                      <View className="reply-footer">
+                        <View className="action-item">
+                          <Text className="action-icon">👍</Text>
+                          <Text className="action-count">70</Text>
+                        </View>
+                        <View className="action-item">
+                          <Text className="action-icon">👎</Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                  {/* 三点菜单 */}
-                  <View className="menu-col" onClick={(e) => handleMenuClick(reply.id, e)}>
-                    <Text className="menu-dots">⋮</Text>
-                  </View>
-                  {/* 菜单下拉 - 胶囊按钮样式 */}
-                  {activeMenu === reply.id && (
-                    <View className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
-                      {isOwnComment(reply.user_name) ? (
-                        <>
-                          <View className="menu-item edit" onClick={() => { setActiveMenu(null) }}>
-                            <Text className="menu-icon">✏️</Text>
-                            <Text className="menu-text">修改</Text>
-                          </View>
-                          <View className="menu-item delete" onClick={() => showDeleteConfirm(reply.id, true)}>
-                            <Text className="menu-icon">🗑️</Text>
-                            <Text className="menu-text">删除</Text>
-                          </View>
-                        </>
-                      ) : (
-                        <>
-                          <View className="menu-item reply" onClick={() => handleReply(reply.user_name)}>
-                            <Text className="menu-icon">💬</Text>
-                            <Text className="menu-text">回复</Text>
-                          </View>
-                          <View className="menu-item cancel" onClick={() => setActiveMenu(null)}>
-                            <Text className="menu-icon">✕</Text>
-                            <Text className="menu-text">取消</Text>
-                          </View>
-                        </>
-                      )}
+                    {/* 三点菜单 */}
+                    <View className="menu-btn" onClick={(e) => handleMenuClick(reply.id, e)}>
+                      <Text className="menu-dots">⋮</Text>
                     </View>
-                  )}
-                </View>
-              ))}
+                    {/* 菜单下拉 */}
+                    {activeMenu === reply.id && (
+                      <View className="menu-popup reply-popup" onClick={(e) => e.stopPropagation()}>
+                        {isOwnComment(reply.user_name) ? (
+                          <>
+                            <View className="popup-item edit" onClick={() => setActiveMenu(null)}>
+                              <Text className="popup-icon">✏️</Text>
+                              <Text className="popup-text">修改</Text>
+                            </View>
+                            <View className="popup-item delete" onClick={() => showDeleteConfirm(reply.id, true)}>
+                              <Text className="popup-icon">🗑️</Text>
+                              <Text className="popup-text">删除</Text>
+                            </View>
+                          </>
+                        ) : (
+                          <>
+                            <View className="popup-item" onClick={() => handleReply(reply.user_name)}>
+                              <Text className="popup-icon">💬</Text>
+                              <Text className="popup-text">回复</Text>
+                            </View>
+                            <View className="popup-item" onClick={() => setActiveMenu(null)}>
+                              <Text className="popup-icon">✕</Text>
+                              <Text className="popup-text">取消</Text>
+                            </View>
+                          </>
+                        )}
+                      </View>
+                    )}
+                  </View>
+                )
+              })}
             </View>
           )}
         </View>

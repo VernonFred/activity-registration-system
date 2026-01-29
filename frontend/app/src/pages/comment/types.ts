@@ -8,6 +8,7 @@ export interface Rating {
   average: number
   total_count: number
   user_rating?: number
+  user_rating_date?: string  // 用户评分时间
   distribution: {
     5: number
     4: number

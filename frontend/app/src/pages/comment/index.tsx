@@ -11,6 +11,7 @@ import { MOCK_CURRENT_USER, MOCK_RATING, MOCK_COMMENTS } from './constants'
 import RatingSection from './components/RatingSection'
 import CommentList from './components/CommentList'
 import ReplyPanel from './components/ReplyPanel'
+import ConfirmModal from './components/ConfirmModal'
 import './index.scss'
 
 export default function CommentPage() {
@@ -32,14 +33,25 @@ export default function CommentPage() {
   const [panelTranslateY, setPanelTranslateY] = useState(0)  // 面板下拉偏移
   const touchStartY = useRef(0)  // 触摸起始Y坐标
   const isDragging = useRef(false)  // 是否正在拖拽
+  const [isEditingRating, setIsEditingRating] = useState(false)  // 是否是修改评分模式
+  const [deleteModal, setDeleteModal] = useState<{ visible: boolean; commentId: number }>({ visible: false, commentId: 0 })
 
-  // 点击评分按钮
+  // 点击评分按钮（首次评分）
   const handleRateClick = () => {
     if (rating.user_rating && rating.user_rating > 0) {
-      Taro.showToast({ title: '您已经评分过了', icon: 'none' })
+      // 已评分，进入修改模式
+      handleEditRating()
       return
     }
     setTempRating(0)
+    setIsEditingRating(false)
+    setShowRatingDialog(true)
+  }
+
+  // 修改评分
+  const handleEditRating = () => {
+    setTempRating(rating.user_rating || 0)
+    setIsEditingRating(true)
     setShowRatingDialog(true)
   }
 
@@ -49,9 +61,18 @@ export default function CommentPage() {
       Taro.showToast({ title: '请选择评分', icon: 'none' })
       return
     }
-    setRating({ ...rating, user_rating: tempRating })
+    setRating({ ...rating, user_rating: tempRating, user_rating_date: new Date().toISOString() })
     setShowRatingDialog(false)
-    Taro.showToast({ title: '评分成功', icon: 'success' })
+    setIsEditingRating(false)
+    Taro.showToast({ title: isEditingRating ? '修改成功' : '评分成功', icon: 'success' })
+  }
+
+  // 取消评分
+  const handleCancelRating = () => {
+    setRating({ ...rating, user_rating: 0, user_rating_date: undefined })
+    setShowRatingDialog(false)
+    setIsEditingRating(false)
+    Taro.showToast({ title: '已取消评分', icon: 'success' })
   }
 
   // 打开评论输入（普通评论）
@@ -109,19 +130,17 @@ export default function CommentPage() {
     }))
   }
 
-  // 删除评论
+  // 显示删除确认弹窗
   const handleDeleteComment = (commentId: number) => {
-    Taro.showModal({
-      title: '确认删除',
-      content: '确定要删除这条评论吗？',
-      success: (res) => {
-        if (res.confirm) {
-          setComments(comments.filter(c => c.id !== commentId))
-          setActiveCommentMenu(null)
-          Taro.showToast({ title: '删除成功', icon: 'success' })
-        }
-      }
-    })
+    setActiveCommentMenu(null)
+    setDeleteModal({ visible: true, commentId })
+  }
+
+  // 确认删除评论
+  const handleConfirmDelete = () => {
+    setComments(comments.filter(c => c.id !== deleteModal.commentId))
+    setDeleteModal({ visible: false, commentId: 0 })
+    Taro.showToast({ title: '删除成功', icon: 'success' })
   }
 
   // 查看回复列表
@@ -211,7 +230,7 @@ export default function CommentPage() {
       </View>
 
       {/* 评分区域 */}
-      <RatingSection rating={rating} onRateClick={handleRateClick} />
+      <RatingSection rating={rating} onRateClick={handleRateClick} onEditRating={handleEditRating} />
 
       {/* 评论列表 */}
       <CommentList
@@ -237,7 +256,7 @@ export default function CommentPage() {
 
       {/* 评分弹窗 */}
       {showRatingDialog && (
-        <View className="rating-dialog-overlay" onClick={() => setShowRatingDialog(false)}>
+        <View className="rating-dialog-overlay" onClick={() => { setShowRatingDialog(false); setIsEditingRating(false) }}>
           <View className="rating-dialog" onClick={(e) => e.stopPropagation()}>
             <Text className="dialog-title">点击星星评分</Text>
             <View className="dialog-stars">
@@ -253,8 +272,14 @@ export default function CommentPage() {
               <View className="dialog-confirm" onClick={handleSubmitRating}>
                 <Text>确定</Text>
               </View>
+              {/* 取消评分按钮（仅修改模式显示） */}
+              {isEditingRating && (
+                <View className="dialog-cancel-rating" onClick={handleCancelRating}>
+                  <Text>取消评分</Text>
+                </View>
+              )}
             </View>
-            <View className="dialog-close" onClick={() => setShowRatingDialog(false)}>
+            <View className="dialog-close" onClick={() => { setShowRatingDialog(false); setIsEditingRating(false) }}>
               <Text>✕</Text>
             </View>
           </View>
@@ -330,6 +355,14 @@ export default function CommentPage() {
           onSubmitReply={handleSubmitReply}
         />
       )}
+
+      {/* 删除确认弹窗 */}
+      <ConfirmModal
+        visible={deleteModal.visible}
+        title="您确定要删除评论吗？"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModal({ visible: false, commentId: 0 })}
+      />
     </View>
   )
 }

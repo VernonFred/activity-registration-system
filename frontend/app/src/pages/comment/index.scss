@@ -111,37 +111,45 @@
       margin-bottom: 48rpx;  // 增加间距：32rpx → 48rpx
     }
 
-    // 我的评分 - 扁平条形设计（按设计稿）
+    // 我的评分 - 按设计稿布局（左边：我的评分+星星+修改图标，右边：时间）
     .my-rating-row {
-      padding: 16rpx 24rpx;  // 减少高度
-      background: rgba(128, 128, 128, 0.5);  // 灰色半透明
+      padding: 16rpx 24rpx;
+      background: rgba(128, 128, 128, 0.5);
       border-radius: 12rpx;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32rpx;  // 增加与下方评论区的间距
+      margin-bottom: 32rpx;
 
-      .my-rating-label {
-        font-size: 28rpx;
-        font-weight: 500;
-        color: #ffffff;
-      }
-
-      .my-rating-value {
+      .my-rating-left {
         display: flex;
         align-items: center;
         gap: 12rpx;
 
+        .my-rating-label {
+          font-size: 28rpx;
+          font-weight: 500;
+          color: #ffffff;
+        }
+
         .my-rating-stars {
           display: flex;
-          gap: 4rpx;
+          gap: 2rpx;
 
           .star-icon {
-            font-size: 28rpx;
+            font-size: 26rpx;
             color: #ffc107;
           }
         }
 
+        .edit-icon {
+          font-size: 24rpx;
+          color: rgba(255, 255, 255, 0.8);
+          margin-left: 4rpx;
+        }
+      }
+
+      .my-rating-right {
         .my-rating-date {
           font-size: 24rpx;
           color: rgba(255, 255, 255, 0.7);
@@ -415,12 +423,14 @@
 
       .dialog-actions {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 16rpx;
 
         .dialog-confirm {
           padding: 20rpx 80rpx;
-          background: #262626;
-          border-radius: 12rpx;
+          background: #2D5A3D;  // 深绿色按钮
+          border-radius: 40rpx;  // 更圆的按钮
           font-size: 28rpx;
           font-weight: 600;
           color: #ffffff;
@@ -431,13 +441,24 @@
             opacity: 0.9;
           }
         }
+
+        // 取消评分按钮（仅修改时显示）
+        .dialog-cancel-rating {
+          padding: 16rpx 48rpx;
+          font-size: 26rpx;
+          color: #ff4d4f;
+          
+          &:active {
+            opacity: 0.6;
+          }
+        }
       }
 
       .dialog-close {
-        margin-top: 32rpx;
+        margin-top: 48rpx;
         text-align: center;
-        font-size: 48rpx;
-        color: #8e8e8e;
+        font-size: 40rpx;
+        color: #333333;
 
         &:active {
           opacity: 0.6;
