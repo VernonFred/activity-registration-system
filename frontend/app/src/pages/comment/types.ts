@@ -26,6 +26,10 @@ export interface Reply {
   content: string
   reply_to?: string
   created_at: string
+  like_count?: number
+  is_liked?: boolean
+  // 嵌套回复 - 支持多级结构
+  replies?: Reply[]
 }
 
 export interface Comment {

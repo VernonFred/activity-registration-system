@@ -1,8 +1,11 @@
 /**
- * 回复弹窗样式 - YouTube风格Grid布局
- * 2026年1月29日 - 使用Grid两列布局 + 主干线结构
+ * 回复弹窗样式 - 嵌套回复版本
+ * 2026年1月30日 - YouTube风格多级嵌套连接线
  */
 
+// ========================================
+// 弹窗容器
+// ========================================
 .reply-panel-overlay {
   position: fixed;
   top: 0;
@@ -10,431 +13,398 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 3000;
+  z-index: 1000;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .reply-panel {
   background: #ffffff;
-  border-radius: 32rpx 32rpx 0 0;
-  width: 100%;
+  border-radius: 24rpx 24rpx 0 0;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
 
-  // 头部
-  .panel-header {
+// ========================================
+// 头部
+// ========================================
+.panel-header {
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  
+  .back-btn {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 24rpx 32rpx;
-    border-bottom: 1rpx solid #f0f0f0;
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 8rpx;
-
-      .back-icon {
-        font-size: 48rpx;
-        color: #333333;
-        line-height: 1;
-      }
-
-      .header-title {
-        font-size: 32rpx;
-        font-weight: 600;
-        color: #333333;
-      }
+    gap: 8rpx;
+    
+    .back-icon {
+      font-size: 32rpx;
+      color: #333333;
     }
-
-    .header-close {
-      font-size: 36rpx;
-      color: #999999;
-      padding: 8rpx;
+    
+    .back-text {
+      font-size: 34rpx;
+      font-weight: 600;
+      color: #333333;
     }
   }
+}
 
-  // ========================================
-  // 评论内容区 - YouTube Grid布局
-  // ========================================
-  .comment-thread-grid {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24rpx;
-    display: grid;
-    grid-template-columns: 64rpx 1fr;  // 头像列 + 内容列
+// ========================================
+// 滚动内容区
+// ========================================
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24rpx 32rpx;
+  -webkit-overflow-scrolling: touch;
+}
+
+// ========================================
+// 通用Thread布局（核心结构）
+// ========================================
+.thread {
+  display: grid;
+  gap: 12rpx;
+  
+  // 主评论：64rpx头像
+  &.main {
+    grid-template-columns: 64rpx 1fr;
     gap: 16rpx;
   }
+  
+  // 回复：48rpx头像
+  &.reply {
+    grid-template-columns: 48rpx 1fr;
+    gap: 12rpx;
+  }
+}
 
-  // 左侧：头像列 + 主干线
-  .avatar-column {
+// 头像列
+.avatar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-main {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.avatar-small {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+// 主干线
+.line {
+  width: 2rpx;
+  background-color: #e5e5e5;
+  margin-top: 8rpx;
+  flex: 1;
+  min-height: 20rpx;
+}
+
+// 内容列
+.content-col {
+  min-width: 0;
+}
+
+// ========================================
+// 评论头部
+// ========================================
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 4rpx;
+  position: relative;
+  
+  .username {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #333333;
+  }
+  
+  .timestamp {
+    font-size: 24rpx;
+    color: #999999;
+    flex: 1;
+  }
+  
+  .menu-btn {
+    padding: 8rpx 12rpx;
+    
+    .menu-dots {
+      font-size: 28rpx;
+      color: #999999;
+    }
+  }
+  
+  // 菜单弹出层
+  .menu-popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border-radius: 16rpx;
+    box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    overflow: hidden;
+    
+    .popup-item {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      padding: 20rpx 28rpx;
+      white-space: nowrap;
+      
+      .popup-icon { font-size: 28rpx; }
+      .popup-text { font-size: 28rpx; color: #333333; }
+      
+      &.delete {
+        background: #fff5f5;
+        .popup-text { color: #ff4d4f; }
+      }
+    }
+  }
+}
+
+// ========================================
+// 评论内容
+// ========================================
+.comment-text {
+  font-size: 28rpx;
+  line-height: 1.5;
+  color: #333333;
+  
+  .mention {
+    color: #1a73e8;
+    font-weight: 500;
+  }
+}
+
+// ========================================
+// 操作按钮
+// ========================================
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  margin-left: -12rpx;
+  
+  .action-btn {
+    display: flex;
+    align-items: center;
+    padding: 12rpx;
+    border-radius: 50%;
+    
+    .action-icon {
+      font-size: 28rpx;
+    }
+    
+    .like-count {
+      font-size: 24rpx;
+      color: #606060;
+      margin-left: 4rpx;
+    }
+    
+    &.active {
+      .action-icon { opacity: 1; }
+    }
+  }
+}
+
+// ========================================
+// 回复区域 - 分层嵌套
+// ========================================
+
+// 一级回复区域（相对于主评论）
+.replies-level-1 {
+  margin-top: 16rpx;
+  margin-left: -80rpx;  // 64rpx头像 + 16rpx间隙
+  padding-left: 80rpx;
+  position: relative;
+}
+
+// 二级回复区域（相对于一级回复）
+.replies-level-2 {
+  margin-top: 12rpx;
+  margin-left: -60rpx;  // 48rpx头像 + 12rpx间隙
+  padding-left: 60rpx;
+  position: relative;
+}
+
+// 三级回复区域（相对于二级回复）
+.replies-level-3 {
+  margin-top: 12rpx;
+  margin-left: -60rpx;
+  padding-left: 60rpx;
+  position: relative;
+}
+
+// ========================================
+// 回复项的弯曲连接线
+// ========================================
+.reply-item {
+  position: relative;
+  padding: 12rpx 0;
+}
+
+// 一级回复的弯曲线（连接到主评论主干线）
+.replies-level-1 > .reply-item::before {
+  content: '';
+  position: absolute;
+  left: -56rpx;  // 对齐到主干线
+  top: 20rpx;
+  width: 40rpx;
+  height: 20rpx;
+  border-left: 2rpx solid #e5e5e5;
+  border-bottom: 2rpx solid #e5e5e5;
+  border-bottom-left-radius: 16rpx;
+}
+
+// 二级回复的弯曲线
+.replies-level-2 > .reply-item::before {
+  content: '';
+  position: absolute;
+  left: -36rpx;
+  top: 20rpx;
+  width: 24rpx;
+  height: 16rpx;
+  border-left: 2rpx solid #e5e5e5;
+  border-bottom: 2rpx solid #e5e5e5;
+  border-bottom-left-radius: 12rpx;
+}
+
+// 三级回复的弯曲线
+.replies-level-3 > .reply-item::before {
+  content: '';
+  position: absolute;
+  left: -36rpx;
+  top: 20rpx;
+  width: 24rpx;
+  height: 16rpx;
+  border-left: 2rpx solid #e5e5e5;
+  border-bottom: 2rpx solid #e5e5e5;
+  border-bottom-left-radius: 12rpx;
+}
+
+// 最后一个回复项：隐藏多余主干线
+.reply-item.last {
+  // 不需要额外处理，因为主干线由父级的 .line 控制
+}
+
+// ========================================
+// 隐藏/显示回复按钮
+// ========================================
+.toggle-replies-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 24rpx;
+  margin-top: 12rpx;
+  margin-left: -24rpx;
+  color: #1a73e8;
+  font-weight: 500;
+  background: #ffffff;
+  position: relative;
+  z-index: 5;
+  
+  .toggle-icon {
+    font-size: 20rpx;
+  }
+  
+  .toggle-text {
+    font-size: 26rpx;
+  }
+}
+
+// ========================================
+// 底部输入区
+// ========================================
+.panel-footer {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #f0f0f0;
+  background: #ffffff;
+  
+  .input-avatar {
+    width: 56rpx;
+    height: 56rpx;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .input-wrapper {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    position: relative;
-
-    .main-avatar {
-      width: 64rpx;
-      height: 64rpx;
-      border-radius: 50%;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 2;
-    }
-
-    // 主干线容器 - 不使用flex-grow，高度由内容决定
-    .thread-line-container {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 72rpx;  // 从头像底部开始
-      width: 2rpx;
-      background-color: #e5e5e5;
-      // 高度会被JavaScript或特定类控制
+    gap: 8rpx;
+    
+    .edit-mode-hint {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       
-      // 默认延伸一段距离，由.last回复的白色遮盖来截断
-      height: 500rpx;  // 足够长
-
-      .thread-line {
-        display: none;  // 不再使用内部div
-      }
-    }
-  }
-
-  // 右侧：内容列
-  .content-column {
-    min-width: 0;
-
-    // 主评论
-    .main-comment {
-      position: relative;
-
-      .comment-header-row {
-        display: flex;
-        align-items: center;
-        gap: 8rpx;
-        margin-bottom: 8rpx;
-
-        .user-name {
-          font-size: 28rpx;
-          font-weight: 600;
-          color: #333333;
-        }
-
-        .post-time {
-          font-size: 24rpx;
-          color: #999999;
-          flex: 1;
-        }
-
-        .menu-btn {
-          padding: 8rpx;
-          .menu-dots {
-            font-size: 28rpx;
-            color: #999999;
-          }
-        }
-      }
-
-      .comment-text {
-        font-size: 28rpx;
-        color: #333333;
-        line-height: 1.5;
-        margin-bottom: 12rpx;
-      }
-
-      .comment-actions {
-        display: flex;
-        gap: 24rpx;
-        margin-left: -8rpx;
-
-        .action-item {
-          display: flex;
-          align-items: center;
-          gap: 6rpx;
-          padding: 8rpx;
-
-          .action-icon { font-size: 28rpx; }
-          .action-count { font-size: 24rpx; color: #666666; }
-        }
-      }
-
-      // 菜单弹出
-      .menu-popup {
-        position: absolute;
-        top: 48rpx;
-        right: 0;
-        background: #f8f8f8;
-        border-radius: 16rpx;
-        box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.12);
-        z-index: 100;
-        padding: 12rpx;
-        display: flex;
-        flex-direction: column;
-        gap: 8rpx;
-
-        .popup-item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8rpx;
-          padding: 16rpx 28rpx;
-          border-radius: 24rpx;
-          background: #ffffff;
-          white-space: nowrap;
-
-          .popup-icon { font-size: 24rpx; }
-          .popup-text { font-size: 26rpx; font-weight: 500; color: #333333; }
-
-          &.delete {
-            background: #ffebee;
-            .popup-text { color: #ff4d4f; }
-          }
-        }
-      }
-    }
-
-    // ========================================
-    // 回复区域 - 弯曲连接线
-    // ========================================
-    .replies-section {
-      margin-top: 16rpx;
-      // 关键：负边距让回复区域往左延伸，对齐到主干线
-      margin-left: -80rpx;  // 64rpx头像 + 16rpx gap
-      padding-left: 80rpx;
-
-      .reply-item {
-        display: grid;
-        grid-template-columns: 48rpx 1fr;
-        gap: 12rpx;
-        padding: 12rpx 0;
-        position: relative;
-
-        // 弯曲连接线 - 从主干线弯曲到头像
-        &::before {
-          content: '';
-          position: absolute;
-          left: -48rpx;  // 对齐到主干线位置
-          top: 12rpx;
-          width: 36rpx;
-          height: 24rpx;
-          border-left: 2rpx solid #e5e5e5;
-          border-bottom: 2rpx solid #e5e5e5;
-          border-bottom-left-radius: 16rpx;
-        }
-        
-        // 最后一条回复：用白色遮盖主干线多余部分
-        &.last::after {
-          content: '';
-          position: absolute;
-          left: -54rpx;
-          top: 28rpx;  // 从弧线开始前就遮盖
-          height: 200rpx;  // 使用固定高度而非bottom
-          width: 14rpx;
-          background: #ffffff;
-          z-index: 5;
-        }
-
-        .reply-avatar {
-          width: 48rpx;
-          height: 48rpx;
-          border-radius: 50%;
-          position: relative;
-          z-index: 2;
-        }
-
-        .reply-body {
-          min-width: 0;
-          position: relative;
-
-          .reply-header-row {
-            display: flex;
-            align-items: center;
-            gap: 8rpx;
-            margin-bottom: 4rpx;
-
-            .reply-user {
-              font-size: 26rpx;
-              font-weight: 600;
-              color: #333333;
-            }
-
-            .reply-time {
-              font-size: 22rpx;
-              color: #999999;
-              flex: 1;
-            }
-
-            .menu-btn {
-              padding: 8rpx;
-              .menu-dots {
-                font-size: 24rpx;
-                color: #999999;
-              }
-            }
-          }
-
-          .reply-text {
-            font-size: 26rpx;
-            color: #333333;
-            line-height: 1.5;
-            margin-bottom: 8rpx;
-          }
-
-          .reply-actions {
-            display: flex;
-            gap: 20rpx;
-            margin-left: -8rpx;
-
-            .action-item {
-              display: flex;
-              align-items: center;
-              gap: 4rpx;
-              padding: 8rpx;
-
-              .action-icon { font-size: 24rpx; }
-              .action-count { font-size: 22rpx; color: #666666; }
-            }
-          }
-
-          // 回复菜单
-          .menu-popup.reply-menu {
-            position: absolute;
-            top: 40rpx;
-            right: 0;
-            background: #f8f8f8;
-            border-radius: 16rpx;
-            box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.12);
-            z-index: 100;
-            padding: 12rpx;
-            display: flex;
-            flex-direction: column;
-            gap: 8rpx;
-
-            .popup-item {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 8rpx;
-              padding: 16rpx 28rpx;
-              border-radius: 24rpx;
-              background: #ffffff;
-              white-space: nowrap;
-
-              .popup-icon { font-size: 24rpx; }
-              .popup-text { font-size: 26rpx; font-weight: 500; color: #333333; }
-
-              &.delete {
-                background: #ffebee;
-                .popup-text { color: #ff4d4f; }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // 隐藏/显示回复按钮 - 不受replies-section的负边距影响
-    .toggle-replies-btn {
-      display: flex;
-      align-items: center;
-      gap: 8rpx;
-      padding: 12rpx 16rpx;
-      margin-top: 8rpx;
-      margin-left: 0;  // 不使用负边距，避免与连接线区域重叠
-      color: #1a73e8;
-      font-weight: 500;
-      position: relative;
-      z-index: 5;  // 确保在连接线之上
-      background: #ffffff;  // 白色背景遮盖任何残留线条
-
-      .toggle-icon {
-        font-size: 20rpx;
-      }
-
-      .toggle-text {
-        font-size: 26rpx;
-      }
-    }
-  }
-
-  // 底部输入区
-  .input-area {
-    padding: 16rpx 24rpx;
-    padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-    border-top: 1rpx solid #f0f0f0;
-    background: #ffffff;
-
-    .input-user-row {
-      display: flex;
-      align-items: center;
-      gap: 12rpx;
-      margin-bottom: 12rpx;
-
-      .input-avatar {
-        width: 48rpx;
-        height: 48rpx;
-        border-radius: 50%;
-      }
-
-      .input-user-info {
-        flex: 1;
-        .input-user-name {
-          font-size: 26rpx;
-          font-weight: 600;
-          color: #333333;
-        }
-        .input-user-org {
-          font-size: 22rpx;
-          color: #999999;
-        }
+      .hint-text {
+        font-size: 22rpx;
+        color: #1a73e8;
       }
       
-      // 取消编辑按钮
-      .cancel-edit-btn {
-        padding: 8rpx 20rpx;
-        background: #f0f0f0;
-        border-radius: 20rpx;
-        
-        .cancel-edit-text {
-          font-size: 24rpx;
-          color: #666666;
-        }
+      .cancel-btn {
+        font-size: 22rpx;
+        color: #999999;
+        padding: 4rpx 12rpx;
       }
     }
-
-    .input-box {
-      display: flex;
-      align-items: center;
-      gap: 12rpx;
+    
+    .input-field {
+      height: 72rpx;
+      font-size: 28rpx;
+      color: #333333;
       background: #f5f5f5;
-      border-radius: 40rpx;
-      padding: 12rpx 20rpx;
-
-      .input-field {
-        flex: 1;
-        height: 40rpx;
-        font-size: 28rpx;
-        background: transparent;
-      }
-
-      .send-btn {
-        width: 40rpx;
-        height: 40rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0.3;
-
-        &.active { opacity: 1; }
-
-        .send-icon {
-          font-size: 28rpx;
-          color: #333333;
-        }
-      }
+      border-radius: 36rpx;
+      padding: 0 24rpx;
+    }
+    
+    .input-placeholder {
+      color: #999999;
+    }
+  }
+  
+  .send-btn {
+    width: 64rpx;
+    height: 64rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0e0e0;
+    border-radius: 50%;
+    flex-shrink: 0;
+    
+    .send-icon {
+      font-size: 28rpx;
+      color: #999999;
+    }
+    
+    &.active {
+      background: #1a73e8;
+      .send-icon { color: #ffffff; }
     }
   }
 }
