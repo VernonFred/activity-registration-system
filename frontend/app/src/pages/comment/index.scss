@@ -395,6 +395,8 @@
         color: #262626;
         text-align: center;
         margin-bottom: 48rpx;
+        width: 100%;  // 确保标题占满宽度，居中生效
+        display: block;
       }
 
       .dialog-stars {
@@ -442,11 +444,12 @@
           }
         }
 
-        // 取消评分按钮（仅修改时显示）
+        // 取消评分按钮（仅修改时显示）- 加粗红色文字
         .dialog-cancel-rating {
           padding: 16rpx 48rpx;
           font-size: 26rpx;
-          color: #ff4d4f;
+          font-weight: 700;  // 加粗
+          color: #D43030;  // 设计稿颜色 rgba(212, 48, 48, 1)
           
           &:active {
             opacity: 0.6;

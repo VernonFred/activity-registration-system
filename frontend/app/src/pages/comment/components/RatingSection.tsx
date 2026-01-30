@@ -31,7 +31,8 @@ export default function RatingSection({ rating, onRateClick, onEditRating }: Rat
       <View className="rating-main-row">
         {/* 左侧：评分数字和星星 */}
         <View className="rating-left">
-          <Text className="rating-score">{rating.average.toFixed(1)}</Text>
+          {/* 暂未评分时不显示任何东西 */}
+          {rating.average > 0 && <Text className="rating-score">{rating.average.toFixed(1)}</Text>}
           <View className="rating-stars">
             {[1, 2, 3, 4, 5].map((star) => {
               const stars = rating.average / 2

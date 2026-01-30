@@ -424,7 +424,8 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
 
         <View className="rating-summary">
           <View className="rating-score-section">
-            <Text className="rating-score">{rating.average.toFixed(1)}</Text>
+            {/* 暂未评分时不显示任何东西 */}
+            {rating.average > 0 && <Text className="rating-score">{rating.average.toFixed(1)}</Text>}
             <View className="rating-stars-large">
               {renderStars(Math.round(rating.average), 'large')}
             </View>
