@@ -73,6 +73,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 
     .main-avatar {
       width: 64rpx;
@@ -83,18 +84,21 @@
       z-index: 2;
     }
 
-    // 主干线容器
+    // 主干线容器 - 不使用flex-grow，高度由内容决定
     .thread-line-container {
-      flex-grow: 1;
-      display: flex;
-      justify-content: center;
-      margin-top: 8rpx;
-      min-height: 40rpx;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 72rpx;  // 从头像底部开始
+      width: 2rpx;
+      background-color: #e5e5e5;
+      // 高度会被JavaScript或特定类控制
+      
+      // 默认延伸一段距离，由.last回复的白色遮盖来截断
+      height: 500rpx;  // 足够长
 
       .thread-line {
-        width: 2rpx;
-        background-color: #e5e5e5;
-        height: 100%;
+        display: none;  // 不再使用内部div
       }
     }
   }
@@ -220,6 +224,18 @@
           border-bottom: 2rpx solid #e5e5e5;
           border-bottom-left-radius: 16rpx;
         }
+        
+        // 最后一条回复：用白色遮盖主干线多余部分
+        &.last::after {
+          content: '';
+          position: absolute;
+          left: -54rpx;
+          top: 28rpx;  // 从弧线开始前就遮盖
+          height: 200rpx;  // 使用固定高度而非bottom
+          width: 14rpx;
+          background: #ffffff;
+          z-index: 5;
+        }
 
         .reply-avatar {
           width: 48rpx;
@@ -320,16 +336,19 @@
       }
     }
 
-    // 隐藏/显示回复按钮
+    // 隐藏/显示回复按钮 - 不受replies-section的负边距影响
     .toggle-replies-btn {
       display: flex;
       align-items: center;
       gap: 8rpx;
       padding: 12rpx 16rpx;
       margin-top: 8rpx;
-      margin-left: -16rpx;
+      margin-left: 0;  // 不使用负边距，避免与连接线区域重叠
       color: #1a73e8;
       font-weight: 500;
+      position: relative;
+      z-index: 5;  // 确保在连接线之上
+      background: #ffffff;  // 白色背景遮盖任何残留线条
 
       .toggle-icon {
         font-size: 20rpx;

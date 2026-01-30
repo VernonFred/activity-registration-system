@@ -2,9 +2,10 @@
  * 评论列表组件 - 带YouTube风格平滑弧线
  * 创建时间: 2026年1月28日
  */
+import { useState } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import type { Comment, CommentSortType } from '../types'
-import { formatTime } from '../constants'
+import { formatTime, DEFAULT_AVATAR } from '../constants'
 import './CommentList.scss'
 
 interface CommentListProps {
@@ -17,6 +18,7 @@ interface CommentListProps {
   onViewReplies: (commentId: number) => void  // 查看回复列表
   onQuickReply: (userName: string) => void    // 快捷回复（弹出输入框@用户）
   onDelete: (commentId: number) => void
+  onEdit: (commentId: number, currentContent: string) => void  // 编辑评论
   onMenuClick: (commentId: number, e: any) => void
 }
 
@@ -30,8 +32,25 @@ export default function CommentList({
   onViewReplies,
   onQuickReply,
   onDelete,
+  onEdit,
   onMenuClick
 }: CommentListProps) {
+  // 记录加载失败的头像
+  const [failedAvatars, setFailedAvatars] = useState<Set<number>>(new Set())
+  
+  // 获取头像URL，失败时返回默认头像
+  const getAvatarUrl = (commentId: number, avatarUrl?: string) => {
+    if (failedAvatars.has(commentId) || !avatarUrl) {
+      return DEFAULT_AVATAR
+    }
+    return avatarUrl
+  }
+  
+  // 头像加载失败处理
+  const handleAvatarError = (commentId: number) => {
+    setFailedAvatars(prev => new Set(prev).add(commentId))
+  }
+  
   return (
     <View className="comments-section">
       <Text className="comments-title">评论</Text>
@@ -59,9 +78,10 @@ export default function CommentList({
             {/* 头像区域 */}
             <View className="avatar-area">
               <Image
-                src={comment.user_avatar || ''}
+                src={getAvatarUrl(comment.id, comment.user_avatar)}
                 className="comment-avatar"
                 mode="aspectFill"
+                onError={() => handleAvatarError(comment.id)}
               />
               {/* 平滑弧线 - 仅当有回复时显示 */}
               {comment.reply_count > 0 && (
@@ -107,7 +127,7 @@ export default function CommentList({
                   {comment.user_name === currentUserName ? (
                     <>
                       {/* 自己的评论：修改 + 删除 */}
-                      <View className="action-item edit" onClick={() => onMenuClick(0, { stopPropagation: () => {} })}>
+                      <View className="action-item edit" onClick={() => onEdit(comment.id, comment.content)}>
                         <Text className="action-icon">✏️</Text>
                         <Text className="action-text">修改</Text>
                       </View>

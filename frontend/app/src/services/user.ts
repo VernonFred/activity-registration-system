@@ -10,7 +10,7 @@
  */
 
 import { http } from './http'
-import CONFIG from '../config'
+import { CONFIG } from '../config'
 
 // ============================================================
 // 类型定义

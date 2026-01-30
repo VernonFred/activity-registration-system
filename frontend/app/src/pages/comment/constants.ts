@@ -4,6 +4,9 @@
  */
 import type { Comment, Rating } from './types'
 
+// 默认头像（base64 SVG - 灰色圆形用户图标，兼容所有平台）
+export const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIGZpbGw9IiNlMGUwZTAiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjM4IiByPSIxOCIgZmlsbD0iI2JkYmRiZCIvPjxlbGxpcHNlIGN4PSI1MCIgY3k9Ijg1IiByeD0iMzIiIHJ5PSIyNSIgZmlsbD0iI2JkYmRiZCIvPjwvc3ZnPg=='
+
 export interface CurrentUser {
   id: number
   name: string

@@ -7,7 +7,8 @@ import { useState, useMemo, useRef } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import type { Comment, CommentSortType, Rating } from './types'
-import { MOCK_CURRENT_USER, MOCK_RATING, MOCK_COMMENTS } from './constants'
+import { MOCK_CURRENT_USER, MOCK_RATING, MOCK_COMMENTS, DEFAULT_AVATAR } from './constants'
+import { updateComment as updateCommentApi } from '../../services/comments'
 import RatingSection from './components/RatingSection'
 import CommentList from './components/CommentList'
 import ReplyPanel from './components/ReplyPanel'
@@ -35,6 +36,14 @@ export default function CommentPage() {
   const isDragging = useRef(false)  // 是否正在拖拽
   const [isEditingRating, setIsEditingRating] = useState(false)  // 是否是修改评分模式
   const [deleteModal, setDeleteModal] = useState<{ visible: boolean; commentId: number }>({ visible: false, commentId: 0 })
+  
+  // 编辑评论状态
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
+  const [editingContent, setEditingContent] = useState('')
+  
+  // 头像加载失败状态
+  const [avatarFailed, setAvatarFailed] = useState(false)
+  const userAvatar = avatarFailed ? DEFAULT_AVATAR : currentUser.avatar
 
   // 点击评分按钮（首次评分）
   const handleRateClick = () => {
@@ -162,6 +171,60 @@ export default function CommentPage() {
       return c
     }))
   }
+  
+  // 更新评论内容（从回复弹窗中或评论列表中）
+  const handleUpdateComment = async (commentId: number, newContent: string) => {
+    try {
+      // 调用API更新评论
+      await updateCommentApi(commentId, newContent)
+      
+      // 更新本地状态
+      setComments(comments.map(c => {
+        if (c.id === commentId) {
+          return { ...c, content: newContent }
+        }
+        return c
+      }))
+      // 同时更新selectedComment以保持同步
+      if (selectedComment && selectedComment.id === commentId) {
+        setSelectedComment({ ...selectedComment, content: newContent })
+      }
+      
+      Taro.showToast({ title: '修改成功', icon: 'success' })
+    } catch (error) {
+      console.error('更新评论失败:', error)
+      Taro.showToast({ title: '修改失败', icon: 'none' })
+    }
+  }
+  
+  // 点击编辑按钮（评论列表中）
+  const handleEditComment = (commentId: number, currentContent: string) => {
+    setActiveCommentMenu(null)
+    setEditingCommentId(commentId)
+    setEditingContent(currentContent)
+    setReplyToUser(null)
+    setShowCommentInput(true)
+  }
+  
+  // 取消编辑
+  const cancelEditing = () => {
+    setEditingCommentId(null)
+    setEditingContent('')
+  }
+  
+  // 提交编辑
+  const submitEdit = async () => {
+    if (!editingContent.trim()) {
+      Taro.showToast({ title: '请输入内容', icon: 'none' })
+      return
+    }
+    if (editingCommentId !== null) {
+      await handleUpdateComment(editingCommentId, editingContent.trim())
+      setEditingCommentId(null)
+      setEditingContent('')
+      setShowCommentInput(false)
+    }
+  }
 
   // 三点菜单
   const handleCommentMenuClick = (commentId: number, e: any) => {
@@ -243,12 +306,18 @@ export default function CommentPage() {
         onViewReplies={handleViewReplies}
         onQuickReply={handleQuickReply}
         onDelete={handleDeleteComment}
+        onEdit={handleEditComment}
         onMenuClick={handleCommentMenuClick}
       />
 
       {/* 底部评论输入触发器 */}
       <View className="comment-input-trigger" onClick={handleOpenCommentInput}>
-        <Image src={currentUser.avatar} className="trigger-avatar" mode="aspectFill" />
+        <Image 
+          src={userAvatar} 
+          className="trigger-avatar" 
+          mode="aspectFill" 
+          onError={() => setAvatarFailed(true)}
+        />
         <View className="trigger-placeholder">
           <Text>添加评论......</Text>
         </View>
@@ -288,7 +357,11 @@ export default function CommentPage() {
 
       {/* 评论输入面板 */}
       {showCommentInput && (
-        <View className="comment-input-overlay" onClick={() => { setShowCommentInput(false); setReplyToUser(null) }}>
+        <View className="comment-input-overlay" onClick={() => { 
+          setShowCommentInput(false)
+          setReplyToUser(null)
+          cancelEditing()
+        }}>
           <View 
             className={`comment-input-panel ${isDragging.current ? 'dragging' : ''}`}
             onClick={(e) => e.stopPropagation()}
@@ -303,38 +376,55 @@ export default function CommentPage() {
               onClick={(e) => { 
                 e.stopPropagation()
                 setShowCommentInput(false)
-                setReplyToUser(null) 
+                setReplyToUser(null)
+                cancelEditing()
               }}
               onTouchStart={handleDragStart}
               onTouchMove={handleDragMove}
               onTouchEnd={handleDragEnd}
               catchMove
             />
-            <Text className="panel-title">将以下面的身份进行评论</Text>
+            <Text className="panel-title">
+              {editingCommentId !== null ? '编辑评论' : '将以下面的身份进行评论'}
+            </Text>
             <View className="panel-user">
-              <Image src={currentUser.avatar} className="panel-avatar" mode="aspectFill" />
+              <Image 
+                src={userAvatar} 
+                className="panel-avatar" 
+                mode="aspectFill" 
+                onError={() => setAvatarFailed(true)}
+              />
               <View className="panel-user-info">
                 <Text className="panel-user-name">{currentUser.name}</Text>
                 <Text className="panel-user-org">{currentUser.organization}</Text>
               </View>
+              {/* 取消编辑按钮 */}
+              {editingCommentId !== null && (
+                <View className="cancel-edit-btn" onClick={cancelEditing}>
+                  <Text className="cancel-text">取消</Text>
+                </View>
+              )}
             </View>
             <View className="panel-input-row">
               <Input
                 className="panel-input-field"
-                placeholder={inputPlaceholder}
+                placeholder={editingCommentId !== null ? '编辑内容...' : inputPlaceholder}
                 placeholderClass="input-placeholder"
-                value={commentText}
-                onInput={(e) => setCommentText(e.detail.value)}
+                value={editingCommentId !== null ? editingContent : commentText}
+                onInput={(e) => editingCommentId !== null 
+                  ? setEditingContent(e.detail.value) 
+                  : setCommentText(e.detail.value)
+                }
                 focus={showCommentInput}
                 maxlength={500}
                 confirmType="send"
-                onConfirm={handleSubmitComment}
+                onConfirm={editingCommentId !== null ? submitEdit : handleSubmitComment}
                 adjustPosition
                 cursorSpacing={16}
               />
               <View 
-                className={`panel-send-btn ${commentText.trim() ? 'active' : ''}`}
-                onClick={handleSubmitComment}
+                className={`panel-send-btn ${(editingCommentId !== null ? editingContent.trim() : commentText.trim()) ? 'active' : ''}`}
+                onClick={editingCommentId !== null ? submitEdit : handleSubmitComment}
               >
                 <Text className="send-icon">➤</Text>
               </View>
@@ -353,6 +443,7 @@ export default function CommentPage() {
             setSelectedComment(null)
           }}
           onSubmitReply={handleSubmitReply}
+          onUpdateComment={handleUpdateComment}
         />
       )}
 

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Comment, Reply } from '../types'
+import { DEFAULT_AVATAR } from '../constants'
 import ConfirmModal from './ConfirmModal'
 import './ReplyPanel.scss'
 
@@ -21,6 +22,7 @@ interface ReplyPanelProps {
   currentUser: CurrentUser
   onClose: () => void
   onSubmitReply: (commentId: number, content: string, replyTo?: string) => void
+  onUpdateComment?: (commentId: number, newContent: string) => void  // 更新评论回调
 }
 
 // Mock回复数据
@@ -44,7 +46,7 @@ const MOCK_REPLIES: Reply[] = [
   }
 ]
 
-export default function ReplyPanel({ comment, currentUser, onClose, onSubmitReply }: ReplyPanelProps) {
+export default function ReplyPanel({ comment, currentUser, onClose, onSubmitReply, onUpdateComment }: ReplyPanelProps) {
   const [replies, setReplies] = useState<Reply[]>(MOCK_REPLIES)
   const [replyText, setReplyText] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
@@ -66,6 +68,20 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
   
   // 主评论内容状态（用于编辑）
   const [mainCommentContent, setMainCommentContent] = useState(comment.content)
+  
+  // 头像加载失败记录
+  const [failedAvatars, setFailedAvatars] = useState<Set<string>>(new Set())
+  
+  // 获取头像URL
+  const getAvatarUrl = (key: string, avatarUrl?: string) => {
+    if (failedAvatars.has(key) || !avatarUrl) return DEFAULT_AVATAR
+    return avatarUrl
+  }
+  
+  // 头像加载失败处理
+  const handleAvatarError = (key: string) => {
+    setFailedAvatars(prev => new Set(prev).add(key))
+  }
   
   // 点赞原评论
   const handleLikeComment = () => {
@@ -199,6 +215,8 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
       } else {
         // 编辑主评论
         setMainCommentContent(editingContent)
+        // 通知父组件更新
+        onUpdateComment?.(comment.id, editingContent)
       }
       
       setEditingId(null)
@@ -259,13 +277,14 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
         <View className="comment-thread-grid">
           {/* 左侧：头像列 + 主干线 */}
           <View className="avatar-column">
-            <Image src={comment.user_avatar || ''} className="main-avatar" mode="aspectFill" />
-            {/* 主干线容器 - 连接到回复 */}
-            {hasReplies && showReplies && (
-              <View className="thread-line-container">
-                <View className="thread-line" />
-              </View>
-            )}
+            <Image 
+              src={getAvatarUrl('main', comment.user_avatar)} 
+              className="main-avatar" 
+              mode="aspectFill" 
+              onError={() => handleAvatarError('main')}
+            />
+            {/* 主干线 - 连接到回复，由CSS控制截断 */}
+            {hasReplies && showReplies && <View className="thread-line-container" />}
           </View>
 
           {/* 右侧：内容列 */}
@@ -328,7 +347,12 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
                   const isLast = index === replies.length - 1
                   return (
                     <View key={reply.id} className={`reply-item ${isLast ? 'last' : ''}`}>
-                      <Image src={reply.user_avatar || ''} className="reply-avatar" mode="aspectFill" />
+                      <Image 
+                          src={getAvatarUrl(`reply-${reply.id}`, reply.user_avatar)} 
+                          className="reply-avatar" 
+                          mode="aspectFill" 
+                          onError={() => handleAvatarError(`reply-${reply.id}`)}
+                        />
                       <View className="reply-body">
                         <View className="reply-header-row">
                           <Text className="reply-user">{reply.user_name}</Text>
@@ -396,7 +420,12 @@ export default function ReplyPanel({ comment, currentUser, onClose, onSubmitRepl
         {/* 底部输入区 */}
         <View className="input-area">
           <View className="input-user-row">
-            <Image src={currentUser.avatar} className="input-avatar" mode="aspectFill" />
+            <Image 
+              src={getAvatarUrl('user', currentUser.avatar)} 
+              className="input-avatar" 
+              mode="aspectFill" 
+              onError={() => handleAvatarError('user')}
+            />
             <View className="input-user-info">
               <Text className="input-user-name">{currentUser.name}</Text>
               <Text className="input-user-org">{currentUser.organization}</Text>

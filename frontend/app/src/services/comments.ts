@@ -13,7 +13,7 @@
  */
 
 import { http } from './http'
-import CONFIG from '../config'
+import { CONFIG } from '../config'
 
 // ============================================================
 // 类型定义
@@ -287,6 +287,39 @@ export const deleteComment = async (commentId: number): Promise<void> => {
 
   // 真实 API
   await http.delete(`/comments/${commentId}`)
+}
+
+/**
+ * 更新评论内容
+ * @param commentId 评论ID
+ * @param content 新内容
+ */
+export const updateComment = async (
+  commentId: number,
+  content: string
+): Promise<Comment> => {
+  if (CONFIG.USE_MOCK) {
+    // Mock 数据 - 返回更新后的评论
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    // 在实际应用中，这里会更新服务器数据并返回
+    // Mock模式下只返回一个模拟的更新结果
+    const mockUpdated: Comment = {
+      id: commentId,
+      user: { id: 999, name: '当前用户' },
+      rating: 5,
+      content: content,
+      created_at: new Date().toISOString(),
+      like_count: 0,
+      reply_count: 0,
+      is_liked: false
+    }
+    return mockUpdated
+  }
+
+  // 真实 API
+  const response = await http.put(`/comments/${commentId}`, { content })
+  return response.data
 }
 
 /**

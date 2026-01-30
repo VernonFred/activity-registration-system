@@ -546,6 +546,18 @@
             color: #8e8e8e;
           }
         }
+        
+        // 取消编辑按钮
+        .cancel-edit-btn {
+          padding: 12rpx 24rpx;
+          background: #f0f0f0;
+          border-radius: 24rpx;
+          
+          .cancel-text {
+            font-size: 24rpx;
+            color: #666666;
+          }
+        }
       }
 
       // 单行输入框 + 发送按钮 - 按设计稿
