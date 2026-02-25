@@ -14,6 +14,7 @@
 
 import { http } from './http'
 import { CONFIG } from '../config'
+import Taro from '@tarojs/taro'
 
 // ============================================================
 // 类型定义
@@ -167,6 +168,43 @@ const MOCK_COMMENTS: Comment[] = [
   }
 ]
 
+const MOCK_COMMENTS_BY_ACTIVITY_KEY = 'mock_comments_by_activity'
+
+type MockCommentsByActivity = Record<string, Comment[]>
+
+const getMockCommentsByActivity = (): MockCommentsByActivity => {
+  try {
+    const raw = Taro.getStorageSync(MOCK_COMMENTS_BY_ACTIVITY_KEY)
+    if (!raw) return {}
+    if (typeof raw === 'string') return JSON.parse(raw)
+    return raw as MockCommentsByActivity
+  } catch (error) {
+    console.error('读取评论Mock缓存失败:', error)
+    return {}
+  }
+}
+
+const setMockCommentsByActivity = (data: MockCommentsByActivity) => {
+  try {
+    Taro.setStorageSync(MOCK_COMMENTS_BY_ACTIVITY_KEY, JSON.stringify(data))
+  } catch (error) {
+    console.error('写入评论Mock缓存失败:', error)
+  }
+}
+
+const getMockCommentsForActivity = (activityId: number): Comment[] => {
+  const cache = getMockCommentsByActivity()
+  const key = String(activityId)
+  if (!cache[key]) {
+    cache[key] = MOCK_COMMENTS.map((item, index) => ({
+      ...item,
+      id: activityId * 10000 + index + 1
+    }))
+    setMockCommentsByActivity(cache)
+  }
+  return cache[key]
+}
+
 const MOCK_RATING: Rating = {
   average: 4.8,
   total_count: 128,
@@ -201,7 +239,7 @@ export const fetchComments = async (
     // Mock 数据
     await new Promise(resolve => setTimeout(resolve, 300))
 
-    let comments = [...MOCK_COMMENTS]
+    let comments = [...getMockCommentsForActivity(activityId)]
 
     // 排序
     if (params?.sort_by === 'hottest') {
@@ -253,8 +291,8 @@ export const createComment = async (
     const newComment: Comment = {
       id: Date.now(),
       user: {
-        id: 999,
-        name: '当前用户',
+        id: 1,
+        name: '张三',
         avatar: 'https://i.pravatar.cc/150?img=10'
       },
       rating: data.rating,
@@ -265,6 +303,12 @@ export const createComment = async (
       reply_count: 0,
       is_liked: false
     }
+
+    const cache = getMockCommentsByActivity()
+    const key = String(activityId)
+    const list = cache[key] ? [...cache[key]] : [...getMockCommentsForActivity(activityId)]
+    cache[key] = [newComment, ...list]
+    setMockCommentsByActivity(cache)
 
     return newComment
   }
@@ -282,6 +326,11 @@ export const deleteComment = async (commentId: number): Promise<void> => {
   if (CONFIG.USE_MOCK) {
     // Mock 数据
     await new Promise(resolve => setTimeout(resolve, 300))
+    const cache = getMockCommentsByActivity()
+    for (const key of Object.keys(cache)) {
+      cache[key] = cache[key].filter(comment => comment.id !== commentId)
+    }
+    setMockCommentsByActivity(cache)
     return
   }
 
@@ -304,6 +353,17 @@ export const updateComment = async (
     
     // 在实际应用中，这里会更新服务器数据并返回
     // Mock模式下只返回一个模拟的更新结果
+    const cache = getMockCommentsByActivity()
+    let found: Comment | null = null
+    for (const key of Object.keys(cache)) {
+      cache[key] = cache[key].map((comment) => {
+        if (comment.id !== commentId) return comment
+        found = { ...comment, content }
+        return found as Comment
+      })
+    }
+    setMockCommentsByActivity(cache)
+    if (found) return found
     const mockUpdated: Comment = {
       id: commentId,
       user: { id: 999, name: '当前用户' },
@@ -378,6 +438,15 @@ export const likeComment = async (commentId: number): Promise<void> => {
   if (CONFIG.USE_MOCK) {
     // Mock 数据
     await new Promise(resolve => setTimeout(resolve, 200))
+    const cache = getMockCommentsByActivity()
+    for (const key of Object.keys(cache)) {
+      cache[key] = cache[key].map((comment) =>
+        comment.id === commentId
+          ? { ...comment, is_liked: true, like_count: comment.is_liked ? comment.like_count : comment.like_count + 1 }
+          : comment
+      )
+    }
+    setMockCommentsByActivity(cache)
     return
   }
 
@@ -393,6 +462,15 @@ export const unlikeComment = async (commentId: number): Promise<void> => {
   if (CONFIG.USE_MOCK) {
     // Mock 数据
     await new Promise(resolve => setTimeout(resolve, 200))
+    const cache = getMockCommentsByActivity()
+    for (const key of Object.keys(cache)) {
+      cache[key] = cache[key].map((comment) =>
+        comment.id === commentId
+          ? { ...comment, is_liked: false, like_count: Math.max(0, comment.like_count - (comment.is_liked ? 1 : 0)) }
+          : comment
+      )
+    }
+    setMockCommentsByActivity(cache)
     return
   }
 

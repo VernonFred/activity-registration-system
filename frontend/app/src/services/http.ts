@@ -12,6 +12,9 @@ export const api = axios.create({
   timeout: 15000
 })
 
+// 兼容旧服务层的 named import：import { http } from './http'
+export const http = api
+
 api.interceptors.request.use((config) => {
   const token = Taro.getStorageSync('access_token')
   if (token) {

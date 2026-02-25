@@ -51,7 +51,7 @@ const MOCK_CURRENT_USER = {
 const MOCK_RATING: Rating = {
   average: 4.8,
   total_count: 128,
-  user_rating: 0, // 0 表示用户还未评分
+  user_rating: undefined, // undefined 表示用户还未评分
   distribution: {
     5: 98,
     4: 20,

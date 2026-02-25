@@ -26,7 +26,7 @@ export const MOCK_CURRENT_USER: CurrentUser = {
 export const MOCK_RATING: Rating = {
   average: 4.8,
   total_count: 128,
-  user_rating: 0,
+  user_rating: undefined,  // undefined 表示用户未评分（不是0）
   distribution: { 5: 98, 4: 20, 3: 6, 2: 2, 1: 2 }
 }
 

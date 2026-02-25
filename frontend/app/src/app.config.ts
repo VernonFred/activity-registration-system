@@ -4,6 +4,8 @@ export default {
     'pages/activities/index',
     'pages/activity-detail/index',
     'pages/comment/index',
+    'pages/checkin/index',
+    'pages/credential/index',
     'pages/agenda/index',
     'pages/signup/index',
     'pages/profile/index',

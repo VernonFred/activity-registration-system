@@ -248,7 +248,7 @@ $radius-xl: 40rpx;
 }
 
 .form-content {
-  padding: 0 36rpx 120rpx; // 底部增加更多间距，防止与按钮重叠
+  padding: 0 36rpx 420rpx; // 底部留足空间，避免第4步返程信息与底部按钮重叠
   pointer-events: auto; // 确保表单内容可交互
 }
 
@@ -259,26 +259,19 @@ $radius-xl: 40rpx;
 .card-actions {
   display: flex;
   gap: 12rpx; // 减小按钮间距
-  padding: 16rpx 24rpx 24rpx; // 缩小左右内边距，给按钮更多空间
+  padding: 16rpx 24rpx calc(24rpx + env(safe-area-inset-bottom)); // 兼容底部安全区
   flex-shrink: 0;
   position: relative; // 添加定位上下文
   z-index: 100; // 确保按钮在最上层
   pointer-events: auto; // 确保可以接收点击事件
 
   .theme-light & {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 1) 20%
-    );
+    background: transparent;
   }
 
   .theme-dark & {
-    background: linear-gradient(
-      180deg,
-      rgba(28, 28, 30, 0) 0%,
-      rgba(28, 28, 30, 1) 20%
-    );
+    background: transparent;
+    box-shadow: none;
   }
 }
 

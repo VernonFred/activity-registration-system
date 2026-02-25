@@ -3,21 +3,53 @@
  * 创建时间: 2026年1月8日
  * 更新时间: 2026年1月28日 - 添加回复功能、拆分组件
  */
-import { useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import type { Comment, CommentSortType, Rating } from './types'
 import { MOCK_CURRENT_USER, MOCK_RATING, MOCK_COMMENTS, DEFAULT_AVATAR } from './constants'
-import { updateComment as updateCommentApi } from '../../services/comments'
+import {
+  updateComment as updateCommentApi,
+  fetchComments as fetchCommentsApi,
+  fetchRating as fetchRatingApi,
+  createComment as createCommentApi,
+  likeComment as likeCommentApi,
+  unlikeComment as unlikeCommentApi,
+  submitRating as submitRatingApi,
+} from '../../services/comments'
+import { fetchCurrentUser } from '../../services/user'
 import RatingSection from './components/RatingSection'
 import CommentList from './components/CommentList'
 import ReplyPanel from './components/ReplyPanel'
 import ConfirmModal from './components/ConfirmModal'
 import './index.scss'
 
+const mapApiCommentToPageComment = (item: any): Comment => ({
+  id: item.id,
+  user_name: item.user?.name || '用户',
+  user_avatar: item.user?.avatar || DEFAULT_AVATAR,
+  rating: item.rating || 5,
+  content: item.content || '',
+  images: item.images,
+  created_at: item.created_at || new Date().toISOString(),
+  like_count: item.like_count || 0,
+  reply_count: item.reply_count || 0,
+  is_liked: !!item.is_liked,
+  replies: (item.replies || []).map((reply: any) => ({
+    id: reply.id,
+    comment_id: reply.comment_id || item.id,
+    user_name: reply.user?.name || '用户',
+    user_avatar: reply.user?.avatar || DEFAULT_AVATAR,
+    content: reply.content || '',
+    reply_to: reply.reply_to?.name,
+    created_at: reply.created_at || new Date().toISOString(),
+  }))
+})
+
 export default function CommentPage() {
   const router = useRouter()
   const coverUrl = router.params.cover || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'
+  const activityId = Number(router.params.id || router.params.activityId || router.params.activity_id || 0)
 
   const [rating, setRating] = useState<Rating>(MOCK_RATING)
   const [comments, setComments] = useState<Comment[]>(MOCK_COMMENTS)
@@ -28,7 +60,7 @@ export default function CommentPage() {
   const [commentText, setCommentText] = useState('')
   const [replyToUser, setReplyToUser] = useState<string | null>(null)  // 被回复的用户
   const [activeCommentMenu, setActiveCommentMenu] = useState<number | null>(null)
-  const [currentUser] = useState(MOCK_CURRENT_USER)
+  const [currentUser, setCurrentUser] = useState(MOCK_CURRENT_USER)
   const [showReplyPanel, setShowReplyPanel] = useState(false)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [panelTranslateY, setPanelTranslateY] = useState(0)  // 面板下拉偏移
@@ -44,6 +76,44 @@ export default function CommentPage() {
   // 头像加载失败状态
   const [avatarFailed, setAvatarFailed] = useState(false)
   const userAvatar = avatarFailed ? DEFAULT_AVATAR : currentUser.avatar
+
+  useEffect(() => {
+    let active = true
+
+    const load = async () => {
+      try {
+        const [userRes, ratingRes, commentsRes] = await Promise.all([
+          fetchCurrentUser().catch(() => null),
+          activityId ? fetchRatingApi(activityId).catch(() => null) : Promise.resolve(null),
+          activityId ? fetchCommentsApi(activityId, { page: 1, per_page: 50, sort_by: 'newest' }).catch(() => null) : Promise.resolve(null),
+        ])
+
+        if (!active) return
+
+        if (userRes) {
+          setCurrentUser({
+            id: userRes.id,
+            name: userRes.name,
+            avatar: userRes.avatar || DEFAULT_AVATAR,
+            organization: [userRes.school, userRes.department].filter(Boolean).join(''),
+          })
+        }
+        if (ratingRes) {
+          setRating((prev) => ({ ...prev, ...ratingRes }))
+        }
+        if (commentsRes?.items) {
+          setComments(commentsRes.items.map(mapApiCommentToPageComment))
+        }
+      } catch (error) {
+        console.error('加载评论页数据失败，使用本地Mock:', error)
+      }
+    }
+
+    load()
+    return () => {
+      active = false
+    }
+  }, [activityId])
 
   // 点击评分按钮（首次评分）
   const handleRateClick = () => {
@@ -70,7 +140,23 @@ export default function CommentPage() {
       Taro.showToast({ title: '请选择评分', icon: 'none' })
       return
     }
-    setRating({ ...rating, user_rating: tempRating, user_rating_date: new Date().toISOString() })
+    try {
+      if (activityId) {
+        const ratingRes: any = await submitRatingApi(activityId, tempRating)
+        setRating({
+          ...rating,
+          ...ratingRes,
+          user_rating: tempRating,
+          user_rating_date: new Date().toISOString(),
+        })
+      } else {
+        setRating({ ...rating, user_rating: tempRating, user_rating_date: new Date().toISOString() })
+      }
+    } catch (error) {
+      console.error('提交评分失败:', error)
+      Taro.showToast({ title: '评分失败', icon: 'none' })
+      return
+    }
     setShowRatingDialog(false)
     setIsEditingRating(false)
     Taro.showToast({ title: isEditingRating ? '修改成功' : '评分成功', icon: 'success' })
@@ -106,19 +192,33 @@ export default function CommentPage() {
       return
     }
     const content = replyToUser ? `@${replyToUser} ${commentText}` : commentText
-    const newComment: Comment = {
-      id: Date.now(),
-      user_name: currentUser.name,
-      user_avatar: currentUser.avatar,
-      rating: rating.user_rating || 5,
-      content,
-      created_at: new Date().toISOString(),
-      like_count: 0,
-      reply_count: 0,
-      is_liked: false,
-      replies: []
+    try {
+      if (activityId) {
+        const created = await createCommentApi(activityId, {
+          rating: rating.user_rating || 5,
+          content,
+        })
+        setComments([mapApiCommentToPageComment(created), ...comments])
+      } else {
+        const newComment: Comment = {
+          id: Date.now(),
+          user_name: currentUser.name,
+          user_avatar: currentUser.avatar,
+          rating: rating.user_rating || 5,
+          content,
+          created_at: new Date().toISOString(),
+          like_count: 0,
+          reply_count: 0,
+          is_liked: false,
+          replies: []
+        }
+        setComments([newComment, ...comments])
+      }
+    } catch (error) {
+      console.error('评论提交失败:', error)
+      Taro.showToast({ title: '评论失败', icon: 'none' })
+      return
     }
-    setComments([newComment, ...comments])
     setCommentText('')
     setReplyToUser(null)
     setShowCommentInput(false)
@@ -126,17 +226,26 @@ export default function CommentPage() {
   }
 
   // 点赞评论
-  const handleLikeComment = (commentId: number) => {
-    setComments(comments.map(c => {
-      if (c.id === commentId) {
-        return {
-          ...c,
-          is_liked: !c.is_liked,
-          like_count: c.is_liked ? c.like_count - 1 : c.like_count + 1
-        }
+  const handleLikeComment = async (commentId: number) => {
+    const target = comments.find(c => c.id === commentId)
+    if (!target) return
+
+    setComments(comments.map(c => (
+      c.id === commentId
+        ? { ...c, is_liked: !c.is_liked, like_count: c.is_liked ? Math.max(0, c.like_count - 1) : c.like_count + 1 }
+        : c
+    )))
+
+    try {
+      if (target.is_liked) {
+        await unlikeCommentApi(commentId)
+      } else {
+        await likeCommentApi(commentId)
       }
-      return c
-    }))
+    } catch (error) {
+      console.error('评论点赞失败:', error)
+      setComments(comments)
+    }
   }
 
   // 显示删除确认弹窗

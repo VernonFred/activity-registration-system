@@ -4,6 +4,14 @@
  */
 import { View, Text, Image } from '@tarojs/components'
 import type { UserInfo, ProfileTab } from '../types'
+import iconCalendar from '../../../assets/icons/calendar.png'
+import iconBookmark from '../../../assets/icons/bookmark.png'
+import iconBell from '../../../assets/icons/bell.png'
+import iconSettings from '../../../assets/icons/settings.png'
+import iconEdit from '../../../assets/icons/edit.png'
+import iconCamera from '../../../assets/icons/user-circle.png'
+import iconLogout from '../../../assets/icons/x.png'
+import './ProfileHeader.scss'
 
 interface ProfileHeaderProps {
   user: UserInfo | null
@@ -22,43 +30,65 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onLogout,
   onEditProfile,
 }) => {
+  const tabIconMap: Record<ProfileTab, string> = {
+    activities: iconCalendar,
+    badges: iconBookmark,
+    notifications: iconBell,
+    settings: iconSettings,
+  }
+
+  const orgTitle = [user?.organization, user?.title].filter(Boolean).join('')
+
   return (
     <>
-      {/* 用户信息头部 */}
-      <View className="user-header">
-        <View className="user-info">
-          <View className="avatar-container">
+      <View className="profile-header-v2">
+        <View className="profile-header-v2__row">
+          <View className="profile-header-v2__user">
+            <View className="profile-header-v2__avatar-wrap">
+              <Image
+                className="profile-header-v2__avatar"
+                src={user?.avatar_url || 'https://i.pravatar.cc/100'}
+                mode="aspectFill"
+              />
+              <View className="profile-header-v2__avatar-badge">
+                <Image className="profile-header-v2__avatar-badge-icon" src={iconCamera} mode="aspectFit" />
+              </View>
+            </View>
+
+            <View className="profile-header-v2__meta">
+              <Text className="profile-header-v2__name">{user?.name || '未登录'}</Text>
+              <Text className="profile-header-v2__org">{orgTitle || '暂无机构信息'}</Text>
+            </View>
+          </View>
+
+          <View className="profile-header-v2__logout" onClick={onLogout}>
             <Image
-              className="avatar"
-              src={user?.avatar_url || 'https://i.pravatar.cc/100'}
-              mode="aspectFill"
+              className="profile-header-v2__logout-icon"
+              src={iconLogout}
+              mode="aspectFit"
             />
-            <View className="avatar-edit">📷</View>
-          </View>
-          <View className="user-detail">
-            <Text className="user-name">{user?.name || '未登录'}</Text>
-            <Text className="user-org">{user?.organization} {user?.title}</Text>
-          </View>
-          <View className="logout-btn" onClick={onLogout}>
-            <Text className="logout-icon">🚪</Text>
-            <Text className="logout-text">退出登录</Text>
+            <Text className="profile-header-v2__logout-text">退出登录</Text>
           </View>
         </View>
-        <View className="user-bio" onClick={onEditProfile}>
-          <Text className="bio-text">{user?.bio || '点击编辑个人简介'}</Text>
-          <Text className="bio-edit">✏️</Text>
+
+        <View className="profile-header-v2__bio" onClick={onEditProfile}>
+          <Text className="profile-header-v2__bio-text">{user?.bio || '点击编辑个人简介'}</Text>
+          <Image className="profile-header-v2__bio-edit" src={iconEdit} mode="aspectFit" />
         </View>
       </View>
 
-      {/* Tab 切换 */}
-      <View className="tab-bar">
+      <View className="profile-tab-pill">
         {tabs.map((tab) => (
           <View
             key={tab.key}
-            className={`tab-item ${activeTab === tab.key ? 'active' : ''}`}
+            className={`profile-tab-pill__item ${activeTab === tab.key ? 'is-active' : ''}`}
             onClick={() => onTabChange(tab.key)}
           >
-            <Text className="tab-icon">{activeTab === tab.key ? tab.activeIcon : tab.icon}</Text>
+            <Image
+              className="profile-tab-pill__icon"
+              src={tabIconMap[tab.key]}
+              mode="aspectFit"
+            />
           </View>
         ))}
       </View>
@@ -67,4 +97,3 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 }
 
 export default ProfileHeader
-

@@ -11,6 +11,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
 import { submitRegistration, createCompanion } from '../../services/signups'
+import { fetchSignupDetail, updateSignupFormData } from '../../services/user'
 import {
   StepIndicator,
   PersonalForm,
@@ -29,9 +30,36 @@ import iconClose from '../../assets/icons/x.png'
 import iconArrowLeft from '../../assets/icons/arrow-left.png'
 import iconArrowRight from '../../assets/icons/arrow-right.png'
 
+const STEP_INDEX_BY_MODE: Record<string, number> = {
+  payment: 1,
+  transport: 3,
+  edit: 0,
+}
+
+const mapSignupDetailToFormData = (signup: any): SignupFormData => ({
+  personal: {
+    ...DEFAULT_FORM_DATA.personal,
+    ...(signup?.personal || {}),
+  },
+  payment: {
+    ...DEFAULT_FORM_DATA.payment,
+    ...(signup?.payment || {}),
+  },
+  accommodation: {
+    ...DEFAULT_FORM_DATA.accommodation,
+    ...(signup?.accommodation || {}),
+  },
+  transport: {
+    ...DEFAULT_FORM_DATA.transport,
+    ...(signup?.transport || {}),
+  },
+})
+
 const SignupPage = () => {
   const router = useRouter()
   const activityId = Number(router.params.activityId || router.params.activity_id)
+  const routeSignupId = Number(router.params.signupId || router.params.signup_id || 0)
+  const routeMode = String(router.params.mode || '').toLowerCase()
   const { theme } = useTheme()
   const [statusBarHeight, setStatusBarHeight] = useState(0)
 
@@ -46,6 +74,8 @@ const SignupPage = () => {
   const [isAddingCompanion, setIsAddingCompanion] = useState(false)
   const [companionCount, setCompanionCount] = useState(0)
   const [signupId, setSignupId] = useState<number | null>(null)
+  const isRouteEditMode = routeSignupId > 0 && ['edit', 'payment', 'transport'].includes(routeMode)
+  const isScopedStepMode = routeSignupId > 0 && (routeMode === 'payment' || routeMode === 'transport')
 
   // 获取状态栏高度（用于安全区域）
   useEffect(() => {
@@ -61,6 +91,40 @@ const SignupPage = () => {
     }
     loadActivity()
   }, [activityId])
+
+  useEffect(() => {
+    let active = true
+
+    const initFromSignup = async () => {
+      if (!routeSignupId) return
+
+      try {
+        const signup: any = await fetchSignupDetail(routeSignupId)
+        if (!active) return
+
+        setSignupId(routeSignupId)
+
+        if (routeMode === 'companion') {
+          setIsAddingCompanion(true)
+          setCurrentStep(0)
+          return
+        }
+
+        if (isRouteEditMode) {
+          setFormData(mapSignupDetailToFormData(signup))
+          setCurrentStep(STEP_INDEX_BY_MODE[routeMode] ?? 0)
+        }
+      } catch (error) {
+        console.error('加载报名详情失败:', error)
+        Taro.showToast({ title: '加载报名信息失败', icon: 'none' })
+      }
+    }
+
+    initFromSignup()
+    return () => {
+      active = false
+    }
+  }, [routeSignupId, routeMode, isRouteEditMode])
 
   const loadActivity = async () => {
     try {
@@ -166,6 +230,25 @@ const SignupPage = () => {
 
         // 显示成功页面
         setShowSuccess(true)
+      } else if (isRouteEditMode && routeSignupId) {
+        await updateSignupFormData(routeSignupId, {
+          personal: formData.personal,
+          payment: formData.payment,
+          accommodation: formData.accommodation,
+          transport: formData.transport,
+        })
+
+        Taro.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 1500
+        })
+
+        setTimeout(() => {
+          Taro.navigateBack({ delta: 1 }).catch(() => {
+            Taro.reLaunch({ url: '/pages/profile/index' })
+          })
+        }, 300)
       } else {
         // 主报名模式：提交主报名
         const result: any = await submitRegistration({
@@ -399,7 +482,7 @@ const SignupPage = () => {
             </View>
           )}
 
-          {isTransportStep ? (
+          {isTransportStep && !isScopedStepMode ? (
             <>
               <View className="action-button outline" onClick={handleSkip}>
                 <Text className="btn-text">稍后填写</Text>
@@ -408,16 +491,26 @@ const SignupPage = () => {
                 className={`action-button primary ${submitting ? 'loading' : ''}`}
                 onClick={handleSubmit}
               >
-                <Text className="btn-text">提交报名</Text>
+                <Text className="btn-text">{isScopedStepMode ? '保存' : '提交报名'}</Text>
               </View>
             </>
           ) : (
             <View
               className={`action-button primary ${currentStep === 0 ? 'full' : ''}`}
-              onClick={handleNext}
+              onClick={() => {
+                if (isScopedStepMode && currentStepConfig.key === routeMode) {
+                  handleSubmit()
+                  return
+                }
+                handleNext()
+              }}
             >
-              <Text className="btn-text">{isLastStep ? '提交报名' : '下一步'}</Text>
-              {!isLastStep && <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />}
+              <Text className="btn-text">
+                {(isScopedStepMode && currentStepConfig.key === routeMode) ? '保存' : (isLastStep ? '提交报名' : '下一步')}
+              </Text>
+              {!(isScopedStepMode && currentStepConfig.key === routeMode) && !isLastStep && (
+                <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />
+              )}
             </View>
           )}
         </View>

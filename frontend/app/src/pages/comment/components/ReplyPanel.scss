@@ -88,6 +88,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .avatar-main {
@@ -95,6 +96,8 @@
   height: 64rpx;
   border-radius: 50%;
   flex-shrink: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .avatar-small {
@@ -106,13 +109,45 @@
   z-index: 2;
 }
 
-// 主干线
+// 主干线 - 隐藏原来的line元素，改用伪元素
 .line {
-  width: 2rpx;
-  background-color: #e5e5e5;
-  margin-top: 8rpx;
-  flex: 1;
-  min-height: 20rpx;
+  display: none;
+}
+
+// ========================================
+// 连接线颜色变量（匹配Sketch设计稿）
+// ========================================
+$thread-line-color: #e5e5e5;  // Sketch设计稿颜色
+$thread-line-width: 1rpx;     // 0.5px ≈ 1rpx on 2x screens
+
+// 主评论的主干线：使用avatar-col的::after
+// 从头像底部开始垂直向下
+.thread.main > .avatar-col::after {
+  content: '';
+  position: absolute;
+  top: 68rpx;  // 头像底部 (64rpx) + 小间距 (4rpx)
+  left: 50%;
+  transform: translateX(-50%);
+  width: $thread-line-width;
+  background-color: $thread-line-color;
+  height: 0;  // 默认隐藏
+}
+
+// 当有回复时显示主干线
+.thread.main.has-replies > .avatar-col::after {
+  height: calc(100% - 68rpx);
+}
+
+// 嵌套回复的主干线
+.thread.reply.has-replies > .avatar-col::after {
+  content: '';
+  position: absolute;
+  top: 52rpx;  // 头像底部 (48rpx) + 小间距 (4rpx)
+  left: 50%;
+  transform: translateX(-50%);
+  width: $thread-line-width;
+  background-color: $thread-line-color;
+  height: calc(100% - 52rpx);
 }
 
 // 内容列
@@ -260,32 +295,74 @@
 .reply-item {
   position: relative;
   padding: 12rpx 0;
+  
+  // 最后一个回复项：用白色遮盖多余的主干线
+  // 从头像中心位置往下全部遮盖
+  &.last::after {
+    content: '';
+    position: absolute;
+    background: #ffffff;
+    z-index: 3;
+  }
+}
+
+// 一级回复最后一项的遮盖层
+// 主干线在父级avatar-col中心，相对于reply-item需要计算
+// reply-item 在 replies-level-1 中，replies-level-1 有 margin-left: -80rpx
+// 所以主干线位置 = 32rpx - 80rpx = -48rpx，遮盖层左侧应该对齐这里
+.replies-level-1 > .reply-item.last::after {
+  left: -52rpx;  // 主干线-48rpx，向左偏移一点确保覆盖
+  top: 36rpx;    // 从头像中心(24rpx) + padding(12rpx)往下开始
+  width: 12rpx;  // 足够宽覆盖1rpx的线
+  height: 500rpx;  // 设置足够大确保覆盖任何剩余部分
+}
+
+// 二级回复最后一项的遮盖层
+.replies-level-2 > .reply-item.last::after {
+  left: -40rpx;
+  top: 36rpx;
+  width: 12rpx;
+  height: 500rpx;
+}
+
+// 三级回复最后一项的遮盖层
+.replies-level-3 > .reply-item.last::after {
+  left: -40rpx;
+  top: 36rpx;
+  width: 12rpx;
+  height: 500rpx;
 }
 
 // 一级回复的弯曲线（连接到主评论主干线）
+// 主干线位置：主评论头像中心 = 32rpx
+// replies-level-1 有 margin-left: -80rpx
+// 所以弯曲线起点 = 32rpx - 80rpx = -48rpx
 .replies-level-1 > .reply-item::before {
   content: '';
   position: absolute;
-  left: -56rpx;  // 对齐到主干线
-  top: 20rpx;
-  width: 40rpx;
-  height: 20rpx;
-  border-left: 2rpx solid #e5e5e5;
-  border-bottom: 2rpx solid #e5e5e5;
-  border-bottom-left-radius: 16rpx;
+  left: -48rpx;  // 对齐到主干线
+  top: 12rpx;    // 与padding对齐
+  width: 36rpx;  // 延伸到回复头像左侧
+  height: 20rpx; // 弯曲高度
+  border-left: $thread-line-width solid $thread-line-color;
+  border-bottom: $thread-line-width solid $thread-line-color;
+  border-bottom-left-radius: 12rpx;
 }
 
 // 二级回复的弯曲线
+// 父级头像48rpx，中心24rpx
+// replies-level-2 有 margin-left: -60rpx
+// 弯曲线起点 = 24rpx - 60rpx = -36rpx
 .replies-level-2 > .reply-item::before {
   content: '';
   position: absolute;
   left: -36rpx;
-  top: 20rpx;
+  top: 12rpx;
   width: 24rpx;
   height: 16rpx;
-  border-left: 2rpx solid #e5e5e5;
-  border-bottom: 2rpx solid #e5e5e5;
-  border-bottom-left-radius: 12rpx;
+  border-left: $thread-line-width solid $thread-line-color;
+  border-bottom: $thread-line-width solid $thread-line-color;
+  border-bottom-left-radius: 10rpx;
 }
 
 // 三级回复的弯曲线
@@ -293,17 +370,12 @@
   content: '';
   position: absolute;
   left: -36rpx;
-  top: 20rpx;
+  top: 12rpx;
   width: 24rpx;
   height: 16rpx;
-  border-left: 2rpx solid #e5e5e5;
-  border-bottom: 2rpx solid #e5e5e5;
-  border-bottom-left-radius: 12rpx;
-}
-
-// 最后一个回复项：隐藏多余主干线
-.reply-item.last {
-  // 不需要额外处理，因为主干线由父级的 .line 控制
+  border-left: $thread-line-width solid $thread-line-color;
+  border-bottom: $thread-line-width solid $thread-line-color;
+  border-bottom-left-radius: 10rpx;
 }
 
 // ========================================

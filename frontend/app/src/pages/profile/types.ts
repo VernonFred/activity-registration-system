@@ -26,13 +26,19 @@ export interface SignupRecord {
   activity_title: string
   activity_desc?: string
   activity_date: string
+  activity_end_date?: string
+  activity_location?: string
   status: 'pending' | 'approved' | 'rejected'
   checkin_status: 'not_checked_in' | 'checked_in' | 'no_show'
   payment_status?: 'unpaid' | 'paid'
+  transport_completed?: boolean
   likes: number
   comments: number
   favorites: number
   shares: number
+  is_liked?: boolean
+  is_favorited?: boolean
+  is_commented?: boolean
   companions?: Companion[]
 }
 
@@ -62,4 +68,3 @@ export interface Badge {
   category: string
   is_earned: boolean
 }
-

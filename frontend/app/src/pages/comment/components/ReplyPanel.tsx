@@ -147,8 +147,7 @@ export default function ReplyPanel({
   // 头像加载失败记录
   const [failedAvatars, setFailedAvatars] = useState<Set<string>>(new Set())
   
-  // Refs for line calculation
-  const mainLineRef = useRef<HTMLDivElement>(null)
+  // Ref for replies container
   const repliesContainerRef = useRef<HTMLDivElement>(null)
   
   const getAvatarUrl = (key: string, avatarUrl?: string) => {
@@ -323,7 +322,7 @@ export default function ReplyPanel({
     
     return (
       <View key={reply.id} className={`reply-item ${isLast ? 'last' : ''}`}>
-        <View className={`thread reply level-${level}`}>
+        <View className={`thread reply level-${level} ${hasSubReplies ? 'has-replies' : ''}`}>
           {/* 头像列 */}
           <View className="avatar-col">
             <Image 
@@ -332,7 +331,6 @@ export default function ReplyPanel({
               mode="aspectFill"
               onError={() => handleAvatarError(replyKey)}
             />
-            {hasSubReplies && <View className="line" />}
           </View>
           
           {/* 内容列 */}
@@ -418,7 +416,7 @@ export default function ReplyPanel({
         {/* 滚动内容区 */}
         <View className="panel-content">
           {/* 主评论线程 */}
-          <View className="thread main">
+          <View className={`thread main ${hasReplies && showReplies ? 'has-replies' : ''}`}>
             {/* 主头像列 */}
             <View className="avatar-col">
               <Image 
@@ -427,7 +425,6 @@ export default function ReplyPanel({
                 mode="aspectFill"
                 onError={() => handleAvatarError('main')}
               />
-              {hasReplies && showReplies && <View className="line" ref={mainLineRef} />}
             </View>
             
             {/* 主内容列 */}
