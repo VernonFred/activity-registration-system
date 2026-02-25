@@ -1,37 +1,48 @@
 /**
- * 报名列表页 - 类型定义
- * 创建时间: 2025年12月09日 12:00
+ * 我的活动列表页 - 类型定义
  */
 
-// 活动状态类型
+// 报名状态
+export type RegistrationStatus = 'registered' | 'participated'
+
+// 兼容服务层使用
 export type ActivityStatus = 'upcoming' | 'ongoing' | 'finished'
 
-// 筛选选项
-export interface FilterOption {
-  label: string
-  value: string
+// 参与者
+export interface Participant {
+  id: string
+  name: string
+  isPrimary: boolean            // 是否为主报名人
+  paymentStatus: 'paid' | 'unpaid'
+  checkinStatus: 'checked' | 'unchecked'
+  needsTransportInfo?: boolean  // 是否需要完善交通信息
 }
 
 // 活动卡片数据
 export interface ActivityItem {
   id: string
   title: string
-  cover: string
-  rating: number
-  ratingCount: number
-  startDate: string
-  endDate: string
-  city: string
-  location: string
-  status: ActivityStatus
-  isFree: boolean
-  price?: number
+  description: string
+  date: string                  // 格式: 'YYYY-MM-DD'
+  status: RegistrationStatus
+  likes: number
+  comments: number
+  favorites: number
+  shares: number
+  participants: Participant[]
 }
 
-// 筛选状态
+// 功能 Tab 类型
+export type FunctionTab = 'activities' | 'records' | 'notifications' | 'settings'
+
+// 筛选相关（保留兼容）
+export interface FilterOption {
+  label: string
+  value: string
+}
+
 export interface FilterState {
   city: string
   timeRange: string
   status: string
 }
-
