@@ -23,6 +23,7 @@ export default function CheckinPage() {
   const [title, setTitle] = useState('暑期培训会议')
   const [dateRange, setDateRange] = useState('')
   const [location, setLocation] = useState('')
+  const [seatInfo] = useState('A区 12排 5座')
   const [token, setToken] = useState('')
   const [showTokenInput, setShowTokenInput] = useState(false)
 
@@ -100,22 +101,39 @@ export default function CheckinPage() {
     }
   }
 
+  const goBack = () => {
+    Taro.navigateBack({ delta: 1 }).catch(() => {
+      Taro.reLaunch({ url: '/pages/profile/index' })
+    })
+  }
+
   return (
     <View className={`checkin-page theme-${theme}`}>
       <View className="checkin-mask" />
-      <View className="checkin-modal">
-        {!checkedIn ? (
-          <>
-            <Text className="checkin-title">{title}</Text>
-            <Text className="checkin-date">{dateRange || '2025.07.21-07.25'}</Text>
 
-            <View className="checkin-ring" onClick={handleCheckin}>
-              <View className={`checkin-ring__btn ${submitting ? 'is-loading' : ''}`}>
-                <Text>{submitting ? '签到中...' : '立即签到'}</Text>
+      {!checkedIn ? (
+        <View className="ticket-card">
+          <View className="ticket-top">
+            <Text className="ticket-event-label">活动签到</Text>
+            <Text className="ticket-title">{title}</Text>
+            <Text className="ticket-date">{dateRange || '2025.07.21-07.25'}</Text>
+            {location ? <Text className="ticket-location">{location}</Text> : null}
+          </View>
+
+          <View className="ticket-perforation">
+            <View className="perf-cut perf-left" />
+            <View className="perf-dash" />
+            <View className="perf-cut perf-right" />
+          </View>
+
+          <View className="ticket-bottom">
+            <View className="ticket-stamp-area" onClick={handleCheckin}>
+              <View className={`ticket-stamp ${submitting ? 'is-loading' : ''}`}>
+                <View className="stamp-ring" />
+                <Text className="stamp-text">{submitting ? '签到中...' : '立即签到'}</Text>
               </View>
             </View>
-
-            <Text className="checkin-tip">点击按钮完成签到</Text>
+            <Text className="ticket-hint">点击按钮完成签到</Text>
 
             {!CONFIG.USE_MOCK && (
               <View className="checkin-token-block">
@@ -132,55 +150,73 @@ export default function CheckinPage() {
                 )}
               </View>
             )}
-          </>
-        ) : (
-          <>
-            <View className="checkin-success__header">
-              <Text className="checkin-success__title">签到成功</Text>
-              <Text className="checkin-success__sub">祝您参会愉快</Text>
-            </View>
-            <View className="checkin-success__rings">
-              <View className="ring layer-1" />
-              <View className="ring layer-2" />
-              <View className="ring layer-3" />
-              <View className="ring center">
-                <Text>✓</Text>
-              </View>
-            </View>
-            <View className="checkin-success__info">
-              <View className="info-row">
-                <View className="info-icon-wrap">
-                  <Image src={iconCalendar} className="info-icon" mode="aspectFit" />
-                </View>
-                <View className="info-text-wrap">
-                  <Text className="info-label">签到时间</Text>
-                  <Text className="info-value">{displayTime || '--'}</Text>
-                </View>
-              </View>
-              <View className="info-row">
-                <View className="info-icon-wrap">
-                  <Image src={iconMapPin} className="info-icon" mode="aspectFit" />
-                </View>
-                <View className="info-text-wrap">
-                  <Text className="info-label">签到地点</Text>
-                  <Text className="info-value">{location || '--'}</Text>
-                </View>
-              </View>
-            </View>
-          </>
-        )}
+          </View>
 
-        <View
-          className={`checkin-close ${checkedIn ? 'is-top' : 'is-bottom'}`}
-          onClick={() => {
-            Taro.navigateBack({ delta: 1 }).catch(() => {
-              Taro.reLaunch({ url: '/pages/profile/index' })
-            })
-          }}
-        >
-          <Text>×</Text>
+          <View className="ticket-close" onClick={goBack}>
+            <Text>×</Text>
+          </View>
         </View>
-      </View>
+      ) : (
+        <View className="ticket-card is-success">
+          <View className="ticket-close is-top" onClick={goBack}>
+            <Text>×</Text>
+          </View>
+
+          <View className="ticket-top">
+            <View className="success-header">
+              <Text className="success-title">签到成功</Text>
+              <Text className="success-sub">祝您参会愉快</Text>
+            </View>
+
+            <View className="success-stamp-wrap">
+              <View className="success-rings">
+                <View className="s-ring s-ring-1" />
+                <View className="s-ring s-ring-2" />
+                <View className="s-ring s-ring-3" />
+                <View className="s-ring s-ring-center">
+                  <Text>✓</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View className="ticket-perforation">
+            <View className="perf-cut perf-left" />
+            <View className="perf-dash" />
+            <View className="perf-cut perf-right" />
+          </View>
+
+          <View className="ticket-bottom">
+            <View className="info-row">
+              <View className="info-icon-wrap">
+                <Image src={iconCalendar} className="info-icon" mode="aspectFit" />
+              </View>
+              <View className="info-text-col">
+                <Text className="info-label">签到时间</Text>
+                <Text className="info-value">{displayTime || '--'}</Text>
+              </View>
+            </View>
+            <View className="info-row">
+              <View className="info-icon-wrap">
+                <Image src={iconMapPin} className="info-icon" mode="aspectFit" />
+              </View>
+              <View className="info-text-col">
+                <Text className="info-label">签到地点</Text>
+                <Text className="info-value">{location || '--'}</Text>
+              </View>
+            </View>
+            <View className="info-row">
+              <View className="info-icon-wrap seat-icon-wrap">
+                <Text className="seat-icon-text">座</Text>
+              </View>
+              <View className="info-text-col">
+                <Text className="info-label">座位信息</Text>
+                <Text className="info-value">{seatInfo}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   )
 }
