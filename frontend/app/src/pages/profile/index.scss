@@ -332,45 +332,82 @@
 .badges-tab {
   padding-bottom: 36px;
 
-  // Hero 区域: 大徽章 + 统计 + 徽章墙入口
+  // Hero 区域
   .bt-hero {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 16px 16px 20px;
   }
 
+  // 徽章墙入口 — 右上角绝对定位
+  .bt-wall-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(60, 90, 66, 0.2);
+    background: transparent;
+  }
+
+  .bt-wall-icon { font-size: 14px; }
+  .bt-wall-text { font-size: 12px; color: #3c5a42; font-weight: 600; }
+
   .bt-hero-badge {
     position: relative;
     flex-shrink: 0;
+    width: 136px;
+    height: 136px;
   }
 
   .bt-hero-tag {
     position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    padding: 2px 10px;
-    border-radius: 999px;
-    background: #e07b1e;
+    top: -6px;
+    left: 0;
+    z-index: 3;
+    padding: 3px 10px;
+    border-radius: 8px;
+    background: #6b7c3e;
     text { font-size: 10px; color: #fff; font-weight: 600; white-space: nowrap; }
   }
 
-  .bt-hero-icon {
-    width: 120px;
-    height: 120px;
+  .bt-hero-shadow {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    width: 126px;
+    height: 126px;
     border-radius: 22px;
-    background: linear-gradient(145deg, #1c4a2a, #2a6840);
+    background: rgba(60, 100, 70, 0.18);
+    transform: rotate(6deg);
+  }
+
+  .bt-hero-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 126px;
+    height: 126px;
+    border-radius: 22px;
+    background: linear-gradient(155deg, #2a6840 0%, #1c4a2a 60%, #163d22 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 22px rgba(28, 74, 42, 0.18);
+    transform: rotate(-4deg);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
   }
 
   .bt-hero-img {
-    width: 90px;
-    height: 90px;
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
   }
 
   .bt-hero-placeholder {
@@ -407,21 +444,6 @@
     color: #8a9098;
     font-weight: 500;
   }
-
-  .bt-wall-btn {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .bt-wall-icon { font-size: 14px; }
-  .bt-wall-text { font-size: 12px; color: #3c5a42; font-weight: 600; }
 
   // 分类Tab
   .bt-cat-tabs {
@@ -517,55 +539,84 @@
     line-height: 1.4;
   }
 
-  // 隐藏彩蛋 — 未解锁
+  // 隐藏彩蛋 — 极简光环
   .bt-easter-locked {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 16px 50px;
+    padding: 48px 16px 36px;
     margin: 0 16px;
     border-radius: 20px;
-    background: #f3f4f6;
+    background: transparent;
   }
 
-  .bt-easter-shape {
+  .easter-orb {
     position: relative;
     width: 140px;
     height: 140px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    margin-bottom: 20px;
   }
 
-  .easter-tri {
-    width: 0;
-    height: 0;
-    border-left: 55px solid transparent;
-    border-right: 55px solid transparent;
-    border-bottom: 95px solid rgba(100, 120, 220, 0.25);
-    filter: drop-shadow(0 4px 16px rgba(100, 120, 220, 0.18));
-  }
-
-  .easter-shadow {
+  .orb-ring {
     position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 20px;
     border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(100, 120, 220, 0.12) 0%, transparent 70%);
+    border: 1px solid rgba(45, 90, 61, 0.1);
+  }
+
+  .orb-ring-outer {
+    inset: 0;
+    animation: orbPulse 4s ease-in-out infinite;
+  }
+
+  .orb-ring-inner {
+    inset: 18px;
+    border-color: rgba(45, 90, 61, 0.15);
+    animation: orbPulse 4s ease-in-out infinite 1s;
+  }
+
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+
+  .orb-core {
+    position: absolute;
+    inset: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, rgba(45, 90, 61, 0.06), rgba(45, 90, 61, 0.03) 70%, transparent);
+  }
+
+  .orb-mark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text {
+      font-size: 36px;
+      font-weight: 200;
+      color: rgba(45, 90, 61, 0.25);
+      letter-spacing: -2px;
+    }
+  }
+
+  .easter-hint {
+    display: block;
+    font-size: 12px;
+    color: #aab0b8;
+    margin-bottom: 24px;
+    letter-spacing: 2px;
   }
 
   .bt-easter-btn {
-    padding: 12px 40px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(100, 120, 220, 0.15), rgba(130, 150, 240, 0.22));
+    padding: 11px 36px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid rgba(45, 90, 61, 0.18);
     text {
-      font-size: 14px;
-      color: #5b6ad0;
-      font-weight: 600;
+      font-size: 13px;
+      color: #2d5a3d;
+      font-weight: 500;
     }
   }
 }
@@ -582,9 +633,8 @@
   .bt-stats-total { color: #8d97a3; }
 
   .bt-wall-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: none;
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.12);
     .bt-wall-text { color: #99d4ad; }
   }
 
@@ -604,11 +654,14 @@
   .bt-card-name { color: #d8dde4; }
   .bt-card-desc { color: #6b7380; }
 
-  .bt-easter-locked { background: rgba(255, 255, 255, 0.03); }
-  .easter-tri { border-bottom-color: rgba(100, 120, 220, 0.18); }
+  .orb-ring { border-color: rgba(111, 207, 138, 0.12); }
+  .orb-ring-inner { border-color: rgba(111, 207, 138, 0.18); }
+  .orb-core { background: radial-gradient(circle at 40% 38%, rgba(111, 207, 138, 0.05), rgba(111, 207, 138, 0.02) 70%, transparent); }
+  .orb-mark text { color: rgba(111, 207, 138, 0.2); }
+  .easter-hint { color: #6b7380; }
   .bt-easter-btn {
-    background: linear-gradient(135deg, rgba(100, 120, 220, 0.08), rgba(130, 150, 240, 0.12));
-    text { color: #8b9bef; }
+    border-color: rgba(111, 207, 138, 0.15);
+    text { color: #99d4ad; }
   }
 }
 

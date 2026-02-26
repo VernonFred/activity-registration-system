@@ -43,13 +43,18 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges }) => {
 
   return (
     <View className="tab-content badges-tab animate-fade-in">
-      {/* Hero: 最近获得 + 统计 + 徽章墙 */}
+      {/* Hero: 最近获得 + 统计 + 徽章墙（右上角） */}
       <View className="bt-hero">
+        <View className="bt-wall-btn" onClick={handleBadgeWall}>
+          <Text className="bt-wall-icon">🏆</Text>
+          <Text className="bt-wall-text">徽章墙</Text>
+        </View>
         <View className="bt-hero-badge">
           {featuredBadge && <View className="bt-hero-tag"><Text>新获得</Text></View>}
+          <View className="bt-hero-shadow" />
           <View className="bt-hero-icon">
             {featuredBadge
-              ? <Image className="bt-hero-img" src={featuredBadge.icon_url} mode="aspectFit" />
+              ? <Image className="bt-hero-img" src={featuredBadge.icon_url} mode="scaleToFill" />
               : <Text className="bt-hero-placeholder">🔒</Text>
             }
           </View>
@@ -60,10 +65,6 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges }) => {
             <Text className="bt-stats-num">{earnedCount}</Text>
             <Text className="bt-stats-total">/{totalCount}枚</Text>
           </View>
-        </View>
-        <View className="bt-wall-btn" onClick={handleBadgeWall}>
-          <Text className="bt-wall-icon">🏆</Text>
-          <Text className="bt-wall-text">徽章墙</Text>
         </View>
       </View>
 
@@ -84,10 +85,13 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges }) => {
       {/* 徽章列表 */}
       {activeCat === 'easter' && !easterRevealed && categoryBadges.every(b => !b.is_earned) ? (
         <View className="bt-easter-locked">
-          <View className="bt-easter-shape">
-            <View className="easter-tri" />
-            <View className="easter-shadow" />
+          <View className="easter-orb">
+            <View className="orb-ring orb-ring-outer" />
+            <View className="orb-ring orb-ring-inner" />
+            <View className="orb-core" />
+            <View className="orb-mark"><Text>?</Text></View>
           </View>
+          <Text className="easter-hint">隐藏成就等待发现</Text>
           <View className="bt-easter-btn" onClick={() => setEasterRevealed(true)}>
             <Text>期待您的解锁</Text>
           </View>
