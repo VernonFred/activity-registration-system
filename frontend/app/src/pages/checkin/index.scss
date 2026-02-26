@@ -1,5 +1,8 @@
 @import "../../styles/variables";
 
+// ========================================
+// 全屏背景
+// ========================================
 .checkin-page {
   position: relative;
   min-height: 100vh;
@@ -12,6 +15,7 @@
   justify-content: center;
   padding: 28px 18px;
   box-sizing: border-box;
+  overflow: hidden;
 
   &.theme-dark {
     background:
@@ -21,7 +25,7 @@
   }
 }
 
-.checkin-mask {
+.checkin-bg-glow {
   position: absolute;
   inset: 0;
   backdrop-filter: blur(14px);
@@ -29,11 +33,12 @@
 }
 
 // ========================================
-// 票据卡片
+// 签到卡片（未签到）
 // ========================================
-.ticket-card {
+.checkin-card {
   position: relative;
-  width: min(100%, 310px);
+  width: min(100%, 290px);
+  min-height: 420px;
   border-radius: 18px;
   background: rgba(250, 250, 251, 0.97);
   border: 1px solid rgba(94, 205, 127, 0.22);
@@ -41,142 +46,84 @@
     0 18px 40px rgba(0, 0, 0, 0.08),
     0 0 0 1px rgba(255, 255, 255, 0.35) inset,
     0 0 28px rgba(77, 207, 124, 0.16);
+  padding: 28px 18px 22px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.theme-dark .ticket-card {
-  background: rgba(248, 249, 250, 0.97);
-  border-color: rgba(90, 190, 120, 0.22);
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset,
-    0 0 24px rgba(66, 180, 107, 0.14);
-}
-
-// ========================================
-// 票据上半部
-// ========================================
-.ticket-top {
-  padding: 28px 22px 20px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
+  z-index: 2;
+
+  &.is-leaving {
+    animation: cardShrink 0.4s ease-in forwards;
+  }
+}
+
+@keyframes cardShrink {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.92); opacity: 0; }
+}
+
+.checkin-title {
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #1f2329;
   text-align: center;
 }
 
-.ticket-event-label {
-  display: inline-block;
-  padding: 3px 14px;
-  border-radius: 999px;
-  background: rgba(45, 90, 61, 0.08);
-  color: #3d7a4f;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  margin-bottom: 14px;
-}
-
-.theme-dark .ticket-event-label {
-  background: rgba(45, 90, 61, 0.12);
-  color: #3d7a4f;
-}
-
-.ticket-title {
-  font-size: 18px;
-  line-height: 1.35;
-  font-weight: 700;
-  color: #1f2329;
-}
-
-.ticket-date {
+.checkin-date {
   margin-top: 8px;
-  color: #8e939b;
+  color: #90949c;
   font-size: 12px;
   line-height: 1.2;
 }
 
-.ticket-location {
-  margin-top: 4px;
-  color: #a0a5ad;
-  font-size: 11px;
-}
-
 // ========================================
-// 票据撕裂线（perforation）
+// 签到按钮（动态光效）
 // ========================================
-.ticket-perforation {
+.checkin-btn-wrap {
   position: relative;
-  height: 24px;
-  margin: 0;
-  flex-shrink: 0;
-}
-
-.perf-dash {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-top: 1px dashed rgba(47, 93, 63, 0.35);
-}
-
-.perf-cut {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #aac1ae, #dce5de);
-}
-
-.perf-left { left: -11px; }
-.perf-right { right: -11px; }
-
-.theme-dark .perf-dash {
-  border-top-color: rgba(90, 190, 120, 0.3);
-}
-
-.theme-dark .perf-cut {
-  background: linear-gradient(135deg, #8cab94, #d5ddd5);
-}
-
-// ========================================
-// 票据下半部
-// ========================================
-.ticket-bottom {
-  padding: 16px 22px 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-// ========================================
-// 签到按钮（印章风格）
-// ========================================
-.ticket-stamp-area {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 0 6px;
-}
-
-.ticket-stamp {
-  width: 118px;
-  height: 118px;
-  border-radius: 50%;
-  position: relative;
+  margin-top: 34px;
+  width: 140px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.stamp-ring {
+// 脉冲呼吸圈
+.pulse-ring {
   position: absolute;
-  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(234, 60, 60, 0.12);
+  animation: pulseExpand 3s ease-out infinite;
+}
+
+.pulse-1 {
+  width: 120px; height: 120px;
+  animation-delay: 0s;
+}
+
+.pulse-2 {
+  width: 120px; height: 120px;
+  animation-delay: 1s;
+}
+
+.pulse-3 {
+  width: 120px; height: 120px;
+  animation-delay: 2s;
+}
+
+@keyframes pulseExpand {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+// 旋转渐变光环
+.gradient-orbit {
+  position: absolute;
+  width: 122px;
+  height: 122px;
   border-radius: 50%;
   background: conic-gradient(
     from 210deg,
@@ -186,8 +133,8 @@
     #7fb58a 255deg,
     #e45a5a 360deg
   );
-  padding: 2px;
-  box-sizing: border-box;
+  animation: orbitSpin 6s linear infinite;
+  box-shadow: 0 0 0 1px rgba(241, 99, 99, 0.18);
 
   &::after {
     content: '';
@@ -198,9 +145,31 @@
   }
 }
 
-.stamp-text {
+@keyframes orbitSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// 内核按钮
+.checkin-btn-core {
   position: relative;
-  z-index: 2;
+  z-index: 3;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) inset;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.btn-text {
   font-size: 13px;
   font-weight: 600;
   background-image: linear-gradient(90deg, #ea3c3c 0%, #c7a28f 56%, #67bb79 100%);
@@ -209,33 +178,33 @@
   color: transparent;
 }
 
-.ticket-stamp.is-loading .stamp-text {
+.checkin-btn-core.is-loading .btn-text {
   background: none;
   color: #6f7680;
 }
 
-.ticket-hint {
-  margin-top: 18px;
+.checkin-hint {
+  margin-top: 38px;
   font-size: 10px;
   color: #b6bac1;
 }
 
 // ========================================
-// 签到码输入（联调用）
+// 签到码（联调用）
 // ========================================
-.checkin-token-block {
+.token-block {
   margin-top: 18px;
   width: 100%;
 }
 
-.checkin-token-toggle {
+.token-toggle {
   display: block;
   font-size: 12px;
   color: #4b7a58;
   text-align: center;
 }
 
-.checkin-token-input {
+.token-input {
   margin-top: 10px;
   height: 36px;
   border-radius: 10px;
@@ -249,11 +218,58 @@
 // ========================================
 // 关闭按钮
 // ========================================
-.ticket-close {
+.checkin-close {
   position: absolute;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text {
+    font-size: 22px;
+    line-height: 1;
+    color: #23272d;
+    font-weight: 500;
+  }
+}
+
+// ========================================
+// 签到成功卡片
+// ========================================
+.success-card {
+  position: relative;
+  width: min(100%, 290px);
+  border-radius: 18px;
+  background: rgba(250, 250, 251, 0.97);
+  border: 1px solid rgba(94, 205, 127, 0.22);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset,
+    0 0 28px rgba(77, 207, 124, 0.16);
+  padding: 22px 18px 24px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.animate-pop-in {
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -269,29 +285,9 @@
     color: #23272d;
     font-weight: 500;
   }
-
-  &.is-top {
-    top: 14px;
-    right: 14px;
-    bottom: auto;
-    left: auto;
-    transform: none;
-  }
 }
 
-// ========================================
-// 签到成功
-// ========================================
-.ticket-card.is-success {
-  .ticket-top {
-    padding-top: 22px;
-    align-items: flex-start;
-    text-align: left;
-  }
-}
-
-.success-header {
-  width: 100%;
+.success-top {
   padding-right: 32px;
 }
 
@@ -309,39 +305,54 @@
   color: #c0c4ca;
 }
 
-.success-stamp-wrap {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 0 4px;
-}
-
-.success-rings {
+// ========================================
+// 成功动效区
+// ========================================
+.success-visual {
   position: relative;
-  width: 200px;
-  height: 200px;
+  margin: 16px auto 12px;
+  width: 220px;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.s-ring {
+// 扩散波纹
+.burst-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(103, 187, 121, 0.25);
+  animation: burstExpand 2.4s ease-out infinite;
+}
+
+.burst-1 { width: 60px; height: 60px; animation-delay: 0s; }
+.burst-2 { width: 60px; height: 60px; animation-delay: 0.8s; }
+.burst-3 { width: 60px; height: 60px; animation-delay: 1.6s; }
+
+@keyframes burstExpand {
+  0% { transform: scale(1); opacity: 0.5; border-color: rgba(103, 187, 121, 0.35); }
+  50% { border-color: rgba(234, 60, 60, 0.15); }
+  100% { transform: scale(3.6); opacity: 0; border-color: rgba(199, 162, 143, 0.08); }
+}
+
+// 旋转同心圆
+.orbit-ring {
   position: absolute;
   border-radius: 50%;
 }
 
-.s-ring:not(.s-ring-center) {
+.orbit-ring:not(.orbit-center) {
   background: conic-gradient(
     from 210deg,
-    rgba(238, 78, 78, 0.55) 0deg,
-    rgba(240, 154, 154, 0.4) 120deg,
-    rgba(129, 185, 139, 0.42) 255deg,
-    rgba(238, 78, 78, 0.5) 360deg
+    rgba(238, 78, 78, 0.5) 0deg,
+    rgba(240, 154, 154, 0.35) 120deg,
+    rgba(129, 185, 139, 0.4) 255deg,
+    rgba(238, 78, 78, 0.45) 360deg
   );
   padding: 1px;
   box-sizing: border-box;
-  box-shadow: 0 8px 18px rgba(233, 109, 109, 0.14);
+  animation: ringFloat 8s linear infinite;
 
   &::after {
     content: '';
@@ -352,37 +363,66 @@
   }
 }
 
-.s-ring-1 { width: 170px; height: 170px; }
-.s-ring-2 { width: 130px; height: 130px; }
-.s-ring-3 { width: 92px; height: 92px; }
+.orbit-1 { width: 184px; height: 184px; animation-duration: 12s; }
+.orbit-2 { width: 142px; height: 142px; animation-duration: 8s; animation-direction: reverse; }
+.orbit-3 { width: 102px; height: 102px; animation-duration: 10s; }
 
-.s-ring-center {
-  width: 58px;
-  height: 58px;
+@keyframes ringFloat {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// 中心勾选
+.success-check {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   background: radial-gradient(circle at 30% 25%, #d8f0da, #8ec59a 70%);
-  box-shadow: 0 8px 20px rgba(70, 120, 82, 0.2);
+  box-shadow: 0 8px 20px rgba(70, 120, 82, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  z-index: 4;
+  animation: checkPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
 
   text {
     color: #fff;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
     line-height: 1;
   }
 }
 
+@keyframes checkPop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 // ========================================
 // 信息行
 // ========================================
-.ticket-bottom .info-row {
+.success-info {
   width: 100%;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.success-info .info-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 6px 0;
+  animation: infoSlide 0.4s ease-out both;
+}
+
+.success-info .info-row:nth-child(1) { animation-delay: 0.4s; }
+.success-info .info-row:nth-child(2) { animation-delay: 0.55s; }
+.success-info .info-row:nth-child(3) { animation-delay: 0.7s; }
+
+@keyframes infoSlide {
+  0% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 .info-icon-wrap {
@@ -402,11 +442,9 @@
   opacity: 0.55;
 }
 
-.seat-icon-wrap {
-  background: #eef5f0;
-}
+.seat-wrap { background: #eef5f0; }
 
-.seat-icon-text {
+.seat-text {
   font-size: 11px;
   font-weight: 700;
   color: #5a9e6e;

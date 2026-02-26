@@ -173,146 +173,96 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
             <View className="record-detail-panel animate-slide-down">
               <View className="participant-list-v2">
                 <View className="participant-row is-primary">
-                  <View className="participant-main">
-                    <Text className="participant-name">{user?.name || '主报名人'}</Text>
+                  <Text className="participant-name">{user?.name || '主报名人'}</Text>
+
+                  <View
+                    className="row-menu"
+                    onClick={(e) => { e.stopPropagation() }}
+                  >
+                    <Text className="row-menu-trigger" onClick={() => toggleMenu(signup.id)}>⋮</Text>
+                    {menuSignupId === signup.id && (
+                      <View className="row-menu-panel">
+                        <View className="row-menu-item" onClick={() => { closeMenu(); onEditSignup(signup.id) }}>
+                          <Text>修改报名信息</Text>
+                        </View>
+                        <View className="row-menu-item is-danger" onClick={() => { closeMenu(); onCancelSignup(signup.id) }}>
+                          <Text>取消报名</Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+
+                  <View className="participant-tags-row">
                     {signup.checkin_status === 'not_checked_in' && !signup.transport_completed && (
                       <Text
                         className="participant-inline-link"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onEditTransport(signup.id)
-                        }}
+                        onClick={(e) => { e.stopPropagation(); onEditTransport(signup.id) }}
                       >
                         完善交通信息
                       </Text>
                     )}
-                  </View>
-
-                  <View className="participant-actions-v2">
-                    <View className="participant-badges">
-                      <Text className={`participant-badge ${(signup.payment_status === 'paid' || signup.checkin_status === 'checked_in') ? 'is-success' : 'is-warning'}`}>
-                        {(signup.payment_status === 'paid' || signup.checkin_status === 'checked_in') ? '已缴费' : '待缴费'}
-                      </Text>
-                      <Text className={`participant-badge ${signup.checkin_status === 'checked_in' ? 'is-success' : 'is-muted'}`}>
-                        {getCheckinStatusLabel(signup.checkin_status)}
-                      </Text>
-                    </View>
+                    <Text className={`participant-badge ${signup.payment_status === 'paid' ? 'is-success' : 'is-warning'}`}>
+                      {signup.payment_status === 'paid' ? '已缴费' : '待缴费'}
+                    </Text>
+                    <Text className={`participant-badge ${signup.checkin_status === 'checked_in' ? 'is-success' : 'is-muted'}`}>
+                      {getCheckinStatusLabel(signup.checkin_status)}
+                    </Text>
 
                     {signup.checkin_status === 'checked_in' ? (
                       <Text
                         className="participant-action-link"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onViewCredential(signup.id)
-                        }}
+                        onClick={(e) => { e.stopPropagation(); onViewCredential(signup.id) }}
                       >
                         查看参会凭证
                       </Text>
                     ) : (
                       <>
-                        <Text
-                          className="participant-action-link is-danger"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (signup.payment_status === 'paid') {
-                              onCheckin(signup.id)
-                              return
-                            }
-                            onPayment(signup.id)
-                          }}
-                        >
-                          {signup.payment_status === 'paid' ? '去签到' : '去缴费'}
-                        </Text>
                         {signup.payment_status !== 'paid' && (
                           <Text
                             className="participant-action-link is-danger"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              onCheckin(signup.id)
-                            }}
+                            onClick={(e) => { e.stopPropagation(); onPayment(signup.id) }}
                           >
-                            去签到
+                            去缴费
                           </Text>
                         )}
+                        <Text
+                          className="participant-action-link is-danger"
+                          onClick={(e) => { e.stopPropagation(); onCheckin(signup.id) }}
+                        >
+                          去签到
+                        </Text>
                       </>
                     )}
-
-                    <View
-                      className="row-menu"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                      }}
-                    >
-                      <Text className="row-menu-trigger" onClick={() => toggleMenu(signup.id)}>
-                        ⋮
-                      </Text>
-
-                      {menuSignupId === signup.id && (
-                        <View className="row-menu-panel">
-                          <View
-                            className="row-menu-item"
-                            onClick={() => {
-                              closeMenu()
-                              onEditSignup(signup.id)
-                            }}
-                          >
-                            <Text>修改报名信息</Text>
-                          </View>
-                          <View
-                            className="row-menu-item is-danger"
-                            onClick={() => {
-                              closeMenu()
-                              onCancelSignup(signup.id)
-                            }}
-                          >
-                            <Text>取消报名</Text>
-                          </View>
-                        </View>
-                      )}
-                    </View>
                   </View>
                 </View>
 
                 {signup.companions?.map((companion) => (
                   <View key={companion.id} className="participant-row">
                     <Text className="participant-name">{companion.name}</Text>
-                    <View className="participant-actions-v2">
+                    <View className="participant-tags-row">
                       {signup.checkin_status === 'checked_in' ? (
                         <Text
                           className="participant-action-link"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onViewCredential(signup.id)
-                          }}
+                          onClick={(e) => { e.stopPropagation(); onViewCredential(signup.id) }}
                         >
                           查看参会凭证
                         </Text>
                       ) : (
                         <>
-                          <Text
-                            className="participant-action-link is-danger"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              if (signup.payment_status === 'paid') {
-                                onCheckin(signup.id)
-                                return
-                              }
-                              onPayment(signup.id)
-                            }}
-                          >
-                            {signup.payment_status === 'paid' ? '去签到' : '去缴费'}
-                          </Text>
                           {signup.payment_status !== 'paid' && (
                             <Text
                               className="participant-action-link is-danger"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                onCheckin(signup.id)
-                              }}
+                              onClick={(e) => { e.stopPropagation(); onPayment(signup.id) }}
                             >
-                              去签到
+                              去缴费
                             </Text>
                           )}
+                          <Text
+                            className="participant-action-link is-danger"
+                            onClick={(e) => { e.stopPropagation(); onCheckin(signup.id) }}
+                          >
+                            去签到
+                          </Text>
                         </>
                       )}
                     </View>

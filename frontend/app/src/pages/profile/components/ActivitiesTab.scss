@@ -136,26 +136,26 @@
   .participant-list-v2 { padding-top: 0; }
 
   .participant-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 10px;
+    position: relative;
     padding: 12px 14px;
     border-bottom: 1px solid rgba(166, 166, 166, 0.3);
     &:last-child { border-bottom: none; }
   }
 
-  .participant-main {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
   .participant-name {
-    flex-shrink: 0;
+    display: block;
     font-size: 13px;
     font-weight: 600;
     color: #2f343a;
+    padding-right: 28px;
+  }
+
+  .participant-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
   }
 
   .participant-inline-link {
@@ -165,19 +165,6 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
     white-space: nowrap;
-  }
-
-  .participant-actions-v2 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-  }
-
-  .participant-badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
   }
 
   .participant-badge {
@@ -196,7 +183,6 @@
   }
 
   .participant-action-link {
-    flex-shrink: 0;
     font-size: 11px;
     color: #38403f;
     white-space: nowrap;
@@ -213,8 +199,9 @@
   }
 
   .row-menu {
-    position: relative;
-    flex-shrink: 0;
+    position: absolute;
+    top: 10px;
+    right: 8px;
     display: flex;
     align-items: center;
   }

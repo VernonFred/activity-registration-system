@@ -19,6 +19,7 @@ export default function CheckinPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [checkedIn, setCheckedIn] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [checkinTime, setCheckinTime] = useState('')
   const [title, setTitle] = useState('暑期培训会议')
   const [dateRange, setDateRange] = useState('')
@@ -34,7 +35,10 @@ export default function CheckinPage() {
         if (signupId) {
           const signup: any = await fetchSignupDetail(signupId)
           if (!active) return
-          setCheckedIn(signup?.checkin_status === 'checked_in')
+          if (signup?.checkin_status === 'checked_in') {
+            setCheckedIn(true)
+            setShowSuccess(true)
+          }
           if (signup?.checkin_time) setCheckinTime(signup.checkin_time)
           if (signup?.activity?.title) setTitle(signup.activity.title)
           if (signup?.activity?.location_name || signup?.activity?.location_city) {
@@ -48,6 +52,7 @@ export default function CheckinPage() {
         const mockOverride = getMockCheckinOverrides()[String(signupId)]
         if (mockOverride && active) {
           setCheckedIn(true)
+          setShowSuccess(true)
           setCheckinTime(mockOverride.checkin_time)
         }
 
@@ -92,7 +97,7 @@ export default function CheckinPage() {
       const result: any = await checkinSignup(signupId, { token: token.trim() || 'mock-checkin-token' })
       setCheckedIn(true)
       setCheckinTime(result?.checkin_time || new Date().toISOString())
-      Taro.showToast({ title: '签到成功', icon: 'success' })
+      setTimeout(() => setShowSuccess(true), 400)
     } catch (error: any) {
       console.error('签到失败:', error)
       Taro.showToast({ title: error?.response?.data?.detail || '签到失败', icon: 'none' })
@@ -109,84 +114,73 @@ export default function CheckinPage() {
 
   return (
     <View className={`checkin-page theme-${theme}`}>
-      <View className="checkin-mask" />
+      <View className="checkin-bg-glow" />
 
-      {!checkedIn ? (
-        <View className="ticket-card">
-          <View className="ticket-top">
-            <Text className="ticket-event-label">活动签到</Text>
-            <Text className="ticket-title">{title}</Text>
-            <Text className="ticket-date">{dateRange || '2025.07.21-07.25'}</Text>
-            {location ? <Text className="ticket-location">{location}</Text> : null}
-          </View>
+      {!showSuccess ? (
+        <View className={`checkin-card ${checkedIn ? 'is-leaving' : ''}`}>
+          <Text className="checkin-title">{title}</Text>
+          <Text className="checkin-date">{dateRange || '2025.07.21-07.25'}</Text>
 
-          <View className="ticket-perforation">
-            <View className="perf-cut perf-left" />
-            <View className="perf-dash" />
-            <View className="perf-cut perf-right" />
-          </View>
+          <View className="checkin-btn-wrap" onClick={handleCheckin}>
+            <View className="pulse-ring pulse-1" />
+            <View className="pulse-ring pulse-2" />
+            <View className="pulse-ring pulse-3" />
 
-          <View className="ticket-bottom">
-            <View className="ticket-stamp-area" onClick={handleCheckin}>
-              <View className={`ticket-stamp ${submitting ? 'is-loading' : ''}`}>
-                <View className="stamp-ring" />
-                <Text className="stamp-text">{submitting ? '签到中...' : '立即签到'}</Text>
-              </View>
+            <View className="gradient-orbit" />
+
+            <View className={`checkin-btn-core ${submitting ? 'is-loading' : ''}`}>
+              <Text className="btn-text">{submitting ? '签到中...' : '立即签到'}</Text>
             </View>
-            <Text className="ticket-hint">点击按钮完成签到</Text>
-
-            {!CONFIG.USE_MOCK && (
-              <View className="checkin-token-block">
-                <Text className="checkin-token-toggle" onClick={() => setShowTokenInput((v) => !v)}>
-                  {showTokenInput ? '收起签到码输入' : '填写签到码（联调用）'}
-                </Text>
-                {showTokenInput && (
-                  <Input
-                    className="checkin-token-input"
-                    value={token}
-                    onInput={(e) => setToken(e.detail.value)}
-                    placeholder="请输入签到码"
-                  />
-                )}
-              </View>
-            )}
           </View>
 
-          <View className="ticket-close" onClick={goBack}>
+          <Text className="checkin-hint">点击按钮完成签到</Text>
+
+          {!CONFIG.USE_MOCK && (
+            <View className="token-block">
+              <Text className="token-toggle" onClick={() => setShowTokenInput((v) => !v)}>
+                {showTokenInput ? '收起签到码输入' : '填写签到码（联调用）'}
+              </Text>
+              {showTokenInput && (
+                <Input
+                  className="token-input"
+                  value={token}
+                  onInput={(e) => setToken(e.detail.value)}
+                  placeholder="请输入签到码"
+                />
+              )}
+            </View>
+          )}
+
+          <View className="checkin-close" onClick={goBack}>
             <Text>×</Text>
           </View>
         </View>
       ) : (
-        <View className="ticket-card is-success">
-          <View className="ticket-close is-top" onClick={goBack}>
+        <View className="success-card animate-pop-in">
+          <View className="success-close" onClick={goBack}>
             <Text>×</Text>
           </View>
 
-          <View className="ticket-top">
-            <View className="success-header">
-              <Text className="success-title">签到成功</Text>
-              <Text className="success-sub">祝您参会愉快</Text>
-            </View>
+          <View className="success-top">
+            <Text className="success-title">签到成功</Text>
+            <Text className="success-sub">祝您参会愉快</Text>
+          </View>
 
-            <View className="success-stamp-wrap">
-              <View className="success-rings">
-                <View className="s-ring s-ring-1" />
-                <View className="s-ring s-ring-2" />
-                <View className="s-ring s-ring-3" />
-                <View className="s-ring s-ring-center">
-                  <Text>✓</Text>
-                </View>
-              </View>
+          <View className="success-visual">
+            <View className="burst-ring burst-1" />
+            <View className="burst-ring burst-2" />
+            <View className="burst-ring burst-3" />
+
+            <View className="orbit-ring orbit-1" />
+            <View className="orbit-ring orbit-2" />
+            <View className="orbit-ring orbit-3" />
+
+            <View className="success-check">
+              <Text>✓</Text>
             </View>
           </View>
 
-          <View className="ticket-perforation">
-            <View className="perf-cut perf-left" />
-            <View className="perf-dash" />
-            <View className="perf-cut perf-right" />
-          </View>
-
-          <View className="ticket-bottom">
+          <View className="success-info">
             <View className="info-row">
               <View className="info-icon-wrap">
                 <Image src={iconCalendar} className="info-icon" mode="aspectFit" />
@@ -206,8 +200,8 @@ export default function CheckinPage() {
               </View>
             </View>
             <View className="info-row">
-              <View className="info-icon-wrap seat-icon-wrap">
-                <Text className="seat-icon-text">座</Text>
+              <View className="info-icon-wrap seat-wrap">
+                <Text className="seat-text">座</Text>
               </View>
               <View className="info-text-col">
                 <Text className="info-label">座位信息</Text>
