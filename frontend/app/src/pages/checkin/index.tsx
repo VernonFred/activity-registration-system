@@ -39,8 +39,10 @@ export default function CheckinPage() {
           }
           if (signup?.checkin_time) setCheckinTime(signup.checkin_time)
           if (signup?.activity?.title) setTitle(signup.activity.title)
-          if (signup?.activity?.location_name || signup?.activity?.location_city) {
-            setLocation([signup.activity.location_city, signup.activity.location_name].filter(Boolean).join(' | '))
+          const sCity = signup?.activity?.location_city || signup?.activity?.city || ''
+          const sVenue = signup?.activity?.location_name || signup?.activity?.location || ''
+          if (sCity || sVenue) {
+            setLocation([sCity, sVenue].filter(Boolean).join(' | '))
           }
           if (signup?.activity?.start_time && signup?.activity?.end_time) {
             setDateRange(`${String(signup.activity.start_time).slice(0, 10)}-${String(signup.activity.end_time).slice(5, 10)}`)
@@ -59,7 +61,9 @@ export default function CheckinPage() {
           const start = String(detail?.start_time || '')
           const end = String(detail?.end_time || '')
           if (start && end) setDateRange(`${start.slice(0, 10)}-${end.slice(5, 10)}`)
-          setLocation(detail?.location_name || detail?.location || location)
+          const dCity = detail?.city || detail?.location || ''
+          const dVenue = detail?.city ? (detail?.location || '') : (detail?.venue || '')
+          if (dCity || dVenue) setLocation([dCity, dVenue].filter(Boolean).join(' | '))
         }
       } catch (error) {
         console.error('加载签到页面数据失败:', error)

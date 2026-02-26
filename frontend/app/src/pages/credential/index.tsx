@@ -35,9 +35,9 @@ export default function CredentialPage() {
             setDateRange(`${s} — ${e}`)
             setStampDate(s.slice(0, 7))
           }
-          const city = signup?.activity?.location_city || ''
-          const name = signup?.activity?.location_name || ''
-          if (city || name) setLocation([city, name].filter(Boolean).join(' | '))
+          const city = signup?.activity?.location_city || signup?.activity?.city || ''
+          const venue = signup?.activity?.location_name || signup?.activity?.location || ''
+          if (city || venue) setLocation([city, venue].filter(Boolean).join(' | '))
           if (city) setLocationCity(getCityCode(city))
         }
         if (activityId) {
@@ -50,9 +50,15 @@ export default function CredentialPage() {
             setDateRange(`${s} — ${e}`)
             setStampDate(s.slice(0, 7))
           }
-          const loc = detail?.location_name || detail?.location || location
-          setLocation(loc)
-          if (detail?.location_city) setLocationCity(getCityCode(detail.location_city))
+          // backend: city + location; mock: location(=city) + venue
+          const cityName = detail?.city || detail?.location || ''
+          const venueName = detail?.city
+            ? (detail?.location || '')
+            : (detail?.venue || '')
+          if (cityName || venueName) {
+            setLocation([cityName, venueName].filter(Boolean).join(' | '))
+          }
+          if (cityName) setLocationCity(getCityCode(cityName))
         }
       } catch (error) {
         console.error('加载参会凭证失败:', error)
