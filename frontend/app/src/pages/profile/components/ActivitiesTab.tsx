@@ -106,63 +106,65 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
       {pagedSignups.map((signup) => (
         <View
           key={signup.id}
-          className={`signup-record-card ${expandedSignup === signup.id ? 'is-expanded' : ''}`}
+          className={`signup-record-wrapper ${expandedSignup === signup.id ? 'is-expanded' : ''}`}
         >
-          <View className="record-summary" onClick={() => onViewActivity(signup.activity_id)}>
-            <View className="record-title-row">
-              <Text className="record-title">{signup.activity_title}</Text>
-              <View className={`record-status-tag is-${signup.status}`}>
-                <Text>{getSignupStatusLabel(signup.status)}</Text>
+          <View className="signup-record-card">
+            <View className="record-summary" onClick={() => onViewActivity(signup.activity_id)}>
+              <View className="record-title-row">
+                <Text className="record-title">{signup.activity_title}</Text>
+                <View className={`record-status-tag is-${signup.status}`}>
+                  <Text>{getSignupStatusLabel(signup.status)}</Text>
+                </View>
               </View>
-            </View>
 
-            {!!signup.activity_desc && <Text className="record-desc">{signup.activity_desc}</Text>}
-            <Text className="record-date">{formatDate(signup.activity_date)}</Text>
+              {!!signup.activity_desc && <Text className="record-desc">{signup.activity_desc}</Text>}
+              <Text className="record-date">{formatDate(signup.activity_date)}</Text>
 
-            <View className="record-footer-bar">
-              <View className="record-metrics">
-                {METRIC_CONFIG.map((metric) => (
-                  <View
-                    key={metric.key}
-                    className={`record-metric-item is-${(
-                      (metric.key === 'likes' && signup.is_liked) ||
-                      (metric.key === 'favorites' && signup.is_favorited) ||
-                      (metric.key === 'comments' && signup.is_commented)
-                    )
-                      ? 'danger'
-                      : 'muted'} ${(
+              <View className="record-footer-bar">
+                <View className="record-metrics">
+                  {METRIC_CONFIG.map((metric) => (
+                    <View
+                      key={metric.key}
+                      className={`record-metric-item is-${(
                         (metric.key === 'likes' && signup.is_liked) ||
                         (metric.key === 'favorites' && signup.is_favorited) ||
                         (metric.key === 'comments' && signup.is_commented)
-                      ) ? 'is-active' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleMetricClick(metric.key, signup)
-                    }}
-                  >
-                    <Text className="metric-icon">
-                      {metric.key === 'likes'
-                        ? (signup.is_liked ? '♥' : '♡')
-                        : metric.key === 'comments'
-                          ? (signup.is_commented ? '●' : '◌')
-                        : metric.key === 'favorites'
-                          ? (signup.is_favorited ? '★' : '☆')
-                          : metric.icon}
-                    </Text>
-                    <Text className="metric-value">{signup[metric.key]}</Text>
-                  </View>
-                ))}
-              </View>
+                      )
+                        ? 'danger'
+                        : 'muted'} ${(
+                          (metric.key === 'likes' && signup.is_liked) ||
+                          (metric.key === 'favorites' && signup.is_favorited) ||
+                          (metric.key === 'comments' && signup.is_commented)
+                        ) ? 'is-active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleMetricClick(metric.key, signup)
+                      }}
+                    >
+                      <Text className="metric-icon">
+                        {metric.key === 'likes'
+                          ? (signup.is_liked ? '♥' : '♡')
+                          : metric.key === 'comments'
+                            ? (signup.is_commented ? '●' : '◌')
+                          : metric.key === 'favorites'
+                            ? (signup.is_favorited ? '★' : '☆')
+                            : metric.icon}
+                      </Text>
+                      <Text className="metric-value">{signup[metric.key]}</Text>
+                    </View>
+                  ))}
+                </View>
 
-              <View
-                className="record-expand-trigger"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  closeMenu()
-                  onToggleExpand(signup.id)
-                }}
-              >
-                <Text className={`expand-arrow ${expandedSignup === signup.id ? 'is-expanded' : ''}`}>⌄</Text>
+                <View
+                  className="record-expand-trigger"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    closeMenu()
+                    onToggleExpand(signup.id)
+                  }}
+                >
+                  <Text className={`expand-arrow ${expandedSignup === signup.id ? 'is-expanded' : ''}`}>⌄</Text>
+                </View>
               </View>
             </View>
           </View>
