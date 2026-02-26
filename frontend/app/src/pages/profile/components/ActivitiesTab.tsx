@@ -34,43 +34,46 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
   return (
     <View className="tab-content activities-content animate-fade-in">
       {signups.map((signup) => (
-        <View key={signup.id} className="signup-card glass-card">
-          {/* 活动信息 */}
-          <View className="signup-header" onClick={() => onViewActivity(signup.activity_id)}>
-            <View className="activity-info">
-              <Text className="activity-title">{signup.activity_title}</Text>
-              <View className={`status-tag ${signup.status}`}>
-                {signup.status === 'approved' ? '已报名' : signup.status === 'pending' ? '待审核' : '已驳回'}
+        <View key={signup.id} className="signup-wrapper">
+          {/* 主卡片 */}
+          <View className="signup-card glass-card">
+            {/* 活动信息 */}
+            <View className="signup-header" onClick={() => onViewActivity(signup.activity_id)}>
+              <View className="activity-info">
+                <Text className="activity-title">{signup.activity_title}</Text>
+                <View className={`status-tag ${signup.status}`}>
+                  {signup.status === 'approved' ? '已报名' : signup.status === 'pending' ? '待审核' : '已驳回'}
+                </View>
+              </View>
+              <Text className="activity-desc">{signup.activity_desc}</Text>
+              <Text className="activity-date">{formatDate(signup.activity_date)}</Text>
+              <View className="activity-stats">
+                <View className="stat-item">
+                  <Text className="stat-icon">❤️</Text>
+                  <Text className="stat-value">{signup.likes} 点赞</Text>
+                </View>
+                <View className="stat-item">
+                  <Text className="stat-icon">💬</Text>
+                  <Text className="stat-value">{signup.comments} 评论</Text>
+                </View>
+                <View className="stat-item">
+                  <Text className="stat-icon">⭐</Text>
+                  <Text className="stat-value">{signup.favorites} 收藏</Text>
+                </View>
+                <View className="stat-item">
+                  <Text className="stat-icon">↗️</Text>
+                  <Text className="stat-value">{signup.shares} 分享</Text>
+                </View>
               </View>
             </View>
-            <Text className="activity-desc">{signup.activity_desc}</Text>
-            <Text className="activity-date">{formatDate(signup.activity_date)}</Text>
-            <View className="activity-stats">
-              <View className="stat-item">
-                <Text className="stat-icon">❤️</Text>
-                <Text className="stat-value">{signup.likes} 点赞</Text>
-              </View>
-              <View className="stat-item">
-                <Text className="stat-icon">💬</Text>
-                <Text className="stat-value">{signup.comments} 评论</Text>
-              </View>
-              <View className="stat-item">
-                <Text className="stat-icon">⭐</Text>
-                <Text className="stat-value">{signup.favorites} 收藏</Text>
-              </View>
-              <View className="stat-item">
-                <Text className="stat-icon">↗️</Text>
-                <Text className="stat-value">{signup.shares} 分享</Text>
-              </View>
+
+            {/* 展开/收起按钮 */}
+            <View className="expand-btn" onClick={() => onToggleExpand(signup.id)}>
+              <Text className={`expand-icon ${expandedSignup === signup.id ? 'expanded' : ''}`}>▼</Text>
             </View>
           </View>
 
-          {/* 展开/收起按钮 */}
-          <View className="expand-btn" onClick={() => onToggleExpand(signup.id)}>
-            <Text className={`expand-icon ${expandedSignup === signup.id ? 'expanded' : ''}`}>▼</Text>
-          </View>
-
-          {/* 展开内容 */}
+          {/* 展开内容 - 移到主卡片外部 */}
           {expandedSignup === signup.id && (
             <View className="signup-detail animate-slide-down">
               {/* 参与人员列表 */}
