@@ -126,9 +126,9 @@
   display: flex;
   margin: 0 $spacing-lg;
   padding: $spacing-xs;
-  background: $bg-card;
+  background: transparent;
   border-radius: $radius-full;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: none;
   
   .tab-item {
     flex: 1;
@@ -137,11 +137,11 @@
     border-radius: $radius-full;
     transition: all $transition-normal;
     
-    .tab-icon { font-size: 18px; }
+    .tab-icon { font-size: 18px; opacity: 0.5; }
     
     &.active {
-      background: $primary-color;
-      .tab-icon { filter: grayscale(0); }
+      background: transparent;
+      .tab-icon { opacity: 1; filter: grayscale(0); }
     }
     
     &:active { transform: scale(0.95); }
