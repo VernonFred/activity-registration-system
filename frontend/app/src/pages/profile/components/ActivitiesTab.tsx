@@ -174,7 +174,45 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
               <View className="participant-list-v2">
                 <View className="participant-row is-primary">
                   <Text className="participant-name">{user?.name || '主报名人'}</Text>
-
+                  {signup.checkin_status === 'not_checked_in' && !signup.transport_completed && (
+                    <Text
+                      className="participant-inline-link"
+                      onClick={(e) => { e.stopPropagation(); onEditTransport(signup.id) }}
+                    >
+                      完善交通信息
+                    </Text>
+                  )}
+                  <Text className={`participant-badge ${signup.payment_status === 'paid' ? 'is-success' : 'is-warning'}`}>
+                    {signup.payment_status === 'paid' ? '已缴费' : '待缴费'}
+                  </Text>
+                  <Text className={`participant-badge ${signup.checkin_status === 'checked_in' ? 'is-success' : 'is-muted'}`}>
+                    {getCheckinStatusLabel(signup.checkin_status)}
+                  </Text>
+                  {signup.checkin_status === 'checked_in' ? (
+                    <Text
+                      className="participant-action-link"
+                      onClick={(e) => { e.stopPropagation(); onViewCredential(signup.id) }}
+                    >
+                      查看参会凭证
+                    </Text>
+                  ) : (
+                    <>
+                      {signup.payment_status !== 'paid' && (
+                        <Text
+                          className="participant-action-link is-danger"
+                          onClick={(e) => { e.stopPropagation(); onPayment(signup.id) }}
+                        >
+                          去缴费
+                        </Text>
+                      )}
+                      <Text
+                        className="participant-action-link is-danger"
+                        onClick={(e) => { e.stopPropagation(); onCheckin(signup.id) }}
+                      >
+                        去签到
+                      </Text>
+                    </>
+                  )}
                   <View
                     className="row-menu"
                     onClick={(e) => { e.stopPropagation() }}
@@ -191,23 +229,11 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                       </View>
                     )}
                   </View>
+                </View>
 
-                  <View className="participant-tags-row">
-                    {signup.checkin_status === 'not_checked_in' && !signup.transport_completed && (
-                      <Text
-                        className="participant-inline-link"
-                        onClick={(e) => { e.stopPropagation(); onEditTransport(signup.id) }}
-                      >
-                        完善交通信息
-                      </Text>
-                    )}
-                    <Text className={`participant-badge ${signup.payment_status === 'paid' ? 'is-success' : 'is-warning'}`}>
-                      {signup.payment_status === 'paid' ? '已缴费' : '待缴费'}
-                    </Text>
-                    <Text className={`participant-badge ${signup.checkin_status === 'checked_in' ? 'is-success' : 'is-muted'}`}>
-                      {getCheckinStatusLabel(signup.checkin_status)}
-                    </Text>
-
+                {signup.companions?.map((companion) => (
+                  <View key={companion.id} className="participant-row">
+                    <Text className="participant-name">{companion.name}</Text>
                     {signup.checkin_status === 'checked_in' ? (
                       <Text
                         className="participant-action-link"
@@ -233,39 +259,6 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                         </Text>
                       </>
                     )}
-                  </View>
-                </View>
-
-                {signup.companions?.map((companion) => (
-                  <View key={companion.id} className="participant-row">
-                    <Text className="participant-name">{companion.name}</Text>
-                    <View className="participant-tags-row">
-                      {signup.checkin_status === 'checked_in' ? (
-                        <Text
-                          className="participant-action-link"
-                          onClick={(e) => { e.stopPropagation(); onViewCredential(signup.id) }}
-                        >
-                          查看参会凭证
-                        </Text>
-                      ) : (
-                        <>
-                          {signup.payment_status !== 'paid' && (
-                            <Text
-                              className="participant-action-link is-danger"
-                              onClick={(e) => { e.stopPropagation(); onPayment(signup.id) }}
-                            >
-                              去缴费
-                            </Text>
-                          )}
-                          <Text
-                            className="participant-action-link is-danger"
-                            onClick={(e) => { e.stopPropagation(); onCheckin(signup.id) }}
-                          >
-                            去签到
-                          </Text>
-                        </>
-                      )}
-                    </View>
                   </View>
                 ))}
               </View>

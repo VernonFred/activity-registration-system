@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
@@ -17,9 +17,8 @@ export default function CheckinPage() {
   const activityId = Number(router.params.activityId || router.params.activity_id || 0)
 
   const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
+  const [phase, setPhase] = useState<'idle' | 'pressing' | 'stamping' | 'done'>('idle')
   const [checkedIn, setCheckedIn] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
   const [checkinTime, setCheckinTime] = useState('')
   const [title, setTitle] = useState('暑期培训会议')
   const [dateRange, setDateRange] = useState('')
@@ -37,7 +36,7 @@ export default function CheckinPage() {
           if (!active) return
           if (signup?.checkin_status === 'checked_in') {
             setCheckedIn(true)
-            setShowSuccess(true)
+            setPhase('done')
           }
           if (signup?.checkin_time) setCheckinTime(signup.checkin_time)
           if (signup?.activity?.title) setTitle(signup.activity.title)
@@ -52,7 +51,7 @@ export default function CheckinPage() {
         const mockOverride = getMockCheckinOverrides()[String(signupId)]
         if (mockOverride && active) {
           setCheckedIn(true)
-          setShowSuccess(true)
+          setPhase('done')
           setCheckinTime(mockOverride.checkin_time)
         }
 
@@ -82,7 +81,8 @@ export default function CheckinPage() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
   }, [checkinTime])
 
-  const handleCheckin = async () => {
+  const handleCheckin = useCallback(async () => {
+    if (phase !== 'idle') return
     if (!signupId) {
       Taro.showToast({ title: '报名记录不存在', icon: 'none' })
       return
@@ -92,19 +92,21 @@ export default function CheckinPage() {
       setShowTokenInput(true)
       return
     }
+
+    setPhase('pressing')
+
     try {
-      setSubmitting(true)
       const result: any = await checkinSignup(signupId, { token: token.trim() || 'mock-checkin-token' })
       setCheckedIn(true)
       setCheckinTime(result?.checkin_time || new Date().toISOString())
-      setTimeout(() => setShowSuccess(true), 400)
+      setPhase('stamping')
+      setTimeout(() => setPhase('done'), 1800)
     } catch (error: any) {
       console.error('签到失败:', error)
       Taro.showToast({ title: error?.response?.data?.detail || '签到失败', icon: 'none' })
-    } finally {
-      setSubmitting(false)
+      setPhase('idle')
     }
-  }
+  }, [phase, signupId, token])
 
   const goBack = () => {
     Taro.navigateBack({ delta: 1 }).catch(() => {
@@ -113,32 +115,66 @@ export default function CheckinPage() {
   }
 
   return (
-    <View className={`checkin-page theme-${theme}`}>
-      <View className="checkin-bg-glow" />
+    <View className={`checkin-page theme-${theme} phase-${phase}`}>
+      {/* 沉浸式背景层 */}
+      <View className="bg-layer" />
+      <View className="bg-aurora aurora-1" />
+      <View className="bg-aurora aurora-2" />
+      <View className="bg-aurora aurora-3" />
 
-      {!showSuccess ? (
-        <View className={`checkin-card ${checkedIn ? 'is-leaving' : ''}`}>
-          <Text className="checkin-title">{title}</Text>
-          <Text className="checkin-date">{dateRange || '2025.07.21-07.25'}</Text>
+      {/* 浮动粒子 */}
+      <View className="particles">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <View key={i} className={`dot dot-${i}`} />
+        ))}
+      </View>
 
-          <View className="checkin-btn-wrap" onClick={handleCheckin}>
-            <View className="pulse-ring pulse-1" />
-            <View className="pulse-ring pulse-2" />
-            <View className="pulse-ring pulse-3" />
+      {phase !== 'done' ? (
+        <View className="checkin-stage">
+          {/* 活动信息 */}
+          <View className="event-info">
+            <Text className="event-title">{title}</Text>
+            <Text className="event-date">{dateRange || '2025.07.21-07.25'}</Text>
+          </View>
 
-            <View className="gradient-orbit" />
+          {/* 核心交互区 */}
+          <View className="orb-wrap" onClick={handleCheckin}>
+            {/* 外圈呼吸光环 */}
+            <View className="aura aura-1" />
+            <View className="aura aura-2" />
 
-            <View className={`checkin-btn-core ${submitting ? 'is-loading' : ''}`}>
-              <Text className="btn-text">{submitting ? '签到中...' : '立即签到'}</Text>
+            {/* 旋转边框 */}
+            <View className="orb-border" />
+
+            {/* 内核 */}
+            <View className="orb-core">
+              <View className="orb-glass" />
+              <Text className="orb-text">
+                {phase === 'pressing' ? '签到中' : '签到'}
+              </Text>
             </View>
           </View>
 
-          <Text className="checkin-hint">点击按钮完成签到</Text>
+          <Text className="checkin-hint">
+            {phase === 'pressing' ? '正在签到...' : '点击签到'}
+          </Text>
+
+          {/* 印章落下动画 */}
+          {phase === 'stamping' && (
+            <View className="stamp-impact">
+              <View className="stamp-ring stamp-r1" />
+              <View className="stamp-ring stamp-r2" />
+              <View className="stamp-ring stamp-r3" />
+              <View className="stamp-mark">
+                <Text>✓</Text>
+              </View>
+            </View>
+          )}
 
           {!CONFIG.USE_MOCK && (
-            <View className="token-block">
+            <View className="token-area">
               <Text className="token-toggle" onClick={() => setShowTokenInput((v) => !v)}>
-                {showTokenInput ? '收起签到码输入' : '填写签到码（联调用）'}
+                {showTokenInput ? '收起' : '签到码'}
               </Text>
               {showTokenInput && (
                 <Input
@@ -150,67 +186,66 @@ export default function CheckinPage() {
               )}
             </View>
           )}
-
-          <View className="checkin-close" onClick={goBack}>
-            <Text>×</Text>
-          </View>
         </View>
       ) : (
-        <View className="success-card animate-pop-in">
-          <View className="success-close" onClick={goBack}>
-            <Text>×</Text>
+        <View className="success-stage">
+          {/* 光芒放射 */}
+          <View className="rays">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <View key={i} className={`ray ray-${i}`} />
+            ))}
           </View>
 
-          <View className="success-top">
-            <Text className="success-title">签到成功</Text>
-            <Text className="success-sub">祝您参会愉快</Text>
-          </View>
-
-          <View className="success-visual">
-            <View className="burst-ring burst-1" />
-            <View className="burst-ring burst-2" />
-            <View className="burst-ring burst-3" />
-
-            <View className="orbit-ring orbit-1" />
-            <View className="orbit-ring orbit-2" />
-            <View className="orbit-ring orbit-3" />
-
-            <View className="success-check">
-              <Text>✓</Text>
+          {/* 中心徽章 */}
+          <View className="badge-wrap">
+            <View className="badge-glow" />
+            <View className="badge-body">
+              <View className="badge-check">
+                <Text>✓</Text>
+              </View>
+              <Text className="badge-label">签到成功</Text>
             </View>
           </View>
 
-          <View className="success-info">
+          {/* 信息卡 */}
+          <View className="info-card">
+            <Text className="info-card-title">{title}</Text>
+            <View className="info-divider" />
             <View className="info-row">
               <View className="info-icon-wrap">
                 <Image src={iconCalendar} className="info-icon" mode="aspectFit" />
               </View>
-              <View className="info-text-col">
+              <View className="info-col">
                 <Text className="info-label">签到时间</Text>
-                <Text className="info-value">{displayTime || '--'}</Text>
+                <Text className="info-val">{displayTime || '--'}</Text>
               </View>
             </View>
             <View className="info-row">
               <View className="info-icon-wrap">
                 <Image src={iconMapPin} className="info-icon" mode="aspectFit" />
               </View>
-              <View className="info-text-col">
+              <View className="info-col">
                 <Text className="info-label">签到地点</Text>
-                <Text className="info-value">{location || '--'}</Text>
+                <Text className="info-val">{location || '--'}</Text>
               </View>
             </View>
             <View className="info-row">
-              <View className="info-icon-wrap seat-wrap">
-                <Text className="seat-text">座</Text>
+              <View className="info-icon-wrap seat-icon">
+                <Text className="seat-char">座</Text>
               </View>
-              <View className="info-text-col">
+              <View className="info-col">
                 <Text className="info-label">座位信息</Text>
-                <Text className="info-value">{seatInfo}</Text>
+                <Text className="info-val">{seatInfo}</Text>
               </View>
             </View>
           </View>
         </View>
       )}
+
+      {/* 关闭按钮 */}
+      <View className="close-btn" onClick={goBack}>
+        <Text>×</Text>
+      </View>
     </View>
   )
 }

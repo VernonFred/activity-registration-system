@@ -137,25 +137,20 @@
 
   .participant-row {
     position: relative;
-    padding: 12px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 36px 10px 14px;
     border-bottom: 1px solid rgba(166, 166, 166, 0.3);
     &:last-child { border-bottom: none; }
   }
 
   .participant-name {
-    display: block;
     font-size: 13px;
     font-weight: 600;
     color: #2f343a;
-    padding-right: 28px;
-  }
-
-  .participant-tags-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
+    white-space: nowrap;
   }
 
   .participant-inline-link {
@@ -200,8 +195,8 @@
 
   .row-menu {
     position: absolute;
-    top: 10px;
-    right: 8px;
+    top: 8px;
+    right: 6px;
     display: flex;
     align-items: center;
   }
