@@ -17,13 +17,12 @@ export default function CheckinPage() {
   const activityId = Number(router.params.activityId || router.params.activity_id || 0)
 
   const [loading, setLoading] = useState(true)
-  const [phase, setPhase] = useState<'idle' | 'pressing' | 'stamping' | 'done'>('idle')
+  const [phase, setPhase] = useState<'idle' | 'pressing' | 'flash' | 'done'>('idle')
   const [checkedIn, setCheckedIn] = useState(false)
   const [checkinTime, setCheckinTime] = useState('')
   const [title, setTitle] = useState('暑期培训会议')
   const [dateRange, setDateRange] = useState('')
   const [location, setLocation] = useState('')
-  const [seatInfo] = useState('A区 12排 5座')
   const [token, setToken] = useState('')
   const [showTokenInput, setShowTokenInput] = useState(false)
 
@@ -47,14 +46,12 @@ export default function CheckinPage() {
             setDateRange(`${String(signup.activity.start_time).slice(0, 10)}-${String(signup.activity.end_time).slice(5, 10)}`)
           }
         }
-
         const mockOverride = getMockCheckinOverrides()[String(signupId)]
         if (mockOverride && active) {
           setCheckedIn(true)
           setPhase('done')
           setCheckinTime(mockOverride.checkin_time)
         }
-
         if (activityId) {
           const detail: any = await fetchActivityDetail(activityId)
           if (!active) return
@@ -92,15 +89,13 @@ export default function CheckinPage() {
       setShowTokenInput(true)
       return
     }
-
     setPhase('pressing')
-
     try {
       const result: any = await checkinSignup(signupId, { token: token.trim() || 'mock-checkin-token' })
       setCheckedIn(true)
       setCheckinTime(result?.checkin_time || new Date().toISOString())
-      setPhase('stamping')
-      setTimeout(() => setPhase('done'), 1800)
+      setPhase('flash')
+      setTimeout(() => setPhase('done'), 1200)
     } catch (error: any) {
       console.error('签到失败:', error)
       Taro.showToast({ title: error?.response?.data?.detail || '签到失败', icon: 'none' })
@@ -116,64 +111,49 @@ export default function CheckinPage() {
 
   return (
     <View className={`checkin-page theme-${theme} phase-${phase}`}>
-      {/* 沉浸式背景层 */}
-      <View className="bg-layer" />
-      <View className="bg-aurora aurora-1" />
-      <View className="bg-aurora aurora-2" />
-      <View className="bg-aurora aurora-3" />
+      <View className="bg-base" />
+      <View className="bg-glow g1" />
+      <View className="bg-glow g2" />
+      <View className="bg-noise" />
 
-      {/* 浮动粒子 */}
-      <View className="particles">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <View key={i} className={`dot dot-${i}`} />
+      {/* 浮动微粒 */}
+      <View className="motes">
+        {Array.from({ length: 16 }).map((_, i) => (
+          <View key={i} className={`mote m${i}`} />
         ))}
       </View>
 
+      {/* 闪白过渡 */}
+      {phase === 'flash' && <View className="flash-overlay" />}
+
       {phase !== 'done' ? (
-        <View className="checkin-stage">
-          {/* 活动信息 */}
-          <View className="event-info">
-            <Text className="event-title">{title}</Text>
-            <Text className="event-date">{dateRange || '2025.07.21-07.25'}</Text>
-          </View>
+        <View className="pre-stage">
+          <Text className="pre-title">{title}</Text>
+          <Text className="pre-date">{dateRange || '2025.07.21-07.25'}</Text>
 
-          {/* 核心交互区 */}
-          <View className="orb-wrap" onClick={handleCheckin}>
-            {/* 外圈呼吸光环 */}
-            <View className="aura aura-1" />
-            <View className="aura aura-2" />
+          <View className="orb-area" onClick={handleCheckin}>
+            <View className="ripple r1" />
+            <View className="ripple r2" />
+            <View className="ripple r3" />
 
-            {/* 旋转边框 */}
-            <View className="orb-border" />
+            <View className="ring-outer" />
+            <View className="ring-inner" />
 
-            {/* 内核 */}
-            <View className="orb-core">
-              <View className="orb-glass" />
-              <Text className="orb-text">
-                {phase === 'pressing' ? '签到中' : '签到'}
+            <View className="core">
+              <View className="core-shine" />
+              <Text className="core-label">
+                {phase === 'pressing' ? '··' : '签到'}
               </Text>
             </View>
           </View>
 
-          <Text className="checkin-hint">
-            {phase === 'pressing' ? '正在签到...' : '点击签到'}
+          <Text className="pre-hint">
+            {phase === 'pressing' ? '正在验证' : '轻触签到'}
           </Text>
-
-          {/* 印章落下动画 */}
-          {phase === 'stamping' && (
-            <View className="stamp-impact">
-              <View className="stamp-ring stamp-r1" />
-              <View className="stamp-ring stamp-r2" />
-              <View className="stamp-ring stamp-r3" />
-              <View className="stamp-mark">
-                <Text>✓</Text>
-              </View>
-            </View>
-          )}
 
           {!CONFIG.USE_MOCK && (
             <View className="token-area">
-              <Text className="token-toggle" onClick={() => setShowTokenInput((v) => !v)}>
+              <Text className="token-link" onClick={() => setShowTokenInput((v) => !v)}>
                 {showTokenInput ? '收起' : '签到码'}
               </Text>
               {showTokenInput && (
@@ -181,69 +161,50 @@ export default function CheckinPage() {
                   className="token-input"
                   value={token}
                   onInput={(e) => setToken(e.detail.value)}
-                  placeholder="请输入签到码"
+                  placeholder="输入签到码"
                 />
               )}
             </View>
           )}
         </View>
       ) : (
-        <View className="success-stage">
-          {/* 光芒放射 */}
-          <View className="rays">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <View key={i} className={`ray ray-${i}`} />
-            ))}
+        <View className="done-stage">
+          {/* 光线扫过 */}
+          <View className="light-sweep" />
+
+          <View className="done-hero">
+            <Text className="done-label">CHECKED IN</Text>
+            <View className="done-line" />
+            <Text className="done-title">签到成功</Text>
+            <Text className="done-sub">祝您参会愉快</Text>
           </View>
 
-          {/* 中心徽章 */}
-          <View className="badge-wrap">
-            <View className="badge-glow" />
-            <View className="badge-body">
-              <View className="badge-check">
-                <Text>✓</Text>
+          <View className="done-card">
+            <Text className="card-event">{title}</Text>
+            <View className="card-sep" />
+            <View className="card-row">
+              <View className="card-icon">
+                <Image src={iconCalendar} className="card-img" mode="aspectFit" />
               </View>
-              <Text className="badge-label">签到成功</Text>
-            </View>
-          </View>
-
-          {/* 信息卡 */}
-          <View className="info-card">
-            <Text className="info-card-title">{title}</Text>
-            <View className="info-divider" />
-            <View className="info-row">
-              <View className="info-icon-wrap">
-                <Image src={iconCalendar} className="info-icon" mode="aspectFit" />
-              </View>
-              <View className="info-col">
-                <Text className="info-label">签到时间</Text>
-                <Text className="info-val">{displayTime || '--'}</Text>
+              <View className="card-col">
+                <Text className="card-key">签到时间</Text>
+                <Text className="card-val">{displayTime || '--'}</Text>
               </View>
             </View>
-            <View className="info-row">
-              <View className="info-icon-wrap">
-                <Image src={iconMapPin} className="info-icon" mode="aspectFit" />
+            <View className="card-row">
+              <View className="card-icon">
+                <Image src={iconMapPin} className="card-img" mode="aspectFit" />
               </View>
-              <View className="info-col">
-                <Text className="info-label">签到地点</Text>
-                <Text className="info-val">{location || '--'}</Text>
-              </View>
-            </View>
-            <View className="info-row">
-              <View className="info-icon-wrap seat-icon">
-                <Text className="seat-char">座</Text>
-              </View>
-              <View className="info-col">
-                <Text className="info-label">座位信息</Text>
-                <Text className="info-val">{seatInfo}</Text>
+              <View className="card-col">
+                <Text className="card-key">签到地点</Text>
+                <Text className="card-val">{location || '--'}</Text>
               </View>
             </View>
           </View>
         </View>
       )}
 
-      {/* 关闭按钮 */}
-      <View className="close-btn" onClick={goBack}>
+      <View className="close-float" onClick={goBack}>
         <Text>×</Text>
       </View>
     </View>

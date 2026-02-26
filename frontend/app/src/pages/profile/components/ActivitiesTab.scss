@@ -140,10 +140,29 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
     padding: 10px 36px 10px 14px;
     border-bottom: 1px solid rgba(166, 166, 166, 0.3);
     &:last-child { border-bottom: none; }
+  }
+
+  .participant-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .participant-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+
+    &.is-full {
+      width: 100%;
+      margin-left: 0;
+      margin-top: 8px;
+    }
   }
 
   .participant-name {
