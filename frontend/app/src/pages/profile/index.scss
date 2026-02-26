@@ -326,309 +326,516 @@
 }
 
 // ============================================================
-// 第三部分：徽章 Tab 样式（重构版 2026-02-26）
+// 第三部分：徽章 Tab 样式 — 探险地图风格 (2026-02-26)
 // ============================================================
 
-.badges-content-v2 {
-  padding-bottom: 36px;
+$parchment: #f4e8c1;
+$parchment-dark: #e8d5a3;
+$ink: #3c2a14;
+$ink-light: #6b5638;
+$gold: #c9a227;
+$gold-light: #e8cc5a;
+$fog-color: rgba(180, 170, 150, 0.7);
 
-  // Hero 区域
-  .badge-hero {
+.badges-map {
+  position: relative;
+  padding-bottom: 20px;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(210, 190, 140, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(190, 170, 120, 0.2) 0%, transparent 50%),
+    $parchment;
+  border-radius: 4px;
+
+  // 卷轴边缘
+  .map-scroll-edge {
+    height: 14px;
+    background: linear-gradient(180deg, #d4bc7c, #c2a85e 40%, #a8904a 60%, #c2a85e);
+    border-radius: 8px;
+    margin: 0 8px;
+    box-shadow: 0 2px 6px rgba(60, 42, 20, 0.15);
+    &.map-scroll-top { margin-bottom: 4px; }
+    &.map-scroll-bottom { margin-top: 8px; }
+  }
+
+  // 指南针 Hero
+  .map-compass {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 20px 16px;
+    padding: 18px 16px 14px;
   }
 
-  .hero-badge-wrap {
+  .compass-ring {
     position: relative;
-    width: 110px;
-    height: 110px;
+    width: 72px;
+    height: 72px;
     flex-shrink: 0;
   }
 
-  .hero-badge-tag {
+  .compass-progress {
     position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    padding: 2px 10px;
-    border-radius: 999px;
-    background: #e07b1e;
-    text { font-size: 10px; color: #fff; font-weight: 600; white-space: nowrap; }
+    inset: 0;
+    border-radius: 50%;
+    mask: radial-gradient(transparent 60%, black 61%);
+    -webkit-mask: radial-gradient(transparent 60%, black 61%);
   }
 
-  .hero-badge-icon {
-    width: 110px;
-    height: 110px;
-    border-radius: 22px;
-    background: linear-gradient(145deg, #1c4a2a, #2a6840);
+  .compass-inner {
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: $parchment;
+    border: 2px solid $parchment-dark;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 20px rgba(28, 74, 42, 0.2);
+    box-shadow: inset 0 1px 4px rgba(60, 42, 20, 0.1);
   }
 
-  .hero-badge-emoji {
-    font-size: 42px;
-    line-height: 1.1;
+  .compass-n {
+    font-size: 9px;
+    font-weight: 800;
+    color: #a03020;
+    letter-spacing: 1px;
+    line-height: 1;
+    margin-bottom: 1px;
   }
 
-  .hero-badge-label {
-    display: block;
-    margin-top: 4px;
+  .compass-count {
+    font-size: 22px;
+    font-weight: 800;
+    color: $ink;
+    line-height: 1;
+  }
+
+  .compass-total {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 600;
+    color: $ink-light;
+    line-height: 1;
   }
 
-  .hero-stats {
+  .compass-label {
     flex: 1;
-    .stats-label {
+    .compass-title {
       display: block;
-      font-size: 12px;
-      color: #8a9098;
-      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: $ink;
     }
-    .stats-value {
-      display: flex;
-      align-items: baseline;
-      gap: 1px;
-    }
-    .stats-num {
-      font-size: 28px;
-      font-weight: 800;
-      color: #1f252b;
-      line-height: 1;
-    }
-    .stats-total {
-      font-size: 13px;
-      color: #8a9098;
-      font-weight: 500;
+    .compass-sub {
+      display: block;
+      font-size: 11px;
+      color: $ink-light;
+      margin-top: 2px;
     }
   }
 
-  .hero-wall-btn {
+  .map-wall-entry {
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(32, 45, 39, 0.1);
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    .wall-icon { font-size: 14px; }
-    .wall-text { font-size: 12px; color: #3c5a42; font-weight: 600; }
+    padding: 7px 12px;
+    border-radius: 10px;
+    background: rgba(139, 105, 20, 0.08);
+    border: 1px solid rgba(139, 105, 20, 0.18);
+    .wall-flag { font-size: 14px; }
+    .wall-label { font-size: 11px; color: #8b6914; font-weight: 700; }
   }
 
-  // 分类Tab
-  .badge-category-tabs {
+  // 最近获得 Banner
+  .map-latest-find {
     display: flex;
-    padding: 0 16px;
-    margin-bottom: 18px;
-    gap: 0;
+    align-items: center;
+    gap: 12px;
+    margin: 0 16px 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(139, 105, 20, 0.06), rgba(200, 170, 80, 0.1));
+    border: 1px dashed rgba(139, 105, 20, 0.25);
   }
 
-  .category-tab {
+  .latest-flag {
+    text { font-size: 11px; color: #a07818; font-weight: 700; white-space: nowrap; }
+  }
+
+  .latest-badge {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .latest-img {
+    width: 52px;
+    height: 52px;
+  }
+
+  .latest-info {
     flex: 1;
-    position: relative;
-    padding: 10px 0 12px;
-    text-align: center;
-    text {
+    .latest-name {
+      display: block;
       font-size: 14px;
-      color: #8a9098;
-      font-weight: 500;
+      font-weight: 700;
+      color: $ink;
     }
+    .latest-date {
+      display: block;
+      font-size: 10px;
+      color: $ink-light;
+      margin-top: 2px;
+    }
+  }
+
+  // 地图区域Tab
+  .map-region-tabs {
+    display: flex;
+    padding: 0 12px;
+    margin-bottom: 6px;
+    gap: 6px;
+  }
+
+  .region-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 9px 0;
+    border-radius: 10px;
+    background: rgba(139, 105, 20, 0.04);
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+
+    text {
+      font-size: 11px;
+      color: $ink-light;
+      font-weight: 600;
+    }
+
     &.is-active {
-      text { color: #1f252b; font-weight: 700; }
+      background: rgba(139, 105, 20, 0.1);
+      border-color: rgba(139, 105, 20, 0.22);
+      text { color: $ink; font-weight: 700; }
+      .region-dot { transform: scale(1.4); }
     }
   }
 
-  .tab-underline {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 24px;
-    height: 3px;
-    border-radius: 2px;
-    background: #2d5a3d;
+  .region-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    .theme-port & { background: #3a7d4e; }
+    .theme-plaza & { background: #4a78b8; }
+    .theme-hall & { background: $gold; }
+    .theme-mist & { background: #8868b8; }
   }
 
-  // 徽章 3列网格
-  .badge-grid-v2 {
+  // 虚线路径
+  .map-path-line {
+    height: 1px;
+    margin: 8px 24px 16px;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(139, 105, 20, 0.25) 0,
+      rgba(139, 105, 20, 0.25) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+
+  // 徽章地标
+  .map-landmarks {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    padding: 0 16px;
+    gap: 10px;
+    padding: 0 12px;
   }
 
-  .badge-card {
+  .landmark {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px 8px 14px;
-    border-radius: 16px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 12px 6px 10px;
+    border-radius: 14px;
+    background: rgba(255, 252, 240, 0.6);
+    border: 1px solid rgba(139, 105, 20, 0.08);
+    position: relative;
+    animation: landmarkReveal 0.4s ease both;
 
-    &.is-locked {
-      .badge-card-icon {
-        filter: grayscale(1);
-        opacity: 0.45;
-      }
-      .badge-card-name { color: #b0b5bc; }
+    &.is-discovered {
+      background: rgba(255, 252, 240, 0.85);
+      border-color: rgba(139, 105, 20, 0.16);
+      box-shadow: 0 3px 10px rgba(139, 105, 20, 0.08);
     }
 
-    &.is-earned {
-      .badge-card-icon { filter: none; opacity: 1; }
+    &.is-hidden {
+      .landmark-img { filter: grayscale(1) brightness(0.6); opacity: 0.35; }
+      .landmark-name { color: #a89a7a; }
+    }
+
+    &.is-focus {
+      border-color: $gold;
+      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.15), 0 4px 14px rgba(139, 105, 20, 0.12);
     }
   }
 
-  .badge-card-icon {
+  @keyframes landmarkReveal {
+    from { opacity: 0; transform: translateY(12px) scale(0.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .landmark-pin {
     position: relative;
+    width: 68px;
+    height: 68px;
+    margin-bottom: 6px;
+  }
+
+  .pin-glow {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201, 162, 39, 0.18) 0%, transparent 70%);
+    animation: pinPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pinPulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+
+  .landmark-img-wrap {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .landmark-img {
+    width: 68px;
+    height: 68px;
+  }
+
+  .fog-mask {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(200, 190, 160, 0.5) 30%, rgba(180, 170, 140, 0.7) 100%);
+    backdrop-filter: blur(2px);
+  }
+
+  .pin-flag {
+    position: absolute;
+    top: -4px;
+    right: -2px;
+    font-size: 14px;
+    z-index: 2;
+  }
+
+  .landmark-name {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: $ink;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .landmark-tooltip {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    z-index: 10;
+    width: max-content;
+    max-width: 140px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: $ink;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    .tooltip-text {
+      font-size: 10px;
+      color: $parchment;
+      line-height: 1.4;
+      text-align: center;
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid $ink;
+    }
+  }
+
+  // 迷雾秘境
+  .map-fog-zone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+    margin: 0 12px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(180, 170, 150, 0.12);
+  }
+
+  .fog-layer {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, $fog-color 0%, transparent 70%);
+    animation: fogDrift 6s ease-in-out infinite alternate;
+    &.fog-1 { width: 200%; height: 120%; top: -20%; left: -50%; animation-duration: 7s; }
+    &.fog-2 { width: 160%; height: 100%; top: 10%; left: -30%; animation-duration: 5s; animation-delay: -2s; opacity: 0.7; }
+    &.fog-3 { width: 180%; height: 90%; top: 0; left: -40%; animation-duration: 8s; animation-delay: -4s; opacity: 0.5; }
+  }
+
+  @keyframes fogDrift {
+    from { transform: translateX(-8%) translateY(0); }
+    to { transform: translateX(8%) translateY(-5%); }
+  }
+
+  .fog-question {
+    position: relative;
+    z-index: 2;
     width: 64px;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
-  }
-
-  .card-emoji {
-    font-size: 38px;
-    line-height: 1;
-  }
-
-  .earned-ring {
-    position: absolute;
-    inset: -4px;
     border-radius: 50%;
-    border: 2px solid rgba(45, 90, 61, 0.18);
-    pointer-events: none;
-  }
-
-  .badge-card-name {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #2f343a;
-    text-align: center;
-    line-height: 1.3;
-  }
-
-  .badge-card-desc {
-    display: block;
-    margin-top: 4px;
-    font-size: 10px;
-    color: #a4aab2;
-    text-align: center;
-    line-height: 1.35;
-  }
-
-  // 隐藏彩蛋 — 未解锁
-  .easter-hidden {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 16px 50px;
-  }
-
-  .easter-pyramid {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    margin-bottom: 24px;
-  }
-
-  .pyramid-shape {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 60px solid transparent;
-    border-right: 60px solid transparent;
-    border-bottom: 100px solid rgba(100, 120, 220, 0.22);
-    filter: drop-shadow(0 8px 20px rgba(100, 120, 220, 0.15));
-  }
-
-  .pyramid-glow {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;
-    height: 30px;
-    border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(100, 120, 220, 0.15) 0%, transparent 70%);
-  }
-
-  .easter-unlock-btn {
-    padding: 12px 40px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(100, 120, 220, 0.12), rgba(130, 150, 240, 0.18));
+    background: rgba(139, 105, 20, 0.08);
+    border: 2px dashed rgba(139, 105, 20, 0.2);
+    margin-bottom: 20px;
     text {
-      font-size: 14px;
-      color: #6878dc;
-      font-weight: 600;
+      font-size: 32px;
+      font-weight: 800;
+      color: rgba(139, 105, 20, 0.3);
+    }
+  }
+
+  .fog-clear-btn {
+    position: relative;
+    z-index: 2;
+    padding: 10px 28px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #c9a227, #a88a1c);
+    box-shadow: 0 4px 14px rgba(139, 105, 20, 0.25);
+    text {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
   }
 }
 
 // 暗色主题
-.profile-page.theme-dark .badges-content-v2 {
-  .hero-badge-icon {
-    background: linear-gradient(145deg, #163322, #1f4e30);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+.profile-page.theme-dark .badges-map {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(60, 50, 30, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(50, 40, 20, 0.3) 0%, transparent 50%),
+    #1a1610;
+
+  .map-scroll-edge {
+    background: linear-gradient(180deg, #4a3c22, #3d3018 40%, #332814 60%, #3d3018);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
-  .hero-badge-label { color: rgba(255, 255, 255, 0.7); }
-
-  .hero-stats {
-    .stats-label { color: #8d97a3; }
-    .stats-num { color: #e4e9ef; }
-    .stats-total { color: #8d97a3; }
+  .compass-inner {
+    background: #2a2318;
+    border-color: #3d3420;
+  }
+  .compass-n { color: #c85040; }
+  .compass-count { color: #e8d5a3; }
+  .compass-total { color: #a09070; }
+  .compass-label {
+    .compass-title { color: #e8d5a3; }
+    .compass-sub { color: #a09070; }
   }
 
-  .hero-wall-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: none;
-    .wall-text { color: #99d4ad; }
+  .map-wall-entry {
+    background: rgba(139, 105, 20, 0.1);
+    border-color: rgba(139, 105, 20, 0.2);
+    .wall-label { color: #d4b84a; }
   }
 
-  .category-tab {
-    text { color: #7b8592; }
-    &.is-active text { color: #e4e9ef; }
+  .map-latest-find {
+    background: linear-gradient(135deg, rgba(139, 105, 20, 0.06), rgba(100, 80, 30, 0.1));
+    border-color: rgba(139, 105, 20, 0.18);
+  }
+  .latest-info {
+    .latest-name { color: #e8d5a3; }
+    .latest-date { color: #a09070; }
+  }
+  .latest-flag text { color: #d4b84a; }
+
+  .region-tab {
+    background: rgba(139, 105, 20, 0.04);
+    text { color: #a09070; }
+    &.is-active {
+      background: rgba(139, 105, 20, 0.1);
+      border-color: rgba(139, 105, 20, 0.2);
+      text { color: #e8d5a3; }
+    }
   }
 
-  .tab-underline { background: #6fcf8a; }
-
-  .badge-card {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.06);
-    box-shadow: none;
-
-    &.is-locked .badge-card-name { color: #6b7380; }
+  .map-path-line {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(139, 105, 20, 0.15) 0,
+      rgba(139, 105, 20, 0.15) 6px,
+      transparent 6px,
+      transparent 12px
+    );
   }
 
-  .badge-card-name { color: #d8dde4; }
-  .badge-card-desc { color: #6b7380; }
-
-  .easter-unlock-btn {
-    background: linear-gradient(135deg, rgba(100, 120, 220, 0.08), rgba(130, 150, 240, 0.12));
-    text { color: #8b9bef; }
+  .landmark {
+    background: rgba(42, 35, 24, 0.5);
+    border-color: rgba(139, 105, 20, 0.06);
+    &.is-discovered {
+      background: rgba(42, 35, 24, 0.75);
+      border-color: rgba(139, 105, 20, 0.15);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    &.is-hidden .landmark-name { color: #706048; }
+    &.is-focus {
+      border-color: #c9a227;
+      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.1), 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
   }
 
-  .pyramid-shape {
-    border-bottom-color: rgba(100, 120, 220, 0.16);
+  .landmark-name { color: #e8d5a3; }
+
+  .fog-mask {
+    background: radial-gradient(circle, rgba(30, 25, 16, 0.5) 30%, rgba(20, 16, 10, 0.7) 100%);
+  }
+
+  .landmark-tooltip {
+    background: #e8d5a3;
+    .tooltip-text { color: #1a1610; }
+    &::before { border-bottom-color: #e8d5a3; }
+  }
+
+  .map-fog-zone {
+    background: rgba(30, 25, 16, 0.4);
+  }
+  .fog-layer { background: radial-gradient(ellipse, rgba(40, 34, 20, 0.6) 0%, transparent 70%); }
+  .fog-question {
+    background: rgba(139, 105, 20, 0.06);
+    border-color: rgba(139, 105, 20, 0.12);
+    text { color: rgba(201, 162, 39, 0.25); }
+  }
+  .fog-clear-btn {
+    background: linear-gradient(135deg, #a88a1c, #8b6914);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   }
 }
 

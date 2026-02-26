@@ -1,72 +1,104 @@
 /**
- * 徽章墙页面样式
- * 设计稿: 小程序端设计.sketch
+ * 徽章墙样式 — 探险地图风格
  * 创建时间: 2026年2月26日
  */
 
+$parchment: #f4e8c1;
+$ink: #3c2a14;
+$ink-light: #6b5638;
+$gold: #c9a227;
+
 .badge-wall-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background:
+    radial-gradient(ellipse at 40% 30%, rgba(210, 190, 140, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 60% 70%, rgba(190, 170, 120, 0.2) 0%, transparent 50%),
+    $parchment;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+.wall-scroll-edge {
+  height: 14px;
+  margin: 0 8px;
+  background: linear-gradient(180deg, #d4bc7c, #c2a85e 40%, #a8904a 60%, #c2a85e);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(60, 42, 20, 0.15);
+  &.wall-scroll-bottom { margin-top: 24px; margin-bottom: 12px; }
+}
+
 .wall-nav {
-  padding: 56px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 52px 16px 8px;
 }
 
 .wall-back {
   font-size: 22px;
-  color: #2f343a;
+  color: $ink;
+}
+
+.wall-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: $ink;
 }
 
 .wall-user {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  padding: 16px 20px 20px;
   gap: 12px;
+  padding: 16px 20px 12px;
 }
 
 .wall-avatar {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
+  border: 2px solid rgba(139, 105, 20, 0.2);
   flex-shrink: 0;
 }
 
 .wall-user-info {
   flex: 1;
-  min-width: 0;
 }
 
 .wall-name {
   display: block;
   font-size: 18px;
-  font-weight: 700;
-  color: #1f252b;
-  line-height: 1.3;
+  font-weight: 800;
+  color: $ink;
 }
 
 .wall-org {
   display: block;
   font-size: 12px;
-  color: #8a9098;
+  color: $ink-light;
   margin-top: 2px;
 }
 
-.wall-stats-row {
+.wall-stats {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 8px 20px 16px;
 }
 
-.wall-stat {
+.wall-stat-item {
   text-align: center;
+}
+
+.wall-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(139, 105, 20, 0.15);
 }
 
 .stat-label {
   display: block;
   font-size: 11px;
-  color: #8a9098;
+  color: $ink-light;
   margin-bottom: 2px;
 }
 
@@ -78,70 +110,134 @@
 }
 
 .stat-big {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
-  color: #1f252b;
+  color: $ink;
   line-height: 1;
 }
 
 .stat-small {
   font-size: 12px;
-  color: #8a9098;
+  color: $ink-light;
+}
+
+.wall-path-line {
+  height: 1px;
+  margin: 0 28px 18px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(139, 105, 20, 0.25) 0,
+    rgba(139, 105, 20, 0.25) 6px,
+    transparent 6px,
+    transparent 12px
+  );
 }
 
 .wall-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
-  padding: 0 20px;
+  padding: 0 16px;
 }
 
 .wall-badge-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 12px 16px;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  padding: 20px 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 252, 240, 0.7);
+  border: 1px solid rgba(139, 105, 20, 0.12);
+  box-shadow: 0 3px 10px rgba(139, 105, 20, 0.06);
+  overflow: hidden;
+  animation: wallCardReveal 0.5s ease both;
 }
 
-.wall-badge-icon {
+@keyframes wallCardReveal {
+  from { opacity: 0; transform: translateY(16px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wall-badge-glow {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(201, 162, 39, 0.12) 0%, transparent 70%);
+}
+
+.wall-badge-img {
   width: 80px;
   height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.wall-emoji {
-  font-size: 52px;
-  line-height: 1;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
 }
 
 .wall-badge-name {
   display: block;
   font-size: 14px;
-  font-weight: 600;
-  color: #2f343a;
+  font-weight: 700;
+  color: $ink;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
-// 暗色
+.wall-badge-date {
+  display: block;
+  font-size: 10px;
+  color: $ink-light;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+// 暗色主题
 .badge-wall-page.theme-dark {
-  background: #0f1214;
+  background:
+    radial-gradient(ellipse at 40% 30%, rgba(60, 50, 30, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 60% 70%, rgba(50, 40, 20, 0.3) 0%, transparent 50%),
+    #1a1610;
 
-  .wall-back { color: #d8dde4; }
-  .wall-name { color: #e4e9ef; }
-  .wall-org { color: #8d97a3; }
-  .stat-big { color: #e4e9ef; }
-  .stat-label, .stat-small { color: #8d97a3; }
-
-  .wall-badge-card {
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: none;
+  .wall-scroll-edge {
+    background: linear-gradient(180deg, #4a3c22, #3d3018 40%, #332814 60%, #3d3018);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
-  .wall-badge-name { color: #d8dde4; }
+  .wall-back, .wall-title { color: #e8d5a3; }
+  .wall-name { color: #e8d5a3; }
+  .wall-org { color: #a09070; }
+  .wall-avatar { border-color: rgba(139, 105, 20, 0.25); }
+
+  .stat-big { color: #e8d5a3; }
+  .stat-label, .stat-small { color: #a09070; }
+  .wall-stat-divider { background: rgba(139, 105, 20, 0.12); }
+
+  .wall-path-line {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(139, 105, 20, 0.15) 0,
+      rgba(139, 105, 20, 0.15) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+
+  .wall-badge-card {
+    background: rgba(42, 35, 24, 0.6);
+    border-color: rgba(139, 105, 20, 0.1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .wall-badge-glow {
+    background: radial-gradient(ellipse, rgba(201, 162, 39, 0.08) 0%, transparent 70%);
+  }
+
+  .wall-badge-name { color: #e8d5a3; }
+  .wall-badge-date { color: #a09070; }
 }

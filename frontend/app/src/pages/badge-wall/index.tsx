@@ -1,6 +1,5 @@
 /**
- * 徽章墙页面
- * 设计稿: 小程序端设计.sketch
+ * 徽章墙页面 — 探险地图风格
  * 创建时间: 2026年2月26日
  */
 import { useState, useEffect, useMemo } from 'react'
@@ -11,26 +10,6 @@ import { fetchCurrentUser } from '../../services/user'
 import { mockBadges, mockUserData } from '../profile/mockData'
 import type { Badge, UserInfo } from '../profile/types'
 import './index.scss'
-
-const BADGE_EMOJIS: Record<string, string> = {
-  '初次登场': '🎯',
-  '成功入选': '🎫',
-  '准时到场': '⏰',
-  '全勤达人': '✅',
-  '开口有料': '💬',
-  '金句制造机': '✨',
-  '人气发言者': '🔥',
-  '任务执行者': '📋',
-  '连续打卡': '📆',
-  '活力不息': '⚡',
-  '徽章收藏家': '🏅',
-  '活动助力官': '🤝',
-  '活动之星': '🏆',
-  '闪电报名王': '⚡',
-  '午夜打卡者': '🌙',
-  '周年纪念章': '🎂',
-  '沉默观察员': '👀',
-}
 
 export default function BadgeWall() {
   const { theme } = useTheme()
@@ -63,9 +42,13 @@ export default function BadgeWall() {
 
   return (
     <View className={`badge-wall-page ${theme === 'dark' ? 'theme-dark' : ''}`}>
+      {/* 卷轴顶部 */}
+      <View className="wall-scroll-edge" />
+
       {/* 返回 */}
       <View className="wall-nav" onClick={() => Taro.navigateBack()}>
         <Text className="wall-back">←</Text>
+        <Text className="wall-title">探险日志</Text>
       </View>
 
       {/* 用户信息 */}
@@ -76,38 +59,51 @@ export default function BadgeWall() {
           mode="aspectFill"
         />
         <View className="wall-user-info">
-          <Text className="wall-name">{user?.name || '用户'}</Text>
+          <Text className="wall-name">{user?.name || '探险家'}</Text>
           <Text className="wall-org">{user?.organization}{user?.title}</Text>
         </View>
-        <View className="wall-stats-row">
-          <View className="wall-stat">
-            <Text className="stat-label">累积成就</Text>
-            <View className="stat-val">
-              <Text className="stat-big">{earnedCount}</Text>
-              <Text className="stat-small">/{totalCount}枚</Text>
-            </View>
+      </View>
+
+      {/* 统计 */}
+      <View className="wall-stats">
+        <View className="wall-stat-item">
+          <Text className="stat-label">累积发现</Text>
+          <View className="stat-val">
+            <Text className="stat-big">{earnedCount}</Text>
+            <Text className="stat-small">/{totalCount}枚</Text>
           </View>
-          <View className="wall-stat">
-            <Text className="stat-label">超越</Text>
-            <View className="stat-val">
-              <Text className="stat-big">{percent}%</Text>
-              <Text className="stat-small">用户</Text>
-            </View>
+        </View>
+        <View className="wall-stat-divider" />
+        <View className="wall-stat-item">
+          <Text className="stat-label">超越</Text>
+          <View className="stat-val">
+            <Text className="stat-big">{percent}%</Text>
+            <Text className="stat-small">探险家</Text>
           </View>
         </View>
       </View>
 
+      {/* 分隔路径 */}
+      <View className="wall-path-line" />
+
       {/* 徽章网格 */}
       <View className="wall-grid">
-        {earnedBadges.map(badge => (
-          <View key={badge.id} className="wall-badge-card">
-            <View className="wall-badge-icon">
-              <Text className="wall-emoji">{BADGE_EMOJIS[badge.name] || '🏅'}</Text>
-            </View>
+        {earnedBadges.map((badge, idx) => (
+          <View
+            key={badge.id}
+            className="wall-badge-card"
+            style={{ animationDelay: `${idx * 0.1}s` }}
+          >
+            <View className="wall-badge-glow" />
+            <Image className="wall-badge-img" src={badge.icon_url} mode="aspectFit" />
             <Text className="wall-badge-name">{badge.name}</Text>
+            <Text className="wall-badge-date">{badge.earned_at}</Text>
           </View>
         ))}
       </View>
+
+      {/* 卷轴底部 */}
+      <View className="wall-scroll-edge wall-scroll-bottom" />
     </View>
   )
 }
