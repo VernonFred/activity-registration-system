@@ -75,7 +75,6 @@
   .record-footer-bar {
     display: grid;
     grid-template-columns: 1fr 52px;
-    border-top: 1px solid rgba(32, 45, 39, 0.06);
   }
 
   .record-metrics {
@@ -92,7 +91,6 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    border-right: 1px solid rgba(32, 45, 39, 0.05);
     .metric-icon { font-size: 16px; line-height: 1; }
     .metric-value {
       font-size: 12px;
@@ -114,7 +112,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 1px solid rgba(32, 45, 39, 0.05);
   }
 
   .expand-arrow {
@@ -352,13 +349,7 @@
       }
     }
 
-    .record-footer-bar {
-      border-top-color: rgba(255, 255, 255, 0.07);
-    }
-
     .record-metric-item {
-      border-right-color: rgba(255, 255, 255, 0.06);
-
       &.is-danger {
         .metric-icon,
         .metric-value {
@@ -376,10 +367,6 @@
 
     .expand-arrow {
       color: #8fd0a4;
-    }
-
-    .record-expand-trigger {
-      border-left-color: rgba(255, 255, 255, 0.06);
     }
 
     .record-detail-panel {
