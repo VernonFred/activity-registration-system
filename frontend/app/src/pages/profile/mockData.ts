@@ -124,8 +124,25 @@ export const mockNotifications: Notification[] = [
 ]
 
 export const mockBadges: Badge[] = [
-  { id: 1, name: '周年纪念章', icon_url: 'https://example.com/badge1.png', category: '启程成就', is_earned: true },
-  { id: 2, name: '午夜打卡者', icon_url: 'https://example.com/badge2.png', category: '互动成就', is_earned: true },
-  { id: 3, name: '周年纪念章', icon_url: 'https://example.com/badge1.png', category: '启程成就', is_earned: true },
-  { id: 4, name: '午夜打卡者', icon_url: 'https://example.com/badge2.png', category: '互动成就', is_earned: false },
+  // 启程成就
+  { id: 1, name: '初次登场', icon_url: '', category: 'start', is_earned: true, is_featured: true, earned_at: '2025-12-01' },
+  { id: 2, name: '成功入选', icon_url: '', category: 'start', is_earned: false, description: '需要完成一次报名' },
+  { id: 3, name: '准时到场', icon_url: '', category: 'start', is_earned: false, description: '第一次签到成功' },
+  { id: 4, name: '全勤达人', icon_url: '', category: 'start', is_earned: false, description: '连续参与3场活动全勤' },
+  // 互动成就
+  { id: 5, name: '开口有料', icon_url: '', category: 'interact', is_earned: true, earned_at: '2025-12-05' },
+  { id: 6, name: '金句制造机', icon_url: '', category: 'interact', is_earned: false, description: '首次发布长评论或者评论被官方精选' },
+  { id: 7, name: '人气发言者', icon_url: '', category: 'interact', is_earned: false },
+  { id: 8, name: '任务执行者', icon_url: '', category: 'interact', is_earned: false, description: '完成活动测评或调查问卷' },
+  { id: 9, name: '连续打卡', icon_url: '', category: 'interact', is_earned: false, description: '连续参与2场及以上活动' },
+  { id: 10, name: '活力不息', icon_url: '', category: 'interact', is_earned: false, description: '连续参与4场活动' },
+  // 荣誉成就
+  { id: 11, name: '徽章收藏家', icon_url: '', category: 'honor', is_earned: true, earned_at: '2025-12-10', description: '获得3枚徽章' },
+  { id: 12, name: '活动助力官', icon_url: '', category: 'honor', is_earned: false, description: '主动帮助他人报名' },
+  { id: 13, name: '活动之星', icon_url: '', category: 'honor', is_earned: false, description: '获得10枚徽章' },
+  // 隐藏彩蛋
+  { id: 14, name: '闪电报名王', icon_url: '', category: 'easter', is_earned: false, is_hidden: false, description: '报名用时小于5分钟' },
+  { id: 15, name: '午夜打卡者', icon_url: '', category: 'easter', is_earned: false, is_hidden: false, description: '晚上10点之后报名' },
+  { id: 16, name: '周年纪念章', icon_url: '', category: 'easter', is_earned: false, is_hidden: false, description: '注册满1年自动解锁' },
+  { id: 17, name: '沉默观察员', icon_url: '', category: 'easter', is_earned: false, is_hidden: false, description: '参与2次活动但未发布评论' },
 ]

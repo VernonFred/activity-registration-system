@@ -9,6 +9,7 @@ export default {
     'pages/agenda/index',
     'pages/signup/index',
     'pages/profile/index',
+    'pages/badge-wall/index',
     'pages/ai-assistant/index',
     'pages/search/index',
     'pages/webview/index'

@@ -60,11 +60,18 @@ export interface Notification {
   action_text?: string
 }
 
+// 徽章分类
+export type BadgeCategory = 'start' | 'interact' | 'honor' | 'easter'
+
 // 徽章
 export interface Badge {
   id: number
   name: string
   icon_url: string
-  category: string
+  category: BadgeCategory
   is_earned: boolean
+  description?: string
+  earned_at?: string
+  is_featured?: boolean
+  is_hidden?: boolean
 }

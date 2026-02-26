@@ -1,0 +1,147 @@
+/**
+ * 徽章墙页面样式
+ * 设计稿: 小程序端设计.sketch
+ * 创建时间: 2026年2月26日
+ */
+
+.badge-wall-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.wall-nav {
+  padding: 56px 16px 8px;
+}
+
+.wall-back {
+  font-size: 22px;
+  color: #2f343a;
+}
+
+.wall-user {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px 20px 20px;
+  gap: 12px;
+}
+
+.wall-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wall-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wall-name {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f252b;
+  line-height: 1.3;
+}
+
+.wall-org {
+  display: block;
+  font-size: 12px;
+  color: #8a9098;
+  margin-top: 2px;
+}
+
+.wall-stats-row {
+  display: flex;
+  gap: 24px;
+}
+
+.wall-stat {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  color: #8a9098;
+  margin-bottom: 2px;
+}
+
+.stat-val {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1px;
+}
+
+.stat-big {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1f252b;
+  line-height: 1;
+}
+
+.stat-small {
+  font-size: 12px;
+  color: #8a9098;
+}
+
+.wall-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 0 20px;
+}
+
+.wall-badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 12px 16px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.wall-badge-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.wall-emoji {
+  font-size: 52px;
+  line-height: 1;
+}
+
+.wall-badge-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f343a;
+  text-align: center;
+}
+
+// 暗色
+.badge-wall-page.theme-dark {
+  background: #0f1214;
+
+  .wall-back { color: #d8dde4; }
+  .wall-name { color: #e4e9ef; }
+  .wall-org { color: #8d97a3; }
+  .stat-big { color: #e4e9ef; }
+  .stat-label, .stat-small { color: #8d97a3; }
+
+  .wall-badge-card {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: none;
+  }
+
+  .wall-badge-name { color: #d8dde4; }
+}
