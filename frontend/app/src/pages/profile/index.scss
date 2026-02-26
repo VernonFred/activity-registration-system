@@ -216,9 +216,9 @@
     .signup-detail {
       margin-top: $spacing-md;
       padding: $spacing-md;
-      border: 1px solid rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(0, 0, 0, 0.08);
       border-radius: $radius-md;
-      background: transparent;
+      background: rgba(0, 0, 0, 0.02);
       animation: slideDown 0.3s ease forwards;
       
       .participant-list {
