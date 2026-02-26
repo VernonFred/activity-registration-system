@@ -244,7 +244,7 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                       }}
                     >
                       <Text className="row-menu-trigger" onClick={() => toggleMenu(signup.id)}>
-                        •••
+                        ⋮
                       </Text>
 
                       {menuSignupId === signup.id && (

@@ -136,20 +136,16 @@
   .participant-list-v2 { padding-top: 0; }
 
   .participant-row {
-    min-height: 56px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 0 18px;
+    gap: 8px 10px;
+    padding: 12px 14px;
     border-bottom: 1px solid rgba(166, 166, 166, 0.3);
     &:last-child { border-bottom: none; }
-    &.is-primary { min-height: 58px; }
   }
 
   .participant-main {
-    flex: 1;
-    min-width: 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -163,26 +159,25 @@
   }
 
   .participant-inline-link {
-    min-width: 0;
     font-size: 11px;
     color: $primary-color;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
+    white-space: nowrap;
   }
 
   .participant-actions-v2 {
-    min-width: 0;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: 8px;
+    margin-left: auto;
   }
 
   .participant-badges {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .participant-badge {
@@ -194,6 +189,7 @@
     font-size: 10px;
     font-weight: 600;
     line-height: 1.2;
+    white-space: nowrap;
     &.is-success { color: #527a57; background: rgba(45, 90, 61, 0.08); }
     &.is-warning { color: #ad6f00; background: rgba(245, 197, 24, 0.14); }
     &.is-muted { color: #7e868f; background: #f1f2f4; }
@@ -203,6 +199,7 @@
     flex-shrink: 0;
     font-size: 11px;
     color: #38403f;
+    white-space: nowrap;
     &.is-danger {
       color: #ef5f65;
       padding: 4px 10px;
@@ -223,11 +220,11 @@
   }
 
   .row-menu-trigger {
-    padding: 4px 6px;
-    font-size: 15px;
+    padding: 4px 4px;
+    font-size: 18px;
     line-height: 1;
     color: #7e858d;
-    letter-spacing: 2px;
+    letter-spacing: 0;
   }
 
   .row-menu-panel {
@@ -372,7 +369,7 @@
     }
 
     .record-detail-panel {
-      background: #1a1e22;
+      background: transparent;
       border-color: rgba(255, 255, 255, 0.12);
       border-top: none;
     }
