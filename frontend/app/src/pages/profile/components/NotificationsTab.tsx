@@ -416,7 +416,10 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
       <View className="nt-my-comments">
         {items.map(item => (
           <View key={item.id} className="nt-comment-card">
-            <View className="nt-comment-meta">
+            <View
+              className="nt-comment-meta"
+              onClick={() => Taro.navigateTo({ url: `/pages/activity-detail/index?id=${item.activity_id}` })}
+            >
               <Text className="nt-comment-category">{item.activity_category}</Text>
               <Text className="nt-comment-title">{item.activity_title}</Text>
             </View>
