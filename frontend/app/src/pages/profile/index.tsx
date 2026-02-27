@@ -15,6 +15,7 @@ import {
   SettingsTab,
 } from './components'
 import { getBadgeVisual } from './components/BadgesTab'
+import type { BottomSheetConfig } from './components/NotificationsTab'
 import type { ProfileTab, NotifyTab, UserInfo, SignupRecord, Notification, Badge } from './types'
 import { mockUserData, mockSignups, mockNotifications, mockBadges } from './mockData'
 import {
@@ -138,7 +139,7 @@ export default function Profile() {
   const [expandedSignup, setExpandedSignup] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [navSafeHeight, setNavSafeHeight] = useState(52)
-  const [notifyModalVisible, setNotifyModalVisible] = useState(false)
+  const [sheetConfig, setSheetConfig] = useState<BottomSheetConfig | null>(null)
 
   const applyFallbackData = useCallback(() => {
     setUser(mockUserData)
@@ -488,14 +489,32 @@ export default function Profile() {
             notifyTab={notifyTab}
             onNotifyTabChange={setNotifyTab}
             onDeleteNotification={handleDeleteNotification}
-            onModalVisibleChange={setNotifyModalVisible}
+            onRequestSheet={setSheetConfig}
           />
         )}
 
         {activeTab === 'settings' && <SettingsTab onSettingClick={handleSettingClick} />}
       </ScrollView>
 
-      {!selectedBadge && !notifyModalVisible && <CustomTabBar current={2} />}
+      {!selectedBadge && !sheetConfig && <CustomTabBar current={2} />}
+
+      {/* 底部弹窗 — 页面顶层渲染（全屏高斯模糊） */}
+      {sheetConfig && (
+        <View className="nt-bottom-sheet-mask" onClick={() => setSheetConfig(null)}>
+          <View className="nt-bottom-sheet" onClick={e => e.stopPropagation()}>
+            <Text className="nt-bs-title">{sheetConfig.title}</Text>
+            <Text className="nt-bs-desc">{sheetConfig.desc}</Text>
+            <View className="nt-bs-actions">
+              <View className="nt-bs-btn nt-bs-cancel" onClick={() => setSheetConfig(null)}>
+                <Text>取消</Text>
+              </View>
+              <View className="nt-bs-btn nt-bs-confirm" onClick={sheetConfig.onConfirm}>
+                <Text>确定</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
 
       {/* 徽章详情弹窗 — 页面顶层渲染 */}
       {selectedBadge && (() => {

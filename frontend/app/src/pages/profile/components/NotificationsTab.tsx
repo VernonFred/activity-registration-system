@@ -24,12 +24,18 @@ import {
   shareActivity,
 } from '../../../services/engagement'
 
+export interface BottomSheetConfig {
+  title: string
+  desc: string
+  onConfirm: () => void
+}
+
 interface NotificationsTabProps {
   notifications: Notification[]
   notifyTab: NotifyTab
   onNotifyTabChange: (tab: NotifyTab) => void
   onDeleteNotification: (id: number) => void
-  onModalVisibleChange?: (visible: boolean) => void
+  onRequestSheet?: (config: BottomSheetConfig | null) => void
 }
 
 const NotificationsTab: React.FC<NotificationsTabProps> = ({
@@ -37,7 +43,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   notifyTab,
   onNotifyTabChange,
   onDeleteNotification,
-  onModalVisibleChange,
+  onRequestSheet,
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
   const [mentions, setMentions] = useState<MentionItem[]>([])
@@ -55,9 +61,6 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   // 批量删除
   const [batchMode, setBatchMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-
-  // 底部弹窗
-  const [showBottomSheet, setShowBottomSheet] = useState(false)
 
   useEffect(() => {
     setNotifications(initialNotifications)
@@ -91,27 +94,23 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
     setSwipedId(null)
   }, [notifyTab])
 
-  const setModalVisible = useCallback((visible: boolean) => {
-    onModalVisibleChange?.(visible)
-  }, [onModalVisibleChange])
-
   // ========== 底部弹窗: 清空消息 ==========
   const handleShowClearSheet = useCallback(() => {
-    setShowBottomSheet(true)
-    setModalVisible(true)
-  }, [setModalVisible])
-
-  const handleConfirmClear = useCallback(async () => {
-    try {
-      await clearAllNotifications()
-      setNotifications([])
-      setShowBottomSheet(false)
-      setModalVisible(false)
-      Taro.showToast({ title: '已清空', icon: 'success' })
-    } catch {
-      Taro.showToast({ title: '操作失败', icon: 'none' })
-    }
-  }, [setModalVisible])
+    onRequestSheet?.({
+      title: '清空消息提醒',
+      desc: '确定要清空全部消息提醒吗？',
+      onConfirm: async () => {
+        try {
+          await clearAllNotifications()
+          setNotifications([])
+          onRequestSheet?.(null)
+          Taro.showToast({ title: '已清空', icon: 'success' })
+        } catch {
+          Taro.showToast({ title: '操作失败', icon: 'none' })
+        }
+      },
+    })
+  }, [onRequestSheet])
 
   // ========== 全部已读 ==========
   const handleMarkAllRead = useCallback(async () => {
@@ -188,28 +187,22 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   }, [selectedIds, onDeleteNotification])
 
   // ========== 我的评论: 删除评论 ==========
-  const [showDeleteSheet, setShowDeleteSheet] = useState(false)
-  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null)
-
   const handleDeleteComment = useCallback((commentId: number) => {
-    setPendingDeleteId(commentId)
-    setShowDeleteSheet(true)
-    setModalVisible(true)
-  }, [setModalVisible])
-
-  const handleConfirmDeleteComment = useCallback(async () => {
-    if (!pendingDeleteId) return
-    try {
-      await deleteComment(pendingDeleteId)
-      setMyComments(prev => prev.filter(c => c.id !== pendingDeleteId))
-      setShowDeleteSheet(false)
-      setPendingDeleteId(null)
-      setModalVisible(false)
-      Taro.showToast({ title: '已删除', icon: 'success' })
-    } catch {
-      Taro.showToast({ title: '删除失败', icon: 'none' })
-    }
-  }, [pendingDeleteId, setModalVisible])
+    onRequestSheet?.({
+      title: '删除评论',
+      desc: '确定要删除这条评论吗？',
+      onConfirm: async () => {
+        try {
+          await deleteComment(commentId)
+          setMyComments(prev => prev.filter(c => c.id !== commentId))
+          onRequestSheet?.(null)
+          Taro.showToast({ title: '已删除', icon: 'success' })
+        } catch {
+          Taro.showToast({ title: '删除失败', icon: 'none' })
+        }
+      },
+    })
+  }, [onRequestSheet])
 
   // ========== 我的评论: 修改 ==========
   const handleEditComment = useCallback((commentId: number, activityId: number) => {
@@ -496,33 +489,6 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
     )
   }
 
-  // ========== 底部弹窗组件 ==========
-  const renderBottomSheet = (
-    visible: boolean,
-    title: string,
-    desc: string,
-    onCancel: () => void,
-    onConfirm: () => void,
-  ) => {
-    if (!visible) return null
-    return (
-      <View className="nt-bottom-sheet-mask" onClick={onCancel}>
-        <View className="nt-bottom-sheet" onClick={e => e.stopPropagation()}>
-          <Text className="nt-bs-title">{title}</Text>
-          <Text className="nt-bs-desc">{desc}</Text>
-          <View className="nt-bs-actions">
-            <View className="nt-bs-btn nt-bs-cancel" onClick={onCancel}>
-              <Text>取消</Text>
-            </View>
-            <View className="nt-bs-btn nt-bs-confirm" onClick={onConfirm}>
-              <Text>确定</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    )
-  }
-
   return (
     <View className="tab-content notifications-tab animate-fade-in" onClick={() => setActiveMenu(null)}>
       {/* 子Tab */}
@@ -586,23 +552,6 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
         </>
       )}
 
-      {/* 底部弹窗: 清空消息 */}
-      {renderBottomSheet(
-        showBottomSheet,
-        '清空消息提醒',
-        '确定要清空全部消息提醒吗？',
-        () => { setShowBottomSheet(false); setModalVisible(false) },
-        handleConfirmClear,
-      )}
-
-      {/* 底部弹窗: 删除评论 */}
-      {renderBottomSheet(
-        showDeleteSheet,
-        '删除评论',
-        '确定要删除这条评论吗？',
-        () => { setShowDeleteSheet(false); setPendingDeleteId(null); setModalVisible(false) },
-        handleConfirmDeleteComment,
-      )}
     </View>
   )
 }
