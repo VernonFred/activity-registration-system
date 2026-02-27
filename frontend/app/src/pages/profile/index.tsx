@@ -138,6 +138,7 @@ export default function Profile() {
   const [expandedSignup, setExpandedSignup] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [navSafeHeight, setNavSafeHeight] = useState(52)
+  const [notifyModalVisible, setNotifyModalVisible] = useState(false)
 
   const applyFallbackData = useCallback(() => {
     setUser(mockUserData)
@@ -487,13 +488,14 @@ export default function Profile() {
             notifyTab={notifyTab}
             onNotifyTabChange={setNotifyTab}
             onDeleteNotification={handleDeleteNotification}
+            onModalVisibleChange={setNotifyModalVisible}
           />
         )}
 
         {activeTab === 'settings' && <SettingsTab onSettingClick={handleSettingClick} />}
       </ScrollView>
 
-      {!selectedBadge && <CustomTabBar current={2} />}
+      {!selectedBadge && !notifyModalVisible && <CustomTabBar current={2} />}
 
       {/* 徽章详情弹窗 — 页面顶层渲染 */}
       {selectedBadge && (() => {

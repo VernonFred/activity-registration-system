@@ -18,13 +18,18 @@ import {
   markAllNotificationsRead,
 } from '../../../services/notifications'
 import { deleteComment } from '../../../services/comments'
-import { toggleLike, toggleFavorite, recordShare } from '../../../services/engagements'
+import {
+  likeActivity, unlikeActivity,
+  favoriteActivity, unfavoriteActivity,
+  shareActivity,
+} from '../../../services/engagement'
 
 interface NotificationsTabProps {
   notifications: Notification[]
   notifyTab: NotifyTab
   onNotifyTabChange: (tab: NotifyTab) => void
   onDeleteNotification: (id: number) => void
+  onModalVisibleChange?: (visible: boolean) => void
 }
 
 const NotificationsTab: React.FC<NotificationsTabProps> = ({
@@ -32,6 +37,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   notifyTab,
   onNotifyTabChange,
   onDeleteNotification,
+  onModalVisibleChange,
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
   const [mentions, setMentions] = useState<MentionItem[]>([])
@@ -85,21 +91,27 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
     setSwipedId(null)
   }, [notifyTab])
 
+  const setModalVisible = useCallback((visible: boolean) => {
+    onModalVisibleChange?.(visible)
+  }, [onModalVisibleChange])
+
   // ========== 底部弹窗: 清空消息 ==========
   const handleShowClearSheet = useCallback(() => {
     setShowBottomSheet(true)
-  }, [])
+    setModalVisible(true)
+  }, [setModalVisible])
 
   const handleConfirmClear = useCallback(async () => {
     try {
       await clearAllNotifications()
       setNotifications([])
       setShowBottomSheet(false)
+      setModalVisible(false)
       Taro.showToast({ title: '已清空', icon: 'success' })
     } catch {
       Taro.showToast({ title: '操作失败', icon: 'none' })
     }
-  }, [])
+  }, [setModalVisible])
 
   // ========== 全部已读 ==========
   const handleMarkAllRead = useCallback(async () => {
@@ -182,7 +194,8 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   const handleDeleteComment = useCallback((commentId: number) => {
     setPendingDeleteId(commentId)
     setShowDeleteSheet(true)
-  }, [])
+    setModalVisible(true)
+  }, [setModalVisible])
 
   const handleConfirmDeleteComment = useCallback(async () => {
     if (!pendingDeleteId) return
@@ -191,11 +204,12 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
       setMyComments(prev => prev.filter(c => c.id !== pendingDeleteId))
       setShowDeleteSheet(false)
       setPendingDeleteId(null)
+      setModalVisible(false)
       Taro.showToast({ title: '已删除', icon: 'success' })
     } catch {
       Taro.showToast({ title: '删除失败', icon: 'none' })
     }
-  }, [pendingDeleteId])
+  }, [pendingDeleteId, setModalVisible])
 
   // ========== 我的评论: 修改 ==========
   const handleEditComment = useCallback((commentId: number, activityId: number) => {
@@ -205,7 +219,11 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   // ========== 我的评论: 互动操作 ==========
   const handleToggleLike = useCallback(async (item: MyCommentItem) => {
     try {
-      await toggleLike(item.activity_id, !!item.is_liked)
+      if (item.is_liked) {
+        await unlikeActivity(item.activity_id)
+      } else {
+        await likeActivity(item.activity_id)
+      }
       setMyComments(prev => prev.map(c =>
         c.id === item.id
           ? {
@@ -222,7 +240,11 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
 
   const handleToggleFavorite = useCallback(async (item: MyCommentItem) => {
     try {
-      await toggleFavorite(item.activity_id, !!item.is_favorited)
+      if (item.is_favorited) {
+        await unfavoriteActivity(item.activity_id)
+      } else {
+        await favoriteActivity(item.activity_id)
+      }
       setMyComments(prev => prev.map(c =>
         c.id === item.id
           ? {
@@ -239,7 +261,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
 
   const handleShare = useCallback(async (item: MyCommentItem) => {
     try {
-      await recordShare(item.activity_id)
+      await shareActivity(item.activity_id)
       setMyComments(prev => prev.map(c =>
         c.id === item.id
           ? { ...c, stats: { ...c.stats, shares: c.stats.shares + 1 } }
@@ -342,7 +364,10 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
               </View>
             </View>
             <View className="nt-delete-area" onClick={() => handleSwipeDelete(notify.id)}>
-              <Text className="nt-delete-icon">▨</Text>
+              <View className="nt-delete-icon-wrap">
+                <View className="nt-trash-lid" />
+                <View className="nt-trash-body" />
+              </View>
             </View>
           </View>
         ))}
@@ -518,15 +543,8 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
         ))}
       </View>
 
-      {/* 工具栏 */}
+      {/* 工具栏 — 右侧3个纯图标按钮 */}
       <View className="nt-toolbar">
-        {notifyTab === 'system' && (
-          <View className="nt-toolbar-left" onClick={handleShowClearSheet}>
-            <View className="nt-toolbar-clear-icon">
-              <Text>✓</Text>
-            </View>
-          </View>
-        )}
         <View className="nt-toolbar-right">
           {batchMode ? (
             <>
@@ -542,11 +560,17 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
               </View>
             </>
           ) : (
-            <View className="nt-toolbar-batch" onClick={toggleBatchMode}>
-              <Text className="nt-toolbar-icon">◎</Text>
-              <Text className="nt-toolbar-toggle">▤</Text>
-              <Text className="nt-toolbar-text">批量删除</Text>
-            </View>
+            <>
+              <View className="nt-toolbar-icon-btn" onClick={handleMarkAllRead}>
+                <Text className="nt-icon-read">⊘</Text>
+              </View>
+              <View className="nt-toolbar-icon-btn" onClick={toggleBatchMode}>
+                <Text className="nt-icon-batch">☰</Text>
+              </View>
+              <View className="nt-toolbar-icon-btn" onClick={handleShowClearSheet}>
+                <Text className="nt-icon-clear">⌫</Text>
+              </View>
+            </>
           )}
         </View>
       </View>
@@ -567,7 +591,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
         showBottomSheet,
         '清空消息提醒',
         '确定要清空全部消息提醒吗？',
-        () => setShowBottomSheet(false),
+        () => { setShowBottomSheet(false); setModalVisible(false) },
         handleConfirmClear,
       )}
 
@@ -576,7 +600,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
         showDeleteSheet,
         '删除评论',
         '确定要删除这条评论吗？',
-        () => { setShowDeleteSheet(false); setPendingDeleteId(null) },
+        () => { setShowDeleteSheet(false); setPendingDeleteId(null); setModalVisible(false) },
         handleConfirmDeleteComment,
       )}
     </View>
