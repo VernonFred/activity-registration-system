@@ -1445,26 +1445,74 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin-top: 20px;
-  padding-bottom: 8px;
+  gap: 8px;
+  margin-top: 24px;
+  padding-bottom: 12px;
 }
 
-.nt-page-btn, .nt-page-num {
+.nt-page-arrow {
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  background: rgba(45, 90, 61, 0.06);
+  &.disabled { opacity: 0.25; }
+  &:active:not(.disabled) { background: rgba(45, 90, 61, 0.14); }
+}
+
+.nt-arrow-left, .nt-arrow-right {
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid #2d5a3d;
+  border-left: 2px solid #2d5a3d;
+  transform: rotate(-45deg);
+}
+
+.nt-arrow-right {
+  transform: rotate(135deg);
+}
+
+.nt-page-track {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.nt-page-num {
+  width: 30px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
-  text { font-size: 14px; color: #8a9098; }
+  transition: all 0.2s ease;
+  text { font-size: 12px; color: #8a9098; font-weight: 500; }
   &.active {
-    text { color: #1f252b; font-weight: 700; }
+    background: #2d5a3d;
+    box-shadow: 0 2px 8px rgba(45, 90, 61, 0.3);
+    text { color: #fff; font-weight: 700; }
   }
-  &.disabled {
-    opacity: 0.3;
-  }
-  &:active:not(.disabled) { background: rgba(0, 0, 0, 0.04); }
+  &:active:not(.active) { background: rgba(0, 0, 0, 0.04); }
+}
+
+.nt-page-ellipsis {
+  width: 24px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text { font-size: 10px; color: #c0c4ca; letter-spacing: 1px; }
+}
+
+.nt-page-info {
+  font-size: 11px;
+  color: #c0c4ca;
+  margin-left: 4px;
 }
 
 // ===== 互动操作激活状态 =====
@@ -1577,10 +1625,10 @@
   .nt-checkbox { border-color: #555b66; &.checked { background: #6fcf8a; border-color: #6fcf8a; } }
 
   .nt-card, .nt-mention-card, .nt-comment-card {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.04);
+    background: #1e2228;
+    border-color: rgba(255, 255, 255, 0.06);
   }
-  .nt-card .nt-card-body { background: rgba(255, 255, 255, 0.04); }
+  .nt-card .nt-card-body { background: #1e2228; }
 
   .nt-card-title, .nt-mention-name, .nt-comment-title { color: #e4e9ef; }
   .nt-card-text, .nt-mention-org, .nt-comment-desc, .nt-stat-val { color: #7b8592; }
@@ -1614,8 +1662,14 @@
     .nt-dropdown-danger .nt-dropdown-icon { color: #ef5f65; }
   }
 
-  .nt-page-btn text, .nt-page-num text { color: #7b8592; }
-  .nt-page-num.active text { color: #e4e9ef; }
+  .nt-page-arrow { background: rgba(111, 207, 138, 0.1); }
+  .nt-page-arrow:active:not(.disabled) { background: rgba(111, 207, 138, 0.2); }
+  .nt-arrow-left, .nt-arrow-right { border-color: #6fcf8a; }
+  .nt-page-track { background: rgba(255, 255, 255, 0.04); }
+  .nt-page-num text { color: #7b8592; }
+  .nt-page-num.active { background: #6fcf8a; box-shadow: 0 2px 8px rgba(111, 207, 138, 0.3); text { color: #1e2228; } }
+  .nt-page-ellipsis text { color: #555b66; }
+  .nt-page-info { color: #555b66; }
 
   .nt-empty text, .nt-loading text { color: #555b66; }
 

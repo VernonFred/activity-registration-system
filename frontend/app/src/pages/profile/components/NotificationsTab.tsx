@@ -288,29 +288,44 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   const renderPagination = (total: number) => {
     const totalPages = getTotalPages(total)
     if (totalPages <= 1) return null
+
+    const getVisiblePages = () => {
+      if (totalPages <= 5) return Array.from({ length: totalPages }, (_, i) => i + 1)
+      if (page <= 3) return [1, 2, 3, 4, -1, totalPages]
+      if (page >= totalPages - 2) return [1, -1, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+      return [1, -1, page - 1, page, page + 1, -2, totalPages]
+    }
+
     return (
       <View className="nt-pagination">
         <View
-          className={`nt-page-btn ${page <= 1 ? 'disabled' : ''}`}
+          className={`nt-page-arrow ${page <= 1 ? 'disabled' : ''}`}
           onClick={() => page > 1 && setPage(page - 1)}
         >
-          <Text>‹</Text>
+          <View className="nt-arrow-left" />
         </View>
-        {Array.from({ length: Math.min(totalPages, 4) }, (_, i) => i + 1).map(n => (
-          <View
-            key={n}
-            className={`nt-page-num ${page === n ? 'active' : ''}`}
-            onClick={() => setPage(n)}
-          >
-            <Text>{n}</Text>
-          </View>
-        ))}
+        <View className="nt-page-track">
+          {getVisiblePages().map((n, i) =>
+            n < 0 ? (
+              <View key={`dot-${i}`} className="nt-page-ellipsis"><Text>···</Text></View>
+            ) : (
+              <View
+                key={n}
+                className={`nt-page-num ${page === n ? 'active' : ''}`}
+                onClick={() => setPage(n)}
+              >
+                <Text>{n}</Text>
+              </View>
+            )
+          )}
+        </View>
         <View
-          className={`nt-page-btn ${page >= totalPages ? 'disabled' : ''}`}
+          className={`nt-page-arrow ${page >= totalPages ? 'disabled' : ''}`}
           onClick={() => page < totalPages && setPage(page + 1)}
         >
-          <Text>›</Text>
+          <View className="nt-arrow-right" />
         </View>
+        <Text className="nt-page-info">{page}/{totalPages}</Text>
       </View>
     )
   }
@@ -512,37 +527,39 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
         ))}
       </View>
 
-      {/* 工具栏 — 右侧3个纯图标按钮 */}
-      <View className="nt-toolbar">
-        <View className="nt-toolbar-right">
-          {batchMode ? (
-            <>
-              <View className="nt-batch-cancel" onClick={toggleBatchMode}>
-                <Text>取消</Text>
-              </View>
-              <Text className="nt-batch-count">已选 {selectedIds.size} 项</Text>
-              <View
-                className={`nt-batch-delete-btn ${selectedIds.size === 0 ? 'disabled' : ''}`}
-                onClick={handleBatchDelete}
-              >
-                <Text>删除</Text>
-              </View>
-            </>
-          ) : (
-            <>
-              <View className="nt-toolbar-icon-btn" onClick={handleMarkAllRead}>
-                <Text className="nt-icon-read">⊘</Text>
-              </View>
-              <View className="nt-toolbar-icon-btn" onClick={toggleBatchMode}>
-                <Text className="nt-icon-batch">☰</Text>
-              </View>
-              <View className="nt-toolbar-icon-btn" onClick={handleShowClearSheet}>
-                <Text className="nt-icon-clear">⌫</Text>
-              </View>
-            </>
-          )}
+      {/* 工具栏 — 仅系统通知tab显示 */}
+      {notifyTab === 'system' && (
+        <View className="nt-toolbar">
+          <View className="nt-toolbar-right">
+            {batchMode ? (
+              <>
+                <View className="nt-batch-cancel" onClick={toggleBatchMode}>
+                  <Text>取消</Text>
+                </View>
+                <Text className="nt-batch-count">已选 {selectedIds.size} 项</Text>
+                <View
+                  className={`nt-batch-delete-btn ${selectedIds.size === 0 ? 'disabled' : ''}`}
+                  onClick={handleBatchDelete}
+                >
+                  <Text>删除</Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View className="nt-toolbar-icon-btn" onClick={handleMarkAllRead}>
+                  <Text className="nt-icon-read">⊘</Text>
+                </View>
+                <View className="nt-toolbar-icon-btn" onClick={toggleBatchMode}>
+                  <Text className="nt-icon-batch">☰</Text>
+                </View>
+                <View className="nt-toolbar-icon-btn" onClick={handleShowClearSheet}>
+                  <Text className="nt-icon-clear">⌫</Text>
+                </View>
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      )}
 
       {/* 内容区 */}
       {loading ? (
