@@ -65,3 +65,46 @@ class NotificationRepository:
         self.session.add(log)
         self.session.flush()
         return log
+
+    def delete_one(self, notification_id: int, *, user_id: int) -> bool:
+        log = self.session.get(NotificationLog, notification_id)
+        if log and log.user_id == user_id:
+            self.session.delete(log)
+            self.session.flush()
+            return True
+        return False
+
+    def delete_batch(self, notification_ids: list[int], *, user_id: int) -> int:
+        count = 0
+        for nid in notification_ids:
+            log = self.session.get(NotificationLog, nid)
+            if log and log.user_id == user_id:
+                self.session.delete(log)
+                count += 1
+        if count:
+            self.session.flush()
+        return count
+
+    def delete_all_for_user(self, user_id: int) -> int:
+        query = self._base_query().where(NotificationLog.user_id == user_id)
+        logs = self.session.execute(query).scalars().all()
+        count = len(logs)
+        for log in logs:
+            self.session.delete(log)
+        if count:
+            self.session.flush()
+        return count
+
+    def mark_all_read(self, user_id: int) -> int:
+        query = self._base_query().where(
+            NotificationLog.user_id == user_id,
+            NotificationLog.status.in_([NotificationStatus.PENDING, NotificationStatus.SENT]),
+        )
+        logs = self.session.execute(query).scalars().all()
+        count = 0
+        for log in logs:
+            log.status = NotificationStatus.READ
+            count += 1
+        if count:
+            self.session.flush()
+        return count

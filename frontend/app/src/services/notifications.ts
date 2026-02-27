@@ -89,3 +89,36 @@ export async function clearAllNotifications(): Promise<void> {
     throw error
   }
 }
+
+export async function markAllNotificationsRead(): Promise<void> {
+  if (CONFIG.USE_MOCK) return
+
+  try {
+    await http.put('/notifications/me/read-all')
+  } catch (error) {
+    console.error('标记已读失败:', error)
+    throw error
+  }
+}
+
+export async function deleteNotification(id: number): Promise<void> {
+  if (CONFIG.USE_MOCK) return
+
+  try {
+    await http.delete(`/notifications/${id}`)
+  } catch (error) {
+    console.error('删除通知失败:', error)
+    throw error
+  }
+}
+
+export async function batchDeleteNotifications(ids: number[]): Promise<void> {
+  if (CONFIG.USE_MOCK) return
+
+  try {
+    await http.post('/notifications/me/batch-delete', { ids })
+  } catch (error) {
+    console.error('批量删除失败:', error)
+    throw error
+  }
+}

@@ -930,10 +930,27 @@
 // 工具栏
 .nt-toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 0 4px;
   margin-bottom: 14px;
+}
+
+.nt-toolbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.nt-toolbar-clear-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2d5a3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text { font-size: 13px; color: #fff; font-weight: 700; }
+  &:active { opacity: 0.7; }
 }
 
 .nt-toolbar-right {
@@ -942,14 +959,75 @@
   gap: 6px;
 }
 
+.nt-toolbar-batch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  &:active { opacity: 0.7; }
+}
+
 .nt-toolbar-icon {
   font-size: 14px;
   color: #2d5a3d;
 }
 
+.nt-toolbar-toggle {
+  font-size: 14px;
+  color: #8a9098;
+}
+
 .nt-toolbar-text {
   font-size: 12px;
   color: #8a9098;
+}
+
+// 批量删除模式
+.nt-batch-cancel {
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  text { font-size: 12px; color: #2f343a; font-weight: 500; }
+  &:active { background: rgba(0, 0, 0, 0.03); }
+}
+
+.nt-batch-count {
+  font-size: 12px;
+  color: #8a9098;
+}
+
+.nt-batch-delete-btn {
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: #ff4d4f;
+  text { font-size: 12px; color: #fff; font-weight: 600; }
+  &:active { opacity: 0.8; }
+  &.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// 批量选择复选框
+.nt-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #d0d4da;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  &.checked {
+    background: #2d5a3d;
+    border-color: #2d5a3d;
+  }
+}
+
+.nt-check-mark {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 700;
 }
 
 // ===== 系统通知 =====
@@ -1028,28 +1106,37 @@
   color: #c0c4ca;
 }
 
+// 左滑删除区域
+.nt-card {
+  transition: none;
+  .nt-card-body {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    transition: transform 0.25s ease;
+  }
+  &.swiped .nt-card-body {
+    transform: translateX(-72px);
+  }
+}
+
 .nt-delete-area {
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
-  width: 64px;
+  width: 72px;
   background: #ff4d4f;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: translateX(100%);
-  transition: transform 0.2s ease;
+  border-radius: 0 16px 16px 0;
+  &:active { background: #e5383b; }
 }
 
 .nt-delete-icon {
-  font-size: 22px;
+  font-size: 24px;
   color: #fff;
-}
-
-// 左滑显示删除
-.nt-card.swiped .nt-delete-area {
-  transform: translateX(0);
 }
 
 // ===== @我的 =====
@@ -1287,36 +1374,41 @@
   &:active { opacity: 0.6; }
 }
 
+// 三点菜单 — 对标 ActivitiesTab row-menu-panel
 .nt-dropdown {
   position: absolute;
-  top: 100%;
-  right: 0;
+  top: calc(100% + 8px);
+  right: -6px;
+  width: 124px;
+  z-index: 100;
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-  padding: 4px;
-  min-width: 100px;
-  z-index: 10;
+  border-radius: 16px;
+  border: 1px solid rgba(32, 45, 39, 0.06);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.1);
+  padding: 8px;
 }
 
 .nt-dropdown-item {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  text { font-size: 13px; color: #2f343a; }
-  &:active { background: rgba(0, 0, 0, 0.04); }
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: #f3f5f2;
+  text { display: block; font-size: 11px; color: #24432e; text-align: center; font-weight: 600; }
+  & + .nt-dropdown-item { margin-top: 8px; }
 }
 
 .nt-dropdown-icon {
-  font-size: 13px;
-  color: #8a9098;
+  font-size: 12px;
+  color: #24432e;
 }
 
 .nt-dropdown-danger {
-  text { color: #ff4d4f; }
-  .nt-dropdown-icon { color: #ff4d4f; }
+  background: rgba(239, 95, 101, 0.08);
+  text { color: #ef5f65; }
+  .nt-dropdown-icon { color: #ef5f65; }
 }
 
 // ===== 分页 =====
@@ -1346,6 +1438,91 @@
   &:active:not(.disabled) { background: rgba(0, 0, 0, 0.04); }
 }
 
+// ===== 互动操作激活状态 =====
+.nt-stat-item {
+  &:active { opacity: 0.6; }
+}
+.nt-stat-like.active { color: #ff4d4f; }
+.nt-stat-fav.active { color: #fbbf24; }
+.nt-stat-val-active { color: #2f343a; font-weight: 600; }
+
+// ===== 底部弹窗 =====
+.nt-bottom-sheet-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: ntSheetFadeIn 0.2s ease;
+}
+
+.nt-bottom-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 32px 24px calc(32px + env(safe-area-inset-bottom));
+  animation: ntSheetSlideUp 0.3s ease;
+}
+
+.nt-bs-title {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f252b;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.nt-bs-desc {
+  display: block;
+  font-size: 14px;
+  color: #8a9098;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.nt-bs-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.nt-bs-btn {
+  flex: 1;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text { font-size: 16px; font-weight: 600; }
+  &:active { opacity: 0.8; }
+}
+
+.nt-bs-cancel {
+  border: 1px solid #d0d4da;
+  background: #fff;
+  text { color: #2f343a; }
+}
+
+.nt-bs-confirm {
+  background: #1f252b;
+  text { color: #fff; }
+}
+
+@keyframes ntSheetFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ntSheetSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 // ===== 空状态 & 加载 =====
 .nt-empty, .nt-loading {
   display: flex;
@@ -1363,11 +1540,16 @@
 
   .nt-toolbar-icon { color: #6fcf8a; }
   .nt-toolbar-text { color: #7b8592; }
+  .nt-toolbar-clear-icon { background: #6fcf8a; }
+  .nt-batch-cancel { border-color: rgba(255, 255, 255, 0.12); text { color: #d8dde4; } }
+  .nt-batch-count { color: #7b8592; }
+  .nt-checkbox { border-color: #555b66; &.checked { background: #6fcf8a; border-color: #6fcf8a; } }
 
   .nt-card, .nt-mention-card, .nt-comment-card {
     background: rgba(255, 255, 255, 0.04);
     border-color: rgba(255, 255, 255, 0.04);
   }
+  .nt-card .nt-card-body { background: rgba(255, 255, 255, 0.04); }
 
   .nt-card-title, .nt-mention-name, .nt-comment-title { color: #e4e9ef; }
   .nt-card-text, .nt-mention-org, .nt-comment-desc, .nt-stat-val { color: #7b8592; }
@@ -1387,8 +1569,18 @@
 
   .nt-dropdown {
     background: #1e2228;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    .nt-dropdown-item text { color: #d8dde4; }
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.4);
+    .nt-dropdown-item {
+      background: rgba(255, 255, 255, 0.06);
+      text { color: #d8dde4; }
+    }
+    .nt-dropdown-danger {
+      background: rgba(239, 95, 101, 0.12);
+      text { color: #ef5f65; }
+    }
+    .nt-dropdown-icon { color: #99d4ad; }
+    .nt-dropdown-danger .nt-dropdown-icon { color: #ef5f65; }
   }
 
   .nt-page-btn text, .nt-page-num text { color: #7b8592; }
@@ -1402,6 +1594,14 @@
   .nt-star { color: #3a3d42; }
   .nt-star.filled { color: #fbbf24; }
   .nt-more-btn text { color: #7b8592; }
+
+  .nt-bottom-sheet {
+    background: #1e2228;
+    .nt-bs-title { color: #e4e9ef; }
+    .nt-bs-desc { color: #7b8592; }
+    .nt-bs-cancel { background: transparent; border-color: rgba(255, 255, 255, 0.12); text { color: #d8dde4; } }
+    .nt-bs-confirm { background: #6fcf8a; text { color: #1e2228; } }
+  }
 }
 
 // ============================================================

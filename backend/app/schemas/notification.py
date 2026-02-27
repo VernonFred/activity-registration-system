@@ -70,3 +70,7 @@ class NotificationEnqueueRequest(ORMModel):
     signup_id: Optional[int] = None
     payload: Optional[dict] = None
     scheduled_send_at: Optional[datetime] = None
+
+
+class NotificationBatchDeleteRequest(ORMModel):
+    ids: list[int]

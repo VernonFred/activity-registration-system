@@ -188,6 +188,18 @@ class NotificationService:
             else None,
         }
 
+    def delete_notification(self, notification_id: int, *, user_id: int) -> bool:
+        return self.repo.delete_one(notification_id, user_id=user_id)
+
+    def batch_delete(self, notification_ids: list[int], *, user_id: int) -> int:
+        return self.repo.delete_batch(notification_ids, user_id=user_id)
+
+    def delete_all_for_user(self, user_id: int) -> int:
+        return self.repo.delete_all_for_user(user_id)
+
+    def mark_all_read(self, user_id: int) -> int:
+        return self.repo.mark_all_read(user_id)
+
     def dispatch_pending(self, *, limit: int = 50) -> int:
         now = datetime.now(timezone.utc)
         logs = self.repo.list_pending(limit=limit, now=now)

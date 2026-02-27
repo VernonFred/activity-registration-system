@@ -84,6 +84,8 @@ export interface MyCommentItem {
   stats: { likes: number; comments: number; favorites: number; shares: number }
   comment_text: string
   user_avatar: string
+  is_liked?: boolean
+  is_favorited?: boolean
 }
 
 // 徽章分类

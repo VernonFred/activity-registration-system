@@ -56,6 +56,7 @@ class NotificationStatus(StrEnum):
     SENDING = "sending"
     SENT = "sent"
     FAILED = "failed"
+    READ = "read"
 
 
 class NotificationEvent(StrEnum):
