@@ -1690,43 +1690,170 @@
 }
 
 // ============================================================
-// 第五部分：设置 Tab 样式
+// 第五部分：设置 Tab 样式 — 对标设计稿
 // ============================================================
 
 .settings-content {
-  .settings-section {
-    margin-bottom: $spacing-xl;
-    
-    .section-title {
-      display: block;
-      font-size: $font-size-sm;
-      color: $text-tertiary;
-      margin-bottom: $spacing-md;
-      padding-left: $spacing-sm;
-    }
-    
-    .settings-list {
-      background: $bg-card;
-      border-radius: $radius-lg;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      overflow: hidden;
-      
-      .setting-item {
-        display: flex;
-        align-items: center;
-        padding: $spacing-lg;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-        
-        &:last-child { border-bottom: none; }
-        
-        .setting-icon { font-size: 20px; margin-right: $spacing-md; }
-        .setting-label { flex: 1; font-size: $font-size-base; color: $text-primary; }
-        .setting-arrow { font-size: 16px; color: $text-tertiary; }
-        
-        &:active { background: $bg-card-hover; }
-      }
-    }
+  padding-top: 4px;
+}
+
+.st-section {
+  margin-bottom: 28px;
+}
+
+.st-section-title {
+  display: block;
+  font-size: 13px;
+  color: #2d5a3d;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+.st-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.st-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  &:last-child { border-bottom: none; }
+  &:active { opacity: 0.6; }
+}
+
+.st-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
+.st-icon-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.st-icon-profile-head {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.8px solid #2f343a;
+}
+
+.st-icon-profile-body {
+  width: 16px;
+  height: 7px;
+  border: 1.8px solid #2f343a;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+
+.st-icon-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.8px solid #2f343a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.st-icon-symbol {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2f343a;
+  line-height: 1;
+}
+
+.st-icon-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.st-icon-doc-line {
+  width: 10px;
+  height: 1.5px;
+  background: #2f343a;
+  border-radius: 1px;
+  &.st-short { width: 6px; }
+}
+
+.st-icon-globe-h {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  border-top: 1.5px solid #2f343a;
+  top: 50%;
+}
+
+.st-icon-globe-v {
+  position: absolute;
+  width: 0;
+  height: 100%;
+  border-left: 1.5px solid #2f343a;
+  left: 50%;
+}
+
+.st-icon-shield {
+  width: 18px;
+  height: 20px;
+  border: 1.8px solid #2f343a;
+  border-radius: 3px 3px 9px 9px;
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    border: 1.5px solid #2f343a;
   }
+}
+
+.st-item-label {
+  flex: 1;
+  font-size: 15px;
+  color: #1f252b;
+  font-weight: 500;
+}
+
+.st-chevron {
+  width: 7px;
+  height: 7px;
+  border-top: 1.8px solid #c0c4ca;
+  border-right: 1.8px solid #c0c4ca;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+// 暗色主题
+.profile-page.theme-dark .settings-content {
+  .st-section-title { color: #6fcf8a; }
+  .st-item { border-color: rgba(255, 255, 255, 0.04); }
+  .st-item-label { color: #e4e9ef; }
+  .st-chevron { border-color: #555b66; }
+  .st-icon-profile-head, .st-icon-profile-body { border-color: #d8dde4; }
+  .st-icon-circle { border-color: #d8dde4; }
+  .st-icon-symbol { color: #d8dde4; }
+  .st-icon-doc-line { background: #d8dde4; }
+  .st-icon-globe-h { border-color: #d8dde4; }
+  .st-icon-globe-v { border-color: #d8dde4; }
+  .st-icon-shield { border-color: #d8dde4; &::after { border-color: #d8dde4; } }
 }
 
 // ============================================================
