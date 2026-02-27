@@ -106,10 +106,44 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
-.bw-badge-img {
-  width: 90px;
-  height: 90px;
+// CSS 徽章墙尺寸
+.css-badge--wall {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
   margin-bottom: 10px;
+
+  .css-badge__symbol { font-size: 30px; }
+}
+
+.css-badge__ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+.css-badge__inner-ring {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.css-badge__symbol {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+  font-weight: 300;
 }
 
 .bw-badge-name {

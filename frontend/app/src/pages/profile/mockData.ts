@@ -144,24 +144,24 @@ import badge沉默观察员 from '../../assets/badges/沉默观察员.png'
 
 export const mockBadges: Badge[] = [
   // 启程成就
-  { id: 1, name: '初次登场', icon_url: badge初次登场, category: 'start', is_earned: true, is_featured: true, earned_at: '2025-12-01' },
-  { id: 2, name: '成功入选', icon_url: badge成功入选, category: 'start', is_earned: false, description: '需要完成一次报名' },
-  { id: 3, name: '准时到场', icon_url: badge准时到场, category: 'start', is_earned: false, description: '第一次签到成功' },
-  { id: 4, name: '全勤达人', icon_url: badge全勤达人, category: 'start', is_earned: false, description: '连续参与3场活动全勤' },
+  { id: 1, name: '初次登场', icon_url: badge初次登场, category: 'start', is_earned: true, is_featured: true, earned_at: '2025-12-01', description: '首次报名活动', slogan: '你的第一场活动，正式启程！' },
+  { id: 2, name: '成功入选', icon_url: badge成功入选, category: 'start', is_earned: false, description: '需要完成一次报名', slogan: '恭喜加入活动名单' },
+  { id: 3, name: '准时到场', icon_url: badge准时到场, category: 'start', is_earned: false, description: '第一次签到成功', slogan: '守时是你的闪光点！' },
+  { id: 4, name: '全勤达人', icon_url: badge全勤达人, category: 'start', is_earned: false, description: '报名的所有活动均签到成功', slogan: '全勤出席，完美表现！' },
   // 互动成就
-  { id: 5, name: '开口有料', icon_url: badge开口有料, category: 'interact', is_earned: true, earned_at: '2025-12-05' },
-  { id: 6, name: '金句制造机', icon_url: badge金句制造机, category: 'interact', is_earned: false, description: '首次发布长评论或者评论被官方精选' },
-  { id: 7, name: '人气发言者', icon_url: badge人气发言者, category: 'interact', is_earned: false },
-  { id: 8, name: '任务执行者', icon_url: badge任务执行者, category: 'interact', is_earned: false, description: '完成活动测评或调查问卷' },
-  { id: 9, name: '连续打卡', icon_url: badge连续打卡, category: 'interact', is_earned: false, description: '连续参与2场及以上活动' },
-  { id: 10, name: '活力不息', icon_url: badge活力不息, category: 'interact', is_earned: false, description: '连续参与4场活动' },
+  { id: 5, name: '开口有料', icon_url: badge开口有料, category: 'interact', is_earned: true, earned_at: '2025-12-05', description: '首次评分或发布评论', slogan: '第一次互动，就很精彩！' },
+  { id: 6, name: '金句制造机', icon_url: badge金句制造机, category: 'interact', is_earned: false, description: '首次发布长评论或评论被官方精选', slogan: '你的观点，被全场记住！' },
+  { id: 7, name: '人气发言者', icon_url: badge人气发言者, category: 'interact', is_earned: false, description: '评论点赞或回复数进入前10%', slogan: '讨论因为你而更热烈！' },
+  { id: 8, name: '任务执行者', icon_url: badge任务执行者, category: 'interact', is_earned: false, description: '完成活动测评或调查问卷', slogan: '任务完成，认真态度值得肯定！' },
+  { id: 9, name: '连续打卡', icon_url: badge连续打卡, category: 'interact', is_earned: false, description: '连续参与2场及以上活动', slogan: '保持热度，精彩延续！' },
+  { id: 10, name: '活力不息', icon_url: badge活力不息, category: 'interact', is_earned: false, description: '连续参与4场活动', slogan: '活力常在，你是活动的常青树！' },
   // 荣誉成就
-  { id: 11, name: '徽章收藏家', icon_url: badge徽章收藏家, category: 'honor', is_earned: true, earned_at: '2025-12-10', description: '获得3枚徽章' },
-  { id: 12, name: '活动助力官', icon_url: badge活动助力官, category: 'honor', is_earned: false, description: '主动帮助他人报名' },
-  { id: 13, name: '活动之星', icon_url: badge活动之星, category: 'honor', is_earned: false, description: '获得10枚徽章' },
+  { id: 11, name: '徽章收藏家', icon_url: badge徽章收藏家, category: 'honor', is_earned: true, earned_at: '2025-12-10', description: '获得3枚徽章', slogan: '恭喜成为小小收藏家' },
+  { id: 12, name: '活动助力官', icon_url: badge活动助力官, category: 'honor', is_earned: false, description: '主动帮助他人报名', slogan: '你的热心，让活动更温暖！' },
+  { id: 13, name: '活动之星', icon_url: badge活动之星, category: 'honor', is_earned: false, description: '获得10枚徽章', slogan: '徽章墙上的闪光记忆属于你！' },
   // 隐藏彩蛋
-  { id: 14, name: '闪电报名王', icon_url: badge闪电报名王, category: 'easter', is_earned: false, is_hidden: false, description: '报名用时小于5分钟' },
-  { id: 15, name: '午夜打卡者', icon_url: badge午夜打卡者, category: 'easter', is_earned: false, is_hidden: false, description: '晚上10点之后报名' },
-  { id: 16, name: '周年纪念章', icon_url: badge周年纪念章, category: 'easter', is_earned: false, is_hidden: false, description: '注册满1年自动解锁' },
-  { id: 17, name: '沉默观察员', icon_url: badge沉默观察员, category: 'easter', is_earned: false, is_hidden: false, description: '参与2次活动但未发布评论' },
+  { id: 14, name: '闪电报名王', icon_url: badge闪电报名王, category: 'easter', is_earned: false, is_hidden: false, description: '报名用时小于5分钟', slogan: '手速无敌，报名第一！' },
+  { id: 15, name: '午夜打卡者', icon_url: badge午夜打卡者, category: 'easter', is_earned: false, is_hidden: false, description: '晚上10点之后报名', slogan: '终于想起报名了' },
+  { id: 16, name: '周年纪念章', icon_url: badge周年纪念章, category: 'easter', is_earned: false, is_hidden: false, description: '注册满1年自动解锁', slogan: '感谢一路同行，一周年快乐！' },
+  { id: 17, name: '沉默观察员', icon_url: badge沉默观察员, category: 'easter', is_earned: false, is_hidden: false, description: '参与2次活动但未发布评论', slogan: '沉默不语，但你始终在场。' },
 ]

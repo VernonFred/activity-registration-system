@@ -71,6 +71,7 @@ export interface Badge {
   category: BadgeCategory
   is_earned: boolean
   description?: string
+  slogan?: string
   earned_at?: string
   is_featured?: boolean
   is_hidden?: boolean

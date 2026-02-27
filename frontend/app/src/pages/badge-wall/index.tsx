@@ -1,7 +1,7 @@
 /**
- * 徽章墙页面 — 对标设计稿
- * 设计稿: 小程序端设计.sketch
+ * 徽章墙页面 — 纯 CSS 徽章设计
  * 创建时间: 2026年2月26日
+ * 重构时间: 2026年2月27日 — 使用 CSS 徽章替换 PNG
  */
 import { useState, useEffect, useMemo } from 'react'
 import { View, Text, Image } from '@tarojs/components'
@@ -9,6 +9,7 @@ import Taro from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchCurrentUser } from '../../services/user'
 import { mockBadges, mockUserData } from '../profile/mockData'
+import { getBadgeVisual } from '../profile/components/BadgesTab'
 import type { Badge, UserInfo } from '../profile/types'
 import './index.scss'
 
@@ -77,14 +78,24 @@ export default function BadgeWall() {
         </View>
       </View>
 
-      {/* 徽章 2列网格 */}
+      {/* 徽章 2列网格 — CSS 徽章 */}
       <View className="bw-grid">
-        {earnedBadges.map(badge => (
-          <View key={badge.id} className="bw-card">
-            <Image className="bw-badge-img" src={badge.icon_url} mode="aspectFit" />
-            <Text className="bw-badge-name">{badge.name}</Text>
-          </View>
-        ))}
+        {earnedBadges.map(badge => {
+          const v = getBadgeVisual(badge.name)
+          return (
+            <View key={badge.id} className="bw-card">
+              <View
+                className="css-badge css-badge--wall"
+                style={{ background: v.gradient, boxShadow: `0 4px 20px ${v.glow}` }}
+              >
+                <View className="css-badge__ring" />
+                <View className="css-badge__inner-ring" />
+                <Text className="css-badge__symbol">{v.symbol}</Text>
+              </View>
+              <Text className="bw-badge-name">{badge.name}</Text>
+            </View>
+          )
+        })}
       </View>
     </View>
   )

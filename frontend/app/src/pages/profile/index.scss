@@ -401,13 +401,6 @@
     justify-content: center;
     transform: rotate(-4deg);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
-  .bt-hero-img {
-    width: 104px;
-    height: 104px;
-    border-radius: 50%;
   }
 
   .bt-hero-placeholder {
@@ -619,6 +612,232 @@
       font-weight: 500;
     }
   }
+
+}
+
+// ============================================================
+// 徽章详情弹窗 — 页面顶层，全屏模糊背景
+// ============================================================
+
+.badge-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  animation: badgeModalIn 0.25s ease;
+}
+
+@keyframes badgeModalIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.badge-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: badgeModalSlide 0.3s ease;
+}
+
+@keyframes badgeModalSlide {
+  from { opacity: 0; transform: scale(0.88); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+// ============================================================
+// CSS 徽章设计系统 — 纯代码徽章，不使用 PNG
+// ============================================================
+
+// 基础徽章
+.css-badge {
+  position: relative;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+// 外环
+.css-badge__ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+// 内环
+.css-badge__inner-ring {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+// 符号
+.css-badge__symbol {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+  font-weight: 300;
+}
+
+// 扫光（仅弹窗大徽章使用）
+.css-badge__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: -60%;
+    width: 220%;
+    height: 220%;
+    background: linear-gradient(
+      105deg,
+      transparent 36%,
+      rgba(255, 255, 255, 0.12) 43%,
+      rgba(255, 255, 255, 0.24) 50%,
+      rgba(255, 255, 255, 0.12) 57%,
+      transparent 64%
+    );
+    animation: cssBadgeShineSweep 4.5s ease-in-out infinite;
+  }
+}
+
+@keyframes cssBadgeShineSweep {
+  0%, 100% { transform: translateX(-120%) rotate(25deg); }
+  50% { transform: translateX(120%) rotate(25deg); }
+}
+
+// 尺寸：网格卡片
+.css-badge--sm {
+  width: 56px;
+  height: 56px;
+  .css-badge__symbol { font-size: 22px; }
+  .css-badge__ring { inset: -2px; border-width: 1px; }
+  .css-badge__inner-ring { inset: 4px; }
+}
+
+// 尺寸：Hero 展示
+.css-badge--hero {
+  width: 90px;
+  height: 90px;
+  .css-badge__symbol { font-size: 34px; }
+}
+
+// 尺寸：弹窗大展示
+.css-badge--lg {
+  width: 148px;
+  height: 148px;
+  .css-badge__symbol { font-size: 54px; }
+  .css-badge__ring {
+    inset: -4px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.25);
+    animation: cssBadgeRingPulse 3s ease-in-out infinite;
+  }
+  .css-badge__inner-ring {
+    inset: 8px;
+    border-color: rgba(255, 255, 255, 0.15);
+    animation: cssBadgeRingPulse 3s ease-in-out infinite 0.5s;
+  }
+}
+
+@keyframes cssBadgeRingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+// 锁定态
+.css-badge--locked {
+  filter: grayscale(0.85) brightness(0.65);
+  opacity: 0.45;
+
+  .css-badge__ring { border-color: rgba(255, 255, 255, 0.06); }
+  .css-badge__inner-ring { border-color: rgba(255, 255, 255, 0.04); }
+  .css-badge__symbol { color: rgba(255, 255, 255, 0.5); }
+}
+
+// 弹窗中的徽章容器（含背景辉光）
+.badge-modal-badge-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.badge-modal-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  filter: blur(36px);
+  opacity: 0.5;
+  animation: cssBadgeGlowPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes cssBadgeGlowPulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.95); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.badge-modal-name {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.badge-modal-slogan {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 400;
+  text-align: center;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.badge-modal-date {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.badge-modal-close {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1;
+  }
 }
 
 // 暗色主题
@@ -663,6 +882,8 @@
     border-color: rgba(111, 207, 138, 0.15);
     text { color: #99d4ad; }
   }
+
+  // badge modal dark mode handled by the mask itself
 }
 
 // ============================================================

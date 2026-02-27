@@ -3,7 +3,7 @@
  * 重构时间: 2025年12月9日
  */
 import { useState, useEffect, useCallback } from 'react'
-import { View, ScrollView } from '@tarojs/components'
+import { View, ScrollView, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import CustomTabBar from '../../components/CustomTabBar'
 import { useTheme } from '../../context/ThemeContext'
@@ -14,6 +14,7 @@ import {
   NotificationsTab,
   SettingsTab,
 } from './components'
+import { getBadgeVisual } from './components/BadgesTab'
 import type { ProfileTab, NotifyTab, UserInfo, SignupRecord, Notification, Badge } from './types'
 import { mockUserData, mockSignups, mockNotifications, mockBadges } from './mockData'
 import {
@@ -128,6 +129,7 @@ export default function Profile() {
   const { theme } = useTheme()
 
   const [activeTab, setActiveTab] = useState<ProfileTab>('activities')
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null)
   const [user, setUser] = useState<UserInfo | null>(null)
   const [signups, setSignups] = useState<SignupRecord[]>([])
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -477,7 +479,7 @@ export default function Profile() {
           />
         )}
 
-        {activeTab === 'badges' && <BadgesTab badges={badges} user={user} />}
+        {activeTab === 'badges' && <BadgesTab badges={badges} user={user} onBadgeSelect={setSelectedBadge} />}
 
         {activeTab === 'notifications' && (
           <NotificationsTab
@@ -491,7 +493,40 @@ export default function Profile() {
         {activeTab === 'settings' && <SettingsTab onSettingClick={handleSettingClick} />}
       </ScrollView>
 
-      <CustomTabBar current={2} />
+      {!selectedBadge && <CustomTabBar current={2} />}
+
+      {/* 徽章详情弹窗 — 页面顶层渲染 */}
+      {selectedBadge && (() => {
+        const v = getBadgeVisual(selectedBadge.name)
+        return (
+          <View className="badge-modal-mask" onClick={() => setSelectedBadge(null)}>
+            <View className="badge-modal-content" onClick={(e) => e.stopPropagation()}>
+              <View className="badge-modal-badge-wrap">
+                <View className="badge-modal-glow" style={{ background: v.glow }} />
+                <View
+                  className="css-badge css-badge--lg"
+                  style={{ background: v.gradient, boxShadow: `0 8px 40px ${v.glow}` }}
+                >
+                  <View className="css-badge__ring" />
+                  <View className="css-badge__inner-ring" />
+                  <View className="css-badge__shine" />
+                  <Text className="css-badge__symbol">{v.symbol}</Text>
+                </View>
+              </View>
+              <Text className="badge-modal-name">{selectedBadge.name}</Text>
+              {selectedBadge.slogan && (
+                <Text className="badge-modal-slogan">「{selectedBadge.slogan}」</Text>
+              )}
+              {selectedBadge.earned_at && (
+                <Text className="badge-modal-date">{selectedBadge.earned_at} 获得</Text>
+              )}
+            </View>
+            <View className="badge-modal-close" onClick={() => setSelectedBadge(null)}>
+              <Text>×</Text>
+            </View>
+          </View>
+        )
+      })()}
     </View>
   )
 }
