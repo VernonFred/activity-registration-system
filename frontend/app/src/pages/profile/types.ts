@@ -48,7 +48,7 @@ export interface Companion {
   name: string
 }
 
-// 通知
+// 系统通知
 export interface Notification {
   id: number
   type: 'success' | 'warning' | 'info' | 'badge'
@@ -58,6 +58,32 @@ export interface Notification {
   is_new: boolean
   action_url?: string
   action_text?: string
+}
+
+// @我的（别人@我的评论）
+export interface MentionItem {
+  id: number
+  user_name: string
+  user_avatar: string
+  user_org: string
+  comment_text: string
+  my_original_text: string
+  time: string
+  activity_id?: number
+  comment_id?: number
+}
+
+// 我的评论
+export interface MyCommentItem {
+  id: number
+  activity_id: number
+  activity_category: string
+  activity_title: string
+  activity_desc: string
+  rating: number
+  stats: { likes: number; comments: number; favorites: number; shares: number }
+  comment_text: string
+  user_avatar: string
 }
 
 // 徽章分类

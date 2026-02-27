@@ -2,7 +2,7 @@
  * Profile 页面 Mock 数据
  * 创建时间: 2025年12月9日
  */
-import type { UserInfo, SignupRecord, Notification, Badge } from './types'
+import type { UserInfo, SignupRecord, Notification, Badge, MentionItem, MyCommentItem } from './types'
 
 export const mockUserData: UserInfo = {
   id: 1,
@@ -164,4 +164,73 @@ export const mockBadges: Badge[] = [
   { id: 15, name: '午夜打卡者', icon_url: badge午夜打卡者, category: 'easter', is_earned: false, is_hidden: false, description: '晚上10点之后报名', slogan: '终于想起报名了' },
   { id: 16, name: '周年纪念章', icon_url: badge周年纪念章, category: 'easter', is_earned: false, is_hidden: false, description: '注册满1年自动解锁', slogan: '感谢一路同行，一周年快乐！' },
   { id: 17, name: '沉默观察员', icon_url: badge沉默观察员, category: 'easter', is_earned: false, is_hidden: false, description: '参与2次活动但未发布评论', slogan: '沉默不语，但你始终在场。' },
+]
+
+export const mockMentions: MentionItem[] = [
+  {
+    id: 1,
+    user_name: '王大二',
+    user_avatar: 'https://i.pravatar.cc/100?img=15',
+    user_org: '湖南大学信息学院中心主任',
+    comment_text: '说得太对了，特别是关于未来AI伦理的部分，非常有启发性！期待下次活动还能有这么深入的讨论。',
+    my_original_text: '这次大会的内容质量真的很高，收获满满！主讲嘉宾的分享干货十足...',
+    time: '2小时前',
+    activity_id: 1,
+  },
+  {
+    id: 2,
+    user_name: '王小二',
+    user_avatar: 'https://i.pravatar.cc/100?img=18',
+    user_org: '中南大学信息学院中心主任',
+    comment_text: '完全同意！现场的互动环节也做得很好，希望主办方能把PPT分享出来。',
+    my_original_text: '这次大会的内容质量真的很高，收获满满！主讲嘉宾的分享干货十足...',
+    time: '2小时前',
+    activity_id: 1,
+  },
+  {
+    id: 3,
+    user_name: '王大二',
+    user_avatar: 'https://i.pravatar.cc/100?img=15',
+    user_org: '湖南大学信息学院中心主任',
+    comment_text: '这个观点我不太认同，我觉得AIGC在设计领域的应用还有很长的路要走，目前的模型生成结果还是太模板化了。',
+    my_original_text: 'AIGC绝对是未来的趋势，对于设计行业来说是颠覆性的.....',
+    time: '2小时前',
+    activity_id: 2,
+  },
+]
+
+export const mockMyComments: MyCommentItem[] = [
+  {
+    id: 1,
+    activity_id: 1,
+    activity_category: '论坛',
+    activity_title: '高校品牌沙龙·长沙',
+    activity_desc: 'It looks great I think it will really make it easier to work with illustrations.',
+    rating: 3,
+    stats: { likes: 103, comments: 67, favorites: 20, shares: 105 },
+    comment_text: '这次大会的内容质量真的很高，收获满满！主讲嘉宾的分享干货十足...',
+    user_avatar: 'https://i.pravatar.cc/100?img=12',
+  },
+  {
+    id: 2,
+    activity_id: 2,
+    activity_category: '论坛',
+    activity_title: '高校品牌沙龙·长沙',
+    activity_desc: 'It looks great I think it will really make it easier to work with illustrations.',
+    rating: 3,
+    stats: { likes: 103, comments: 67, favorites: 20, shares: 105 },
+    comment_text: '这次大会的内容质量真的很高，收获满满！主讲嘉宾的分享干货十足...',
+    user_avatar: 'https://i.pravatar.cc/100?img=12',
+  },
+  {
+    id: 3,
+    activity_id: 3,
+    activity_category: '论坛',
+    activity_title: '高校品牌沙龙·长沙',
+    activity_desc: 'It looks great I think it will really make it easier to work with illustrations.',
+    rating: 3,
+    stats: { likes: 103, comments: 67, favorites: 20, shares: 105 },
+    comment_text: '这次大会的内容质量真的很高，收获满满！主讲嘉宾的分享干货十足...',
+    user_avatar: 'https://i.pravatar.cc/100?img=12',
+  },
 ]
