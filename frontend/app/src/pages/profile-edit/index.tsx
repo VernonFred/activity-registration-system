@@ -1,16 +1,34 @@
 /**
- * 个人简介编辑页面 — 对标设计稿
+ * 个人简介编辑页面 — 对标设计稿 + 前后端打通
  */
 import { useState, useEffect, useCallback } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
-import { fetchCurrentUser, type User } from '../../services/user'
+import { fetchCurrentUser, updateUser, type User } from '../../services/user'
+import { CONFIG } from '../../config'
+import { http } from '../../services/http'
 import './index.scss'
+
+const uploadAvatar = async (filePath: string): Promise<string> => {
+  if (CONFIG.USE_MOCK) {
+    await new Promise(r => setTimeout(r, 500))
+    return filePath
+  }
+  const res = await Taro.uploadFile({
+    url: `${CONFIG.API_BASE_URL}/users/me/avatar`,
+    filePath,
+    name: 'file',
+    header: { Authorization: `Bearer ${Taro.getStorageSync('token')}` },
+  })
+  const data = JSON.parse(res.data)
+  return data.avatar_url
+}
 
 export default function ProfileEdit() {
   const { theme } = useTheme()
   const [user, setUser] = useState<User | null>(null)
+  const [avatarUrl, setAvatarUrl] = useState('')
   const [form, setForm] = useState({
     name: '',
     school: '',
@@ -25,6 +43,7 @@ export default function ProfileEdit() {
       try {
         const u = await fetchCurrentUser()
         setUser(u)
+        setAvatarUrl(u.avatar || '')
         setForm({
           name: u.name || '',
           school: u.school || '',
@@ -48,22 +67,50 @@ export default function ProfileEdit() {
   const handleAvatarClick = useCallback(() => {
     Taro.showActionSheet({
       itemList: ['用微信头像', '从相册选择', '拍照'],
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          Taro.showToast({ title: '已使用微信头像', icon: 'success' })
-        } else if (res.tapIndex === 1) {
-          Taro.chooseImage({ count: 1, sourceType: ['album'] })
-        } else if (res.tapIndex === 2) {
-          Taro.chooseImage({ count: 1, sourceType: ['camera'] })
+      success: async (res) => {
+        try {
+          if (res.tapIndex === 0) {
+            const wxUser = await Taro.getUserProfile({ desc: '获取头像' }).catch(() => null)
+            if (wxUser?.userInfo?.avatarUrl) {
+              const url = await uploadAvatar(wxUser.userInfo.avatarUrl)
+              setAvatarUrl(url)
+              Taro.showToast({ title: '头像已更新', icon: 'success' })
+            }
+          } else {
+            const sourceType: Array<'album' | 'camera'> = res.tapIndex === 1 ? ['album'] : ['camera']
+            const imgRes = await Taro.chooseImage({ count: 1, sourceType, sizeType: ['compressed'] })
+            if (imgRes.tempFilePaths?.[0]) {
+              Taro.showLoading({ title: '上传中...' })
+              const url = await uploadAvatar(imgRes.tempFilePaths[0])
+              setAvatarUrl(url)
+              Taro.hideLoading()
+              Taro.showToast({ title: '头像已更新', icon: 'success' })
+            }
+          }
+        } catch {
+          Taro.hideLoading()
+          Taro.showToast({ title: '头像更新失败', icon: 'none' })
         }
       },
     })
   }, [])
 
   const handleSave = useCallback(async () => {
+    if (!form.name.trim()) {
+      Taro.showToast({ title: '请输入姓名', icon: 'none' })
+      return
+    }
     setSaving(true)
     try {
-      await new Promise(r => setTimeout(r, 600))
+      const updated = await updateUser({
+        name: form.name.trim(),
+        school: form.school.trim(),
+        department: form.department.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        ...(avatarUrl && avatarUrl !== user?.avatar ? { avatar: avatarUrl } : {}),
+      })
+      setUser(updated)
       Taro.showToast({ title: '保存成功', icon: 'success' })
       setTimeout(() => Taro.navigateBack(), 800)
     } catch {
@@ -71,7 +118,7 @@ export default function ProfileEdit() {
     } finally {
       setSaving(false)
     }
-  }, [])
+  }, [form, avatarUrl, user])
 
   const updateField = (field: string, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -80,14 +127,16 @@ export default function ProfileEdit() {
   return (
     <View className={`pe-page theme-${theme}`}>
       <View className="pe-back" onClick={() => Taro.navigateBack()}>
-        <View className="pe-back-arrow" />
+        <View className="pe-back-circle">
+          <View className="pe-back-arrow" />
+        </View>
       </View>
 
       <View className="pe-avatar-section" onClick={handleAvatarClick}>
         <View className="pe-avatar-wrap">
           <Image
             className="pe-avatar"
-            src={user?.avatar || 'https://placehold.co/120x120/e8e8e8/999?text=U'}
+            src={avatarUrl || 'https://placehold.co/120x120/e8e8e8/999?text=U'}
             mode="aspectFill"
           />
           <View className="pe-avatar-edit">

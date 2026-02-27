@@ -4,28 +4,40 @@
   padding: 0 20px env(safe-area-inset-bottom);
 }
 
+// 返回键 — 圆圈+箭头，与微信右上角胶囊平行
 .pe-back {
-  padding: 56px 0 12px;
-  width: 36px;
-  height: 36px;
+  position: absolute;
+  top: 0;
+  left: 16px;
+  padding-top: calc(env(safe-area-inset-top, 44px) + 6px);
+  z-index: 10;
+}
+
+.pe-back-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(47, 52, 58, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  &:active { opacity: 0.5; }
+  background: transparent;
+  &:active { background: rgba(0, 0, 0, 0.04); }
 }
 
 .pe-back-arrow {
-  width: 9px;
-  height: 9px;
-  border-top: 2px solid #2f343a;
-  border-left: 2px solid #2f343a;
+  width: 8px;
+  height: 8px;
+  border-top: 1.8px solid #2f343a;
+  border-left: 1.8px solid #2f343a;
   transform: rotate(-45deg);
+  margin-left: 2px;
 }
 
 .pe-avatar-section {
   display: flex;
   justify-content: center;
-  padding: 20px 0 28px;
+  padding: calc(env(safe-area-inset-top, 44px) + 48px) 0 28px;
 }
 
 .pe-avatar-wrap {
@@ -93,16 +105,17 @@
 }
 
 .pe-input-wrap {
-  border: 1.5px solid #dce0d8;
+  border: 1.5px solid #2d5a3d;
   border-radius: 24px;
   padding: 0 18px;
   height: 48px;
   display: flex;
   align-items: center;
-  background: #fff;
-  transition: border-color 0.2s;
+  background: transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
   &:focus-within {
     border-color: #2d5a3d;
+    box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.08);
   }
 }
 
@@ -133,10 +146,12 @@
 // ===== 暗色主题 =====
 .pe-page.theme-dark {
   background: #141618;
+  .pe-back-circle { border-color: rgba(216, 221, 228, 0.2); }
   .pe-back-arrow { border-color: #d8dde4; }
   .pe-avatar-edit { background: #6fcf8a; border-color: #141618; }
   .pe-label { color: #d8dde4; }
-  .pe-input-wrap { background: #1e2228; border-color: rgba(255,255,255,0.08); }
+  .pe-input-wrap { border-color: rgba(111, 207, 138, 0.3); background: transparent; }
+  .pe-input-wrap:focus-within { border-color: #6fcf8a; box-shadow: 0 0 0 3px rgba(111, 207, 138, 0.1); }
   .pe-input { color: #e4e9ef; }
   .pe-save-btn { background: #6fcf8a; text { color: #141618; } }
 }
