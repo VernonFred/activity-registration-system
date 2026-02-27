@@ -1,7 +1,7 @@
 # API 接口文档
 
 > **创建时间**: 2025年12月02日 23:50
-> **最后更新**: 2026年01月08日 15:30
+> **最后更新**: 2026年02月27日 15:00
 > **维护人**: Cursor AI + Claude AI
 > **API 基础路径**: `http://localhost:8000/api/v1`
 > **前端Mock模式**: ✅ 已启用 (`CONFIG.USE_MOCK = true`)
@@ -12,6 +12,7 @@
 
 | 时间 | 变更类型 | 接口路径 | 变更内容 | 操作人 |
 |------|----------|----------|----------|--------|
+| 2026年02月27日 15:00 | 新增 | `/notifications/me/*` | 通知管理接口：单删、批删、清空、全部已读（4个端点） | Cursor AI |
 | 2026年01月08日 15:30 | 完善 | 所有接口 | 补充详细请求/响应示例，添加Mock数据支持 | Claude AI |
 | 2026年01月08日 15:30 | 新增 | `/activities/:id/comments` | 评论列表、发布、删除接口（7个） | Claude AI |
 | 2026年01月08日 15:30 | 新增 | `/activities/:id/rating` | 评分统计、提交评分接口 | Claude AI |
@@ -37,7 +38,8 @@
 | 评论/评分 | `services/comments.ts` | 7 | ✅ | 前端完成 |
 | 用户相关 | `services/user.ts` | 4 | ✅ | 前端完成 |
 | 互动相关 | `services/engagement.ts` | 6 | ✅ | 前端完成 |
-| **总计** | **6个文件** | **28个** | **100%** | **✅ 前端完成** |
+| 通知相关 | `services/notifications.ts` | 7 | ✅ | 前后端完成 |
+| **总计** | **7个文件** | **35个** | **100%** | **✅ 前端完成** |
 
 ### 后端API状态
 
@@ -506,9 +508,61 @@ api.interceptors.response.use(
 
 | 方法 | 路径 | 描述 | 权限 | Mock |
 |------|------|------|------|------|
-| GET | `/notifications` | 通知日志列表 | 管理员 | ❌ |
-| GET | `/notifications/me` | 我的通知记录 | 用户 | ❌ |
+| GET | `/notifications` | 通知日志列表 | 管理员 | ✅ |
+| GET | `/notifications/me` | 我的通知记录 | 用户 | ✅ |
 | POST | `/notifications/preview` | 通知预览 | 管理员 | ❌ |
+| POST | `/notifications/enqueue` | 发送通知（入队） | 管理员 | ❌ |
+| DELETE | `/notifications/me` | 清空我的全部通知 | 用户 | ✅ |
+| PUT | `/notifications/me/read-all` | 标记全部通知已读 | 用户 | ✅ |
+| POST | `/notifications/me/batch-delete` | 批量删除通知 | 用户 | ✅ |
+| DELETE | `/notifications/{id}` | 删除单条通知 | 用户 | ✅ |
+
+#### 7.1 清空我的全部通知
+
+**DELETE** `/api/v1/notifications/me`
+
+**权限**: 用户（需登录）
+
+**响应**: `204 No Content`
+
+**说明**: 删除当前用户的所有通知记录
+
+#### 7.2 标记全部通知已读
+
+**PUT** `/api/v1/notifications/me/read-all`
+
+**权限**: 用户（需登录）
+
+**响应**: `204 No Content`
+
+**说明**: 将当前用户所有 `pending`/`sent` 状态的通知标记为 `read`，前端不再显示"新"标签
+
+#### 7.3 批量删除通知
+
+**POST** `/api/v1/notifications/me/batch-delete`
+
+**权限**: 用户（需登录）
+
+**请求体**:
+```json
+{
+  "ids": [1, 2, 3]
+}
+```
+
+**响应**: `204 No Content`
+
+**说明**: 仅删除属于当前用户的通知，不属于当前用户的 ID 会被忽略
+
+#### 7.4 删除单条通知
+
+**DELETE** `/api/v1/notifications/{notification_id}`
+
+**权限**: 用户（需登录，只能删除自己的通知）
+
+**响应**: `204 No Content`
+
+**错误**: `404` — 通知不存在或不属于当前用户
 
 ---
 
