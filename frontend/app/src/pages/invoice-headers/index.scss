@@ -1,0 +1,325 @@
+.ih-page {
+  min-height: 100vh;
+  background: #f5f6f3;
+  padding: 0 16px env(safe-area-inset-bottom);
+}
+
+.ih-back {
+  padding: 56px 0 12px 4px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active { opacity: 0.5; }
+}
+
+.ih-back-arrow {
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid #2f343a;
+  border-left: 2px solid #2f343a;
+  transform: rotate(-45deg);
+}
+
+.ih-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  margin: 8px 0 16px;
+  background: rgba(0,0,0,0.03);
+  border-radius: 16px;
+  &:active { background: rgba(0,0,0,0.06); }
+}
+
+.ih-add-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid #2f343a;
+  position: relative;
+}
+
+.ih-plus-h, .ih-plus-v {
+  position: absolute;
+  background: #2f343a;
+  border-radius: 1px;
+}
+
+.ih-plus-h {
+  width: 10px;
+  height: 1.5px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ih-plus-v {
+  width: 1.5px;
+  height: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ih-add-text {
+  font-size: 14px;
+  color: #1f252b;
+  font-weight: 500;
+}
+
+.ih-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ih-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.04);
+  padding: 16px;
+}
+
+.ih-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.ih-card-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ih-card-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ih-avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+.ih-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #2d5a3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text { font-size: 13px; color: #fff; font-weight: 600; }
+}
+
+.ih-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ih-card-name {
+  font-size: 14px;
+  color: #1f252b;
+  font-weight: 600;
+}
+
+.ih-card-type {
+  font-size: 11px;
+  color: #8a9098;
+}
+
+.ih-qr-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ih-qr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 8px);
+  grid-template-rows: repeat(3, 8px);
+  gap: 2px;
+}
+
+.ih-qr-cell {
+  background: #2f343a;
+  border-radius: 1px;
+}
+
+.ih-qr-empty {
+  background: transparent;
+}
+
+.ih-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.ih-action {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  &:active { opacity: 0.6; }
+}
+
+.ih-action-icon {
+  font-size: 11px;
+  color: #2d5a3d;
+}
+
+.ih-action-copy {
+  color: #8a9098;
+}
+
+.ih-action-text {
+  font-size: 12px;
+  color: #2d5a3d;
+  font-weight: 500;
+}
+
+.ih-action-danger {
+  .ih-action-icon { color: #ef5f65; font-size: 7px; }
+  .ih-action-text { color: #ef5f65; }
+}
+
+.ih-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  text { font-size: 13px; color: #c0c4ca; }
+}
+
+// ===== 添加弹窗 =====
+.ih-sheet-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: flex-end;
+  animation: ihFadeIn 0.2s ease;
+}
+
+.ih-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 16px 24px calc(32px + env(safe-area-inset-bottom));
+  animation: ihSlideUp 0.3s ease;
+}
+
+.ih-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: #dce0d8;
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.ih-sheet-title {
+  display: block;
+  font-size: 16px;
+  color: #1f252b;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ih-type-switch {
+  display: flex;
+  border-radius: 12px;
+  border: 1px solid #dce0d8;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.ih-type-btn {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  text { font-size: 13px; color: #8a9098; font-weight: 500; }
+  &.active {
+    background: #2d5a3d;
+    text { color: #fff; }
+  }
+}
+
+.ih-sheet-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+}
+
+.ih-sheet-label {
+  font-size: 13px;
+  color: #2d5a3d;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ih-sheet-input {
+  flex: 1;
+  font-size: 13px;
+  color: #1f252b;
+}
+
+.ih-sheet-save {
+  width: 120px;
+  height: 40px;
+  border-radius: 20px;
+  background: #dce0d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text { font-size: 13px; color: #8a9098; }
+  &:active { opacity: 0.7; }
+}
+
+@keyframes ihFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ihSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+// ===== 暗色主题 =====
+.ih-page.theme-dark {
+  background: #141618;
+  .ih-back-arrow { border-color: #d8dde4; }
+  .ih-add-btn { background: rgba(255,255,255,0.04); }
+  .ih-add-icon { border-color: #d8dde4; }
+  .ih-plus-h, .ih-plus-v { background: #d8dde4; }
+  .ih-add-text { color: #e4e9ef; }
+  .ih-card { background: #1e2228; border-color: rgba(255,255,255,0.06); }
+  .ih-card-name { color: #e4e9ef; }
+  .ih-card-type { color: #7b8592; }
+  .ih-qr-cell { background: #d8dde4; }
+  .ih-avatar-placeholder { background: #6fcf8a; }
+  .ih-action-icon { color: #6fcf8a; }
+  .ih-action-text { color: #6fcf8a; }
+  .ih-action-danger .ih-action-icon, .ih-action-danger .ih-action-text { color: #ef5f65; }
+  .ih-sheet { background: #1e2228; }
+  .ih-sheet-handle { background: #555b66; }
+  .ih-sheet-title { color: #e4e9ef; }
+  .ih-type-switch { border-color: rgba(255,255,255,0.08); }
+  .ih-type-btn text { color: #7b8592; }
+  .ih-type-btn.active { background: #6fcf8a; text { color: #1e2228; } }
+  .ih-sheet-label { color: #6fcf8a; }
+  .ih-sheet-input { color: #e4e9ef; }
+  .ih-sheet-field { border-color: rgba(255,255,255,0.06); }
+  .ih-empty text { color: #555b66; }
+}

@@ -424,10 +424,16 @@ export default function Profile() {
   }, [])
 
   const handleSettingClick = useCallback((setting: string) => {
+    const routes: Record<string, string> = {
+      profile: '/pages/profile-edit/index',
+      payment: '/pages/my-payments/index',
+      invoice: '/pages/invoice-headers/index',
+    }
+    if (routes[setting]) {
+      Taro.navigateTo({ url: routes[setting] })
+      return
+    }
     const messages: Record<string, string> = {
-      profile: '个人简介',
-      payment: '我的缴费',
-      invoice: '发票抬头',
       language: '多语言',
       darkmode: '暗黑模式',
       privacy: '隐私与政策',
