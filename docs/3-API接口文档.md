@@ -1,7 +1,7 @@
 # API 接口文档
 
 > **创建时间**: 2025年12月02日 23:50
-> **最后更新**: 2026年02月27日 15:00
+> **最后更新**: 2026年02月28日 16:30
 > **维护人**: Cursor AI + Claude AI
 > **API 基础路径**: `http://localhost:8000/api/v1`
 > **前端Mock模式**: ✅ 已启用 (`CONFIG.USE_MOCK = true`)
@@ -12,6 +12,8 @@
 
 | 时间 | 变更类型 | 接口路径 | 变更内容 | 操作人 |
 |------|----------|----------|----------|--------|
+| 2026年02月28日 16:30 | 新增 | `/payments/*` | 缴费记录 CRUD + 后端分页（6个端点） | Cursor AI |
+| 2026年02月28日 16:30 | 新增 | `/invoice-headers/*` | 发票抬头 CRUD + 后端分页 + 复制文本（6个端点） | Cursor AI |
 | 2026年02月27日 15:00 | 新增 | `/notifications/me/*` | 通知管理接口：单删、批删、清空、全部已读（4个端点） | Cursor AI |
 | 2026年01月08日 15:30 | 完善 | 所有接口 | 补充详细请求/响应示例，添加Mock数据支持 | Claude AI |
 | 2026年01月08日 15:30 | 新增 | `/activities/:id/comments` | 评论列表、发布、删除接口（7个） | Claude AI |
@@ -39,7 +41,9 @@
 | 用户相关 | `services/user.ts` | 4 | ✅ | 前端完成 |
 | 互动相关 | `services/engagement.ts` | 6 | ✅ | 前端完成 |
 | 通知相关 | `services/notifications.ts` | 7 | ✅ | 前后端完成 |
-| **总计** | **7个文件** | **35个** | **100%** | **✅ 前端完成** |
+| 缴费相关 | `services/payments.ts` | 4 | ❌ | 前后端完成 |
+| 发票抬头 | `services/invoice-headers.ts` | 6 | ❌ | 前后端完成 |
+| **总计** | **9个文件** | **45个** | **78%** | **✅ 前端完成** |
 
 ### 后端API状态
 
@@ -566,7 +570,126 @@ api.interceptors.response.use(
 
 ---
 
-### 8. 徽章模块 (Badges)
+### 8. 缴费模块 (Payments) - ✅ 已完成 ✨ 新增
+
+| 方法 | 路径 | 描述 | 权限 | Mock | 前端文件 |
+|------|------|------|------|------|---------|
+| **GET** | **`/payments`** | **缴费记录分页列表** | **用户** | **❌** | `services/payments.ts` |
+| **GET** | **`/payments/{id}`** | **缴费详情** | **用户** | **❌** | `services/payments.ts` |
+| **POST** | **`/payments`** | **创建缴费记录** | **用户** | **❌** | `services/payments.ts` |
+| **PATCH** | **`/payments/{id}`** | **更新缴费记录** | **用户** | **❌** | `services/payments.ts` |
+| **DELETE** | **`/payments/{id}`** | **删除缴费记录** | **用户** | **❌** | `services/payments.ts` |
+| **POST** | **`/payments/bulk-delete`** | **批量删除缴费** | **用户** | **❌** | `services/payments.ts` |
+
+#### 8.1 缴费记录分页列表
+
+**GET** `/api/v1/payments`
+
+**请求参数**:
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| page | number | 否 | 页码，默认 1 |
+| per_page | number | 否 | 每页数量，默认 5，最大 50 |
+| status | string | 否 | 状态筛选: `paid`/`unpaid` |
+| category | string | 否 | 类型筛选: `论坛`/`峰会`/`研讨会`/`培训` |
+| activity_id | number | 否 | 活动ID筛选 |
+
+**响应示例**:
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "activity_id": 101,
+      "activity_title": "暑期培训会议",
+      "amount": 63.00,
+      "category": "论坛",
+      "status": "paid",
+      "pay_date": "2025-10-10",
+      "cover_url": "https://...",
+      "date_range": "2025年11月10日—13日",
+      "time_range": "9:00 AM - 5:00 PM",
+      "payer": "张三",
+      "order_no": "20241026143000123456",
+      "transaction_no": "CONF_884812345678",
+      "payment_screenshot": null,
+      "created_at": "2026-01-08T10:00:00Z",
+      "updated_at": "2026-01-08T10:00:00Z"
+    }
+  ],
+  "total": 8,
+  "page": 1,
+  "per_page": 5,
+  "total_pages": 2
+}
+```
+
+---
+
+### 9. 发票抬头模块 (Invoice Headers) - ✅ 已完成 ✨ 新增
+
+| 方法 | 路径 | 描述 | 权限 | Mock | 前端文件 |
+|------|------|------|------|------|---------|
+| **GET** | **`/invoice-headers`** | **发票抬头分页列表** | **用户** | **❌** | `services/invoice-headers.ts` |
+| **GET** | **`/invoice-headers/{id}`** | **发票抬头详情** | **用户** | **❌** | `services/invoice-headers.ts` |
+| **GET** | **`/invoice-headers/{id}/copy-text`** | **获取完整复制文本** | **用户** | **❌** | `services/invoice-headers.ts` |
+| **POST** | **`/invoice-headers`** | **创建发票抬头** | **用户** | **❌** | `services/invoice-headers.ts` |
+| **PATCH** | **`/invoice-headers/{id}`** | **更新发票抬头** | **用户** | **❌** | `services/invoice-headers.ts` |
+| **DELETE** | **`/invoice-headers/{id}`** | **删除发票抬头** | **用户** | **❌** | `services/invoice-headers.ts` |
+
+#### 9.1 发票抬头分页列表
+
+**GET** `/api/v1/invoice-headers`
+
+**请求参数**:
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| page | number | 否 | 页码，默认 1 |
+| per_page | number | 否 | 每页数量，默认 4，最大 50 |
+| type | string | 否 | 类型筛选: `personal`/`company` |
+
+**响应示例**:
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "name": "湖南大学",
+      "type": "company",
+      "tax_number": "91430000738820X",
+      "address": "长沙市岳麓区麓山南路",
+      "phone": "0731-88821234",
+      "bank_name": "中国银行长沙分行",
+      "bank_account": "7328 0000 1234 5678",
+      "created_at": "2026-01-08T10:00:00Z",
+      "updated_at": "2026-01-08T10:00:00Z"
+    }
+  ],
+  "total": 6,
+  "page": 1,
+  "per_page": 4,
+  "total_pages": 2
+}
+```
+
+#### 9.2 获取发票抬头复制文本
+
+**GET** `/api/v1/invoice-headers/{id}/copy-text`
+
+**响应示例**:
+```json
+{
+  "text": "湖南大学\n税号: 91430000738820X\n地址: 长沙市岳麓区麓山南路\n电话: 0731-88821234\n开户银行: 中国银行长沙分行\n银行账号: 7328 0000 1234 5678"
+}
+```
+
+**说明**: 返回完整格式化文本，前端直接写入剪贴板。个人发票仅返回名称。
+
+---
+
+### 10. 徽章模块 (Badges)
 
 | 方法 | 路径 | 描述 | 权限 | Mock |
 |------|------|------|------|------|
@@ -577,7 +700,7 @@ api.interceptors.response.use(
 
 ---
 
-### 9. 徽章规则模块 (Badge Rules)
+### 11. 徽章规则模块 (Badge Rules)
 
 | 方法 | 路径 | 描述 | 权限 | Mock |
 |------|------|------|------|------|
@@ -589,7 +712,7 @@ api.interceptors.response.use(
 
 ---
 
-### 10. 报表模块 (Reports)
+### 12. 报表模块 (Reports)
 
 | 方法 | 路径 | 描述 | 权限 | Mock |
 |------|------|------|------|------|
@@ -598,7 +721,7 @@ api.interceptors.response.use(
 
 ---
 
-### 11. 审计模块 (Audit)
+### 13. 审计模块 (Audit)
 
 | 方法 | 路径 | 描述 | 权限 | Mock |
 |------|------|------|------|------|
@@ -606,7 +729,7 @@ api.interceptors.response.use(
 
 ---
 
-### 12. 调度器模块 (Scheduler)
+### 14. 调度器模块 (Scheduler)
 
 | 方法 | 路径 | 描述 | 权限 | Mock |
 |------|------|------|------|------|
@@ -615,7 +738,7 @@ api.interceptors.response.use(
 
 ---
 
-### 13. 微信模块 (WeChat)
+### 15. 微信模块 (WeChat)
 
 | 方法 | 路径 | 描述 | 权限 | Mock | 前端文件 |
 |------|------|------|------|------|---------|
@@ -834,5 +957,5 @@ closed → archived
 ---
 
 **文档维护**: Claude AI + Cursor AI
-**最后更新**: 2026年01月08日 15:30
+**最后更新**: 2026年02月28日 16:30
 **下次更新**: 后端接口实现时同步更新
