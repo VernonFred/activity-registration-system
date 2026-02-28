@@ -4,12 +4,11 @@
   padding: 0 20px env(safe-area-inset-bottom);
 }
 
-// 返回键 — 圆圈+箭头，与微信右上角胶囊平行
+// 返回键 — paddingTop 由 JS 内联设置
 .pe-back {
   position: absolute;
   top: 0;
   left: 16px;
-  padding-top: calc(env(safe-area-inset-top, 44px) + 6px);
   z-index: 10;
 }
 
@@ -34,10 +33,11 @@
   margin-left: 2px;
 }
 
+// paddingTop 由 JS 内联设置
 .pe-avatar-section {
   display: flex;
   justify-content: center;
-  padding: calc(env(safe-area-inset-top, 44px) + 48px) 0 28px;
+  padding-bottom: 28px;
 }
 
 .pe-avatar-wrap {
@@ -115,7 +115,7 @@
   transition: border-color 0.2s, box-shadow 0.2s;
   &:focus-within {
     border-color: #2d5a3d;
-    box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.08);
+    box-shadow: 0 0 10px rgba(45, 90, 61, 0.25), 0 0 20px rgba(45, 90, 61, 0.1);
   }
 }
 
@@ -151,7 +151,7 @@
   .pe-avatar-edit { background: #6fcf8a; border-color: #141618; }
   .pe-label { color: #d8dde4; }
   .pe-input-wrap { border-color: rgba(111, 207, 138, 0.3); background: transparent; }
-  .pe-input-wrap:focus-within { border-color: #6fcf8a; box-shadow: 0 0 0 3px rgba(111, 207, 138, 0.1); }
+  .pe-input-wrap:focus-within { border-color: #6fcf8a; box-shadow: 0 0 10px rgba(111, 207, 138, 0.25), 0 0 20px rgba(111, 207, 138, 0.1); }
   .pe-input { color: #e4e9ef; }
   .pe-save-btn { background: #6fcf8a; text { color: #141618; } }
 }

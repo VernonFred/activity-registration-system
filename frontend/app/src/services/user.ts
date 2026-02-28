@@ -300,12 +300,11 @@ const applyMockSignupOverride = (signup: SignupRecord): SignupRecord => {
  */
 export const fetchCurrentUser = async (): Promise<User> => {
   if (CONFIG.USE_MOCK) {
-    // Mock 数据
     await new Promise(resolve => setTimeout(resolve, 300))
-    return MOCK_USER
+    const stored = Taro.getStorageSync('mock_user_overrides')
+    return stored ? { ...MOCK_USER, ...stored } : MOCK_USER
   }
 
-  // 真实 API
   const response = await http.get('/users/me')
   return response.data
 }
@@ -316,15 +315,13 @@ export const fetchCurrentUser = async (): Promise<User> => {
  */
 export const updateUser = async (data: Partial<User>): Promise<User> => {
   if (CONFIG.USE_MOCK) {
-    // Mock 数据
     await new Promise(resolve => setTimeout(resolve, 300))
-    return {
-      ...MOCK_USER,
-      ...data
-    }
+    const stored = Taro.getStorageSync('mock_user_overrides') || {}
+    const merged = { ...stored, ...data }
+    Taro.setStorageSync('mock_user_overrides', merged)
+    return { ...MOCK_USER, ...merged }
   }
 
-  // 真实 API
   const response = await http.put('/users/me', data)
   return response.data
 }

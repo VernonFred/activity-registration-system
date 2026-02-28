@@ -29,6 +29,7 @@ export default function ProfileEdit() {
   const { theme } = useTheme()
   const [user, setUser] = useState<User | null>(null)
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [topPad, setTopPad] = useState(54)
   const [form, setForm] = useState({
     name: '',
     school: '',
@@ -39,6 +40,10 @@ export default function ProfileEdit() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
+    try {
+      const sys = Taro.getSystemInfoSync()
+      setTopPad((sys.statusBarHeight || 44) + 10)
+    } catch { /* fallback */ }
     const loadUser = async () => {
       try {
         const u = await fetchCurrentUser()
@@ -126,13 +131,13 @@ export default function ProfileEdit() {
 
   return (
     <View className={`pe-page theme-${theme}`}>
-      <View className="pe-back" onClick={() => Taro.navigateBack()}>
+      <View className="pe-back" style={{ paddingTop: `${topPad}px` }} onClick={() => Taro.navigateBack()}>
         <View className="pe-back-circle">
           <View className="pe-back-arrow" />
         </View>
       </View>
 
-      <View className="pe-avatar-section" onClick={handleAvatarClick}>
+      <View className="pe-avatar-section" style={{ paddingTop: `${topPad + 38}px` }} onClick={handleAvatarClick}>
         <View className="pe-avatar-wrap">
           <Image
             className="pe-avatar"

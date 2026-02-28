@@ -4,24 +4,32 @@
   padding: 0 16px env(safe-area-inset-bottom);
 }
 
+// ===== 返回按钮（圆形）— paddingTop 由 JS 内联设置 =====
 .mp-back {
-  padding: 56px 0 12px 4px;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-bottom: 10px;
   &:active { opacity: 0.5; }
 }
 
+.mp-back-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid #c0c4ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .mp-back-arrow {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-top: 2px solid #2f343a;
   border-left: 2px solid #2f343a;
   transform: rotate(-45deg);
+  margin-left: 3px;
 }
 
+// ===== 工具栏 =====
 .mp-toolbar {
   display: flex;
   align-items: center;
@@ -38,24 +46,89 @@
   display: flex;
   align-items: center;
   gap: 3px;
+  position: relative;
   text { font-size: 12px; color: #2f343a; font-weight: 500; }
+  &.active text { color: #2d5a3d; }
   &:active { opacity: 0.6; }
 }
 
-.mp-filter-arrow {
-  font-size: 10px;
-  color: #8a9098;
+.mp-filter-arrow { font-size: 10px; color: #8a9098; }
+
+.mp-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  min-width: 120px;
+  padding: 4px 0;
+  z-index: 100;
 }
 
+.mp-drop-item {
+  padding: 10px 14px;
+  text { font-size: 12px; color: #2f343a; white-space: nowrap; }
+  &.selected { background: rgba(45,90,61,0.06); text { color: #2d5a3d; font-weight: 600; } }
+  &:active { background: rgba(0,0,0,0.03); }
+}
+
+.mp-dropdown-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 50;
+}
+
+// 批量选择 — 图标按钮
 .mp-batch-toggle {
-  text { font-size: 13px; color: #2f343a; font-weight: 500; }
-  &:active { opacity: 0.6; }
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active { opacity: 0.5; }
 }
 
+.mp-batch-icon {
+  width: 18px;
+  height: 14px;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 7px; height: 7px;
+    border: 1.5px solid #2f343a;
+    border-radius: 2px;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 7px; height: 7px;
+    border: 1.5px solid #2f343a;
+    border-radius: 2px;
+  }
+}
+
+.mp-batch-icon-active {
+  &::before { background: #2d5a3d; border-color: #2d5a3d; }
+  &::after { background: #2d5a3d; border-color: #2d5a3d; }
+}
+
+// ===== 滚动区 =====
+.mp-scroll {
+  flex: 1;
+  height: calc(100vh - 180px);
+}
+
+// ===== 卡片列表 =====
 .mp-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 20px;
 }
 
 .mp-card {
@@ -64,16 +137,17 @@
   overflow: hidden;
 }
 
+// 卡片体 — 绿色线框、无白色背景、用页面背景色填充以遮盖红色
 .mp-card-body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 18px 16px;
-  background: #fff;
+  padding: 18px 16px 28px 16px;
+  background: #f5f6f3;
   border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1.5px solid rgba(45, 90, 61, 0.25);
   position: relative;
-  z-index: 1;
+  z-index: 2;
   transition: transform 0.25s ease;
 }
 
@@ -81,6 +155,7 @@
   transform: translateX(-72px);
 }
 
+// ===== 删除区域 =====
 .mp-delete-area {
   position: absolute;
   right: 0;
@@ -92,6 +167,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 0 16px 16px 0;
+  z-index: 1;
   &:active { background: #dc2626; }
 }
 
@@ -142,6 +218,7 @@
   }
 }
 
+// ===== 复选框 =====
 .mp-checkbox {
   width: 20px;
   height: 20px;
@@ -154,12 +231,9 @@
   &.checked { background: #2d5a3d; border-color: #2d5a3d; }
 }
 
-.mp-check-mark {
-  font-size: 11px;
-  color: #fff;
-  font-weight: 700;
-}
+.mp-check-mark { font-size: 11px; color: #fff; font-weight: 700; }
 
+// ===== 图标 =====
 .mp-icon-wrap {
   width: 44px;
   height: 44px;
@@ -193,6 +267,7 @@
   border-radius: 2px;
 }
 
+// ===== 卡片内容 =====
 .mp-card-info {
   flex: 1;
   min-width: 0;
@@ -213,34 +288,43 @@
 }
 
 .mp-tag {
-  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
   border-radius: 4px;
   background: rgba(45, 90, 61, 0.08);
-  text { font-size: 10px; color: #2d5a3d; font-weight: 500; }
+  text {
+    font-size: 10px;
+    color: #2d5a3d;
+    font-weight: 500;
+    line-height: 1.6;
+  }
 }
 
 .mp-link {
   font-size: 11px;
   color: #8a9098;
-}
-
-.mp-card-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  flex-shrink: 0;
+  &:active { color: #2d5a3d; }
 }
 
 .mp-amount {
   font-size: 15px;
   color: #1f252b;
   font-weight: 700;
+  flex-shrink: 0;
+  position: absolute;
+  top: 18px;
+  right: 16px;
 }
 
-.mp-status {
+// ===== 已缴费/待缴费标签 — 右下角绝对定位 =====
+.mp-status-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   padding: 3px 10px;
-  border-radius: 6px;
+  border-radius: 8px 0 16px 0;
   text { font-size: 10px; font-weight: 600; }
 }
 
@@ -262,20 +346,456 @@
   text { font-size: 13px; color: #c0c4ca; }
 }
 
+// ===== 分页 =====
+.mp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 8px;
+}
+
+.mp-page-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(45, 90, 61, 0.15);
+  transition: all 0.2s;
+  &.active {
+    width: 20px;
+    border-radius: 4px;
+    background: #2d5a3d;
+  }
+}
+
+.mp-page-info {
+  font-size: 11px;
+  color: #8a9098;
+  margin-left: 8px;
+}
+
+// ===== 批量操作栏 =====
+.mp-batch-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+  z-index: 50;
+}
+
+.mp-batch-info { font-size: 13px; color: #555b66; }
+
+.mp-batch-del {
+  padding: 8px 24px;
+  border-radius: 20px;
+  background: #ef4444;
+  text { font-size: 13px; color: #fff; font-weight: 600; }
+  &:active { background: #dc2626; }
+}
+
+// ===== 缴费详情弹窗 — Sketch 设计稿精确参数 =====
+// 毛玻璃背景 — 高透明度，底部列表清晰透过
+.mp-detail-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(248, 248, 246, 0.2);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+// 内容直接铺在毛玻璃上 — paddingTop 由 JS 内联设置
+.mp-detail-sheet {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.mp-detail-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+// 头部卡片 — 仅边框，无填充，包裹图片+标题+日期
+// Sketch: border #e3e7ec 1px, corners 14
+.mp-detail-header-card {
+  border: 1px solid #e3e7ec;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 4px;
+}
+
+.mp-detail-header {
+  display: flex;
+  gap: 12px;
+}
+
+// Sketch: 88x96, corners 12
+.mp-detail-cover {
+  width: 88px;
+  height: 96px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.mp-detail-header-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+// Sketch: size 14, weight 5 (medium), color #111111
+.mp-detail-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+}
+
+.mp-detail-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// Sketch: icon border #78828a
+.mp-detail-icon-calendar {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #78828a;
+  border-radius: 2px;
+  position: relative;
+  flex-shrink: 0;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 3px;
+    width: 1px;
+    height: 4px;
+    background: #78828a;
+    box-shadow: 5px 0 0 #78828a;
+  }
+}
+
+.mp-detail-icon-clock {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #78828a;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 4.5px;
+    background: #78828a;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 1px;
+    background: #78828a;
+    transform-origin: left center;
+  }
+}
+
+// Sketch: size 10, color #111111
+.mp-detail-meta {
+  font-size: 10px;
+  color: #111111;
+}
+
+// 分区标题 — Sketch: size 14, color #9ca4ab, weight 5 (medium)
+.mp-detail-section-title {
+  display: block;
+  font-size: 14px;
+  color: #9ca4ab;
+  font-weight: 500;
+  margin: 14px 0 6px;
+}
+
+// "缴费截图" 用不同颜色 — Sketch: size 9, color #183d1e
+.mp-detail-section-title-green {
+  display: block;
+  font-size: 9px;
+  color: #183d1e;
+  font-weight: 500;
+  margin: 14px 0 6px;
+}
+
+// 行
+.mp-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  gap: 12px;
+}
+
+.mp-detail-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+// Sketch: icon border #66707a, 20x20 with 1.5px stroke
+.mp-detail-icon-person {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  flex-shrink: 0;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid #66707a;
+    border-radius: 50%;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 6px;
+    border: 1.5px solid #66707a;
+    border-bottom: none;
+    border-radius: 7px 7px 0 0;
+  }
+}
+
+.mp-detail-icon-date {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  flex-shrink: 0;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid #66707a;
+    border-radius: 2px;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    right: 5px;
+    height: 1px;
+    background: #66707a;
+  }
+}
+
+// Sketch: label size 14, color #111111
+.mp-detail-row-label {
+  font-size: 14px;
+  color: #111111;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+// Sketch: 金额区 label size 14, color #111111
+.mp-detail-row-label-bold {
+  font-size: 14px;
+  color: #111111;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// Sketch: 缴费人/缴费时间 value size 14/13, color #111111
+.mp-detail-row-value {
+  font-size: 13px;
+  color: #111111;
+  text-align: right;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+
+// Sketch: 费用 value "¥ 299.00" size 12, color #000000
+.mp-detail-row-value-bold {
+  font-size: 12px;
+  color: #000000;
+  font-weight: 500;
+  text-align: right;
+}
+
+// Sketch: 订单号/交易流水号 value size 10, color #383838
+.mp-detail-row-value-small {
+  font-size: 10px;
+  color: #383838;
+  text-align: right;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+
+// Sketch: divider #a6a6a6, 0.5px — 改为虚线
+.mp-detail-divider {
+  height: 0;
+  border-top: 0.5px dashed #a6a6a6;
+  margin: 6px 0;
+}
+
+// 上传区域 — Sketch: border #000000 0.5px dashed, fill #e5e5e5, corners 15
+.mp-detail-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 0;
+  margin: 8px 0 0;
+  border: 0.5px dashed #000000;
+  border-radius: 15px;
+  background: #e5e5e5;
+}
+
+// Sketch: download icon color #8c8c8c
+.mp-detail-upload-icon {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 1.5px;
+    background: #8c8c8c;
+    border-radius: 1px;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5px;
+    height: 10px;
+    background: #8c8c8c;
+    border-radius: 1px;
+  }
+}
+
+// Sketch: size 8, color #8c8c8c
+.mp-detail-upload-text {
+  font-size: 8px;
+  color: #8c8c8c;
+}
+
+// 底部按钮
+.mp-detail-footer {
+  padding: 20px 0 calc(20px + env(safe-area-inset-bottom));
+}
+
+// Sketch: 126x27, fill #000000, corners 5, text size 11 white
+.mp-detail-confirm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 126px;
+  height: 27px;
+  border-radius: 5px;
+  background: #000000;
+  margin: 0 auto;
+  text { font-size: 11px; color: #fff; font-weight: 500; }
+  &:active { opacity: 0.85; }
+}
+
 // ===== 暗色主题 =====
 .mp-page.theme-dark {
   background: #141618;
+
+  .mp-back-circle { border-color: #555b66; }
   .mp-back-arrow { border-color: #d8dde4; }
+
   .mp-filter text { color: #d8dde4; }
-  .mp-batch-toggle text { color: #d8dde4; }
-  .mp-card-body { background: #1e2228; border-color: rgba(255,255,255,0.06); }
+  .mp-filter.active text { color: #6fcf8a; }
+  .mp-batch-icon::before, .mp-batch-icon::after { border-color: #d8dde4; }
+  .mp-batch-icon-active::before, .mp-batch-icon-active::after { background: #6fcf8a; border-color: #6fcf8a; }
+
+  .mp-dropdown { background: #1e2228; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .mp-drop-item text { color: #d8dde4; }
+  .mp-drop-item.selected { background: rgba(111,207,138,0.1); text { color: #6fcf8a; } }
+
+  // 卡片 — 页面背景色填充 + 绿色线框
+  .mp-card-body { background: #141618; border-color: rgba(111,207,138,0.25); }
   .mp-card-title { color: #e4e9ef; }
   .mp-amount { color: #e4e9ef; }
   .mp-link { color: #555b66; }
+
   .mp-icon-wrap { background: rgba(111,207,138,0.1); }
   .mp-briefcase-top, .mp-briefcase-body { border-color: #6fcf8a; }
+
   .mp-tag { background: rgba(111,207,138,0.1); text { color: #6fcf8a; } }
   .mp-status-paid { background: rgba(111,207,138,0.1); text { color: #6fcf8a; } }
+  .mp-status-unpaid { background: rgba(239,95,101,0.1); text { color: #ef5f65; } }
+
   .mp-checkbox { border-color: #555b66; &.checked { background: #6fcf8a; border-color: #6fcf8a; } }
   .mp-empty text { color: #555b66; }
+  .mp-page-dot { background: rgba(111,207,138,0.15); &.active { background: #6fcf8a; } }
+  .mp-page-info { color: #555b66; }
+
+  .mp-batch-bar { background: #1e2228; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
+  .mp-batch-info { color: #8a9098; }
+
+  // 弹窗暗色 — 全屏毛玻璃
+  .mp-detail-mask { background: rgba(15, 17, 19, 0.75); }
+  .mp-detail-header-card { border-color: rgba(255,255,255,0.1); }
+  .mp-detail-title { color: #e4e9ef; }
+  .mp-detail-meta { color: #d8dde4; }
+  .mp-detail-icon-calendar { border-color: #8a9098; &::before { background: #8a9098; box-shadow: 5px 0 0 #8a9098; } }
+  .mp-detail-icon-clock { border-color: #8a9098; &::before { background: #8a9098; } &::after { background: #8a9098; } }
+  .mp-detail-section-title { color: #6fcf8a; }
+  .mp-detail-section-title-green { color: #6fcf8a; }
+  .mp-detail-row-label { color: #d8dde4; }
+  .mp-detail-row-label-bold { color: #d8dde4; }
+  .mp-detail-row-value { color: #8a9098; }
+  .mp-detail-row-value-bold { color: #e4e9ef; }
+  .mp-detail-row-value-small { color: #8a9098; }
+  .mp-detail-divider { border-color: rgba(255,255,255,0.08); }
+  .mp-detail-upload-area { border-color: #555b66; background: rgba(255,255,255,0.04); }
+  .mp-detail-upload-icon::before, .mp-detail-upload-icon::after { background: #555b66; }
+  .mp-detail-upload-text { color: #555b66; }
+  .mp-detail-icon-person::before { border-color: #8a9098; }
+  .mp-detail-icon-person::after { border-color: #8a9098; }
+  .mp-detail-icon-date::before { border-color: #8a9098; }
+  .mp-detail-icon-date::after { background: #8a9098; }
+  .mp-detail-confirm-btn { background: #e4e9ef; text { color: #1a1d21; } }
 }

@@ -24,10 +24,10 @@ export default function BadgeWall() {
         const apiUser = await fetchCurrentUser()
         setUser({
           id: apiUser.id,
-          name: apiUser.name || apiUser.username || '用户',
-          avatar_url: apiUser.avatar_url,
-          organization: apiUser.organization,
-          title: apiUser.title,
+          name: apiUser.name || '用户',
+          avatar_url: apiUser.avatar,
+          organization: [apiUser.school, apiUser.department].filter(Boolean).join(''),
+          title: apiUser.position,
         })
       } catch {
         setUser(mockUserData)
