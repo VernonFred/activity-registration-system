@@ -9,7 +9,9 @@ from app.models.badge import Badge, UserBadge
 from app.models.badge_rule import BadgeRule
 from app.models.companion import SignupCompanion
 from app.models.form_field import ActivityFormField, ActivityFormFieldOption
+from app.models.invoice_header import InvoiceHeader
 from app.models.notification import NotificationLog
+from app.models.payment import Payment
 from app.models.signup import Signup, SignupFieldAnswer
 from app.models.user import UserProfile
 
@@ -26,7 +28,9 @@ __all__ = [
     "ActivityFormFieldOption",
     "Badge",
     "BadgeRule",
+    "InvoiceHeader",
     "NotificationLog",
+    "Payment",
     "Signup",
     "SignupCompanion",
     "SignupFieldAnswer",

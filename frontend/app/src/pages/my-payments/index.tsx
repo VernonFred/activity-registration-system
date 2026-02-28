@@ -1,27 +1,12 @@
 /**
- * 我的缴费页面 — 严格对标设计稿
+ * 我的缴费页面 — 后端分页 + 严格对标设计稿
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
+import { fetchPayments, deletePayment, bulkDeletePayments, PaymentItem } from '../../services/payments'
 import './index.scss'
-
-interface PaymentItem {
-  id: number
-  activity_id: number
-  activity_title: string
-  amount: number
-  category: string
-  status: 'paid' | 'unpaid'
-  pay_date?: string
-  cover_url?: string
-  date_range?: string
-  time_range?: string
-  payer?: string
-  order_no?: string
-  transaction_no?: string
-}
 
 type SortField = 'default' | 'amount_asc' | 'amount_desc'
 type CategoryFilter = 'all' | '论坛' | '峰会' | '研讨会' | '培训'
@@ -32,68 +17,12 @@ const CATEGORY_LABELS: Record<CategoryFilter, string> = {
   all: '全部类型', '论坛': '论坛', '峰会': '峰会', '研讨会': '研讨会', '培训': '培训',
 }
 
-const MOCK_PAYMENTS: PaymentItem[] = [
-  {
-    id: 1, activity_id: 101, activity_title: '暑期培训会议', amount: 63.00,
-    category: '论坛', status: 'paid', pay_date: '2025-10-10',
-    cover_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
-    date_range: '2025年11月10日—13日', time_range: '9:00 AM - 5:00 PM',
-    payer: '张三', order_no: '20241026143000123456', transaction_no: 'CONF_884812345678',
-  },
-  {
-    id: 2, activity_id: 102, activity_title: '暑期培训会议', amount: 63.00,
-    category: '论坛', status: 'paid', pay_date: '2025-09-15',
-    cover_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
-    date_range: '2025年9月15日—17日', time_range: '9:00 AM - 5:00 PM',
-    payer: '张三', order_no: '20241015093000654321', transaction_no: 'CONF_776543210987',
-  },
-  {
-    id: 3, activity_id: 103, activity_title: '暑期培训会议', amount: 63.00,
-    category: '峰会', status: 'paid', pay_date: '2025-08-20',
-    cover_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
-    date_range: '2025年8月20日—22日', time_range: '9:00 AM - 5:00 PM',
-    payer: '张三', order_no: '20240820110000789012', transaction_no: 'CONF_553456789012',
-  },
-  {
-    id: 4, activity_id: 104, activity_title: '秋季学术研讨会', amount: 120.00,
-    category: '研讨会', status: 'unpaid',
-    cover_url: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400',
-    date_range: '2025年12月5日—7日', time_range: '10:00 AM - 6:00 PM',
-    payer: '张三',
-  },
-  {
-    id: 5, activity_id: 105, activity_title: '春季教育峰会', amount: 88.00,
-    category: '峰会', status: 'paid', pay_date: '2025-07-12',
-    cover_url: 'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400',
-    date_range: '2025年7月12日—14日', time_range: '9:00 AM - 5:00 PM',
-    payer: '张三', order_no: '20250712100000345678', transaction_no: 'CONF_221345678901',
-  },
-  {
-    id: 6, activity_id: 106, activity_title: '人工智能技术论坛', amount: 150.00,
-    category: '论坛', status: 'paid', pay_date: '2025-06-25',
-    cover_url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400',
-    date_range: '2025年6月25日—27日', time_range: '8:30 AM - 6:00 PM',
-    payer: '张三', order_no: '20250625083000567890', transaction_no: 'CONF_667890123456',
-  },
-  {
-    id: 7, activity_id: 107, activity_title: '数字化转型培训', amount: 200.00,
-    category: '培训', status: 'paid', pay_date: '2025-05-18',
-    cover_url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400',
-    date_range: '2025年5月18日—20日', time_range: '9:00 AM - 4:30 PM',
-    payer: '张三', order_no: '20250518090000901234', transaction_no: 'CONF_339012345678',
-  },
-  {
-    id: 8, activity_id: 108, activity_title: '高校合作研讨会', amount: 75.00,
-    category: '研讨会', status: 'unpaid',
-    cover_url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400',
-    date_range: '2026年1月10日—12日', time_range: '10:00 AM - 5:00 PM',
-    payer: '张三',
-  },
-]
+const PAGE_SIZE = 5
 
 export default function MyPayments() {
   const { theme } = useTheme()
   const [payments, setPayments] = useState<PaymentItem[]>([])
+  const [totalPages, setTotalPages] = useState(1)
   const [batchMode, setBatchMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [swipedId, setSwipedId] = useState<number | null>(null)
@@ -108,40 +37,36 @@ export default function MyPayments() {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false)
   const [showTimeMenu, setShowTimeMenu] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const PAGE_SIZE = 5
+
+  const loadPayments = useCallback(async (page: number) => {
+    try {
+      const params: Record<string, unknown> = { page, per_page: PAGE_SIZE }
+      if (categoryFilter !== 'all') params.category = categoryFilter
+      if (timeFilter !== 'all') params.time_filter = timeFilter
+      const resp = await fetchPayments(params)
+      setPayments(resp.items)
+      setTotalPages(resp.total_pages)
+    } catch {
+      // API 不可用时保持当前数据
+    }
+  }, [categoryFilter, timeFilter])
 
   useEffect(() => {
     try {
       const sys = Taro.getSystemInfoSync()
       setTopPad((sys.statusBarHeight || 44) + 10)
     } catch { /* fallback 54px */ }
-    setPayments(MOCK_PAYMENTS)
+    loadPayments(1)
   }, [])
 
-  const filteredPayments = (() => {
-    let list = [...payments]
-    if (categoryFilter !== 'all') {
-      list = list.filter(p => p.category === categoryFilter)
-    }
-    if (timeFilter === 'recent') {
-      const d = new Date(); d.setDate(d.getDate() - 7)
-      list = list.filter(p => p.pay_date && new Date(p.pay_date) >= d)
-    } else if (timeFilter === 'month') {
-      const d = new Date(); d.setMonth(d.getMonth() - 1)
-      list = list.filter(p => p.pay_date && new Date(p.pay_date) >= d)
-    } else if (timeFilter === 'year') {
-      const d = new Date(); d.setFullYear(d.getFullYear() - 1)
-      list = list.filter(p => p.pay_date && new Date(p.pay_date) >= d)
-    }
-    if (sortField === 'amount_asc') list.sort((a, b) => a.amount - b.amount)
-    else if (sortField === 'amount_desc') list.sort((a, b) => b.amount - a.amount)
-    return list
-  })()
+  useEffect(() => {
+    setCurrentPage(1)
+    loadPayments(1)
+  }, [categoryFilter, timeFilter, sortField])
 
-  const totalPages = Math.max(1, Math.ceil(filteredPayments.length / PAGE_SIZE))
-  const pagedPayments = filteredPayments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
-
-  useEffect(() => { setCurrentPage(1) }, [categoryFilter, timeFilter, sortField])
+  useEffect(() => {
+    loadPayments(currentPage)
+  }, [currentPage])
 
   const handleTouchStart = useCallback((e: any) => {
     touchStartX.current = e.touches[0].clientX
@@ -153,18 +78,21 @@ export default function MyPayments() {
     else if (dx > 20) setSwipedId(null)
   }, [])
 
-  const handleDelete = useCallback((id: number) => {
+  const handleDelete = useCallback(async (id: number) => {
     Taro.showModal({
       title: '确认删除', content: '确定要删除此缴费记录吗？', confirmColor: '#ef4444',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          setPayments(prev => prev.filter(p => p.id !== id))
+          try {
+            await deletePayment(id)
+          } catch { /* fallback */ }
           setSwipedId(null)
           Taro.showToast({ title: '已删除', icon: 'success' })
+          loadPayments(currentPage)
         }
       },
     })
-  }, [])
+  }, [currentPage, loadPayments])
 
   const toggleBatchMode = useCallback(() => {
     setBatchMode(prev => { if (prev) setSelectedIds(new Set()); return !prev })
@@ -246,7 +174,7 @@ export default function MyPayments() {
 
       <ScrollView scrollY className="mp-scroll">
         <View className="mp-list">
-          {pagedPayments.map(item => (
+          {payments.map(item => (
             <View
               key={item.id}
               className={`mp-card ${swipedId === item.id ? 'swiped' : ''}`}
@@ -288,7 +216,7 @@ export default function MyPayments() {
               </View>
             </View>
           ))}
-          {filteredPayments.length === 0 && (
+          {payments.length === 0 && (
             <View className="mp-empty"><Text>暂无缴费记录</Text></View>
           )}
         </View>
@@ -314,11 +242,14 @@ export default function MyPayments() {
               title: '批量删除',
               content: `确定要删除选中的 ${selectedIds.size} 条记录吗？`,
               confirmColor: '#ef4444',
-              success: (res) => {
+              success: async (res) => {
                 if (res.confirm) {
-                  setPayments(prev => prev.filter(p => !selectedIds.has(p.id)))
+                  try {
+                    await bulkDeletePayments(Array.from(selectedIds))
+                  } catch { /* fallback */ }
                   setSelectedIds(new Set()); setBatchMode(false)
                   Taro.showToast({ title: '已删除', icon: 'success' })
+                  loadPayments(currentPage)
                 }
               },
             })

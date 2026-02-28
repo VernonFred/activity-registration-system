@@ -1,38 +1,27 @@
 /**
- * 发票抬头页面 — Sketch 设计稿精确对标
+ * 发票抬头页面 — 后端分页 + Sketch 设计稿精确对标
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
+import {
+  fetchInvoiceHeaders,
+  fetchInvoiceHeaderCopyText,
+  createInvoiceHeader,
+  updateInvoiceHeader,
+  deleteInvoiceHeader,
+  InvoiceHeaderItem,
+} from '../../services/invoice-headers'
 import './index.scss'
-
-interface InvoiceHeader {
-  id: number
-  name: string
-  type: 'personal' | 'company'
-  tax_number?: string
-  address?: string
-  phone?: string
-  bank_name?: string
-  bank_account?: string
-}
-
-const MOCK_HEADERS: InvoiceHeader[] = [
-  { id: 1, name: '湖南大学', type: 'company', tax_number: '91430000738820X', address: '长沙市岳麓区麓山南路', phone: '0731-88821234', bank_name: '中国银行长沙分行', bank_account: '7328 0000 1234 5678' },
-  { id: 2, name: '湖南师范大学', type: 'company', tax_number: '91430000456789Y', address: '长沙市岳麓区麓山路36号', phone: '0731-88872345', bank_name: '工商银行长沙支行', bank_account: '1902 0000 5678 1234' },
-  { id: 3, name: '张三', type: 'personal' },
-  { id: 4, name: '中南大学', type: 'company', tax_number: '91430000112233Z' },
-  { id: 5, name: '李四', type: 'personal' },
-  { id: 6, name: '长沙理工大学', type: 'company', tax_number: '91430000998877W' },
-]
 
 const PAGE_SIZE = 4
 const EMPTY_FORM = { name: '', tax_number: '', address: '', phone: '', bank_name: '', bank_account: '' }
 
 export default function InvoiceHeaders() {
   const { theme } = useTheme()
-  const [headers, setHeaders] = useState<InvoiceHeader[]>([])
+  const [headers, setHeaders] = useState<InvoiceHeaderItem[]>([])
+  const [totalPages, setTotalPages] = useState(1)
   const [showSheet, setShowSheet] = useState(false)
   const [sheetMode, setSheetMode] = useState<'add' | 'edit'>('add')
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -44,16 +33,27 @@ export default function InvoiceHeaders() {
   const touchStartX = useRef(0)
   const [swipedId, setSwipedId] = useState<number | null>(null)
 
+  const loadHeaders = useCallback(async (page: number) => {
+    try {
+      const resp = await fetchInvoiceHeaders({ page, per_page: PAGE_SIZE })
+      setHeaders(resp.items)
+      setTotalPages(resp.total_pages)
+    } catch {
+      // API 不可用时保持当前数据
+    }
+  }, [])
+
   useEffect(() => {
     try {
       const sys = Taro.getSystemInfoSync()
       setTopPad((sys.statusBarHeight || 44) + 10)
     } catch { /* fallback */ }
-    setHeaders(MOCK_HEADERS)
+    loadHeaders(1)
   }, [])
 
-  const totalPages = Math.max(1, Math.ceil(headers.length / PAGE_SIZE))
-  const pagedHeaders = headers.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  useEffect(() => {
+    loadHeaders(currentPage)
+  }, [currentPage])
 
   const handleTouchStart = useCallback((e: any) => { touchStartX.current = e.touches[0].clientX }, [])
   const handleTouchMove = useCallback((e: any, id: number) => {
@@ -65,18 +65,35 @@ export default function InvoiceHeaders() {
   const handleDelete = useCallback((id: number) => {
     Taro.showModal({
       title: '删除发票抬头', content: '确定要删除该发票抬头吗？', confirmColor: '#e71d36',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          setHeaders(prev => prev.filter(h => h.id !== id))
+          try {
+            await deleteInvoiceHeader(id)
+          } catch { /* fallback */ }
           setSwipedId(null)
           Taro.showToast({ title: '已删除', icon: 'success' })
+          loadHeaders(currentPage)
         }
       },
     })
-  }, [])
+  }, [currentPage, loadHeaders])
 
-  const handleCopy = useCallback((item: InvoiceHeader) => {
-    Taro.setClipboardData({ data: item.name + (item.tax_number ? `\n税号: ${item.tax_number}` : '') })
+  const handleCopy = useCallback(async (item: InvoiceHeaderItem) => {
+    try {
+      const resp = await fetchInvoiceHeaderCopyText(item.id)
+      Taro.setClipboardData({ data: resp.text })
+    } catch {
+      // 后端不可用时使用前端拼接
+      const lines = [item.name]
+      if (item.type === 'company') {
+        if (item.tax_number) lines.push(`税号: ${item.tax_number}`)
+        if (item.address) lines.push(`地址: ${item.address}`)
+        if (item.phone) lines.push(`电话: ${item.phone}`)
+        if (item.bank_name) lines.push(`开户银行: ${item.bank_name}`)
+        if (item.bank_account) lines.push(`银行账号: ${item.bank_account}`)
+      }
+      Taro.setClipboardData({ data: lines.join('\n') })
+    }
   }, [])
 
   const openAdd = useCallback(() => {
@@ -87,7 +104,7 @@ export default function InvoiceHeaders() {
     setShowSheet(true)
   }, [])
 
-  const openEdit = useCallback((item: InvoiceHeader) => {
+  const openEdit = useCallback((item: InvoiceHeaderItem) => {
     setForm({
       name: item.name,
       tax_number: item.tax_number || '',
@@ -102,41 +119,47 @@ export default function InvoiceHeaders() {
     setShowSheet(true)
   }, [])
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!form.name.trim()) {
       Taro.showToast({ title: '请输入名称', icon: 'none' })
       return
     }
     setSaving(true)
-    setTimeout(() => {
+    try {
       if (sheetMode === 'add') {
-        const newHeader: InvoiceHeader = {
-          id: Date.now(),
+        await createInvoiceHeader({
           name: form.name.trim(),
           type: addType,
           ...(addType === 'company' ? {
-            tax_number: form.tax_number, address: form.address,
-            phone: form.phone, bank_name: form.bank_name, bank_account: form.bank_account,
+            tax_number: form.tax_number || undefined,
+            address: form.address || undefined,
+            phone: form.phone || undefined,
+            bank_name: form.bank_name || undefined,
+            bank_account: form.bank_account || undefined,
           } : {}),
-        }
-        setHeaders(prev => [...prev, newHeader])
+        })
         Taro.showToast({ title: '添加成功', icon: 'success' })
       } else if (editingId !== null) {
-        setHeaders(prev => prev.map(h => h.id === editingId ? {
-          ...h,
-          name: form.name.trim(),
-          ...(h.type === 'company' ? {
-            tax_number: form.tax_number, address: form.address,
-            phone: form.phone, bank_name: form.bank_name, bank_account: form.bank_account,
-          } : {}),
-        } : h))
+        const payload: Record<string, string | undefined> = { name: form.name.trim() }
+        if (addType === 'company') {
+          payload.tax_number = form.tax_number || undefined
+          payload.address = form.address || undefined
+          payload.phone = form.phone || undefined
+          payload.bank_name = form.bank_name || undefined
+          payload.bank_account = form.bank_account || undefined
+        }
+        await updateInvoiceHeader(editingId, payload)
         Taro.showToast({ title: '保存成功', icon: 'success' })
       }
+    } catch {
+      Taro.showToast({ title: '操作失败', icon: 'none' })
+    } finally {
       setSaving(false)
       setShowSheet(false)
       setForm(EMPTY_FORM)
-    }, 800)
-  }, [form, addType, sheetMode, editingId])
+      loadHeaders(currentPage)
+    }
+  }, [form, addType, sheetMode, editingId, currentPage, loadHeaders])
 
   const updateField = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }))
 
@@ -155,7 +178,7 @@ export default function InvoiceHeaders() {
 
       <ScrollView scrollY className="ih-scroll">
         <View className="ih-list">
-          {pagedHeaders.map(item => (
+          {headers.map(item => (
             <View
               key={item.id}
               className={`ih-card ${swipedId === item.id ? 'swiped' : ''}`}
@@ -185,7 +208,6 @@ export default function InvoiceHeaders() {
                   </View>
                 </View>
               </View>
-              {/* 左滑删除 — 参照缴费列表样式 */}
               <View className="ih-delete-area" onClick={() => handleDelete(item.id)}>
                 <View className="ih-trash-icon">
                   <View className="ih-trash-lid" />
@@ -268,7 +290,7 @@ export default function InvoiceHeaders() {
                     <Input className="ih-field-input" value={form.bank_name} onInput={e => updateField('bank_name', e.detail.value)} placeholder="开户银行名称" placeholderClass="ih-placeholder" />
                   </View>
                   <View className="ih-field">
-                    <Text className="ih-field-label">开户银行</Text>
+                    <Text className="ih-field-label">银行账号</Text>
                     <Input className="ih-field-input" value={form.bank_account} onInput={e => updateField('bank_account', e.detail.value)} placeholder="银行账户号码" placeholderClass="ih-placeholder" />
                   </View>
                 </>

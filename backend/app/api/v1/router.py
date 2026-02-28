@@ -2,7 +2,11 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import activities, auth, badges, notifications, signups, feedbacks, audit_logs, reports, engagements, users, badge_rules, scheduler, registrations, wechat
+from app.api.v1.endpoints import (
+    activities, auth, badges, notifications, signups, feedbacks, audit_logs,
+    reports, engagements, users, badge_rules, scheduler, registrations, wechat,
+    payments, invoice_headers,
+)
 
 api_router = APIRouter()
 api_router.include_router(activities.router, prefix="/activities", tags=["activities"])
@@ -19,3 +23,5 @@ api_router.include_router(engagements.router, prefix="/activities", tags=["activ
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(badge_rules.router, prefix="/badge-rules", tags=["badges"])
 api_router.include_router(scheduler.router, prefix="/scheduler", tags=["scheduler"])
+api_router.include_router(payments.router, prefix="/payments", tags=["payments"])
+api_router.include_router(invoice_headers.router, prefix="/invoice-headers", tags=["invoice-headers"])
