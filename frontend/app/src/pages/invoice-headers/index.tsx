@@ -1,8 +1,8 @@
 /**
- * 发票抬头页面 — 对标设计稿
+ * 发票抬头页面 — Sketch 设计稿精确对标
  */
-import { useState, useEffect, useCallback } from 'react'
-import { View, Text, Input, Image } from '@tarojs/components'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import './index.scss'
@@ -11,33 +11,63 @@ interface InvoiceHeader {
   id: number
   name: string
   type: 'personal' | 'company'
-  avatar?: string
   tax_number?: string
+  address?: string
+  phone?: string
+  bank_name?: string
+  bank_account?: string
 }
 
 const MOCK_HEADERS: InvoiceHeader[] = [
-  { id: 1, name: '湖南大学', type: 'company', avatar: '' },
-  { id: 2, name: '湖南师范大学', type: 'company', avatar: '' },
+  { id: 1, name: '湖南大学', type: 'company', tax_number: '91430000738820X', address: '长沙市岳麓区麓山南路', phone: '0731-88821234', bank_name: '中国银行长沙分行', bank_account: '7328 0000 1234 5678' },
+  { id: 2, name: '湖南师范大学', type: 'company', tax_number: '91430000456789Y', address: '长沙市岳麓区麓山路36号', phone: '0731-88872345', bank_name: '工商银行长沙支行', bank_account: '1902 0000 5678 1234' },
+  { id: 3, name: '张三', type: 'personal' },
+  { id: 4, name: '中南大学', type: 'company', tax_number: '91430000112233Z' },
+  { id: 5, name: '李四', type: 'personal' },
+  { id: 6, name: '长沙理工大学', type: 'company', tax_number: '91430000998877W' },
 ]
+
+const PAGE_SIZE = 4
+
+const EMPTY_FORM = { name: '', tax_number: '', address: '', phone: '', bank_name: '', bank_account: '' }
 
 export default function InvoiceHeaders() {
   const { theme } = useTheme()
   const [headers, setHeaders] = useState<InvoiceHeader[]>([])
   const [showAdd, setShowAdd] = useState(false)
   const [addType, setAddType] = useState<'personal' | 'company'>('personal')
-  const [addName, setAddName] = useState('')
+  const [form, setForm] = useState(EMPTY_FORM)
+  const [saving, setSaving] = useState(false)
+  const [topPad, setTopPad] = useState(54)
+  const [currentPage, setCurrentPage] = useState(1)
+  const touchStartX = useRef(0)
+  const [swipedId, setSwipedId] = useState<number | null>(null)
 
   useEffect(() => {
+    try {
+      const sys = Taro.getSystemInfoSync()
+      setTopPad((sys.statusBarHeight || 44) + 10)
+    } catch { /* fallback */ }
     setHeaders(MOCK_HEADERS)
+  }, [])
+
+  const totalPages = Math.max(1, Math.ceil(headers.length / PAGE_SIZE))
+  const pagedHeaders = headers.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+
+  const handleTouchStart = useCallback((e: any) => { touchStartX.current = e.touches[0].clientX }, [])
+  const handleTouchMove = useCallback((e: any, id: number) => {
+    const dx = e.touches[0].clientX - touchStartX.current
+    if (dx < -40) setSwipedId(id)
+    else if (dx > 20) setSwipedId(null)
   }, [])
 
   const handleDelete = useCallback((id: number) => {
     Taro.showModal({
-      title: '删除发票抬头',
-      content: '确定要删除该发票抬头吗？',
+      title: '删除发票抬头', content: '确定要删除该发票抬头吗？', confirmColor: '#e71d36',
       success: (res) => {
         if (res.confirm) {
           setHeaders(prev => prev.filter(h => h.id !== id))
+          setSwipedId(null)
           Taro.showToast({ title: '已删除', icon: 'success' })
         }
       },
@@ -45,122 +75,190 @@ export default function InvoiceHeaders() {
   }, [])
 
   const handleCopy = useCallback((item: InvoiceHeader) => {
-    Taro.setClipboardData({ data: item.name })
+    Taro.setClipboardData({ data: item.name + (item.tax_number ? `\n税号: ${item.tax_number}` : '') })
   }, [])
 
-  const handleEdit = useCallback((item: InvoiceHeader) => {
-    Taro.showToast({ title: `编辑: ${item.name}`, icon: 'none' })
+  const openAdd = useCallback(() => {
+    setForm(EMPTY_FORM)
+    setAddType('personal')
+    setShowAdd(true)
   }, [])
 
   const handleSaveAdd = useCallback(() => {
-    if (!addName.trim()) {
+    if (!form.name.trim()) {
       Taro.showToast({ title: '请输入名称', icon: 'none' })
       return
     }
-    const newHeader: InvoiceHeader = {
-      id: Date.now(),
-      name: addName.trim(),
-      type: addType,
-    }
-    setHeaders(prev => [...prev, newHeader])
-    setShowAdd(false)
-    setAddName('')
-    Taro.showToast({ title: '添加成功', icon: 'success' })
-  }, [addName, addType])
+    setSaving(true)
+    setTimeout(() => {
+      const newHeader: InvoiceHeader = {
+        id: Date.now(),
+        name: form.name.trim(),
+        type: addType,
+        ...(addType === 'company' ? {
+          tax_number: form.tax_number, address: form.address,
+          phone: form.phone, bank_name: form.bank_name, bank_account: form.bank_account,
+        } : {}),
+      }
+      setHeaders(prev => [...prev, newHeader])
+      setSaving(false)
+      setShowAdd(false)
+      setForm(EMPTY_FORM)
+      Taro.showToast({ title: '添加成功', icon: 'success' })
+    }, 800)
+  }, [form, addType])
+
+  const updateField = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }))
 
   return (
     <View className={`ih-page theme-${theme}`}>
-      <View className="ih-back" onClick={() => Taro.navigateBack()}>
-        <View className="ih-back-arrow" />
+      <View className="ih-back" style={{ paddingTop: `${topPad}px` }} onClick={() => Taro.navigateBack()}>
+        <View className="ih-back-circle">
+          <View className="ih-back-arrow" />
+        </View>
       </View>
 
-      <View className="ih-add-btn" onClick={() => setShowAdd(true)}>
-        <View className="ih-add-icon">
-          <View className="ih-plus-h" />
-          <View className="ih-plus-v" />
-        </View>
+      {/* 添加发票抬头按钮 — Sketch: bg #f5f5f5, radius 15 */}
+      <View className="ih-add-btn" onClick={openAdd}>
+        <View className="ih-add-icon" />
         <Text className="ih-add-text">添加发票抬头</Text>
       </View>
 
-      <View className="ih-list">
-        {headers.map(item => (
-          <View key={item.id} className="ih-card">
-            <View className="ih-card-top">
-              <View className="ih-card-left">
-                <View className="ih-card-avatar">
-                  {item.avatar ? (
-                    <Image className="ih-avatar-img" src={item.avatar} mode="aspectFill" />
-                  ) : (
-                    <View className="ih-avatar-placeholder">
+      <ScrollView scrollY className="ih-scroll">
+        <View className="ih-list">
+          {pagedHeaders.map(item => (
+            <View
+              key={item.id}
+              className={`ih-card ${swipedId === item.id ? 'swiped' : ''}`}
+              onTouchStart={handleTouchStart}
+              onTouchMove={e => handleTouchMove(e, item.id)}
+            >
+              <View className="ih-card-body">
+                <View className="ih-card-top">
+                  <View className="ih-card-left">
+                    <View className="ih-card-avatar">
                       <Text>{item.name[0]}</Text>
                     </View>
-                  )}
+                    <View className="ih-card-info">
+                      <Text className="ih-card-name">{item.name}</Text>
+                      <Text className="ih-card-type">{item.type === 'personal' ? '个人' : '单位'}</Text>
+                    </View>
+                  </View>
+                  <View className="ih-qr-icon" />
                 </View>
-                <View className="ih-card-info">
-                  <Text className="ih-card-name">{item.name}</Text>
-                  <Text className="ih-card-type">{item.type === 'personal' ? '个人' : '单位'}</Text>
+                <View className="ih-card-divider" />
+                <View className="ih-card-actions">
+                  <View className="ih-action ih-action-edit" onClick={() => Taro.showToast({ title: `编辑: ${item.name}`, icon: 'none' })}>
+                    <Text>编辑</Text>
+                  </View>
+                  <View className="ih-action ih-action-copy" onClick={() => handleCopy(item)}>
+                    <Text>复制内容</Text>
+                  </View>
+                  <View className="ih-action ih-action-delete" onClick={() => handleDelete(item.id)}>
+                    <Text>删除</Text>
+                  </View>
                 </View>
               </View>
-              <View className="ih-qr-icon">
-                <View className="ih-qr-grid">
-                  <View className="ih-qr-cell" /><View className="ih-qr-cell" /><View className="ih-qr-cell" />
-                  <View className="ih-qr-cell ih-qr-empty" /><View className="ih-qr-cell" /><View className="ih-qr-cell ih-qr-empty" />
-                  <View className="ih-qr-cell" /><View className="ih-qr-cell" /><View className="ih-qr-cell" />
+              <View className="ih-delete-area" onClick={() => handleDelete(item.id)}>
+                <View className="ih-trash-icon">
+                  <View className="ih-trash-lid" />
+                  <View className="ih-trash-body" />
                 </View>
               </View>
             </View>
-            <View className="ih-card-actions">
-              <View className="ih-action" onClick={() => handleEdit(item)}>
-                <Text className="ih-action-icon">✎</Text>
-                <Text className="ih-action-text">编辑</Text>
-              </View>
-              <View className="ih-action" onClick={() => handleCopy(item)}>
-                <Text className="ih-action-icon ih-action-copy">◫</Text>
-                <Text className="ih-action-text">复制内容</Text>
-              </View>
-              <View className="ih-action ih-action-danger" onClick={() => handleDelete(item.id)}>
-                <Text className="ih-action-icon">●</Text>
-                <Text className="ih-action-text">删除</Text>
-              </View>
-            </View>
-          </View>
-        ))}
-        {headers.length === 0 && (
-          <View className="ih-empty"><Text>暂无发票抬头</Text></View>
-        )}
-      </View>
+          ))}
+          {headers.length === 0 && (
+            <View className="ih-empty"><Text>暂无发票抬头</Text></View>
+          )}
+        </View>
 
+        {totalPages > 1 && (
+          <View className="ih-pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <View
+                key={i}
+                className={`ih-page-dot ${currentPage === i + 1 ? 'active' : ''}`}
+                onClick={() => setCurrentPage(i + 1)}
+              />
+            ))}
+            <Text className="ih-page-info">{currentPage}/{totalPages}</Text>
+          </View>
+        )}
+      </ScrollView>
+
+      {/* ===== 添加发票抬头 Bottom Sheet ===== */}
       {showAdd && (
-        <View className="ih-sheet-mask" onClick={() => setShowAdd(false)}>
+        <View className="ih-sheet-mask" onClick={() => { if (!saving) setShowAdd(false) }}>
           <View className="ih-sheet" onClick={e => e.stopPropagation()}>
             <View className="ih-sheet-handle" />
             <Text className="ih-sheet-title">添加发票抬头</Text>
-            <View className="ih-type-switch">
+
+            {/* Segmented Control — Sketch: bg #f6f8fe, radius 15 */}
+            <View className="ih-seg-control">
               <View
-                className={`ih-type-btn ${addType === 'personal' ? 'active' : ''}`}
+                className={`ih-seg-item ${addType === 'personal' ? 'active' : ''}`}
                 onClick={() => setAddType('personal')}
               >
                 <Text>个人</Text>
               </View>
               <View
-                className={`ih-type-btn ${addType === 'company' ? 'active' : ''}`}
+                className={`ih-seg-item ${addType === 'company' ? 'active' : ''}`}
                 onClick={() => setAddType('company')}
               >
                 <Text>单位</Text>
               </View>
             </View>
-            <View className="ih-sheet-field">
-              <Text className="ih-sheet-label">名称</Text>
-              <Input
-                className="ih-sheet-input"
-                value={addName}
-                onInput={e => setAddName(e.detail.value)}
-                placeholder="姓名（必填）"
-              />
+
+            <ScrollView scrollY className="ih-form-scroll">
+              {addType === 'personal' ? (
+                <View className="ih-field">
+                  <Text className="ih-field-label">名称</Text>
+                  <Input className="ih-field-input" value={form.name} onInput={e => updateField('name', e.detail.value)} placeholder="姓名（必填）" placeholderClass="ih-placeholder" />
+                </View>
+              ) : (
+                <>
+                  <View className="ih-field">
+                    <Text className="ih-field-label">名称</Text>
+                    <Input className="ih-field-input" value={form.name} onInput={e => updateField('name', e.detail.value)} placeholder="单位名称（必填）" placeholderClass="ih-placeholder" />
+                  </View>
+                  <View className="ih-field">
+                    <Text className="ih-field-label">税号</Text>
+                    <Input className="ih-field-input" value={form.tax_number} onInput={e => updateField('tax_number', e.detail.value)} placeholder="纳税人识别号" placeholderClass="ih-placeholder" />
+                  </View>
+                  <View className="ih-field">
+                    <Text className="ih-field-label">单位地址</Text>
+                    <Input className="ih-field-input" value={form.address} onInput={e => updateField('address', e.detail.value)} placeholder="单位地址信息" placeholderClass="ih-placeholder" />
+                  </View>
+                  <View className="ih-field">
+                    <Text className="ih-field-label">电话</Text>
+                    <Input className="ih-field-input" value={form.phone} onInput={e => updateField('phone', e.detail.value)} placeholder="电话号码" placeholderClass="ih-placeholder" />
+                  </View>
+                  <View className="ih-field">
+                    <Text className="ih-field-label">开户银行</Text>
+                    <Input className="ih-field-input" value={form.bank_name} onInput={e => updateField('bank_name', e.detail.value)} placeholder="开户银行名称" placeholderClass="ih-placeholder" />
+                  </View>
+                  <View className="ih-field">
+                    <Text className="ih-field-label">开户银行</Text>
+                    <Input className="ih-field-input" value={form.bank_account} onInput={e => updateField('bank_account', e.detail.value)} placeholder="银行账户号码" placeholderClass="ih-placeholder" />
+                  </View>
+                </>
+              )}
+            </ScrollView>
+
+            <View className="ih-sheet-footer">
+              <View className={`ih-save-btn ${form.name.trim() ? 'active' : ''}`} onClick={handleSaveAdd}>
+                <Text>保存</Text>
+              </View>
             </View>
-            <View className="ih-sheet-save" onClick={handleSaveAdd}>
-              <Text>保存</Text>
-            </View>
+
+            {saving && (
+              <View className="ih-loading-overlay">
+                <View className="ih-loading-box">
+                  <View className="ih-loading-spinner" />
+                  <Text className="ih-loading-text">加载中</Text>
+                </View>
+              </View>
+            )}
           </View>
         </View>
       )}

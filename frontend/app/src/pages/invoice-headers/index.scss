@@ -1,92 +1,118 @@
+// ===== 发票抬头页面 — Sketch 设计稿精确对标 =====
 .ih-page {
   min-height: 100vh;
-  background: #f5f6f3;
-  padding: 0 16px env(safe-area-inset-bottom);
+  background: #fefefe;
+  padding: 0 0 env(safe-area-inset-bottom);
 }
 
+// 返回按钮 — Sketch: 40x40, border #e3e7ec 1px, fill #fefefe
 .ih-back {
-  padding: 56px 0 12px 4px;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-left: 24px;
   &:active { opacity: 0.5; }
 }
 
-.ih-back-arrow {
-  width: 9px;
-  height: 9px;
-  border-top: 2px solid #2f343a;
-  border-left: 2px solid #2f343a;
-  transform: rotate(-45deg);
+.ih-back-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e3e7ec;
+  background: #fefefe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.ih-back-arrow {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #111111;
+  border-left: 2px solid #111111;
+  transform: rotate(-45deg);
+  margin-left: 3px;
+}
+
+// 添加发票抬头按钮 — Sketch: bg #f5f5f5, radius 15, 321x60
 .ih-add-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 20px;
-  margin: 8px 0 16px;
-  background: rgba(0,0,0,0.03);
-  border-radius: 16px;
-  &:active { background: rgba(0,0,0,0.06); }
+  gap: 12px;
+  padding: 18px 20px;
+  margin: 16px 27px 16px;
+  background: #f5f5f5;
+  border-radius: 15px;
+  &:active { background: #ededeb; }
 }
 
+// Sketch: add-circle icon border #183d1e 1.5px
 .ih-add-icon {
-  width: 22px;
-  height: 22px;
+  width: 21px;
+  height: 20px;
   border-radius: 50%;
-  border: 1.5px solid #2f343a;
+  border: 1.5px solid #183d1e;
   position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 7px;
+    height: 1.5px;
+    background: #183d1e;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.5px;
+    height: 7px;
+    background: #183d1e;
+  }
 }
 
-.ih-plus-h, .ih-plus-v {
-  position: absolute;
-  background: #2f343a;
-  border-radius: 1px;
-}
-
-.ih-plus-h {
-  width: 10px;
-  height: 1.5px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.ih-plus-v {
-  width: 1.5px;
-  height: 10px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
+// Sketch: sz:14, color #111111
 .ih-add-text {
   font-size: 14px;
-  color: #1f252b;
+  color: #111111;
   font-weight: 500;
+}
+
+.ih-scroll {
+  flex: 1;
+  height: calc(100vh - 200px);
 }
 
 .ih-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 0 27px;
 }
 
+// ===== 卡片 — Sketch: bg #fff, border #183d1e 0.5px, radius 10 =====
 .ih-card {
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.04);
-  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  &.swiped .ih-card-body { transform: translateX(-70px); }
+}
+
+.ih-card-body {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border: 0.5px solid #183d1e;
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: transform 0.25s ease;
 }
 
 .ih-card-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
 }
 
 .ih-card-left {
@@ -95,27 +121,19 @@
   gap: 10px;
 }
 
+// Sketch: 20x20 circle, fill #707070, border #fff 1px
 .ih-card-avatar {
-  width: 32px;
-  height: 32px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.ih-avatar-img {
-  width: 100%;
-  height: 100%;
-}
-
-.ih-avatar-placeholder {
-  width: 100%;
-  height: 100%;
-  background: #2d5a3d;
+  background: #707070;
+  border: 1px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  text { font-size: 13px; color: #fff; font-weight: 600; }
+  flex-shrink: 0;
+  overflow: hidden;
+  text { font-size: 9px; color: #fff; font-weight: 600; }
 }
 
 .ih-card-info {
@@ -124,73 +142,141 @@
   gap: 2px;
 }
 
+// Sketch: sz:11, color #000000
 .ih-card-name {
-  font-size: 14px;
-  color: #1f252b;
-  font-weight: 600;
-}
-
-.ih-card-type {
   font-size: 11px;
-  color: #8a9098;
+  color: #000000;
+  font-weight: 500;
 }
 
+// Sketch: sz:8, color #808080
+.ih-card-type {
+  font-size: 8px;
+  color: #808080;
+}
+
+// QR icon placeholder
 .ih-qr-icon {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #000;
+    border-radius: 1px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
-.ih-qr-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 8px);
-  grid-template-rows: repeat(3, 8px);
-  gap: 2px;
+// Sketch: divider #e5e5e5 0.2px
+.ih-card-divider {
+  height: 0;
+  border-top: 0.5px solid #e5e5e5;
+  margin: 10px 0 8px;
 }
 
-.ih-qr-cell {
-  background: #2f343a;
-  border-radius: 1px;
-}
-
-.ih-qr-empty {
-  background: transparent;
-}
-
+// Sketch: action buttons — small pill badges
 .ih-card-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 8px;
 }
 
 .ih-action {
-  display: flex;
-  align-items: center;
-  gap: 3px;
+  padding: 2px 10px;
+  border-radius: 5px;
+  text { font-size: 8px; font-weight: 500; }
   &:active { opacity: 0.6; }
 }
 
-.ih-action-icon {
-  font-size: 11px;
-  color: #2d5a3d;
+// Sketch: 编辑 bg transparent (outline), text #183d1e
+.ih-action-edit {
+  border: 0.5px solid #183d1e;
+  text { color: #183d1e; }
 }
 
+// Sketch: 复制内容 bg #0278f5 (alpha ~0.87)
 .ih-action-copy {
-  color: #8a9098;
+  background: rgba(2, 120, 245, 0.87);
+  text { color: #fff; }
 }
 
-.ih-action-text {
-  font-size: 12px;
-  color: #2d5a3d;
-  font-weight: 500;
+// Sketch: 删除 bg #e71d36
+.ih-action-delete {
+  background: #e71d36;
+  text { color: #fff; }
 }
 
-.ih-action-danger {
-  .ih-action-icon { color: #ef5f65; font-size: 7px; }
-  .ih-action-text { color: #ef5f65; }
+// 滑动删除
+.ih-delete-area {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 70px;
+  background: #ef4444;
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.ih-trash-icon {
+  width: 20px;
+  height: 22px;
+  position: relative;
+}
+
+.ih-trash-lid {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 3px;
+    border: 1.5px solid #fff;
+    border-bottom: none;
+    border-radius: 2px 2px 0 0;
+  }
+}
+
+.ih-trash-body {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  right: 3px;
+  bottom: 0;
+  border: 1.5px solid #fff;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
 }
 
 .ih-empty {
@@ -201,125 +287,227 @@
   text { font-size: 13px; color: #c0c4ca; }
 }
 
-// ===== 添加弹窗 =====
+// 分页
+.ih-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 0;
+}
+
+.ih-page-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(24,61,30,0.15);
+  &.active { background: #183d1e; width: 16px; border-radius: 3px; }
+}
+
+.ih-page-info {
+  font-size: 10px;
+  color: #808080;
+  margin-left: 6px;
+}
+
+// ===== 添加弹窗 Bottom Sheet =====
 .ih-sheet-mask {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 999;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(128, 128, 128, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: flex-end;
   animation: ihFadeIn 0.2s ease;
 }
 
+// Sketch: fill #fefefe
 .ih-sheet {
   width: 100%;
-  background: #fff;
+  background: #fefefe;
   border-radius: 24px 24px 0 0;
-  padding: 16px 24px calc(32px + env(safe-area-inset-bottom));
+  padding: 12px 24px calc(24px + env(safe-area-inset-bottom));
   animation: ihSlideUp 0.3s ease;
+  position: relative;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
 }
 
+// Sketch: handle bar #a6a6a6, 1.5px thick, ~52px wide
 .ih-sheet-handle {
-  width: 36px;
-  height: 4px;
-  background: #dce0d8;
-  border-radius: 2px;
-  margin: 0 auto 20px;
+  width: 52px;
+  height: 3px;
+  background: #a6a6a6;
+  border-radius: 1.5px;
+  margin: 0 auto 16px;
 }
 
+// Sketch: sz:13, color #111111
 .ih-sheet-title {
   display: block;
-  font-size: 16px;
-  color: #1f252b;
-  font-weight: 600;
+  font-size: 13px;
+  color: #111111;
+  font-weight: 500;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.ih-type-switch {
+// Segmented Control — Sketch: bg #f6f8fe, radius 15
+.ih-seg-control {
   display: flex;
-  border-radius: 12px;
-  border: 1px solid #dce0d8;
-  overflow: hidden;
-  margin-bottom: 24px;
+  background: #f6f8fe;
+  border-radius: 15px;
+  padding: 4px;
+  margin-bottom: 20px;
 }
 
-.ih-type-btn {
+.ih-seg-item {
   flex: 1;
-  padding: 10px;
+  padding: 6px 0;
   text-align: center;
-  text { font-size: 13px; color: #8a9098; font-weight: 500; }
+  border-radius: 8px;
+  text { font-size: 12px; color: #9ca4ab; font-weight: 500; }
   &.active {
-    background: #2d5a3d;
-    text { color: #fff; }
+    background: #fefefe;
+    text { color: #111111; }
   }
 }
 
-.ih-sheet-field {
+// Form fields
+.ih-form-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.ih-field {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  margin-bottom: 24px;
+  padding: 14px 0;
+  border-bottom: 0.5px solid #e5e5e5;
 }
 
-.ih-sheet-label {
-  font-size: 13px;
-  color: #2d5a3d;
-  font-weight: 600;
+// Sketch: label sz:14, color #78828a
+.ih-field-label {
+  font-size: 14px;
+  color: #78828a;
+  font-weight: 500;
   flex-shrink: 0;
+  min-width: 56px;
 }
 
-.ih-sheet-input {
+// Sketch: placeholder sz:12, color #808080
+.ih-field-input {
   flex: 1;
-  font-size: 13px;
-  color: #1f252b;
+  font-size: 12px;
+  color: #111111;
 }
 
-.ih-sheet-save {
-  width: 120px;
-  height: 40px;
-  border-radius: 20px;
-  background: #dce0d8;
+.ih-placeholder {
+  color: #808080;
+  font-size: 12px;
+}
+
+.ih-sheet-footer {
+  padding-top: 20px;
+}
+
+// Sketch: inactive #e5e5e5, active #183d1e, radius 5, 48x20
+.ih-save-btn {
+  width: 48px;
+  height: 20px;
+  border-radius: 5px;
+  background: #e5e5e5;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  text { font-size: 13px; color: #8a9098; }
+  text { font-size: 10px; color: #fff; font-weight: 500; }
+  &.active { background: #183d1e; }
   &:active { opacity: 0.7; }
+}
+
+// Loading overlay
+.ih-loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+// Sketch: bg #4c4c4c, radius 12, 136x136
+.ih-loading-box {
+  width: 136px;
+  height: 136px;
+  background: #4c4c4c;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.ih-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ihSpin 0.8s linear infinite;
+}
+
+// Sketch: sz:17, color #ffffffe6
+.ih-loading-text {
+  font-size: 17px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
 }
 
 @keyframes ihFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes ihSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes ihSpin { to { transform: rotate(360deg); } }
 
 // ===== 暗色主题 =====
 .ih-page.theme-dark {
   background: #141618;
+
+  .ih-back-circle { border-color: #555b66; background: #1e2228; }
   .ih-back-arrow { border-color: #d8dde4; }
+
   .ih-add-btn { background: rgba(255,255,255,0.04); }
-  .ih-add-icon { border-color: #d8dde4; }
-  .ih-plus-h, .ih-plus-v { background: #d8dde4; }
+  .ih-add-icon { border-color: #6fcf8a; &::before { background: #6fcf8a; } &::after { background: #6fcf8a; } }
   .ih-add-text { color: #e4e9ef; }
-  .ih-card { background: #1e2228; border-color: rgba(255,255,255,0.06); }
+
+  .ih-card-body { background: #1e2228; border-color: rgba(111,207,138,0.3); }
+  .ih-card-avatar { background: #6fcf8a; border-color: #1e2228; }
   .ih-card-name { color: #e4e9ef; }
   .ih-card-type { color: #7b8592; }
-  .ih-qr-cell { background: #d8dde4; }
-  .ih-avatar-placeholder { background: #6fcf8a; }
-  .ih-action-icon { color: #6fcf8a; }
-  .ih-action-text { color: #6fcf8a; }
-  .ih-action-danger .ih-action-icon, .ih-action-danger .ih-action-text { color: #ef5f65; }
+  .ih-card-divider { border-color: rgba(255,255,255,0.06); }
+  .ih-qr-icon::before { border-color: #d8dde4; }
+  .ih-qr-icon::after { background: #d8dde4; }
+
+  .ih-action-edit { border-color: #6fcf8a; text { color: #6fcf8a; } }
+  .ih-action-copy { background: rgba(2,120,245,0.7); }
+
+  .ih-page-dot { background: rgba(111,207,138,0.15); &.active { background: #6fcf8a; } }
+  .ih-page-info { color: #555b66; }
+
   .ih-sheet { background: #1e2228; }
   .ih-sheet-handle { background: #555b66; }
   .ih-sheet-title { color: #e4e9ef; }
-  .ih-type-switch { border-color: rgba(255,255,255,0.08); }
-  .ih-type-btn text { color: #7b8592; }
-  .ih-type-btn.active { background: #6fcf8a; text { color: #1e2228; } }
-  .ih-sheet-label { color: #6fcf8a; }
-  .ih-sheet-input { color: #e4e9ef; }
-  .ih-sheet-field { border-color: rgba(255,255,255,0.06); }
+  .ih-seg-control { background: rgba(255,255,255,0.04); }
+  .ih-seg-item text { color: #7b8592; }
+  .ih-seg-item.active { background: #2a2e34; text { color: #e4e9ef; } }
+  .ih-field { border-color: rgba(255,255,255,0.06); }
+  .ih-field-label { color: #6fcf8a; }
+  .ih-field-input { color: #e4e9ef; }
+  .ih-save-btn { background: #555b66; &.active { background: #6fcf8a; text { color: #1e2228; } } }
   .ih-empty text { color: #555b66; }
 }
