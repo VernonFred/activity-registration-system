@@ -61,6 +61,34 @@ const MOCK_PAYMENTS: PaymentItem[] = [
     date_range: '2025年12月5日—7日', time_range: '10:00 AM - 6:00 PM',
     payer: '张三',
   },
+  {
+    id: 5, activity_id: 105, activity_title: '春季教育峰会', amount: 88.00,
+    category: '峰会', status: 'paid', pay_date: '2025-07-12',
+    cover_url: 'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400',
+    date_range: '2025年7月12日—14日', time_range: '9:00 AM - 5:00 PM',
+    payer: '张三', order_no: '20250712100000345678', transaction_no: 'CONF_221345678901',
+  },
+  {
+    id: 6, activity_id: 106, activity_title: '人工智能技术论坛', amount: 150.00,
+    category: '论坛', status: 'paid', pay_date: '2025-06-25',
+    cover_url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400',
+    date_range: '2025年6月25日—27日', time_range: '8:30 AM - 6:00 PM',
+    payer: '张三', order_no: '20250625083000567890', transaction_no: 'CONF_667890123456',
+  },
+  {
+    id: 7, activity_id: 107, activity_title: '数字化转型培训', amount: 200.00,
+    category: '培训', status: 'paid', pay_date: '2025-05-18',
+    cover_url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400',
+    date_range: '2025年5月18日—20日', time_range: '9:00 AM - 4:30 PM',
+    payer: '张三', order_no: '20250518090000901234', transaction_no: 'CONF_339012345678',
+  },
+  {
+    id: 8, activity_id: 108, activity_title: '高校合作研讨会', amount: 75.00,
+    category: '研讨会', status: 'unpaid',
+    cover_url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400',
+    date_range: '2026年1月10日—12日', time_range: '10:00 AM - 5:00 PM',
+    payer: '张三',
+  },
 ]
 
 export default function MyPayments() {

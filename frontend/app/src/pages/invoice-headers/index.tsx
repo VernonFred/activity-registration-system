@@ -28,13 +28,14 @@ const MOCK_HEADERS: InvoiceHeader[] = [
 ]
 
 const PAGE_SIZE = 4
-
 const EMPTY_FORM = { name: '', tax_number: '', address: '', phone: '', bank_name: '', bank_account: '' }
 
 export default function InvoiceHeaders() {
   const { theme } = useTheme()
   const [headers, setHeaders] = useState<InvoiceHeader[]>([])
-  const [showAdd, setShowAdd] = useState(false)
+  const [showSheet, setShowSheet] = useState(false)
+  const [sheetMode, setSheetMode] = useState<'add' | 'edit'>('add')
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [addType, setAddType] = useState<'personal' | 'company'>('personal')
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
@@ -81,32 +82,61 @@ export default function InvoiceHeaders() {
   const openAdd = useCallback(() => {
     setForm(EMPTY_FORM)
     setAddType('personal')
-    setShowAdd(true)
+    setSheetMode('add')
+    setEditingId(null)
+    setShowSheet(true)
   }, [])
 
-  const handleSaveAdd = useCallback(() => {
+  const openEdit = useCallback((item: InvoiceHeader) => {
+    setForm({
+      name: item.name,
+      tax_number: item.tax_number || '',
+      address: item.address || '',
+      phone: item.phone || '',
+      bank_name: item.bank_name || '',
+      bank_account: item.bank_account || '',
+    })
+    setAddType(item.type)
+    setSheetMode('edit')
+    setEditingId(item.id)
+    setShowSheet(true)
+  }, [])
+
+  const handleSave = useCallback(() => {
     if (!form.name.trim()) {
       Taro.showToast({ title: '请输入名称', icon: 'none' })
       return
     }
     setSaving(true)
     setTimeout(() => {
-      const newHeader: InvoiceHeader = {
-        id: Date.now(),
-        name: form.name.trim(),
-        type: addType,
-        ...(addType === 'company' ? {
-          tax_number: form.tax_number, address: form.address,
-          phone: form.phone, bank_name: form.bank_name, bank_account: form.bank_account,
-        } : {}),
+      if (sheetMode === 'add') {
+        const newHeader: InvoiceHeader = {
+          id: Date.now(),
+          name: form.name.trim(),
+          type: addType,
+          ...(addType === 'company' ? {
+            tax_number: form.tax_number, address: form.address,
+            phone: form.phone, bank_name: form.bank_name, bank_account: form.bank_account,
+          } : {}),
+        }
+        setHeaders(prev => [...prev, newHeader])
+        Taro.showToast({ title: '添加成功', icon: 'success' })
+      } else if (editingId !== null) {
+        setHeaders(prev => prev.map(h => h.id === editingId ? {
+          ...h,
+          name: form.name.trim(),
+          ...(h.type === 'company' ? {
+            tax_number: form.tax_number, address: form.address,
+            phone: form.phone, bank_name: form.bank_name, bank_account: form.bank_account,
+          } : {}),
+        } : h))
+        Taro.showToast({ title: '保存成功', icon: 'success' })
       }
-      setHeaders(prev => [...prev, newHeader])
       setSaving(false)
-      setShowAdd(false)
+      setShowSheet(false)
       setForm(EMPTY_FORM)
-      Taro.showToast({ title: '添加成功', icon: 'success' })
     }, 800)
-  }, [form, addType])
+  }, [form, addType, sheetMode, editingId])
 
   const updateField = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }))
 
@@ -118,7 +148,6 @@ export default function InvoiceHeaders() {
         </View>
       </View>
 
-      {/* 添加发票抬头按钮 — Sketch: bg #f5f5f5, radius 15 */}
       <View className="ih-add-btn" onClick={openAdd}>
         <View className="ih-add-icon" />
         <Text className="ih-add-text">添加发票抬头</Text>
@@ -148,17 +177,15 @@ export default function InvoiceHeaders() {
                 </View>
                 <View className="ih-card-divider" />
                 <View className="ih-card-actions">
-                  <View className="ih-action ih-action-edit" onClick={() => Taro.showToast({ title: `编辑: ${item.name}`, icon: 'none' })}>
+                  <View className="ih-action ih-action-edit" onClick={() => openEdit(item)}>
                     <Text>编辑</Text>
                   </View>
                   <View className="ih-action ih-action-copy" onClick={() => handleCopy(item)}>
                     <Text>复制内容</Text>
                   </View>
-                  <View className="ih-action ih-action-delete" onClick={() => handleDelete(item.id)}>
-                    <Text>删除</Text>
-                  </View>
                 </View>
               </View>
+              {/* 左滑删除 — 参照缴费列表样式 */}
               <View className="ih-delete-area" onClick={() => handleDelete(item.id)}>
                 <View className="ih-trash-icon">
                   <View className="ih-trash-lid" />
@@ -186,28 +213,31 @@ export default function InvoiceHeaders() {
         )}
       </ScrollView>
 
-      {/* ===== 添加发票抬头 Bottom Sheet ===== */}
-      {showAdd && (
-        <View className="ih-sheet-mask" onClick={() => { if (!saving) setShowAdd(false) }}>
+      {/* ===== 添加/编辑发票抬头 Bottom Sheet ===== */}
+      {showSheet && (
+        <View className="ih-sheet-mask" onClick={() => { if (!saving) setShowSheet(false) }}>
           <View className="ih-sheet" onClick={e => e.stopPropagation()}>
             <View className="ih-sheet-handle" />
-            <Text className="ih-sheet-title">添加发票抬头</Text>
+            <Text className="ih-sheet-title">
+              {sheetMode === 'add' ? '添加发票抬头' : '编辑发票抬头'}
+            </Text>
 
-            {/* Segmented Control — Sketch: bg #f6f8fe, radius 15 */}
-            <View className="ih-seg-control">
-              <View
-                className={`ih-seg-item ${addType === 'personal' ? 'active' : ''}`}
-                onClick={() => setAddType('personal')}
-              >
-                <Text>个人</Text>
+            {sheetMode === 'add' && (
+              <View className="ih-seg-control">
+                <View
+                  className={`ih-seg-item ${addType === 'personal' ? 'active' : ''}`}
+                  onClick={() => setAddType('personal')}
+                >
+                  <Text>个人</Text>
+                </View>
+                <View
+                  className={`ih-seg-item ${addType === 'company' ? 'active' : ''}`}
+                  onClick={() => setAddType('company')}
+                >
+                  <Text>单位</Text>
+                </View>
               </View>
-              <View
-                className={`ih-seg-item ${addType === 'company' ? 'active' : ''}`}
-                onClick={() => setAddType('company')}
-              >
-                <Text>单位</Text>
-              </View>
-            </View>
+            )}
 
             <ScrollView scrollY className="ih-form-scroll">
               {addType === 'personal' ? (
@@ -246,7 +276,7 @@ export default function InvoiceHeaders() {
             </ScrollView>
 
             <View className="ih-sheet-footer">
-              <View className={`ih-save-btn ${form.name.trim() ? 'active' : ''}`} onClick={handleSaveAdd}>
+              <View className={`ih-save-btn ${form.name.trim() ? 'active' : ''}`} onClick={handleSave}>
                 <Text>保存</Text>
               </View>
             </View>

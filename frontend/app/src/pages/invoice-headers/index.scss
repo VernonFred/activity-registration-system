@@ -94,15 +94,18 @@
 // ===== 卡片 — Sketch: bg #fff, border #183d1e 0.5px, radius 10 =====
 .ih-card {
   position: relative;
-  overflow: hidden;
   border-radius: 10px;
-  &.swiped .ih-card-body { transform: translateX(-70px); }
+  overflow: hidden;
+}
+
+.ih-card.swiped .ih-card-body {
+  transform: translateX(-72px);
 }
 
 .ih-card-body {
   position: relative;
   z-index: 2;
-  background: #ffffff;
+  background: #fefefe;
   border: 0.5px solid #183d1e;
   border-radius: 10px;
   padding: 12px 14px;
@@ -194,7 +197,7 @@
   margin: 10px 0 8px;
 }
 
-// Sketch: action buttons — small pill badges
+// 操作按钮 — 只保留编辑+复制，文字居中
 .ih-card-actions {
   display: flex;
   align-items: center;
@@ -203,64 +206,67 @@
 }
 
 .ih-action {
-  padding: 2px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 12px;
   border-radius: 5px;
-  text { font-size: 8px; font-weight: 500; }
+  text {
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 22px;
+    text-align: center;
+  }
   &:active { opacity: 0.6; }
 }
 
-// Sketch: 编辑 bg transparent (outline), text #183d1e
 .ih-action-edit {
   border: 0.5px solid #183d1e;
   text { color: #183d1e; }
 }
 
-// Sketch: 复制内容 bg #0278f5 (alpha ~0.87)
 .ih-action-copy {
   background: rgba(2, 120, 245, 0.87);
   text { color: #fff; }
 }
 
-// Sketch: 删除 bg #e71d36
-.ih-action-delete {
-  background: #e71d36;
-  text { color: #fff; }
-}
-
-// 滑动删除
+// ===== 左滑删除区域 — 参照缴费列表样式 =====
 .ih-delete-area {
   position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 70px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 72px;
   background: #ef4444;
-  border-radius: 0 10px 10px 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 0 10px 10px 0;
   z-index: 1;
+  &:active { background: #dc2626; }
 }
 
 .ih-trash-icon {
-  width: 20px;
-  height: 22px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .ih-trash-lid {
-  position: absolute;
-  top: 0;
-  left: 2px;
-  right: 2px;
-  height: 2px;
+  width: 18px;
+  height: 2.5px;
   background: #fff;
-  border-radius: 1px;
-  &::before {
+  border-radius: 2px;
+  position: relative;
+  &::after {
     content: '';
     position: absolute;
     top: -3px;
     left: 50%;
     transform: translateX(-50%);
-    width: 6px;
+    width: 7px;
     height: 3px;
     border: 1.5px solid #fff;
     border-bottom: none;
@@ -269,14 +275,32 @@
 }
 
 .ih-trash-body {
-  position: absolute;
-  top: 4px;
-  left: 3px;
-  right: 3px;
-  bottom: 0;
+  width: 14px;
+  height: 14px;
   border: 1.5px solid #fff;
   border-top: none;
   border-radius: 0 0 3px 3px;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 1.5px;
+    height: 7px;
+    background: #fff;
+    border-radius: 1px;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    width: 1.5px;
+    height: 7px;
+    background: #fff;
+    border-radius: 1px;
+  }
 }
 
 .ih-empty {
