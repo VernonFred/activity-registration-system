@@ -32,18 +32,22 @@
 .action-group {
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 4rpx;
+  flex: 1;
+  min-width: 0;
 }
-    
+
 .action-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12rpx 24rpx;
+  padding: 12rpx 16rpx;
   border-radius: 36rpx;
   transition: all 0.2s ease;
   position: relative;
+  flex: 1;
+  min-width: 0;
 
   &:active { transform: scale(0.9); }
 }
@@ -56,24 +60,29 @@
 }
 
 .action-text {
-  font-size: 22rpx;
+  font-size: 20rpx;
   font-weight: 500;
   transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 // 右侧报名按钮
 .signup-btn {
-  padding: 24rpx 56rpx;
+  padding: 24rpx 36rpx;
   border-radius: 48rpx;
   text-align: center;
-  margin-left: 24rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 
   &:active { transform: scale(0.95); }
 }
 
 .signup-text {
-  font-size: 30rpx;
+  font-size: 28rpx;
   font-weight: 600;
   color: #FFFFFF;
   white-space: nowrap;

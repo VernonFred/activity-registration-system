@@ -126,7 +126,7 @@ const en = {
     commentAction: 'Comment',
     like: 'Like',
     share: 'Share',
-    signupNow: 'Register Now',
+    signupNow: 'Sign Up',
     livePhotoTitle: 'Photo Gallery',
     livePhotoDesc: 'View event highlights',
     viewLive: 'View Gallery',
