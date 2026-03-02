@@ -24,8 +24,8 @@ const zhCN = {
     loadFailedShort: '加载失败',
     noData: '暂无数据',
     person: '人',
-    �: '元',
-    �Prefix: '¥',
+    yuan: '元',
+    yuanPrefix: '¥',
     collapse: '收起',
     expand: '展开',
     new: '新',
@@ -39,7 +39,8 @@ const zhCN = {
     prev: '上一步',
     next: '下一步',
     laterFill: '稍后填写',
-    uploadingEllipsis: '上传中...'
+    uploadingEllipsis: '上传中...',
+    user: '用户'
   },
 
   // ── 底部导航栏 ──
@@ -102,7 +103,24 @@ const zhCN = {
     cloudy: '多云',
     singleDoublePrice: '单双同价',
     withBreakfast: '含早餐',
-    withDoubleBreakfast: '含双早'
+    withDoubleBreakfast: '含双早',
+    free: '免费',
+    subjectToChange: '以实际情况为准',
+    signupDeadline: '截止报名',
+    currentParticipants: '目前报名人数',
+    hotRegistration: '火热报名中',
+    introductionTitle: '活动介绍',
+    noHotelInfo: '暂无酒店信息',
+    perNight: '/晚',
+    bookingNotes: '预订说明',
+    contactPerson: '预定联系人',
+    callToBook: '拨打电话预定',
+    locationMap: '位置地图',
+    transportGuide: '交通指南',
+    localWeather: '当地天气',
+    humidity: '湿度',
+    windSpeed: '风速',
+    visibility: '能见度'
   },
 
   // ── 报名流程 ──
@@ -320,8 +338,8 @@ const zhCN = {
 
   // ── 多语言 ──
   languageSettings: {
-    pageTitle: '多语言',
-    currentLang: '当前语言',
+    pageTitle: '语言',
+    supportedLang: '支持语言',
     zhCN: '简体中文',
     en: 'English',
     switchSuccess: '语言切换成功'

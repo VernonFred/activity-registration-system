@@ -22,7 +22,7 @@ export default function CheckinPage() {
   const [phase, setPhase] = useState<'idle' | 'pressing' | 'flash' | 'done'>('idle')
   const [checkedIn, setCheckedIn] = useState(false)
   const [checkinTime, setCheckinTime] = useState('')
-  const [title, setTitle] = useState('暑期培训会议')
+  const [title, setTitle] = useState('')
   const [dateRange, setDateRange] = useState('')
   const [location, setLocation] = useState('')
   const [token, setToken] = useState('')
@@ -135,7 +135,7 @@ export default function CheckinPage() {
       {phase !== 'done' ? (
         <View className="pre-stage">
           <Text className="pre-title">{title}</Text>
-          <Text className="pre-date">{dateRange || '2025.07.21-07.25'}</Text>
+          <Text className="pre-date">{dateRange || '--'}</Text>
 
           <View className="orb-area" onClick={handleCheckin}>
             <View className="ripple r1" />

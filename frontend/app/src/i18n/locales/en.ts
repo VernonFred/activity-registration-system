@@ -39,7 +39,8 @@ const en = {
     prev: 'Previous',
     next: 'Next',
     laterFill: 'Fill Later',
-    uploadingEllipsis: 'Uploading...'
+    uploadingEllipsis: 'Uploading...',
+    user: 'User'
   },
 
   // ── Tab Bar ──
@@ -102,7 +103,24 @@ const en = {
     cloudy: 'Cloudy',
     singleDoublePrice: 'Same price',
     withBreakfast: 'Breakfast included',
-    withDoubleBreakfast: 'Breakfast for 2'
+    withDoubleBreakfast: 'Breakfast for 2',
+    free: 'Free',
+    subjectToChange: 'Subject to change',
+    signupDeadline: 'Registration deadline',
+    currentParticipants: 'Registrations',
+    hotRegistration: 'Registration open',
+    introductionTitle: 'About',
+    noHotelInfo: 'No hotel information',
+    perNight: '/night',
+    bookingNotes: 'Booking Notes',
+    contactPerson: 'Contact',
+    callToBook: 'Call to Book',
+    locationMap: 'Location',
+    transportGuide: 'Getting There',
+    localWeather: 'Local Weather',
+    humidity: 'Humidity',
+    windSpeed: 'Wind',
+    visibility: 'Visibility'
   },
 
   // ── Signup Flow ──
@@ -318,7 +336,7 @@ const en = {
   // ── Language ──
   languageSettings: {
     pageTitle: 'Language',
-    currentLang: 'Current Language',
+    supportedLang: 'Supported Languages',
     zhCN: '简体中文',
     en: 'English',
     switchSuccess: 'Language changed'

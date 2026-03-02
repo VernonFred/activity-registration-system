@@ -5,4 +5,6 @@
 
 export * from './activities'
 export * from './users'
+export * from './payments'
+export * from './invoice-headers'
 

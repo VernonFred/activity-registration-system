@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import type { Comment, CommentSortType, Rating } from './types'
+import i18n from '../../i18n'
 import { MOCK_CURRENT_USER, MOCK_RATING, MOCK_COMMENTS, DEFAULT_AVATAR } from './constants'
 import {
   updateComment as updateCommentApi,
@@ -27,7 +28,7 @@ import './index.scss'
 
 const mapApiCommentToPageComment = (item: any): Comment => ({
   id: item.id,
-  user_name: item.user?.name || '用户',
+  user_name: item.user?.name || i18n.t('common.user'),
   user_avatar: item.user?.avatar || DEFAULT_AVATAR,
   rating: item.rating || 5,
   content: item.content || '',
@@ -39,7 +40,7 @@ const mapApiCommentToPageComment = (item: any): Comment => ({
   replies: (item.replies || []).map((reply: any) => ({
     id: reply.id,
     comment_id: reply.comment_id || item.id,
-    user_name: reply.user?.name || '用户',
+    user_name: reply.user?.name || i18n.t('common.user'),
     user_avatar: reply.user?.avatar || DEFAULT_AVATAR,
     content: reply.content || '',
     reply_to: reply.reply_to?.name,

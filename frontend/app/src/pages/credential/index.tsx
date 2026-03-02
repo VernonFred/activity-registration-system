@@ -15,9 +15,9 @@ export default function CredentialPage() {
   const activityId = Number(router.params.activityId || router.params.activity_id || 0)
 
   const [loading, setLoading] = useState(true)
-  const [title, setTitle] = useState('2025暑期老客户培训会议')
-  const [participant, setParticipant] = useState('王小利')
-  const [location, setLocation] = useState('长沙 | 喜来登大酒店')
+  const [title, setTitle] = useState('')
+  const [participant, setParticipant] = useState('')
+  const [location, setLocation] = useState('')
   const [locationCity, setLocationCity] = useState('CS')
   const [dateRange, setDateRange] = useState('2025.07.30-2025.08.02')
   const [stampDate, setStampDate] = useState('2025.07')
@@ -72,7 +72,7 @@ export default function CredentialPage() {
     return () => { active = false }
   }, [activityId, signupId])
 
-  const displayTitle = useMemo(() => (loading ? '加载中...' : title), [loading, title])
+  const displayTitle = useMemo(() => (loading ? t('common.loading') : title), [loading, title])
 
   const mrzLine = useMemo(() => {
     const base = `P<CHN${participant.replace(/\s/g, '<')}<<${title.replace(/\s/g, '<').slice(0, 20)}`

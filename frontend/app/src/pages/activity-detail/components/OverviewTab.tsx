@@ -3,6 +3,7 @@
  * 创建时间: 2025年12月9日
  */
 import { View, Text, Image } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 import type { Activity } from '../types'
 import { formatDate, formatDistance } from '../utils'
 
@@ -16,14 +17,16 @@ interface OverviewTabProps {
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
+  const { t } = useTranslation()
+
   return (
     <View className={`tab-content overview theme-${theme}`}>
       {/* 标题区域（Lovable 风格 - 只显示一次） */}
       <View className="title-section">
-        <Text className="main-title">{activity.location_city || '长沙'} | {activity.title}</Text>
+        <Text className="main-title">{activity.location_city} | {activity.title}</Text>
         {activity.fee_type === 'free' && (
           <View className="free-badge">
-            <Text className="badge-text">免费</Text>
+            <Text className="badge-text">{t('activityDetail.free')}</Text>
           </View>
         )}
         </View>
@@ -37,12 +40,12 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
             <Image src={iconCalendar} className="row-icon" mode="aspectFit" />
             <View className="row-content">
               <Text className="main-text">{formatDate(activity.start_time)}-{formatDate(activity.end_time)}</Text>
-              <Text className="sub-text">以实际情况为准</Text>
+              <Text className="sub-text">{t('activityDetail.subjectToChange')}</Text>
             </View>
           </View>
           <View className="row-right">
             <Text className="deadline-text">
-              {activity.signup_deadline ? `${formatDate(activity.signup_deadline)} 截止报名` : ''}
+              {activity.signup_deadline ? `${formatDate(activity.signup_deadline)} ${t('activityDetail.signupDeadline')}` : ''}
             </Text>
           </View>
         </View>
@@ -55,9 +58,9 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
             <Image src={iconMapPin} className="row-icon" mode="aspectFit" />
             <View className="row-content">
               <Text className="main-text">
-                {activity.location_city || '长沙市'} | {activity.location_name || '喜来登大酒店'}
+                {activity.location_city} | {activity.location_name}
               </Text>
-              <Text className="sub-text">{activity.location_address || '长沙市江发路12号国博园东门'}</Text>
+              <Text className="sub-text">{activity.location_address}</Text>
             </View>
           </View>
           <View className="row-right distance">
@@ -70,10 +73,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
 
         {/* 报名人数 */}
         <View className="participants-section">
-          <Text className="participants-label">目前报名人数</Text>
+          <Text className="participants-label">{t('activityDetail.currentParticipants')}</Text>
           <View className="participants-info">
             <Text className="participants-count">{activity.current_participants || 215}</Text>
-            <Text className="participants-unit">人</Text>
+            <Text className="participants-unit">{t('common.person')}</Text>
             <View className="avatar-stack">
               {[1, 2, 3, 4, 5].map((i) => (
                   <Image
@@ -85,7 +88,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
                   />
               ))}
             </View>
-            <Text className="signup-status">火热报名中</Text>
+            <Text className="signup-status">{t('activityDetail.hotRegistration')}</Text>
           </View>
         </View>
 
@@ -93,9 +96,9 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
 
         {/* 活动介绍 */}
         <View className="description-section">
-          <Text className="section-title">活动介绍</Text>
+          <Text className="section-title">{t('activityDetail.introductionTitle')}</Text>
           <Text className="description-text">
-            {activity.description || '1. 临近前请您提前规划好行程，做好相应准备，以免影响您的正常出行。\n2. 请携带好相关证件，以便入住登记。\n3. 如有特殊饮食需求，请提前告知工作人员。'}
+            {activity.description}
           </Text>
         </View>
       </View>

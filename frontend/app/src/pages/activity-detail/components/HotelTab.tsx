@@ -5,6 +5,7 @@
  */
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Hotel } from '../types'
 
 // 图标
@@ -25,20 +26,30 @@ import iconDroplets from '../../../assets/icons/droplets.png'
 import iconWind from '../../../assets/icons/wind.png'
 import iconEye from '../../../assets/icons/eye.png'
 
-// 设施图标映射
+// 设施图标映射（用英文 key 匹配）
 const FACILITY_ICONS: Record<string, string> = {
   'wifi': iconWifi,
-  '免费WiFi': iconWifi,
   'coffee': iconCoffee,
-  '咖啡厅': iconCoffee,
   'restaurant': iconUtensils,
-  '餐厅': iconUtensils,
   'parking': iconParking,
-  '免费停车': iconParking,
   'laundry': iconWashing,
-  '洗衣房': iconWashing,
   'meeting': iconPresentation,
-  '会议厅': iconPresentation,
+}
+
+// 设施 key 到翻译 key 的映射
+const FACILITY_I18N_MAP: Record<string, string> = {
+  'wifi': 'activityDetail.freeWifi',
+  '免费WiFi': 'activityDetail.freeWifi',
+  'coffee': 'activityDetail.cafe',
+  '咖啡厅': 'activityDetail.cafe',
+  'restaurant': 'activityDetail.restaurant',
+  '餐厅': 'activityDetail.restaurant',
+  'parking': 'activityDetail.freeParking',
+  '免费停车': 'activityDetail.freeParking',
+  'laundry': 'activityDetail.laundry',
+  '洗衣房': 'activityDetail.laundry',
+  'meeting': 'activityDetail.meetingRoom',
+  '会议厅': 'activityDetail.meetingRoom',
 }
 
 interface HotelTabProps {
@@ -48,6 +59,7 @@ interface HotelTabProps {
 }
 
 const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
+  const { t } = useTranslation()
   const [activeHotelIndex, setActiveHotelIndex] = useState(0)
 
   const activeHotel = hotels[activeHotelIndex]
@@ -55,7 +67,7 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
   if (!activeHotel) {
     return (
       <View className={`tab-content hotel empty theme-${theme}`}>
-        <Text className="empty-text">暂无酒店信息</Text>
+        <Text className="empty-text">{t('activityDetail.noHotelInfo')}</Text>
       </View>
     )
   }
@@ -84,7 +96,7 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
           mode="aspectFill"
         />
         <View className="hero-overlay" />
-        
+
         {/* 酒店信息 */}
         <View className="hero-content">
           <View className="hotel-name-row">
@@ -93,7 +105,7 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
             )}
             <Text className="hotel-name">{activeHotel.name}</Text>
           </View>
-          
+
           {/* 预订提示 */}
           {activeHotel.booking_tip && (
             <View className="booking-tip-row">
@@ -101,7 +113,7 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
               <Text className="tip-text">{activeHotel.booking_tip}</Text>
             </View>
           )}
-          
+
           {/* 联系电话 */}
           {activeHotel.contact_phone && (
             <View className="phone-row" onClick={() => onCall(activeHotel.contact_phone || '')}>
@@ -109,15 +121,17 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
               <Text className="phone-text">{activeHotel.contact_phone}</Text>
             </View>
           )}
-          
+
           {/* 设施图标网格 */}
           <View className="facilities-grid">
             {(activeHotel.facilities || []).slice(0, 6).map((facility, i) => {
-              const iconSrc = typeof facility === 'string' 
-                ? FACILITY_ICONS[facility] || iconWifi 
+              const facilityKey = typeof facility === 'string' ? facility : facility.icon
+              const iconSrc = typeof facility === 'string'
+                ? FACILITY_ICONS[facility] || iconWifi
                 : FACILITY_ICONS[facility.icon] || iconWifi
-              const label = typeof facility === 'string' ? facility : facility.label
-              
+              const i18nKey = FACILITY_I18N_MAP[facilityKey]
+              const label = i18nKey ? t(i18nKey) : (typeof facility === 'string' ? facility : facility.label)
+
               return (
                 <View key={i} className="facility-item">
                   <Image src={iconSrc} className="facility-icon" mode="aspectFit" />
@@ -133,12 +147,12 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
       <View className="room-price-card">
         <View className="room-info">
           <Text className="room-type">{activeHotel.room_type}</Text>
-          <Text className="room-note">{activeHotel.price_note || '单双同价'}</Text>
+          <Text className="room-note">{activeHotel.price_note || t('activityDetail.singleDoublePrice')}</Text>
         </View>
         <View className="price-box">
           <Text className="price-symbol">¥</Text>
           <Text className="price-amount">{activeHotel.price}</Text>
-          <Text className="price-unit">/晚</Text>
+          <Text className="price-unit">{t('activityDetail.perNight')}</Text>
         </View>
       </View>
 
@@ -148,7 +162,7 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
           <View className="tip-header">
             <View className="tip-title-row">
               <Image src={iconMapPin} className="section-icon" mode="aspectFit" />
-              <Text className="section-title">预订说明</Text>
+              <Text className="section-title">{t('activityDetail.bookingNotes')}</Text>
             </View>
           </View>
           <View className="tip-content">
@@ -161,17 +175,17 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
       <View className="contact-card">
         <View className="contact-header">
           <Image src={iconPhoneCall} className="section-icon" mode="aspectFit" />
-          <Text className="section-title">预定联系人</Text>
+          <Text className="section-title">{t('activityDetail.contactPerson')}</Text>
         </View>
         <View className="contact-info">
           <Text className="contact-name">{activeHotel.contact_name}</Text>
           <Text className="contact-phone">{activeHotel.contact_phone}</Text>
         </View>
       </View>
-      
+
       {/* 拨打电话按钮 - 独立于卡片下方 */}
       <View className="call-button" onClick={() => onCall(activeHotel.contact_phone || '')}>
-        <Text className="call-text">拨打电话预定</Text>
+        <Text className="call-text">{t('activityDetail.callToBook')}</Text>
       </View>
 
       {/* 位置地图 */}
@@ -179,11 +193,11 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
         <View className="map-card">
           <View className="map-header">
             <Image src={iconMapPin} className="section-icon" mode="aspectFit" />
-            <Text className="section-title">位置地图</Text>
+            <Text className="section-title">{t('activityDetail.locationMap')}</Text>
           </View>
-          <Image 
-            src={activeHotel.map_image} 
-            className="map-image" 
+          <Image
+            src={activeHotel.map_image}
+            className="map-image"
             mode="aspectFill"
           />
         </View>
@@ -194,11 +208,11 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
         <View className="transport-card">
           <View className="transport-header">
             <Image src={iconNavigation} className="section-icon" mode="aspectFit" />
-            <Text className="section-title">交通指南</Text>
+            <Text className="section-title">{t('activityDetail.transportGuide')}</Text>
           </View>
           {activeHotel.transport.map((item, i) => {
-            const transportIcon = item.type === 'subway' ? iconBus 
-              : item.type === 'bus' ? iconBus 
+            const transportIcon = item.type === 'subway' ? iconBus
+              : item.type === 'bus' ? iconBus
               : iconCar
             return (
               <View key={i} className="transport-item">
@@ -217,7 +231,7 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
         <View className="weather-card">
           <View className="weather-header">
             <Image src={iconCloud} className="section-icon" mode="aspectFit" />
-            <Text className="section-title">当地天气</Text>
+            <Text className="section-title">{t('activityDetail.localWeather')}</Text>
           </View>
           <View className="weather-main">
             <Text className="weather-temp">{activeHotel.weather.temperature}°C</Text>
@@ -226,17 +240,17 @@ const HotelTab: React.FC<HotelTabProps> = ({ hotels, onCall, theme }) => {
           <View className="weather-details">
             <View className="weather-item">
               <Image src={iconDroplets} className="weather-icon" mode="aspectFit" />
-              <Text className="weather-label">湿度</Text>
+              <Text className="weather-label">{t('activityDetail.humidity')}</Text>
               <Text className="weather-value">{activeHotel.weather.humidity}%</Text>
             </View>
             <View className="weather-item">
               <Image src={iconWind} className="weather-icon" mode="aspectFit" />
-              <Text className="weather-label">风速</Text>
+              <Text className="weather-label">{t('activityDetail.windSpeed')}</Text>
               <Text className="weather-value">{activeHotel.weather.wind_speed}km/h</Text>
             </View>
             <View className="weather-item">
               <Image src={iconEye} className="weather-icon" mode="aspectFit" />
-              <Text className="weather-label">能见度</Text>
+              <Text className="weather-label">{t('activityDetail.visibility')}</Text>
               <Text className="weather-value">{activeHotel.weather.visibility}km</Text>
             </View>
           </View>

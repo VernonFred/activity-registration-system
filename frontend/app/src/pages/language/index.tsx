@@ -39,10 +39,11 @@ export default function LanguageSettings() {
           </View>
         </View>
         <Text className="lang-title">{t('languageSettings.pageTitle')}</Text>
+        <View className="lang-header-placeholder" />
       </View>
 
       <View className="lang-card">
-        <Text className="lang-section-label">{t('languageSettings.currentLang')}</Text>
+        <Text className="lang-section-label">{t('languageSettings.supportedLang')}</Text>
         <View className="lang-divider" />
 
         {LANGUAGES.map((lang, idx) => (
