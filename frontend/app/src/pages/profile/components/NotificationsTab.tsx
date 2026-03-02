@@ -408,7 +408,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
             </View>
             <Text className="nt-mention-text">{mention.comment_text}</Text>
             <View className="nt-mention-original">
-              <Text className="nt-mention-original-text">我：{mention.my_original_text}</Text>
+              <Text className="nt-mention-original-text">{t('notification.mePrefix')}{mention.my_original_text}</Text>
             </View>
             <View className="nt-mention-actions">
               <View className="nt-reply-btn" onClick={() => handleReply(mention)}>

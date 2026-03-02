@@ -452,6 +452,29 @@ const zhCN = {
     replyPanelTitle: '回复'
   },
 
+  // ── 通知内容 ──
+  notification: {
+    mePrefix: '我：',
+    signupSubmittedTitle: '报名成功',
+    signupSubmittedBody: '您的「{{activity}}」已经报名成功，请准时参加。',
+    signupApprovedTitle: '报名审批通过',
+    signupApprovedBody: '您的「{{activity}}」报名已通过审批。',
+    signupRejectedTitle: '报名被拒绝',
+    signupRejectedBody: '您的「{{activity}}」报名未通过审批。',
+    activityReminderTitle: '活动提醒',
+    activityReminderBody: '「{{activity}}」即将开始，请做好准备。',
+    checkinReminderTitle: '签到提醒',
+    checkinReminderBody: '「{{activity}}」签到已开放，请及时签到。',
+    surveyTitle: '填写调查问卷',
+    surveyBody: '「{{activity}}」已经圆满结束，期待您的真诚建议与反馈。',
+    unpaidTitle: '还未缴费',
+    unpaidBody: '您的「{{activity}}」还未缴费，请及时缴费。',
+    badgeEarnedTitle: '荣获勋章',
+    badgeEarnedBody: '恭喜您解锁「{{badge}}」勋章',
+    action_2: '去填写',
+    action_4: '查看勋章',
+  },
+
   // ── 时间格式 ──
   time: {
     daysAgo: '{{days}}天前',
