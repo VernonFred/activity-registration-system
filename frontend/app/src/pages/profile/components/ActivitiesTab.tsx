@@ -3,6 +3,7 @@
  * 创建时间: 2025年12月9日
  */
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text } from '@tarojs/components'
 import type { SignupRecord, UserInfo } from '../types'
 import { formatDate } from '../utils'
@@ -29,26 +30,26 @@ interface ActivitiesTabProps {
 
 const METRIC_CONFIG: Array<{
   key: 'likes' | 'comments' | 'favorites' | 'shares'
-  label: string
+  labelKey: string
   icon: string
   tone: 'danger' | 'muted'
 }> = [
-  { key: 'likes', label: '点赞', icon: '♥', tone: 'danger' },
-  { key: 'comments', label: '评论', icon: '◌', tone: 'muted' },
-  { key: 'favorites', label: '收藏', icon: '★', tone: 'danger' },
-  { key: 'shares', label: '分享', icon: '↗', tone: 'muted' },
+  { key: 'likes', labelKey: 'profile.likes', icon: '♥', tone: 'danger' },
+  { key: 'comments', labelKey: 'profile.comments', icon: '◌', tone: 'muted' },
+  { key: 'favorites', labelKey: 'profile.favorites', icon: '★', tone: 'danger' },
+  { key: 'shares', labelKey: 'profile.shares', icon: '↗', tone: 'muted' },
 ]
 
-function getSignupStatusLabel(status: SignupRecord['status']) {
-  if (status === 'approved') return '已报名'
-  if (status === 'pending') return '待审核'
-  return '已驳回'
+function getSignupStatusLabel(status: SignupRecord['status'], t: (key: string) => string) {
+  if (status === 'approved') return t('profile.statusRegistered')
+  if (status === 'pending') return t('profile.statusPending')
+  return t('profile.statusRejected')
 }
 
-function getCheckinStatusLabel(status: SignupRecord['checkin_status']) {
-  if (status === 'checked_in') return '已签到'
-  if (status === 'no_show') return '未签到'
-  return '待签到'
+function getCheckinStatusLabel(status: SignupRecord['checkin_status'], t: (key: string) => string) {
+  if (status === 'checked_in') return t('profile.statusCheckedIn')
+  if (status === 'no_show') return t('profile.statusNotCheckedIn')
+  return t('profile.statusPendingCheckin')
 }
 
 const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
@@ -69,6 +70,7 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
   onFavoriteActivity,
   onShareActivity,
 }) => {
+  const { t } = useTranslation()
   const [menuSignupId, setMenuSignupId] = useState<number | null>(null)
   const [page, setPage] = useState(1)
   const pageSize = 2
@@ -113,7 +115,7 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
               <View className="record-title-row">
                 <Text className="record-title">{signup.activity_title}</Text>
                 <View className={`record-status-tag is-${signup.status}`}>
-                  <Text>{getSignupStatusLabel(signup.status)}</Text>
+                  <Text>{getSignupStatusLabel(signup.status, t)}</Text>
                 </View>
               </View>
 
@@ -180,17 +182,17 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                   const tagsContent = (
                     <>
                       <Text className={`participant-badge ${signup.payment_status === 'paid' ? 'is-success' : 'is-warning'}`}>
-                        {signup.payment_status === 'paid' ? '已缴费' : '待缴费'}
+                        {signup.payment_status === 'paid' ? t('profile.statusPaid') : t('profile.statusUnpaid')}
                       </Text>
                       <Text className={`participant-badge ${signup.checkin_status === 'checked_in' ? 'is-success' : 'is-muted'}`}>
-                        {getCheckinStatusLabel(signup.checkin_status)}
+                        {getCheckinStatusLabel(signup.checkin_status, t)}
                       </Text>
                       {signup.checkin_status === 'checked_in' ? (
                         <Text
                           className="participant-action-link"
                           onClick={(e) => { e.stopPropagation(); onViewCredential(signup.id) }}
                         >
-                          查看参会凭证
+                          {t('profile.viewCredential')}
                         </Text>
                       ) : (
                         <>
@@ -199,14 +201,14 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                               className="participant-action-link is-danger"
                               onClick={(e) => { e.stopPropagation(); onPayment(signup.id) }}
                             >
-                              去缴费
+                              {t('profile.goPay')}
                             </Text>
                           )}
                           <Text
                             className="participant-action-link is-danger"
                             onClick={(e) => { e.stopPropagation(); onCheckin(signup.id) }}
                           >
-                            去签到
+                            {t('profile.goCheckin')}
                           </Text>
                         </>
                       )}
@@ -216,13 +218,13 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                   return (
                     <View className={`participant-row is-primary ${wrapTags ? 'is-wrap' : ''}`}>
                       <View className="participant-left">
-                        <Text className="participant-name">{user?.name || '主报名人'}</Text>
+                        <Text className="participant-name">{user?.name || t('profile.primaryRegistrant')}</Text>
                         {hasTransport && (
                           <Text
                             className="participant-inline-link"
                             onClick={(e) => { e.stopPropagation(); onEditTransport(signup.id) }}
                           >
-                            完善交通信息
+                            {t('profile.completeTransport')}
                           </Text>
                         )}
                       </View>
@@ -234,10 +236,10 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                         {menuSignupId === signup.id && (
                           <View className="row-menu-panel">
                             <View className="row-menu-item" onClick={() => { closeMenu(); onEditSignup(signup.id) }}>
-                              <Text>修改报名信息</Text>
+                              <Text>{t('profile.editSignup')}</Text>
                             </View>
                             <View className="row-menu-item is-danger" onClick={() => { closeMenu(); onCancelSignup(signup.id) }}>
-                              <Text>取消报名</Text>
+                              <Text>{t('profile.cancelSignup')}</Text>
                             </View>
                           </View>
                         )}
@@ -257,7 +259,7 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                           className="participant-action-link"
                           onClick={(e) => { e.stopPropagation(); onViewCredential(signup.id) }}
                         >
-                          查看参会凭证
+                          {t('profile.viewCredential')}
                         </Text>
                       ) : (
                         <>
@@ -266,14 +268,14 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                               className="participant-action-link is-danger"
                               onClick={(e) => { e.stopPropagation(); onPayment(signup.id) }}
                             >
-                              去缴费
+                              {t('profile.goPay')}
                             </Text>
                           )}
                           <Text
                             className="participant-action-link is-danger"
                             onClick={(e) => { e.stopPropagation(); onCheckin(signup.id) }}
                           >
-                            去签到
+                            {t('profile.goCheckin')}
                           </Text>
                         </>
                       )}
@@ -291,7 +293,7 @@ const ActivitiesTab: React.FC<ActivitiesTabProps> = ({
                     onAddCompanion(signup.id)
                   }}
                 >
-                  <Text>添加同行人员</Text>
+                  <Text>{t('profile.addCompanion')}</Text>
                 </View>
               )}
             </View>

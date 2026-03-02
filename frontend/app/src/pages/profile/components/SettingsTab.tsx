@@ -3,6 +3,7 @@
  * 重构时间: 2026年2月27日
  */
 import { View, Text } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 
 interface SettingsTabProps {
   onSettingClick: (setting: string) => void
@@ -19,27 +20,27 @@ interface SettingSection {
   items: SettingItem[]
 }
 
-const SECTIONS: SettingSection[] = [
+const getSections = (t: (key: string) => string): SettingSection[] => [
   {
-    title: '个人资料',
+    title: t('settings.sectionProfile'),
     items: [
-      { key: 'profile', label: '个人简介', iconType: 'profile' },
-      { key: 'payment', label: '我的缴费', iconType: 'payment' },
-      { key: 'invoice', label: '我的发票抬头', iconType: 'invoice' },
+      { key: 'profile', label: t('settings.personalInfo'), iconType: 'profile' },
+      { key: 'payment', label: t('settings.myPayments'), iconType: 'payment' },
+      { key: 'invoice', label: t('settings.myInvoiceHeaders'), iconType: 'invoice' },
     ],
   },
   {
-    title: '界面与显示',
+    title: t('settings.sectionInterface'),
     items: [
-      { key: 'language', label: '多语言', iconType: 'language' },
-      { key: 'darkmode', label: '暗黑模式', iconType: 'darkmode' },
+      { key: 'language', label: t('settings.language'), iconType: 'language' },
+      { key: 'darkmode', label: t('settings.darkMode'), iconType: 'darkmode' },
     ],
   },
   {
-    title: '关于',
+    title: t('settings.sectionAbout'),
     items: [
-      { key: 'privacy', label: '隐私与政策', iconType: 'privacy' },
-      { key: 'help', label: '支持与帮助', iconType: 'help' },
+      { key: 'privacy', label: t('settings.privacy'), iconType: 'privacy' },
+      { key: 'help', label: t('settings.support'), iconType: 'help' },
     ],
   },
 ]
@@ -111,9 +112,12 @@ const renderIcon = (type: string) => {
 }
 
 const SettingsTab: React.FC<SettingsTabProps> = ({ onSettingClick }) => {
+  const { t } = useTranslation()
+  const sections = getSections(t)
+
   return (
     <View className="tab-content settings-content animate-fade-in">
-      {SECTIONS.map(section => (
+      {sections.map(section => (
         <View key={section.title} className="st-section">
           <Text className="st-section-title">{section.title}</Text>
           <View className="st-list">

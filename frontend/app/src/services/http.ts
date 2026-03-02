@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Taro from '@tarojs/taro'
+import i18n from '../i18n'
 
 const baseURL =
   (typeof process !== 'undefined' &&
@@ -17,11 +18,10 @@ export const http = api
 
 api.interceptors.request.use((config) => {
   const token = Taro.getStorageSync('access_token')
-  if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${token}`
-    }
+  config.headers = {
+    ...config.headers,
+    'Accept-Language': i18n.language || 'zh-CN',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
   }
   return config
 })
@@ -29,7 +29,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error?.response?.data?.detail || '请求失败，请稍后重试'
+    const message = error?.response?.data?.detail || i18n.t('common.networkError')
     Taro.showToast({ title: message, icon: 'none' })
     return Promise.reject(error)
   }

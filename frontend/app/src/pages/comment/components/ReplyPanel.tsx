@@ -3,10 +3,11 @@
  * 2026年1月30日 - 支持多级嵌套回复结构
  */
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Comment, Reply } from '../types'
-import { DEFAULT_AVATAR } from '../constants'
+import { DEFAULT_AVATAR, formatTime } from '../constants'
 import ConfirmModal from './ConfirmModal'
 import './ReplyPanel.scss'
 
@@ -102,20 +103,6 @@ const MOCK_NESTED_REPLIES: Reply[] = [
   }
 ]
 
-// 格式化时间
-const formatTime = (time: string): string => {
-  const now = new Date()
-  const isoTime = time.includes(' ') ? time.replace(' ', 'T') : time
-  const commentTime = new Date(isoTime)
-  const diff = now.getTime() - commentTime.getTime()
-  const hours = Math.floor(diff / (1000 * 60 * 60))
-  const days = Math.floor(hours / 24)
-  if (days > 7) return isoTime.split('T')[0]
-  if (days > 0) return `${days}天前`
-  if (hours > 0) return `${hours}小时前`
-  return '刚刚'
-}
-
 export default function ReplyPanel({ 
   comment, 
   currentUser, 
@@ -123,6 +110,7 @@ export default function ReplyPanel({
   onSubmitReply, 
   onUpdateComment 
 }: ReplyPanelProps) {
+  const { t } = useTranslation()
   const [replies, setReplies] = useState<Reply[]>(MOCK_NESTED_REPLIES)
   const [replyText, setReplyText] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
@@ -253,7 +241,7 @@ export default function ReplyPanel({
       setReplies(deleteReplyRecursive(replies, deleteModal.id))
     }
     setDeleteModal({ visible: false, id: 0, isReply: false })
-    Taro.showToast({ title: '删除成功', icon: 'success' })
+    Taro.showToast({ title: t('comments.deleteSuccess'), icon: 'success' })
   }
   
   // 提交处理
@@ -277,12 +265,12 @@ export default function ReplyPanel({
           })
         }
         setReplies(updateReplyRecursive(replies, editingId, text))
-        Taro.showToast({ title: '修改成功', icon: 'success' })
+        Taro.showToast({ title: t('comments.modifySuccess'), icon: 'success' })
       } else {
         // 编辑主评论
         setMainCommentContent(text)
         onUpdateComment?.(comment.id, text)
-        Taro.showToast({ title: '修改成功', icon: 'success' })
+        Taro.showToast({ title: t('comments.modifySuccess'), icon: 'success' })
       }
       cancelEdit()
     } else {
@@ -302,7 +290,7 @@ export default function ReplyPanel({
       setReplyText('')
       setReplyTo(null)
       onSubmitReply(comment.id, text, replyTo || undefined)
-      Taro.showToast({ title: '回复成功', icon: 'success' })
+      Taro.showToast({ title: t('comments.replySuccess'), icon: 'success' })
     }
   }
   
@@ -350,22 +338,22 @@ export default function ReplyPanel({
                     <>
                       <View className="popup-item" onClick={(e) => handleEdit(reply.id, reply.content, true, e)}>
                         <Text className="popup-icon">✏️</Text>
-                        <Text className="popup-text">修改</Text>
+                        <Text className="popup-text">{t('common.modify')}</Text>
                       </View>
                       <View className="popup-item delete" onClick={(e) => handleDeleteClick(reply.id, true, e)}>
                         <Text className="popup-icon">🗑️</Text>
-                        <Text className="popup-text">删除</Text>
+                        <Text className="popup-text">{t('common.delete')}</Text>
                       </View>
                     </>
                   ) : (
                     <>
                       <View className="popup-item" onClick={(e) => handleReplyTo(reply.user_name, e)}>
                         <Text className="popup-icon">💬</Text>
-                        <Text className="popup-text">回复</Text>
+                        <Text className="popup-text">{t('common.reply')}</Text>
                       </View>
                       <View className="popup-item" onClick={(e) => { e.stopPropagation(); setActiveMenu(null) }}>
                         <Text className="popup-icon">✕</Text>
-                        <Text className="popup-text">取消</Text>
+                        <Text className="popup-text">{t('common.cancel')}</Text>
                       </View>
                     </>
                   )}
@@ -409,7 +397,7 @@ export default function ReplyPanel({
         <View className="panel-header">
           <View className="back-btn" onClick={onClose}>
             <Text className="back-icon">&lt;</Text>
-            <Text className="back-text">回复</Text>
+            <Text className="back-text">{t('comments.replyPanelTitle')}</Text>
           </View>
         </View>
         
@@ -444,22 +432,22 @@ export default function ReplyPanel({
                       <>
                         <View className="popup-item" onClick={(e) => handleEdit(comment.id, mainCommentContent, false, e)}>
                           <Text className="popup-icon">✏️</Text>
-                          <Text className="popup-text">修改</Text>
+                          <Text className="popup-text">{t('common.modify')}</Text>
                         </View>
                         <View className="popup-item delete" onClick={(e) => handleDeleteClick(comment.id, false, e)}>
                           <Text className="popup-icon">🗑️</Text>
-                          <Text className="popup-text">删除</Text>
+                          <Text className="popup-text">{t('common.delete')}</Text>
                         </View>
                       </>
                     ) : (
                       <>
                         <View className="popup-item" onClick={(e) => handleReplyTo(comment.user_name, e)}>
                           <Text className="popup-icon">💬</Text>
-                          <Text className="popup-text">回复</Text>
+                          <Text className="popup-text">{t('common.reply')}</Text>
                         </View>
                         <View className="popup-item" onClick={(e) => { e.stopPropagation(); setActiveMenu(null) }}>
                           <Text className="popup-icon">✕</Text>
-                          <Text className="popup-text">取消</Text>
+                          <Text className="popup-text">{t('common.cancel')}</Text>
                         </View>
                       </>
                     )}
@@ -492,7 +480,7 @@ export default function ReplyPanel({
               {hasReplies && (
                 <View className="toggle-replies-btn" onClick={() => setShowReplies(!showReplies)}>
                   <Text className="toggle-icon">{showReplies ? '▲' : '▼'}</Text>
-                  <Text className="toggle-text">{showReplies ? '隐藏回复' : `显示${replies.length}条回复`}</Text>
+                  <Text className="toggle-text">{showReplies ? t('comments.hideReplies') : t('comments.showReplies', { count: replies.length })}</Text>
                 </View>
               )}
             </View>
@@ -510,18 +498,18 @@ export default function ReplyPanel({
           <View className="input-wrapper">
             {editingId !== null && (
               <View className="edit-mode-hint">
-                <Text className="hint-text">编辑模式</Text>
-                <Text className="cancel-btn" onClick={cancelEdit}>取消</Text>
+                <Text className="hint-text">{t('comments.editMode')}</Text>
+                <Text className="cancel-btn" onClick={cancelEdit}>{t('common.cancel')}</Text>
               </View>
             )}
             <Input
               className="input-field"
               placeholder={
                 editingId !== null 
-                  ? '编辑内容...' 
+                  ? t('comments.editPlaceholder') 
                   : replyTo 
-                    ? `回复 @${replyTo}...` 
-                    : '添加回复...'
+                    ? t('comments.replyToPlaceholder', { name: replyTo }) 
+                    : t('comments.addReplyPlaceholder')
               }
               placeholderClass="input-placeholder"
               value={editingId !== null ? editingContent : replyText}
@@ -547,7 +535,7 @@ export default function ReplyPanel({
         {/* 删除确认弹窗 */}
         <ConfirmModal
           visible={deleteModal.visible}
-          title="确认删除此评论？"
+          title={t('comments.confirmDeleteReply')}
           onConfirm={confirmDelete}
           onCancel={() => setDeleteModal({ visible: false, id: 0, isReply: false })}
         />

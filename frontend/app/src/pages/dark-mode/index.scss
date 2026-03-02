@@ -1,0 +1,195 @@
+// ===== 暗黑模式设置页面 — Sketch 精确对标 =====
+.dm-page {
+  min-height: 100vh;
+  background: #fefefe;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+
+// ===== 顶部导航 =====
+.dm-header {
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  padding-bottom: 16px;
+  position: relative;
+}
+
+// Sketch: 40x40 circle, border #e3e7ec 1px, fill #fefefe
+.dm-back {
+  &:active { opacity: 0.5; }
+}
+
+.dm-back-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e3e7ec;
+  background: #fefefe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dm-back-arrow {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #111111;
+  border-left: 2px solid #111111;
+  transform: rotate(-45deg);
+  margin-left: 3px;
+}
+
+// Sketch: sz:18, color:#111111, x:128 相对于 header 左侧
+.dm-title {
+  font-size: 18px;
+  color: #111111;
+  font-weight: 500;
+  margin-left: 80px;
+}
+
+// ===== 卡片区域 =====
+// Sketch: x:24, y:124, w:327, h:213, fill:#fefefe, border:#e3e7ec 1px, radius:12
+.dm-card {
+  margin: 8px 24px 0;
+  background: #fefefe;
+  border: 1px solid #e3e7ec;
+  border-radius: 12px;
+  padding: 18px 18px 20px;
+}
+
+// ===== 单行：label + toggle =====
+.dm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  padding: 6px 0;
+}
+
+// Sketch: sz:12, color:#111111, weight:500
+.dm-label {
+  font-size: 12px;
+  color: #111111;
+  font-weight: 500;
+}
+
+// Sketch: sz:9, color:#808080
+.dm-hint {
+  font-size: 9px;
+  color: #808080;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+// Sketch: sz:10, color:#808080
+.dm-section-label {
+  font-size: 10px;
+  color: #808080;
+  font-weight: 500;
+  padding: 10px 0;
+}
+
+// Sketch: border:#e3e7ec 1px
+.dm-divider {
+  height: 0;
+  border-top: 1px solid #e3e7ec;
+}
+
+// ===== Toggle 开关 =====
+// Sketch: 44x24, track fill:#183d1e, radius:1000(pill), thumb 24x24
+.dm-toggle {
+  flex-shrink: 0;
+  cursor: pointer;
+  &:active { opacity: 0.7; }
+}
+
+.dm-toggle-track {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.25s ease;
+}
+
+.dm-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  transition: left 0.25s ease, background 0.25s ease;
+}
+
+// 开启状态 — Sketch: track #183d1e, thumb #fefefe + border #183d1e 2px
+.dm-toggle.on {
+  .dm-toggle-track {
+    background: #183d1e;
+  }
+  .dm-toggle-thumb {
+    left: 22px;
+    background: #fefefe;
+    border: 2px solid #183d1e;
+  }
+}
+
+// 关闭状态
+.dm-toggle.off {
+  .dm-toggle-track {
+    background: #d1d5db;
+  }
+  .dm-toggle-thumb {
+    left: 2px;
+    background: #ffffff;
+    border: 2px solid #d1d5db;
+  }
+}
+
+// 跟随系统打开时，手动选择区域置灰
+.dm-page .dm-card {
+  .dm-toggle.off {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// ===== 暗黑模式适配 =====
+.dm-page.dark {
+  background: #111111;
+
+  .dm-back-circle {
+    border-color: #333;
+    background: #1a1a1a;
+  }
+  .dm-back-arrow {
+    border-color: #e0e0e0;
+  }
+  .dm-title {
+    color: #f0f0f0;
+  }
+
+  .dm-card {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+  .dm-label {
+    color: #f0f0f0;
+  }
+  .dm-hint {
+    color: #888;
+  }
+  .dm-section-label {
+    color: #888;
+  }
+  .dm-divider {
+    border-color: #333;
+  }
+
+  .dm-toggle.on {
+    .dm-toggle-track { background: #3d7a4d; }
+    .dm-toggle-thumb { background: #1a1a1a; border-color: #3d7a4d; }
+  }
+  .dm-toggle.off {
+    .dm-toggle-track { background: #444; }
+    .dm-toggle-thumb { background: #222; border-color: #444; }
+  }
+}

@@ -6,6 +6,7 @@
  * 分步表单: 个人信息 → 缴费信息 → 住宿信息 → 交通信息 → 成功
  */
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
@@ -56,6 +57,7 @@ const mapSignupDetailToFormData = (signup: any): SignupFormData => ({
 })
 
 const SignupPage = () => {
+  const { t } = useTranslation()
   const router = useRouter()
   const activityId = Number(router.params.activityId || router.params.activity_id)
   const routeSignupId = Number(router.params.signupId || router.params.signup_id || 0)
@@ -86,7 +88,7 @@ const SignupPage = () => {
   // 加载活动数据
   useEffect(() => {
     if (!activityId) {
-      Taro.showToast({ title: '活动ID无效', icon: 'none' })
+      Taro.showToast({ title: t('signup.invalidActivityId'), icon: 'none' })
       return
     }
     loadActivity()
@@ -116,7 +118,7 @@ const SignupPage = () => {
         }
       } catch (error) {
         console.error('加载报名详情失败:', error)
-        Taro.showToast({ title: '加载报名信息失败', icon: 'none' })
+        Taro.showToast({ title: t('signup.loadSignupFailed'), icon: 'none' })
       }
     }
 
@@ -139,7 +141,7 @@ const SignupPage = () => {
       })
     } catch (error) {
       console.error('加载活动失败:', error)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('common.loadFailedShort'), icon: 'none' })
     }
   }
 
@@ -150,19 +152,19 @@ const SignupPage = () => {
     if (step.key === 'personal') {
       const { name, school, department, phone } = formData.personal
       if (!name.trim()) {
-        Taro.showToast({ title: '请输入姓名', icon: 'none' })
+        Taro.showToast({ title: t('signup.enterName'), icon: 'none' })
         return false
       }
       if (!school.trim()) {
-        Taro.showToast({ title: '请输入学校', icon: 'none' })
+        Taro.showToast({ title: t('signup.enterSchool'), icon: 'none' })
         return false
       }
       if (!department.trim()) {
-        Taro.showToast({ title: '请输入学院/部门', icon: 'none' })
+        Taro.showToast({ title: t('signup.enterDepartment'), icon: 'none' })
         return false
       }
       if (!phone.trim() || !VALIDATION_RULES.phone.test(phone)) {
-        Taro.showToast({ title: '请输入正确的手机号码', icon: 'none' })
+        Taro.showToast({ title: t('signup.invalidPhone'), icon: 'none' })
         return false
       }
     }
@@ -170,11 +172,11 @@ const SignupPage = () => {
     if (step.key === 'payment') {
       const { invoice_title, email } = formData.payment
       if (!invoice_title.trim()) {
-        Taro.showToast({ title: '请输入发票抬头', icon: 'none' })
+        Taro.showToast({ title: t('signup.enterInvoiceTitle'), icon: 'none' })
         return false
       }
       if (!email.trim() || !VALIDATION_RULES.email.test(email)) {
-        Taro.showToast({ title: '请输入正确的邮箱地址', icon: 'none' })
+        Taro.showToast({ title: t('signup.invalidEmail'), icon: 'none' })
         return false
       }
     }
@@ -223,7 +225,7 @@ const SignupPage = () => {
         setCompanionCount(prev => prev + 1)
 
         Taro.showToast({
-          title: '已添加同行人员',
+          title: t('signup.companionAdded'),
           icon: 'success',
           duration: 1500
         })
@@ -239,7 +241,7 @@ const SignupPage = () => {
         })
 
         Taro.showToast({
-          title: '保存成功',
+          title: t('signup.saveSuccess'),
           icon: 'success',
           duration: 1500
         })
@@ -268,7 +270,7 @@ const SignupPage = () => {
       console.error('提交失败:', error)
 
       // 根据错误类型显示不同提示
-      const errorMessage = error?.response?.data?.message || error?.message || '提交失败，请重试'
+      const errorMessage = error?.response?.data?.message || error?.message || t('signup.submitFailed')
       Taro.showToast({
         title: errorMessage,
         icon: 'none',
@@ -316,10 +318,10 @@ const SignupPage = () => {
     if (isFormDirty()) {
       // 表单有内容，显示确认弹窗
       Taro.showModal({
-        title: '您确定要退出报名填写的页面吗？',
+        title: t('signup.exitConfirm'),
         content: '',
-        confirmText: '确定',
-        cancelText: '取消',
+        confirmText: t('common.confirm'),
+        cancelText: t('common.cancel'),
         confirmColor: '#1E5A3C',
         cancelColor: '#E74C3C',
         success: (res) => {
@@ -359,7 +361,7 @@ const SignupPage = () => {
     setShowSuccess(false)
 
     Taro.showToast({
-      title: '请填写同行人员信息',
+      title: t('signup.fillCompanionInfo'),
       icon: 'none',
       duration: 1500
     })
@@ -382,7 +384,7 @@ const SignupPage = () => {
   if (!activity) {
     return (
       <View className={`signup-page theme-${theme} loading`}>
-        <Text className="loading-text">正在加载...</Text>
+        <Text className="loading-text">{t('common.loading')}</Text>
       </View>
     )
   }
@@ -425,7 +427,7 @@ const SignupPage = () => {
         {/* 卡片头部：标题 + 关闭按钮 */}
         <View className="card-header">
           <View className="card-header-info">
-            <Text className="card-title">活动报名</Text>
+            <Text className="card-title">{t('signup.pageTitle')}</Text>
             <Text className="card-subtitle">{activity.title}</Text>
           </View>
           <View className="card-close" onClick={handleClose}>
@@ -478,20 +480,20 @@ const SignupPage = () => {
           {currentStep > 0 && (
             <View className="action-button secondary" onClick={handlePrev}>
               <Image src={iconArrowLeft} className="btn-icon" mode="aspectFit" />
-              <Text className="btn-text">上一步</Text>
+              <Text className="btn-text">{t('common.prev')}</Text>
             </View>
           )}
 
           {isTransportStep && !isScopedStepMode ? (
             <>
               <View className="action-button outline" onClick={handleSkip}>
-                <Text className="btn-text">稍后填写</Text>
+                <Text className="btn-text">{t('common.laterFill')}</Text>
               </View>
               <View
                 className={`action-button primary ${submitting ? 'loading' : ''}`}
                 onClick={handleSubmit}
               >
-                <Text className="btn-text">{isScopedStepMode ? '保存' : '提交报名'}</Text>
+                <Text className="btn-text">{isScopedStepMode ? t('common.save') : t('signup.submitSignup')}</Text>
               </View>
             </>
           ) : (
@@ -506,7 +508,7 @@ const SignupPage = () => {
               }}
             >
               <Text className="btn-text">
-                {(isScopedStepMode && currentStepConfig.key === routeMode) ? '保存' : (isLastStep ? '提交报名' : '下一步')}
+                {(isScopedStepMode && currentStepConfig.key === routeMode) ? t('common.save') : (isLastStep ? t('signup.submitSignup') : t('common.next'))}
               </Text>
               {!(isScopedStepMode && currentStepConfig.key === routeMode) && !isLastStep && (
                 <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />

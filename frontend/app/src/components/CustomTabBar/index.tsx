@@ -4,6 +4,7 @@
  */
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import './index.scss'
 
@@ -17,12 +18,13 @@ interface CustomTabBarProps {
 }
 
 const navItems = [
-  { id: 'home', label: '主页', icon: iconHome, path: '/pages/index/index' },
-  { id: 'register', label: '报名', icon: iconCalendarPlus, path: '/pages/activities/index' },
-  { id: 'profile', label: '我的', icon: iconSettings, path: '/pages/profile/index' },
+  { id: 'home', label: 'tabbar.home', icon: iconHome, path: '/pages/index/index' },
+  { id: 'register', label: 'tabbar.signup', icon: iconCalendarPlus, path: '/pages/activities/index' },
+  { id: 'profile', label: 'tabbar.profile', icon: iconSettings, path: '/pages/profile/index' },
 ]
 
 const CustomTabBar = ({ current }: CustomTabBarProps) => {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   
   const handleTabClick = (index: number, path: string) => {
@@ -53,7 +55,7 @@ const CustomTabBar = ({ current }: CustomTabBarProps) => {
                     className={`nav-icon ${isActive ? 'active' : ''}`} 
                     mode="aspectFit" 
                   />
-                  <Text className={`nav-label ${isActive ? 'active' : ''}`}>{item.label}</Text>
+                  <Text className={`nav-label ${isActive ? 'active' : ''}`}>{t(item.label)}</Text>
                 </View>
               )
             })}
@@ -62,7 +64,7 @@ const CustomTabBar = ({ current }: CustomTabBarProps) => {
 
         <View className="ai-btn" onClick={handleAIClick}>
           <Text className="ai-icon">AI</Text>
-          <Text className="ai-label">助手</Text>
+          <Text className="ai-label">{t('tabbar.assistant')}</Text>
         </View>
       </View>
     </View>

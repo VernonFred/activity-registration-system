@@ -4,6 +4,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchCurrentUser, updateUser, type User } from '../../services/user'
 import { CONFIG } from '../../config'
@@ -27,6 +28,7 @@ const uploadAvatar = async (filePath: string): Promise<string> => {
 
 export default function ProfileEdit() {
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const [user, setUser] = useState<User | null>(null)
   const [avatarUrl, setAvatarUrl] = useState('')
   const [topPad, setTopPad] = useState(54)
@@ -71,7 +73,7 @@ export default function ProfileEdit() {
 
   const handleAvatarClick = useCallback(() => {
     Taro.showActionSheet({
-      itemList: ['用微信头像', '从相册选择', '拍照'],
+      itemList: [t('profileEdit.useWechatAvatar'), t('profileEdit.fromAlbum'), t('profileEdit.takePhoto')],
       success: async (res) => {
         try {
           if (res.tapIndex === 0) {
@@ -79,22 +81,22 @@ export default function ProfileEdit() {
             if (wxUser?.userInfo?.avatarUrl) {
               const url = await uploadAvatar(wxUser.userInfo.avatarUrl)
               setAvatarUrl(url)
-              Taro.showToast({ title: '头像已更新', icon: 'success' })
+              Taro.showToast({ title: t('profileEdit.avatarUpdated'), icon: 'success' })
             }
           } else {
             const sourceType: Array<'album' | 'camera'> = res.tapIndex === 1 ? ['album'] : ['camera']
             const imgRes = await Taro.chooseImage({ count: 1, sourceType, sizeType: ['compressed'] })
             if (imgRes.tempFilePaths?.[0]) {
-              Taro.showLoading({ title: '上传中...' })
+              Taro.showLoading({ title: t('common.uploadingEllipsis') })
               const url = await uploadAvatar(imgRes.tempFilePaths[0])
               setAvatarUrl(url)
               Taro.hideLoading()
-              Taro.showToast({ title: '头像已更新', icon: 'success' })
+              Taro.showToast({ title: t('profileEdit.avatarUpdated'), icon: 'success' })
             }
           }
         } catch {
           Taro.hideLoading()
-          Taro.showToast({ title: '头像更新失败', icon: 'none' })
+          Taro.showToast({ title: t('profileEdit.avatarFailed'), icon: 'none' })
         }
       },
     })
@@ -102,7 +104,7 @@ export default function ProfileEdit() {
 
   const handleSave = useCallback(async () => {
     if (!form.name.trim()) {
-      Taro.showToast({ title: '请输入姓名', icon: 'none' })
+      Taro.showToast({ title: t('profileEdit.enterName'), icon: 'none' })
       return
     }
     setSaving(true)
@@ -116,10 +118,10 @@ export default function ProfileEdit() {
         ...(avatarUrl && avatarUrl !== user?.avatar ? { avatar: avatarUrl } : {}),
       })
       setUser(updated)
-      Taro.showToast({ title: '保存成功', icon: 'success' })
+      Taro.showToast({ title: t('profileEdit.saveSuccess'), icon: 'success' })
       setTimeout(() => Taro.navigateBack(), 800)
     } catch {
-      Taro.showToast({ title: '保存失败', icon: 'none' })
+      Taro.showToast({ title: t('profileEdit.saveFailed'), icon: 'none' })
     } finally {
       setSaving(false)
     }
@@ -152,62 +154,62 @@ export default function ProfileEdit() {
 
       <View className="pe-form">
         <View className="pe-field">
-          <Text className="pe-label">姓名</Text>
+          <Text className="pe-label">{t('profileEdit.name')}</Text>
           <View className="pe-input-wrap">
             <Input
               className="pe-input"
               value={form.name}
               onInput={e => updateField('name', e.detail.value)}
-              placeholder="请输入姓名"
+              placeholder={t('profileEdit.namePlaceholder')}
             />
           </View>
         </View>
 
         <View className="pe-field">
-          <Text className="pe-label">学校</Text>
+          <Text className="pe-label">{t('profileEdit.school')}</Text>
           <View className="pe-input-wrap">
             <Input
               className="pe-input"
               value={form.school}
               onInput={e => updateField('school', e.detail.value)}
-              placeholder="请输入学校"
+              placeholder={t('profileEdit.schoolPlaceholder')}
             />
           </View>
         </View>
 
         <View className="pe-field">
-          <Text className="pe-label">学院/部门</Text>
+          <Text className="pe-label">{t('profileEdit.department')}</Text>
           <View className="pe-input-wrap">
             <Input
               className="pe-input"
               value={form.department}
               onInput={e => updateField('department', e.detail.value)}
-              placeholder="请输入学院或部门"
+              placeholder={t('profileEdit.departmentPlaceholder')}
             />
           </View>
         </View>
 
         <View className="pe-field">
-          <Text className="pe-label">手机号码</Text>
+          <Text className="pe-label">{t('profileEdit.phone')}</Text>
           <View className="pe-input-wrap">
             <Input
               className="pe-input"
               value={form.phone}
               onInput={e => updateField('phone', e.detail.value)}
-              placeholder="请输入手机号码"
+              placeholder={t('profileEdit.phonePlaceholder')}
               type="number"
             />
           </View>
         </View>
 
         <View className="pe-field">
-          <Text className="pe-label">电子邮箱</Text>
+          <Text className="pe-label">{t('profileEdit.email')}</Text>
           <View className="pe-input-wrap">
             <Input
               className="pe-input"
               value={form.email}
               onInput={e => updateField('email', e.detail.value)}
-              placeholder="请输入电子邮箱"
+              placeholder={t('profileEdit.emailPlaceholder')}
             />
           </View>
         </View>
@@ -215,7 +217,7 @@ export default function ProfileEdit() {
 
       <View className="pe-bottom">
         <View className={`pe-save-btn ${saving ? 'loading' : ''}`} onClick={handleSave}>
-          <Text>{saving ? '保存中...' : '保存设置'}</Text>
+          <Text>{saving ? t('common.saving') : t('profileEdit.saveSettings')}</Text>
         </View>
       </View>
     </View>

@@ -12,6 +12,7 @@
  * - 完整API集成
  */
 import { useState, useMemo, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Image, Textarea } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Comment, CommentSortType, Rating } from '../types'
@@ -132,6 +133,7 @@ const MOCK_COMMENTS: Comment[] = [
 ]
 
 const CommentTab = ({ activityId, theme }: CommentTabProps) => {
+  const { t } = useTranslation()
   const [rating, setRating] = useState<Rating>(MOCK_RATING)
   const [comments, setComments] = useState<Comment[]>(MOCK_COMMENTS)
   const [sortType, setSortType] = useState<CommentSortType>('hottest')
@@ -177,7 +179,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
     } catch (error) {
       console.error('加载评论数据失败:', error)
       Taro.showToast({
-        title: '加载失败',
+        title: t('common.loadFailedShort'),
         icon: 'none'
       })
     } finally {
@@ -204,7 +206,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
   const handleRateClick = () => {
     if (rating.user_rating && rating.user_rating > 0) {
       Taro.showToast({
-        title: '您已经评分过了',
+        title: t('comments.alreadyRated'),
         icon: 'none'
       })
       return
@@ -217,7 +219,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
   const handleSubmitRating = async () => {
     if (tempRating === 0) {
       Taro.showToast({
-        title: '请选择评分',
+        title: t('comments.selectRating'),
         icon: 'none'
       })
       return
@@ -230,13 +232,13 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
 
       setShowRatingDialog(false)
       Taro.showToast({
-        title: '评分成功',
+        title: t('comments.ratingSuccess'),
         icon: 'success'
       })
     } catch (error) {
       console.error('提交评分失败:', error)
       Taro.showToast({
-        title: '评分失败',
+        title: t('comments.ratingFailed'),
         icon: 'none'
       })
     }
@@ -280,7 +282,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
         return c
       }))
       Taro.showToast({
-        title: '操作失败',
+        title: t('common.failed'),
         icon: 'none'
       })
     }
@@ -302,7 +304,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
   const handleSubmitComment = async () => {
     if (!commentText.trim()) {
       Taro.showToast({
-        title: '请输入评论内容',
+        title: t('comments.enterComment'),
         icon: 'none'
       })
       return
@@ -320,13 +322,13 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
       setShowCommentInput(false)
 
       Taro.showToast({
-        title: '评论成功',
+        title: t('comments.commentSuccess'),
         icon: 'success'
       })
     } catch (error) {
       console.error('提交评论失败:', error)
       Taro.showToast({
-        title: '评论失败，请重试',
+        title: t('comments.commentFailedRetry'),
         icon: 'none'
       })
     }
@@ -335,8 +337,8 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
   // 删除评论
   const handleDeleteComment = async (commentId: number) => {
     Taro.showModal({
-      title: '确认删除',
-      content: '确定要删除这条评论吗？',
+      title: t('comments.deleteConfirmTitle'),
+      content: t('comments.deleteConfirm'),
       success: async (res) => {
         if (res.confirm) {
           try {
@@ -347,13 +349,13 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
             setActiveCommentMenu(null)
 
             Taro.showToast({
-              title: '删除成功',
+              title: t('comments.deleteSuccess'),
               icon: 'success'
             })
           } catch (error) {
             console.error('删除评论失败:', error)
             Taro.showToast({
-              title: '删除失败，请重试',
+              title: t('comments.deleteFailedRetry'),
               icon: 'none'
             })
           }
@@ -400,13 +402,13 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
     if (days > 7) {
       return time.split(' ')[0] // 返回日期部分
     } else if (days > 0) {
-      return `${days}天前`
+      return t('time.daysAgo', { days })
     } else if (hours > 0) {
-      return `${hours}小时前`
+      return t('time.hoursAgo', { hours })
     } else if (minutes > 0) {
-      return `${minutes}分钟前`
+      return t('time.minutesAgo', { minutes })
     } else {
-      return '刚刚'
+      return t('time.justNow')
     }
   }
 
@@ -415,10 +417,10 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
       {/* 评分概览卡片 */}
       <View className="rating-overview-card">
         <View className="rating-header">
-          <Text className="rating-title">星级评分</Text>
+          <Text className="rating-title">{t('comments.starRating')}</Text>
           <View className="rating-action" onClick={handleRateClick}>
             <Image src={iconStar} className="rating-action-icon" mode="aspectFit" />
-            <Text className="rating-action-text">评分</Text>
+            <Text className="rating-action-text">{t('comments.rating')}</Text>
           </View>
         </View>
 
@@ -429,7 +431,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
             <View className="rating-stars-large">
               {renderStars(Math.round(rating.average), 'large')}
             </View>
-            <Text className="rating-count">{rating.total_count} 人评价</Text>
+            <Text className="rating-count">{t('comments.ratingCount', { count: rating.total_count })}</Text>
           </View>
 
           <View className="rating-distribution">
@@ -438,7 +440,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
               const percentage = rating.total_count > 0 ? (count / rating.total_count) * 100 : 0
               return (
                 <View key={star} className="distribution-row">
-                  <Text className="distribution-star">{star}星</Text>
+                  <Text className="distribution-star">{t('comments.starCount', { count: star })}</Text>
                   <View className="distribution-bar-bg">
                     <View
                       className="distribution-bar-fill"
@@ -455,7 +457,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
 
       {/* 我的评分卡片 - Instagram 风格 */}
       <View className="my-rating-card">
-        <Text className="my-rating-label">我的评分</Text>
+        <Text className="my-rating-label">{t('comments.myRating')}</Text>
         <View className="my-rating-content">
           {rating.user_rating && rating.user_rating > 0 ? (
             <>
@@ -465,7 +467,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
               <Text className="my-rating-date">2025.12.10</Text>
             </>
           ) : (
-            <Text className="my-rating-empty">暂未评分</Text>
+            <Text className="my-rating-empty">{t('comments.notRated')}</Text>
           )}
         </View>
       </View>
@@ -473,19 +475,19 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
       {/* 评论区域 - Instagram 风格 */}
       <View className="comments-section">
         <View className="comments-header">
-          <Text className="comments-title">评论</Text>
+          <Text className="comments-title">{t('comments.comment')}</Text>
           <View className="sort-tabs">
             {[
-              { key: 'hottest', label: '最热门' },
-              { key: 'time', label: '按时间' },
-              { key: 'newest', label: '最新' }
+              { key: 'hottest', labelKey: 'comments.hottest' },
+              { key: 'time', labelKey: 'comments.byTime' },
+              { key: 'newest', labelKey: 'comments.latest' }
             ].map(tab => (
               <View
                 key={tab.key}
                 className={`sort-tab ${sortType === tab.key ? 'active' : ''}`}
                 onClick={() => setSortType(tab.key as CommentSortType)}
               >
-                <Text className="sort-tab-text">{tab.label}</Text>
+                <Text className="sort-tab-text">{t(tab.labelKey)}</Text>
               </View>
             ))}
           </View>
@@ -541,7 +543,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
                     className="reply-link"
                     onClick={() => handleReplyComment(comment.id)}
                   >
-                    {comment.reply_count}条回复 &gt;
+                    {t('comments.replyCount', { count: comment.reply_count })} &gt;
                   </Text>
                 )}
 
@@ -553,7 +555,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
                         <Text className="reply-user">{reply.user_name}</Text>
                         {reply.reply_to && (
                           <>
-                            <Text className="reply-arrow"> 回复 </Text>
+                            <Text className="reply-arrow"> {t('common.reply')} </Text>
                             <Text className="reply-user">{reply.reply_to}</Text>
                           </>
                         )}
@@ -572,7 +574,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
       {showRatingDialog && (
         <View className="rating-dialog-overlay" onClick={() => setShowRatingDialog(false)}>
           <View className="rating-dialog" onClick={(e) => e.stopPropagation()}>
-            <Text className="dialog-title">点击星星评分</Text>
+            <Text className="dialog-title">{t('comments.ratingDialogTitle')}</Text>
             <View className="dialog-stars">
               {[1, 2, 3, 4, 5].map((star) => (
                 <View
@@ -588,7 +590,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
             </View>
             <View className="dialog-actions">
               <View className="dialog-confirm" onClick={handleSubmitRating}>
-                <Text className="confirm-text">确定</Text>
+                <Text className="confirm-text">{t('common.confirm')}</Text>
               </View>
             </View>
             <View className="dialog-close" onClick={() => setShowRatingDialog(false)}>
@@ -606,7 +608,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
           mode="aspectFill"
         />
         <View className="trigger-input-placeholder">
-          <Text className="placeholder-text">添加评论......</Text>
+          <Text className="placeholder-text">{t('comments.addCommentPlaceholder')}</Text>
         </View>
       </View>
 
@@ -618,7 +620,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
             <View className="panel-drag-bar" />
 
             <View className="panel-header">
-              <Text className="panel-title">将以下面的身份进行评论</Text>
+              <Text className="panel-title">{t('comments.commentAsIdentity')}</Text>
             </View>
 
             {/* 用户信息 */}
@@ -638,7 +640,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
             <View className="panel-input-wrapper">
               <Textarea
                 className="panel-textarea"
-                placeholder="添加评论......"
+                placeholder={t('comments.addCommentPlaceholder')}
                 value={commentText}
                 onInput={(e) => setCommentText(e.detail.value)}
                 autoFocus
@@ -655,7 +657,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
                 className={`panel-submit-button ${commentText.trim() ? 'active' : ''}`}
                 onClick={handleSubmitComment}
               >
-                <Text className="submit-button-text">发送</Text>
+                <Text className="submit-button-text">{t('common.send')}</Text>
               </View>
             </View>
           </View>
@@ -680,7 +682,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
               }}
             >
               <Image src={iconMessage} className="action-icon" mode="aspectFit" />
-              <Text className="action-text">回复</Text>
+              <Text className="action-text">{t('common.reply')}</Text>
             </View>
             <View
               className="action-sheet-item cancel"
@@ -689,7 +691,7 @@ const CommentTab = ({ activityId, theme }: CommentTabProps) => {
               }}
             >
               <Image src={iconTrash} className="action-icon" mode="aspectFit" />
-              <Text className="action-text">取消</Text>
+              <Text className="action-text">{t('common.cancel')}</Text>
             </View>
           </View>
         </View>

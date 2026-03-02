@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { View, Text, Input, ScrollView, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import './index.scss'
 
 interface Message {
@@ -11,11 +12,12 @@ interface Message {
 }
 
 const AIAssistantPage = () => {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: '你好！我是会议助手，可以帮你解答关于活动报名、日程安排、酒店交通等问题。有什么我可以帮助你的吗？',
+      content: t('aiAssistant.welcomeMessage'),
       timestamp: new Date()
     }
   ])
@@ -28,14 +30,14 @@ const AIAssistantPage = () => {
     
     setTimeout(() => {
       const responses: Record<string, string> = {
-        '报名': '报名流程很简单：\n1. 在首页或活动列表找到感兴趣的活动\n2. 点击进入活动详情\n3. 点击"立即报名"按钮\n4. 填写个人信息、缴费信息、住宿和交通信息\n5. 提交即可完成报名',
-        '签到': '签到方式：\n1. 活动当天，进入"我的"页面\n2. 找到已报名的活动\n3. 点击"去签到"按钮\n4. 扫描现场二维码或由工作人员核验',
-        '酒店': '酒店信息可以在活动详情页的"酒店信息"标签中查看，包括：\n• 推荐酒店列表\n• 房型和价格\n• 位置地图\n• 交通指南\n• 当地天气',
-        '缴费': '缴费说明：\n1. 在报名表单的"缴费信息"步骤\n2. 扫描二维码完成支付\n3. 上传缴费截图\n4. 填写发票抬头信息（如需要）',
-        '徽章': '徽章系统包含四个系列：\n• 启程成就：首次报名、成功入选等\n• 互动成就：首次评论、金句制造机等\n• 荣誉成就：徽章收藏家、活动之星等\n• 隐藏彩蛋：闪电报名王、午夜打卡者等\n\n完成特定条件即可解锁对应徽章！'
+        '报名': t('aiAssistant.answerSignup'),
+        '签到': t('aiAssistant.answerCheckin'),
+        '酒店': t('aiAssistant.answerHotel'),
+        '缴费': t('aiAssistant.answerPayment'),
+        '徽章': t('aiAssistant.answerBadge')
       }
 
-      let response = '感谢你的提问！这个功能即将上线，届时我将接入智能大模型，为你提供更专业的解答。\n\n目前你可以：\n• 浏览活动列表了解最新活动\n• 查看活动详情获取完整信息\n• 在"我的"页面管理报名记录'
+      let response = t('aiAssistant.answerDefault')
 
       for (const [keyword, reply] of Object.entries(responses)) {
         if (userMessage.includes(keyword)) {
@@ -73,10 +75,10 @@ const AIAssistantPage = () => {
   }
 
   const quickQuestions = [
-    '如何报名活动？',
-    '怎么签到？',
-    '酒店信息在哪看？',
-    '如何获得徽章？'
+    t('aiAssistant.quickQ1'),
+    t('aiAssistant.quickQ2'),
+    t('aiAssistant.quickQ3'),
+    t('aiAssistant.quickQ4')
   ]
 
   const handleQuickQuestion = (question: string) => {
@@ -94,8 +96,8 @@ const AIAssistantPage = () => {
           <View className="status-dot" />
         </View>
         <View className="info-text">
-          <Text className="title">AI 会议助手</Text>
-          <Text className="subtitle">智能问答 · 随时在线</Text>
+          <Text className="title">{t('aiAssistant.pageTitle')}</Text>
+          <Text className="subtitle">{t('aiAssistant.subtitle')}</Text>
         </View>
       </View>
 
@@ -167,7 +169,7 @@ const AIAssistantPage = () => {
         <View className="input-wrapper">
           <Input
             className="input"
-            placeholder="输入你的问题..."
+            placeholder={t('aiAssistant.inputPlaceholder')}
             placeholderClass="input-placeholder"
             value={inputValue}
             onInput={(e) => setInputValue(e.detail.value)}
@@ -181,7 +183,7 @@ const AIAssistantPage = () => {
             <Text className="send-icon">➤</Text>
           </View>
         </View>
-        <Text className="input-hint">AI助手即将接入大模型，敬请期待</Text>
+        <Text className="input-hint">{t('aiAssistant.comingSoon')}</Text>
       </View>
     </View>
   )

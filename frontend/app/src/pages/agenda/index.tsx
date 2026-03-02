@@ -11,6 +11,7 @@
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { useState, useEffect, useCallback } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import type { AgendaDay } from '../activity-detail/types'
 import { DateTabs } from './components/DateTabs'
@@ -26,6 +27,7 @@ const STORAGE_KEY = 'agenda-expanded-groups'
 export default function AgendaPage() {
   const router = useRouter()
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const activityId = Number(router.params.activity_id)
   
   const [agendaData, setAgendaData] = useState<AgendaDay[]>([])
@@ -131,7 +133,7 @@ export default function AgendaPage() {
     return (
       <View className={`agenda-page theme-${theme} empty`}>
         <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
-        <Text className="empty-text">暂无议程数据</Text>
+        <Text className="empty-text">{t('agenda.noAgendaData')}</Text>
       </View>
     )
   }
@@ -158,8 +160,8 @@ export default function AgendaPage() {
         {/* 标题区域 - 放在返回按钮下方 */}
         <View className="title-row">
           <View className="header-title-wrapper">
-            <Text className="header-title">活动议程</Text>
-            <Text className="header-subtitle">Conference Agenda</Text>
+            <Text className="header-title">{t('agenda.pageTitle')}</Text>
+            <Text className="header-subtitle">{t('agenda.pageTitleEn')}</Text>
           </View>
         </View>
 
@@ -186,7 +188,7 @@ export default function AgendaPage() {
             onClick={allExpanded ? collapseAll : expandAll}
           >
             <Text className="expand-text">
-              {allExpanded ? '收起全部' : '展开全部'}
+              {allExpanded ? t('agenda.collapseAll') : t('agenda.expandAll')}
             </Text>
           </View>
         </View>
@@ -208,7 +210,7 @@ export default function AgendaPage() {
         {/* 页脚 */}
         <View className="page-footer">
           <Text className="footer-text">
-            © 2025 强智科技 · Crafted with precision
+            {t('agenda.footer')}
           </Text>
         </View>
 

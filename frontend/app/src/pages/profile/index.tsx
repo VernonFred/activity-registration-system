@@ -3,10 +3,12 @@
  * 重构时间: 2025年12月9日
  */
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, ScrollView, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import CustomTabBar from '../../components/CustomTabBar'
 import { useTheme } from '../../context/ThemeContext'
+import i18n from '../../i18n'
 import {
   ProfileHeader,
   ActivitiesTab,
@@ -54,7 +56,7 @@ function mapApiUserToProfile(user: ApiUser): UserInfo {
     avatar_url: user.avatar,
     organization: [user.school, user.department].filter(Boolean).join(''),
     title: user.position,
-    bio: '这个用户很懒，还没填写个人简介',
+    bio: i18n.t('profile.defaultBio'),
   }
 }
 
@@ -74,7 +76,7 @@ function mapCompanions(signup: ApiSignupRecord): SignupRecord['companions'] {
   if (!Array.isArray(signup.companions) || signup.companions.length === 0) return []
   return signup.companions.map((companion: any, index) => ({
     id: Number(companion?.id || `${signup.id}${index + 1}`),
-    name: companion?.personal?.name || companion?.name || `同行人员${index + 1}`,
+    name: companion?.personal?.name || companion?.name || i18n.t('profile.companionFallback', { index: index + 1 }),
   }))
 }
 
@@ -95,7 +97,7 @@ function mapApiSignupToProfile(signup: ApiSignupRecord): SignupRecord {
   return {
     id: signup.id,
     activity_id: signup.activity?.id || 0,
-    activity_title: signup.activity?.title || '未命名活动',
+    activity_title: signup.activity?.title || i18n.t('profile.unnamedActivity'),
     activity_desc: location || FALLBACK_ACTIVITY_DESC,
     activity_date: start,
     activity_end_date: end,
@@ -128,6 +130,7 @@ function applyCheckinOverridesToSignups(items: SignupRecord[]): SignupRecord[] {
 
 export default function Profile() {
   const { theme } = useTheme()
+  const { t } = useTranslation()
 
   const [activeTab, setActiveTab] = useState<ProfileTab>('activities')
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null)
@@ -221,8 +224,8 @@ export default function Profile() {
 
   const handleLogout = useCallback(() => {
     Taro.showModal({
-      title: '确认退出',
-      content: '确定要退出登录吗？',
+      title: t('profile.exitConfirmTitle'),
+      content: t('profile.exitConfirmContent'),
       success: (res) => {
         if (res.confirm) {
           Taro.clearStorage()
@@ -230,7 +233,7 @@ export default function Profile() {
         }
       },
     })
-  }, [])
+  }, [t])
 
   const toggleSignupExpand = useCallback((id: number) => {
     setExpandedSignup((prev) => (prev === id ? null : id))
@@ -243,13 +246,13 @@ export default function Profile() {
   const navigateToSignupPage = useCallback((signupId: number, mode: string) => {
     const signup = getSignupById(signupId)
     if (!signup?.activity_id) {
-      Taro.showToast({ title: '活动信息不存在', icon: 'none' })
+      Taro.showToast({ title: t('profile.activityNotExist'), icon: 'none' })
       return
     }
     Taro.navigateTo({
       url: `/pages/signup/index?activityId=${signup.activity_id}&signupId=${signup.id}&mode=${mode}`,
     })
-  }, [getSignupById])
+  }, [getSignupById, t])
 
   const handleViewActivity = useCallback((activityId: number) => {
     Taro.navigateTo({ url: `/pages/activity-detail/index?id=${activityId}` })
@@ -265,22 +268,22 @@ export default function Profile() {
 
   const handleCancelSignup = useCallback((signupId: number) => {
     Taro.showModal({
-      title: '确认取消',
-      content: '确定要取消报名吗？',
+      title: t('profile.cancelConfirmTitle'),
+      content: t('profile.cancelConfirmContent'),
       success: async (res) => {
         if (!res.confirm) return
         try {
           await cancelSignupApi(signupId)
           setSignups((prev) => prev.filter((item) => item.id !== signupId))
           setExpandedSignup((prev) => (prev === signupId ? null : prev))
-          Taro.showToast({ title: '已取消报名', icon: 'success' })
+          Taro.showToast({ title: t('profile.cancelledSignup'), icon: 'success' })
         } catch (error) {
           console.error('取消报名失败:', error)
-          Taro.showToast({ title: '取消报名失败', icon: 'none' })
+          Taro.showToast({ title: t('profile.cancelSignupFailed'), icon: 'none' })
         }
       },
     })
-  }, [])
+  }, [t])
 
   const handleAddCompanion = useCallback((signupId: number) => {
     navigateToSignupPage(signupId, 'companion')
@@ -293,24 +296,24 @@ export default function Profile() {
   const handleCheckin = useCallback((signupId: number) => {
     const signup = getSignupById(signupId)
     if (!signup?.activity_id) {
-      Taro.showToast({ title: '签到信息不存在', icon: 'none' })
+      Taro.showToast({ title: t('profile.checkinNotExist'), icon: 'none' })
       return
     }
     Taro.navigateTo({
       url: `/pages/checkin/index?signupId=${signup.id}&activityId=${signup.activity_id}`,
     })
-  }, [getSignupById])
+  }, [getSignupById, t])
 
   const handleViewCredential = useCallback((signupId: number) => {
     const signup = getSignupById(signupId)
     if (!signup?.activity_id) {
-      Taro.showToast({ title: '凭证信息不存在', icon: 'none' })
+      Taro.showToast({ title: t('profile.credentialNotExist'), icon: 'none' })
       return
     }
     Taro.navigateTo({
       url: `/pages/credential/index?signupId=${signup.id}&activityId=${signup.activity_id}`,
     })
-  }, [getSignupById])
+  }, [getSignupById, t])
 
   const updateSignupByActivityId = useCallback((
     activityId: number,
@@ -411,36 +414,36 @@ export default function Profile() {
         likes: data.like_count ?? item.likes,
         favorites: data.favorite_count ?? item.favorites,
       }))
-      Taro.showToast({ title: '链接已复制', icon: 'success' })
+      Taro.showToast({ title: t('profile.linkCopied'), icon: 'success' })
     } catch (error) {
       console.error('分享记录失败:', error)
-      Taro.showToast({ title: '分享失败', icon: 'none' })
+      Taro.showToast({ title: t('profile.shareFailed'), icon: 'none' })
     }
-  }, [updateSignupByActivityId])
+  }, [updateSignupByActivityId, t])
 
   const handleDeleteNotification = useCallback((id: number) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id))
-    Taro.showToast({ title: '已删除', icon: 'none' })
-  }, [])
+        Taro.showToast({ title: t('common.deleted'), icon: 'none' })
+  }, [t])
 
   const handleSettingClick = useCallback((setting: string) => {
     const routes: Record<string, string> = {
       profile: '/pages/profile-edit/index',
       payment: '/pages/my-payments/index',
       invoice: '/pages/invoice-headers/index',
+      darkmode: '/pages/dark-mode/index',
+      language: '/pages/language/index',
     }
     if (routes[setting]) {
       Taro.navigateTo({ url: routes[setting] })
       return
     }
     const messages: Record<string, string> = {
-      language: '多语言',
-      darkmode: '暗黑模式',
-      privacy: '隐私与政策',
-      help: '支持与帮助',
+      privacy: t('settings.privacy'),
+      help: t('settings.support'),
     }
     Taro.showToast({ title: messages[setting] || setting, icon: 'none' })
-  }, [])
+  }, [t])
 
   if (loading) {
     return (
@@ -512,10 +515,10 @@ export default function Profile() {
             <Text className="nt-bs-desc">{sheetConfig.desc}</Text>
             <View className="nt-bs-actions">
               <View className="nt-bs-btn nt-bs-cancel" onClick={() => setSheetConfig(null)}>
-                <Text>取消</Text>
+                <Text>{t('common.cancel')}</Text>
               </View>
               <View className="nt-bs-btn nt-bs-confirm" onClick={sheetConfig.onConfirm}>
-                <Text>确定</Text>
+                <Text>{t('common.confirm')}</Text>
               </View>
             </View>
           </View>
@@ -545,7 +548,7 @@ export default function Profile() {
                 <Text className="badge-modal-slogan">「{selectedBadge.slogan}」</Text>
               )}
               {selectedBadge.earned_at && (
-                <Text className="badge-modal-date">{selectedBadge.earned_at} 获得</Text>
+                <Text className="badge-modal-date">{selectedBadge.earned_at}{t('profile.earned')}</Text>
               )}
             </View>
             <View className="badge-modal-close" onClick={() => setSelectedBadge(null)}>

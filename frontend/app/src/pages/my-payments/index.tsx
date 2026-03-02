@@ -4,6 +4,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchPayments, deletePayment, bulkDeletePayments, PaymentItem } from '../../services/payments'
 import './index.scss'
@@ -13,13 +14,34 @@ type CategoryFilter = 'all' | '论坛' | '峰会' | '研讨会' | '培训'
 type TimeFilter = 'all' | 'recent' | 'month' | 'year'
 
 const CATEGORIES: CategoryFilter[] = ['all', '论坛', '峰会', '研讨会', '培训']
-const CATEGORY_LABELS: Record<CategoryFilter, string> = {
-  all: '全部类型', '论坛': '论坛', '峰会': '峰会', '研讨会': '研讨会', '培训': '培训',
+
+const SORT_FIELDS: SortField[] = ['default', 'amount_asc', 'amount_desc']
+
+const TIME_OPTIONS: { value: TimeFilter; key: string }[] = [
+  { value: 'all', key: 'payments.allTime' },
+  { value: 'recent', key: 'payments.last7Days' },
+  { value: 'month', key: 'payments.lastMonth' },
+  { value: 'year', key: 'payments.lastYear' },
+]
+
+const SORT_LABEL_KEYS: Record<SortField, string> = {
+  default: 'payments.defaultSort',
+  amount_asc: 'payments.amountAsc',
+  amount_desc: 'payments.amountDesc',
+}
+
+const CATEGORY_LABEL_KEYS: Record<CategoryFilter, string> = {
+  all: 'payments.allTypes',
+  '论坛': 'payments.forum',
+  '峰会': 'payments.summit',
+  '研讨会': 'payments.seminar',
+  '培训': 'payments.training',
 }
 
 const PAGE_SIZE = 5
 
 export default function MyPayments() {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   const [payments, setPayments] = useState<PaymentItem[]>([])
   const [totalPages, setTotalPages] = useState(1)
@@ -80,19 +102,23 @@ export default function MyPayments() {
 
   const handleDelete = useCallback(async (id: number) => {
     Taro.showModal({
-      title: '确认删除', content: '确定要删除此缴费记录吗？', confirmColor: '#ef4444',
+      title: t('payments.confirmDeleteTitle'),
+      content: t('payments.confirmDeleteContent'),
+      confirmColor: '#ef4444',
       success: async (res) => {
         if (res.confirm) {
           try {
             await deletePayment(id)
-          } catch { /* fallback */ }
-          setSwipedId(null)
-          Taro.showToast({ title: '已删除', icon: 'success' })
-          loadPayments(currentPage)
+            setSwipedId(null)
+            Taro.showToast({ title: t('common.deleted'), icon: 'success' })
+            loadPayments(currentPage)
+          } catch {
+            Taro.showToast({ title: t('common.failed'), icon: 'error' })
+          }
         }
       },
     })
-  }, [currentPage, loadPayments])
+  }, [currentPage, loadPayments, t])
 
   const toggleBatchMode = useCallback(() => {
     setBatchMode(prev => { if (prev) setSelectedIds(new Set()); return !prev })
@@ -113,6 +139,27 @@ export default function MyPayments() {
   const handleCategoryClick = () => { const n = !showCategoryMenu; closeMenus(); setShowCategoryMenu(n) }
   const handleTimeClick = () => { const n = !showTimeMenu; closeMenus(); setShowTimeMenu(n) }
 
+  const handleBulkDelete = useCallback(() => {
+    Taro.showModal({
+      title: t('common.batchDelete'),
+      content: t('common.confirmDeleteSelected', { count: selectedIds.size }),
+      confirmColor: '#ef4444',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            await bulkDeletePayments(Array.from(selectedIds))
+            setSelectedIds(new Set())
+            setBatchMode(false)
+            Taro.showToast({ title: t('common.deleted'), icon: 'success' })
+            loadPayments(currentPage)
+          } catch {
+            Taro.showToast({ title: t('common.failed'), icon: 'error' })
+          }
+        }
+      },
+    })
+  }, [selectedIds.size, currentPage, loadPayments, t])
+
   return (
     <View className={`mp-page theme-${theme}`}>
       <View className="mp-back" style={{ paddingTop: `${topPad}px` }} onClick={() => Taro.navigateBack()}>
@@ -124,39 +171,39 @@ export default function MyPayments() {
       <View className="mp-toolbar">
         <View className="mp-filters">
           <View className={`mp-filter ${showSortMenu ? 'active' : ''}`} onClick={handleSortClick}>
-            <Text>排列</Text><Text className="mp-filter-arrow">▾</Text>
+            <Text>{t('payments.sort')}</Text><Text className="mp-filter-arrow">▾</Text>
             {showSortMenu && (
               <View className="mp-dropdown">
-                {(['default', 'amount_asc', 'amount_desc'] as SortField[]).map(f => (
+                {SORT_FIELDS.map(f => (
                   <View key={f} className={`mp-drop-item ${sortField === f ? 'selected' : ''}`}
                     onClick={e => { e.stopPropagation(); setSortField(f); setShowSortMenu(false) }}>
-                    <Text>{{ default: '默认排序', amount_asc: '金额从低到高', amount_desc: '金额从高到低' }[f]}</Text>
+                    <Text>{t(SORT_LABEL_KEYS[f])}</Text>
                   </View>
                 ))}
               </View>
             )}
           </View>
           <View className={`mp-filter ${showCategoryMenu ? 'active' : ''}`} onClick={handleCategoryClick}>
-            <Text>类型</Text><Text className="mp-filter-arrow">▾</Text>
+            <Text>{t('payments.type')}</Text><Text className="mp-filter-arrow">▾</Text>
             {showCategoryMenu && (
               <View className="mp-dropdown">
                 {CATEGORIES.map(c => (
                   <View key={c} className={`mp-drop-item ${categoryFilter === c ? 'selected' : ''}`}
                     onClick={e => { e.stopPropagation(); setCategoryFilter(c); setShowCategoryMenu(false) }}>
-                    <Text>{CATEGORY_LABELS[c]}</Text>
+                    <Text>{t(CATEGORY_LABEL_KEYS[c])}</Text>
                   </View>
                 ))}
               </View>
             )}
           </View>
           <View className={`mp-filter ${showTimeMenu ? 'active' : ''}`} onClick={handleTimeClick}>
-            <Text>时间</Text><Text className="mp-filter-arrow">▾</Text>
+            <Text>{t('payments.time')}</Text><Text className="mp-filter-arrow">▾</Text>
             {showTimeMenu && (
               <View className="mp-dropdown">
-                {([['all', '全部'], ['recent', '最近7天'], ['month', '最近一个月'], ['year', '最近一年']] as const).map(([v, l]) => (
-                  <View key={v} className={`mp-drop-item ${timeFilter === v ? 'selected' : ''}`}
-                    onClick={e => { e.stopPropagation(); setTimeFilter(v as TimeFilter); setShowTimeMenu(false) }}>
-                    <Text>{l}</Text>
+                {TIME_OPTIONS.map(({ value, key }) => (
+                  <View key={value} className={`mp-drop-item ${timeFilter === value ? 'selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); setTimeFilter(value); setShowTimeMenu(false) }}>
+                    <Text>{t(key)}</Text>
                   </View>
                 ))}
               </View>
@@ -200,12 +247,12 @@ export default function MyPayments() {
                   <Text className="mp-card-title">{item.activity_title}</Text>
                   <View className="mp-card-tags">
                     <View className="mp-tag"><Text>{item.category}</Text></View>
-                    <Text className="mp-link" onClick={e => { e.stopPropagation(); setDetailItem(item) }}>查看详情</Text>
+                    <Text className="mp-link" onClick={e => { e.stopPropagation(); setDetailItem(item) }}>{t('payments.viewDetail')}</Text>
                   </View>
                 </View>
                 <Text className="mp-amount">¥ {item.amount.toFixed(2)}</Text>
                 <View className={`mp-status-badge mp-status-${item.status}`}>
-                  <Text>{item.status === 'paid' ? '已缴费' : '待缴费'}</Text>
+                  <Text>{item.status === 'paid' ? t('payments.paid') : t('payments.unpaid')}</Text>
                 </View>
               </View>
               <View className="mp-delete-area" onClick={() => handleDelete(item.id)}>
@@ -217,7 +264,7 @@ export default function MyPayments() {
             </View>
           ))}
           {payments.length === 0 && (
-            <View className="mp-empty"><Text>暂无缴费记录</Text></View>
+            <View className="mp-empty"><Text>{t('payments.noRecords')}</Text></View>
           )}
         </View>
         {totalPages > 1 && (
@@ -236,25 +283,9 @@ export default function MyPayments() {
 
       {batchMode && selectedIds.size > 0 && (
         <View className="mp-batch-bar">
-          <Text className="mp-batch-info">已选择 {selectedIds.size} 项</Text>
-          <View className="mp-batch-del" onClick={() => {
-            Taro.showModal({
-              title: '批量删除',
-              content: `确定要删除选中的 ${selectedIds.size} 条记录吗？`,
-              confirmColor: '#ef4444',
-              success: async (res) => {
-                if (res.confirm) {
-                  try {
-                    await bulkDeletePayments(Array.from(selectedIds))
-                  } catch { /* fallback */ }
-                  setSelectedIds(new Set()); setBatchMode(false)
-                  Taro.showToast({ title: '已删除', icon: 'success' })
-                  loadPayments(currentPage)
-                }
-              },
-            })
-          }}>
-            <Text>删除</Text>
+          <Text className="mp-batch-info">{t('common.selected', { count: selectedIds.size })}</Text>
+          <View className="mp-batch-del" onClick={handleBulkDelete}>
+            <Text>{t('common.delete')}</Text>
           </View>
         </View>
       )}
@@ -286,18 +317,18 @@ export default function MyPayments() {
                 </View>
               </View>
 
-              <Text className="mp-detail-section-title">信息</Text>
+              <Text className="mp-detail-section-title">{t('payments.detailInfo')}</Text>
               <View className="mp-detail-row">
                 <View className="mp-detail-row-left">
                   <View className="mp-detail-icon-person" />
-                  <Text className="mp-detail-row-label">缴费人</Text>
+                  <Text className="mp-detail-row-label">{t('payments.payer')}</Text>
                 </View>
                 <Text className="mp-detail-row-value">{detailItem.payer || '—'}</Text>
               </View>
               <View className="mp-detail-row">
                 <View className="mp-detail-row-left">
                   <View className="mp-detail-icon-date" />
-                  <Text className="mp-detail-row-label">缴费时间</Text>
+                  <Text className="mp-detail-row-label">{t('payments.payTime')}</Text>
                 </View>
                 <Text className="mp-detail-row-value">
                   {detailItem.pay_date ? `${detailItem.pay_date} 9:00 AM` : '—'}
@@ -306,29 +337,29 @@ export default function MyPayments() {
 
               <View className="mp-detail-divider" />
 
-              <Text className="mp-detail-section-title">金额</Text>
+              <Text className="mp-detail-section-title">{t('payments.amount')}</Text>
               <View className="mp-detail-row">
-                <Text className="mp-detail-row-label-bold">费用</Text>
+                <Text className="mp-detail-row-label-bold">{t('payments.fee')}</Text>
                 <Text className="mp-detail-row-value-bold">¥ {detailItem.amount.toFixed(2)}</Text>
               </View>
               <View className="mp-detail-row">
-                <Text className="mp-detail-row-label-bold">订单号</Text>
+                <Text className="mp-detail-row-label-bold">{t('payments.orderNo')}</Text>
                 <Text className="mp-detail-row-value-small">{detailItem.order_no || '—'}</Text>
               </View>
               <View className="mp-detail-row">
-                <Text className="mp-detail-row-label-bold">交易流水号</Text>
+                <Text className="mp-detail-row-label-bold">{t('payments.transactionNo')}</Text>
                 <Text className="mp-detail-row-value-small">{detailItem.transaction_no || '—'}</Text>
               </View>
 
-              <Text className="mp-detail-section-title-green">缴费截图</Text>
+              <Text className="mp-detail-section-title-green">{t('payments.payScreenshot')}</Text>
               <View className="mp-detail-upload-area">
                 <View className="mp-detail-upload-icon" />
-                <Text className="mp-detail-upload-text">缴费凭证</Text>
+                <Text className="mp-detail-upload-text">{t('payments.payReceipt')}</Text>
               </View>
 
               <View className="mp-detail-footer">
                 <View className="mp-detail-confirm-btn" onClick={() => setDetailItem(null)}>
-                  <Text>确定</Text>
+                  <Text>{t('common.confirm')}</Text>
                 </View>
               </View>
             </ScrollView>

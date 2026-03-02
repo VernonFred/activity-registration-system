@@ -4,6 +4,7 @@
  * 重构时间: 2026年2月27日
  */
 import { useState, useMemo, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Badge, BadgeCategory, UserInfo } from '../types'
@@ -52,14 +53,15 @@ export function getBadgeVisual(name: string): BadgeVisual {
   return BADGE_VISUALS[name] || DEFAULT_VISUAL
 }
 
-const CATEGORIES: { key: BadgeCategory; label: string }[] = [
-  { key: 'start', label: '启程成就' },
-  { key: 'interact', label: '互动成就' },
-  { key: 'honor', label: '荣誉成就' },
-  { key: 'easter', label: '隐藏彩蛋' },
+const CATEGORIES: { key: BadgeCategory; labelKey: string }[] = [
+  { key: 'start', labelKey: 'profile.badgeStart' },
+  { key: 'interact', labelKey: 'profile.badgeInteract' },
+  { key: 'honor', labelKey: 'profile.badgeHonor' },
+  { key: 'easter', labelKey: 'profile.badgeHidden' },
 ]
 
 const BadgesTab: React.FC<BadgesTabProps> = ({ badges, onBadgeSelect }) => {
+  const { t } = useTranslation()
   const [activeCat, setActiveCat] = useState<BadgeCategory>('start')
   const [easterRevealed, setEasterRevealed] = useState(false)
 
@@ -107,10 +109,10 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges, onBadgeSelect }) => {
       <View className="bt-hero">
         <View className="bt-wall-btn" onClick={handleBadgeWall}>
           <Text className="bt-wall-icon">◈</Text>
-          <Text className="bt-wall-text">徽章墙</Text>
+          <Text className="bt-wall-text">{t('badgeWall.wallTitle')}</Text>
         </View>
         <View className="bt-hero-badge">
-          {featuredBadge && <View className="bt-hero-tag"><Text>新获得</Text></View>}
+          {featuredBadge && <View className="bt-hero-tag"><Text>{t('profile.newlyEarned')}</Text></View>}
           <View className="bt-hero-shadow" />
           <View className="bt-hero-icon">
             {featuredBadge
@@ -120,10 +122,10 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges, onBadgeSelect }) => {
           </View>
         </View>
         <View className="bt-hero-stats">
-          <Text className="bt-stats-label">累积成就</Text>
+          <Text className="bt-stats-label">{t('badgeWall.totalAchievements')}</Text>
           <View className="bt-stats-row">
             <Text className="bt-stats-num">{earnedCount}</Text>
-            <Text className="bt-stats-total">/{totalCount}枚</Text>
+            <Text className="bt-stats-total">{t('badgeWall.countSuffix', { total: totalCount })}</Text>
           </View>
         </View>
       </View>
@@ -136,7 +138,7 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges, onBadgeSelect }) => {
             className={`bt-cat-item ${activeCat === cat.key ? 'is-active' : ''}`}
             onClick={() => setActiveCat(cat.key)}
           >
-            <Text>{cat.label}</Text>
+            <Text>{t(cat.labelKey)}</Text>
             {activeCat === cat.key && <View className="bt-cat-line" />}
           </View>
         ))}
@@ -151,9 +153,9 @@ const BadgesTab: React.FC<BadgesTabProps> = ({ badges, onBadgeSelect }) => {
             <View className="orb-core" />
             <View className="orb-mark"><Text>?</Text></View>
           </View>
-          <Text className="easter-hint">隐藏成就等待发现</Text>
+          <Text className="easter-hint">{t('profile.badgeHiddenHint')}</Text>
           <View className="bt-easter-btn" onClick={() => setEasterRevealed(true)}>
-            <Text>期待您的解锁</Text>
+            <Text>{t('profile.badgeUnlockPrompt')}</Text>
           </View>
         </View>
       ) : (

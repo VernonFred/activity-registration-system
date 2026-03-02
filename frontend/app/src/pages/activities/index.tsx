@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import CustomTabBar from '../../components/CustomTabBar'
@@ -17,6 +18,7 @@ import type { ActivityItem, ActivityStatus, FilterState } from './types'
 import './index.scss'
 
 const ActivitiesPage = () => {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   const [statusBarHeight, setStatusBarHeight] = useState(44)
   const [loading, setLoading] = useState(true)
@@ -56,7 +58,7 @@ const ActivitiesPage = () => {
     } catch (error) {
       console.error('加载活动列表失败:', error)
       Taro.showToast({
-        title: '加载失败，请稍后重试',
+        title: t('common.loadFailed'),
         icon: 'none',
         duration: 2000
       })
@@ -98,7 +100,7 @@ const ActivitiesPage = () => {
   // 排序按钮点击
   const handleSortClick = () => {
     Taro.showActionSheet({
-      itemList: ['按时间排序', '按评分排序', '按报名人数排序'],
+      itemList: [t('activities.sortByTime'), t('activities.sortByRating'), t('activities.sortByRegistration')],
     }).then(res => {
       console.log('排序选择:', res.tapIndex)
     }).catch(() => {})
@@ -142,8 +144,8 @@ const ActivitiesPage = () => {
         ) : filteredActivities.length === 0 ? (
           // 空状态
           <View className="empty-state">
-            <Text className="empty-text">暂无相关活动</Text>
-            <Text className="empty-desc">试试其他筛选条件吧</Text>
+            <Text className="empty-text">{t('activities.noActivities')}</Text>
+            <Text className="empty-desc">{t('activities.tryOtherFilter')}</Text>
       </View>
         ) : (
           // 活动卡片列表

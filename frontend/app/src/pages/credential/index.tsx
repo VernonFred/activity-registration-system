@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { View, Text } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchSignupDetail } from '../../services/user'
 import { fetchActivityDetail } from '../../services/activities'
@@ -9,6 +10,7 @@ import './index.scss'
 export default function CredentialPage() {
   const router = useRouter()
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const signupId = Number(router.params.signupId || router.params.signup_id || 0)
   const activityId = Number(router.params.activityId || router.params.activity_id || 0)
 
@@ -104,21 +106,21 @@ export default function CredentialPage() {
 
         {/* 信息区 */}
         <View className="info-zone">
-          <Text className="info-type">CONFERENCE CREDENTIAL</Text>
+          <Text className="info-type">{t('credential.title')}</Text>
           <Text className="info-title">{displayTitle}</Text>
 
           <View className="info-field">
-            <Text className="field-label">ATTENDEE / 参会人员</Text>
+            <Text className="field-label">{t('credential.attendeeLabel')}</Text>
             <Text className="field-value">{participant}</Text>
           </View>
 
           <View className="info-field">
-            <Text className="field-label">VENUE / 地点</Text>
+            <Text className="field-label">{t('credential.venueLabel')}</Text>
             <Text className="field-value field-small">{location}</Text>
           </View>
 
           <View className="info-field">
-            <Text className="field-label">DATE / 日期</Text>
+            <Text className="field-label">{t('credential.dateLabel')}</Text>
             <Text className="field-value field-small">{dateRange}</Text>
           </View>
         </View>
@@ -132,7 +134,7 @@ export default function CredentialPage() {
 
         {/* VERIFIED 标记 */}
         <View className="verified-badge">
-          <Text className="verified-text">VERIFIED</Text>
+          <Text className="verified-text">{t('credential.verified')}</Text>
         </View>
       </View>
 

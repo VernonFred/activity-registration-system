@@ -4,6 +4,7 @@
  * 更新时间: 2026年1月28日 - 添加回复功能、拆分组件
  */
 import { useEffect, useState, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Image, Input } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import type { Comment, CommentSortType, Rating } from './types'
@@ -47,6 +48,7 @@ const mapApiCommentToPageComment = (item: any): Comment => ({
 })
 
 export default function CommentPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const coverUrl = router.params.cover || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'
   const activityId = Number(router.params.id || router.params.activityId || router.params.activity_id || 0)
@@ -137,7 +139,7 @@ export default function CommentPage() {
   // 提交评分
   const handleSubmitRating = async () => {
     if (tempRating === 0) {
-      Taro.showToast({ title: '请选择评分', icon: 'none' })
+      Taro.showToast({ title: t('comments.selectRating'), icon: 'none' })
       return
     }
     try {
@@ -154,12 +156,12 @@ export default function CommentPage() {
       }
     } catch (error) {
       console.error('提交评分失败:', error)
-      Taro.showToast({ title: '评分失败', icon: 'none' })
+      Taro.showToast({ title: t('comments.ratingFailed'), icon: 'none' })
       return
     }
     setShowRatingDialog(false)
     setIsEditingRating(false)
-    Taro.showToast({ title: isEditingRating ? '修改成功' : '评分成功', icon: 'success' })
+    Taro.showToast({ title: isEditingRating ? t('comments.modifySuccess') : t('comments.ratingSuccess'), icon: 'success' })
   }
 
   // 取消评分
@@ -167,7 +169,7 @@ export default function CommentPage() {
     setRating({ ...rating, user_rating: 0, user_rating_date: undefined })
     setShowRatingDialog(false)
     setIsEditingRating(false)
-    Taro.showToast({ title: '已取消评分', icon: 'success' })
+    Taro.showToast({ title: t('comments.cancelledRating'), icon: 'success' })
   }
 
   // 打开评论输入（普通评论）
@@ -188,7 +190,7 @@ export default function CommentPage() {
   // 提交评论
   const handleSubmitComment = async () => {
     if (!commentText.trim()) {
-      Taro.showToast({ title: '请输入评论内容', icon: 'none' })
+      Taro.showToast({ title: t('comments.enterComment'), icon: 'none' })
       return
     }
     const content = replyToUser ? `@${replyToUser} ${commentText}` : commentText
@@ -216,13 +218,13 @@ export default function CommentPage() {
       }
     } catch (error) {
       console.error('评论提交失败:', error)
-      Taro.showToast({ title: '评论失败', icon: 'none' })
+      Taro.showToast({ title: t('comments.commentFailed'), icon: 'none' })
       return
     }
     setCommentText('')
     setReplyToUser(null)
     setShowCommentInput(false)
-    Taro.showToast({ title: '评论成功', icon: 'success' })
+    Taro.showToast({ title: t('comments.commentSuccess'), icon: 'success' })
   }
 
   // 点赞评论
@@ -258,7 +260,7 @@ export default function CommentPage() {
   const handleConfirmDelete = () => {
     setComments(comments.filter(c => c.id !== deleteModal.commentId))
     setDeleteModal({ visible: false, commentId: 0 })
-    Taro.showToast({ title: '删除成功', icon: 'success' })
+    Taro.showToast({ title: t('comments.deleteSuccess'), icon: 'success' })
   }
 
   // 查看回复列表
@@ -299,10 +301,10 @@ export default function CommentPage() {
         setSelectedComment({ ...selectedComment, content: newContent })
       }
       
-      Taro.showToast({ title: '修改成功', icon: 'success' })
+      Taro.showToast({ title: t('comments.modifySuccess'), icon: 'success' })
     } catch (error) {
       console.error('更新评论失败:', error)
-      Taro.showToast({ title: '修改失败', icon: 'none' })
+      Taro.showToast({ title: t('comments.modifyFailed'), icon: 'none' })
     }
   }
   
@@ -324,7 +326,7 @@ export default function CommentPage() {
   // 提交编辑
   const submitEdit = async () => {
     if (!editingContent.trim()) {
-      Taro.showToast({ title: '请输入内容', icon: 'none' })
+      Taro.showToast({ title: t('comments.enterContent'), icon: 'none' })
       return
     }
     if (editingCommentId !== null) {
@@ -353,7 +355,7 @@ export default function CommentPage() {
   }, [comments, sortType])
 
   // 输入框placeholder
-  const inputPlaceholder = replyToUser ? `@${replyToUser} 回复...` : '添加评论......'
+  const inputPlaceholder = replyToUser ? t('comments.replyPlaceholder', { name: replyToUser }) : t('comments.addCommentPlaceholder')
 
   // 点击页面空白处关闭菜单
   const handlePageClick = () => {
@@ -428,7 +430,7 @@ export default function CommentPage() {
           onError={() => setAvatarFailed(true)}
         />
         <View className="trigger-placeholder">
-          <Text>添加评论......</Text>
+          <Text>{t('comments.addCommentPlaceholder')}</Text>
         </View>
       </View>
 
@@ -436,7 +438,7 @@ export default function CommentPage() {
       {showRatingDialog && (
         <View className="rating-dialog-overlay" onClick={() => { setShowRatingDialog(false); setIsEditingRating(false) }}>
           <View className="rating-dialog" onClick={(e) => e.stopPropagation()}>
-            <Text className="dialog-title">点击星星评分</Text>
+            <Text className="dialog-title">{t('comments.ratingDialogTitle')}</Text>
             <View className="dialog-stars">
               {[1, 2, 3, 4, 5].map((star) => (
                 <View key={star} className="star-item" onClick={() => setTempRating(star)}>
@@ -448,12 +450,12 @@ export default function CommentPage() {
             </View>
             <View className="dialog-actions">
               <View className="dialog-confirm" onClick={handleSubmitRating}>
-                <Text>确定</Text>
+                <Text>{t('common.confirm')}</Text>
               </View>
               {/* 取消评分按钮（仅修改模式显示） */}
               {isEditingRating && (
                 <View className="dialog-cancel-rating" onClick={handleCancelRating}>
-                  <Text>取消评分</Text>
+                  <Text>{t('comments.cancelRating')}</Text>
                 </View>
               )}
             </View>
@@ -494,7 +496,7 @@ export default function CommentPage() {
               catchMove
             />
             <Text className="panel-title">
-              {editingCommentId !== null ? '编辑评论' : '将以下面的身份进行评论'}
+              {editingCommentId !== null ? t('comments.editComment') : t('comments.commentAsIdentity')}
             </Text>
             <View className="panel-user">
               <Image 
@@ -510,14 +512,14 @@ export default function CommentPage() {
               {/* 取消编辑按钮 */}
               {editingCommentId !== null && (
                 <View className="cancel-edit-btn" onClick={cancelEditing}>
-                  <Text className="cancel-text">取消</Text>
+                  <Text className="cancel-text">{t('common.cancel')}</Text>
                 </View>
               )}
             </View>
             <View className="panel-input-row">
               <Input
                 className="panel-input-field"
-                placeholder={editingCommentId !== null ? '编辑内容...' : inputPlaceholder}
+                placeholder={editingCommentId !== null ? t('comments.editPlaceholder') : inputPlaceholder}
                 placeholderClass="input-placeholder"
                 value={editingCommentId !== null ? editingContent : commentText}
                 onInput={(e) => editingCommentId !== null 
@@ -559,7 +561,7 @@ export default function CommentPage() {
       {/* 删除确认弹窗 */}
       <ConfirmModal
         visible={deleteModal.visible}
-        title="您确定要删除评论吗？"
+        title={t('comments.deleteConfirm')}
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteModal({ visible: false, commentId: 0 })}
       />

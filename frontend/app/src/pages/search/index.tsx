@@ -6,6 +6,7 @@
 import { View, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../hooks/useDebounce'
 import { useTheme } from '../../context/ThemeContext'
 import { searchActivities } from '../../services/activities'
@@ -31,6 +32,7 @@ import { CATEGORIES, MOCK_HOT_SEARCHES } from './constants'
 import './index.scss'
 
 const SearchPage = () => {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   
   // 搜索状态
@@ -124,7 +126,7 @@ const SearchPage = () => {
       
     } catch (error) {
       console.error('搜索失败:', error)
-      Taro.showToast({ title: '搜索失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('search.searchFailed'), icon: 'none' })
       setIsEmpty(true)
     } finally {
       setIsLoading(false)
@@ -143,7 +145,7 @@ const SearchPage = () => {
 
   const handleSearch = () => {
     if (!keyword.trim()) {
-      Taro.showToast({ title: '请输入搜索关键词', icon: 'none' })
+      Taro.showToast({ title: t('search.enterKeyword'), icon: 'none' })
       return
     }
     performSearch(keyword, activeCategory, 1)
@@ -163,8 +165,10 @@ const SearchPage = () => {
   
   const handleClearRecentSearches = () => {
     Taro.showModal({
-      title: '提示',
-      content: '确定清除所有搜索记录吗？',
+      title: t('common.tip'),
+      content: t('search.clearSearchHistory'),
+      confirmText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       success: (res) => {
         if (res.confirm) {
           clearRecentSearches()
@@ -176,8 +180,10 @@ const SearchPage = () => {
   
   const handleClearRecentViews = () => {
     Taro.showModal({
-      title: '提示',
-      content: '确定清除所有浏览记录吗？',
+      title: t('common.tip'),
+      content: t('search.clearBrowseHistory'),
+      confirmText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       success: (res) => {
         if (res.confirm) {
           clearRecentViews()
@@ -196,14 +202,14 @@ const SearchPage = () => {
       const newFavorites = new Set(favorites)
       if (isFavorited) {
         newFavorites.delete(id)
-        Taro.showToast({ title: '已取消收藏', icon: 'none' })
+        Taro.showToast({ title: t('search.uncollected'), icon: 'none' })
       } else {
         newFavorites.add(id)
-        Taro.showToast({ title: '收藏成功', icon: 'success' })
+        Taro.showToast({ title: t('search.collectSuccess'), icon: 'success' })
       }
       setFavorites(newFavorites)
     } catch (error) {
-      Taro.showToast({ title: '操作失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('search.actionFailed'), icon: 'none' })
     }
   }
   

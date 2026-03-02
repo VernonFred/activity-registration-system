@@ -7,7 +7,8 @@
  * - 底部改为胶囊浮岛风格
  * - 卡片排版更精致
  */
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
@@ -22,11 +23,11 @@ import './index.scss'
 import iconArrowLeft from '../../assets/icons/arrow-left.png'
 
 // Tab 配置（评论评分通过底部胶囊浮岛进入独立页面）
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'overview', label: '活动速览' },
-  { key: 'agenda', label: '活动议程' },
-  { key: 'hotel', label: '酒店信息' },
-  { key: 'live', label: '图片直播' },
+const TAB_KEYS: { key: TabKey; labelKey: string }[] = [
+  { key: 'overview', labelKey: 'activityDetail.tabOverview' },
+  { key: 'agenda', labelKey: 'activityDetail.tabAgenda' },
+  { key: 'hotel', labelKey: 'activityDetail.tabHotel' },
+  { key: 'live', labelKey: 'activityDetail.tabLive' },
 ]
 
 // 默认议程数据（分组结构 - 参考纸质版会议手册）
@@ -495,9 +496,12 @@ const DEFAULT_HOTELS = [
 ]
 
 export default function ActivityDetail() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { theme } = useTheme()
   const activityId = Number(router.params.id)
+
+  const TABS = useMemo(() => TAB_KEYS.map(({ key, labelKey }) => ({ key, label: t(labelKey) })), [t])
   
   const [activity, setActivity] = useState<Activity | null>(null)
   const [loading, setLoading] = useState(true)
@@ -509,7 +513,7 @@ export default function ActivityDetail() {
   // 配置微信分享（符合微信官方规范）
   useShareAppMessage(() => {
     return {
-      title: activity?.title || '精彩活动邀您参与',
+      title: activity?.title || t('activityDetail.shareTitle'),
       path: `/pages/activity-detail/index?id=${activityId}`,
       imageUrl: activity?.cover_url || undefined,
     }
@@ -526,7 +530,7 @@ export default function ActivityDetail() {
     // 参数校验：如果缺少 activityId，提示并返回上一页
     if (!activityId || isNaN(activityId)) {
       Taro.showToast({
-        title: '活动信息有误',
+        title: t('activityDetail.invalidActivity'),
         icon: 'none',
         duration: 2000
       })
@@ -558,10 +562,10 @@ export default function ActivityDetail() {
       })
       .catch((err) => {
         console.error('加载活动失败', err)
-        Taro.showToast({ title: '加载失败', icon: 'none' })
+        Taro.showToast({ title: t('common.loadFailedShort'), icon: 'none' })
       })
       .finally(() => setLoading(false))
-  }, [activityId])
+  }, [activityId, t])
 
   // 事件处理
   const handleBack = useCallback(() => Taro.navigateBack(), [])
@@ -570,8 +574,8 @@ export default function ActivityDetail() {
   }, [])
   const handleFavorite = useCallback(() => {
     setIsFavorited(!isFavorited)
-    Taro.showToast({ title: isFavorited ? '已取消收藏' : '已收藏', icon: 'none' })
-  }, [isFavorited])
+    Taro.showToast({ title: isFavorited ? t('activityDetail.uncollected') : t('activityDetail.collected'), icon: 'none' })
+  }, [isFavorited, t])
   const handleLike = useCallback(() => setIsLiked(!isLiked), [isLiked])
   const handleComment = useCallback(() => {
     // 跳转到独立的评论页面
@@ -583,11 +587,11 @@ export default function ActivityDetail() {
   // 分享功能（符合微信官方规范：引导用户点击右上角分享）
   const handleShare = useCallback(() => {
     Taro.showToast({
-      title: '请点击右上角 ··· 分享',
+      title: t('activityDetail.shareHint'),
       icon: 'none',
       duration: 2000
     })
-  }, [])
+  }, [t])
   const handleSignup = useCallback(() => {
     if (!activityId) return
     Taro.navigateTo({ url: `/pages/signup/index?activity_id=${activityId}` })
@@ -597,9 +601,9 @@ export default function ActivityDetail() {
     if (activity?.live_url) {
       Taro.navigateTo({ url: activity.live_url })
     } else {
-      Taro.showToast({ title: '直播尚未开始', icon: 'none' })
+      Taro.showToast({ title: t('activityDetail.liveNotStarted'), icon: 'none' })
     }
-  }, [activity])
+  }, [activity, t])
 
   // 加载状态
   if (loading) {
@@ -621,7 +625,7 @@ export default function ActivityDetail() {
   if (!activity) {
     return (
       <View className={`activity-detail theme-${theme} empty`}>
-        <Text className="empty-text">活动不存在</Text>
+        <Text className="empty-text">{t('activityDetail.activityNotExist')}</Text>
       </View>
     )
   }

@@ -15,8 +15,11 @@ export default {
     'pages/badge-wall/index',
     'pages/ai-assistant/index',
     'pages/search/index',
-    'pages/webview/index'
+    'pages/webview/index',
+    'pages/dark-mode/index',
+    'pages/language/index'
   ],
+  darkmode: true,
   window: {
     navigationBarTitleText: '会议报名',
     navigationBarBackgroundColor: '#2D5A3D',

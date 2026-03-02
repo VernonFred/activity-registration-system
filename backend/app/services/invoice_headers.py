@@ -55,23 +55,25 @@ class InvoiceHeaderService:
             return None
         return self._to_schema(header)
 
-    def get_copy_text(self, header_id: int) -> Optional[InvoiceHeaderCopyText]:
+    def get_copy_text(self, header_id: int, locale: str = "zh-CN") -> Optional[InvoiceHeaderCopyText]:
         """返回发票抬头完整文本，供前端复制到剪贴板."""
+        from app.i18n import t
+
         header = self.repo.get(header_id)
         if not header:
             return None
         lines = [header.name]
         if header.type == "company":
             if header.tax_number:
-                lines.append(f"税号: {header.tax_number}")
+                lines.append(f"{t('copy_text_tax_no', locale)}: {header.tax_number}")
             if header.address:
-                lines.append(f"地址: {header.address}")
+                lines.append(f"{t('copy_text_address', locale)}: {header.address}")
             if header.phone:
-                lines.append(f"电话: {header.phone}")
+                lines.append(f"{t('copy_text_phone', locale)}: {header.phone}")
             if header.bank_name:
-                lines.append(f"开户银行: {header.bank_name}")
+                lines.append(f"{t('copy_text_bank', locale)}: {header.bank_name}")
             if header.bank_account:
-                lines.append(f"银行账号: {header.bank_account}")
+                lines.append(f"{t('copy_text_account', locale)}: {header.bank_account}")
         return InvoiceHeaderCopyText(text="\n".join(lines))
 
     def create(self, payload: InvoiceHeaderCreate, user_id: int) -> InvoiceHeaderRead:

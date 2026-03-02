@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react'
 import { View } from '@tarojs/components'
 import { ThemeProvider } from './context/ThemeContext'
+import './i18n'
 import './app.scss'
 
 function App({ children }: PropsWithChildren) {

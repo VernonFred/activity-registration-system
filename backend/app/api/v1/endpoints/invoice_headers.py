@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, get_locale, LocaleDep
 from app.models.user import UserProfile
 from app.schemas.invoice_header import (
     InvoiceHeaderCopyText,
@@ -55,11 +55,12 @@ def get_invoice_header(
 @router.get("/{header_id}/copy-text", response_model=InvoiceHeaderCopyText)
 def get_invoice_header_copy_text(
     header_id: int,
+    locale: LocaleDep,
     service: InvoiceHeaderService = Depends(get_invoice_header_service),
     current_user: UserProfile = Depends(get_current_user),
 ) -> InvoiceHeaderCopyText:
     """返回发票抬头完整文本信息，前端用于复制到剪贴板."""
-    result = service.get_copy_text(header_id)
+    result = service.get_copy_text(header_id, locale=locale)
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice header not found")
     return result

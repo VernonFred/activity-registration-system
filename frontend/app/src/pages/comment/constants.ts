@@ -2,6 +2,7 @@
  * 评论页面常量和Mock数据
  * 创建时间: 2026年1月28日
  */
+import i18n from '../../i18n'
 import type { Comment, Rating } from './types'
 
 // 默认头像（base64 SVG - 灰色圆形用户图标，兼容所有平台）
@@ -93,7 +94,7 @@ export const formatTime = (time: string): string => {
   const days = Math.floor(hours / 24)
 
   if (days > 7) return isoTime.split('T')[0]
-  if (days > 0) return `${days}天前`
-  if (hours > 0) return `${hours}小时前`
-  return '刚刚'
+  if (days > 0) return i18n.t('time.daysAgo', { days })
+  if (hours > 0) return i18n.t('time.hoursAgo', { hours })
+  return i18n.t('time.justNow')
 }

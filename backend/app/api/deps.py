@@ -2,7 +2,7 @@
 
 from typing import Annotated, List, Optional
 
-from fastapi import Depends, HTTPException, Query, status
+from fastapi import Depends, Header, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -24,8 +24,16 @@ from app.services.reports import ReportService
 from app.services.engagements import ActivityEngagementService
 from app.services.badge_rules import BadgeRuleService
 from app.services.scheduler import SchedulerService
+from app.i18n import parse_locale
 
 SessionDep = Annotated[Session, Depends(get_db)]
+
+
+def get_locale(accept_language: Annotated[str | None, Header(alias="Accept-Language")] = None) -> str:
+    return parse_locale(accept_language)
+
+
+LocaleDep = Annotated[str, Depends(get_locale)]
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
 

@@ -3,6 +3,7 @@
  * 支持浅色/深色主题切换
  */
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import CustomTabBar from '../../components/CustomTabBar'
@@ -21,6 +22,7 @@ import iconMapPin from '../../assets/icons/map-pin.png'
 import iconArrowRight from '../../assets/icons/arrow-right.png'
 
 const IndexPage = () => {
+  const { t } = useTranslation()
   const { theme, isDark } = useTheme()
   const [featuredActivities, setFeaturedActivities] = useState<MockActivity[]>([])
   const [historyActivities, setHistoryActivities] = useState<MockActivity[]>([])
@@ -46,7 +48,7 @@ const IndexPage = () => {
     } catch (error) {
       console.error('加载数据失败:', error)
       Taro.showToast({
-        title: '加载失败，请稍后重试',
+        title: t('common.loadFailed'),
         icon: 'none',
         duration: 2000
       })
@@ -77,10 +79,10 @@ const IndexPage = () => {
   // 获取状态标签
   const getStatusConfig = (status: MockActivity['status']) => {
     const config = {
-      signup: { label: '报名中', class: 'status-active' },
-      upcoming: { label: '即将开始', class: 'status-pending' },
-      ongoing: { label: '进行中', class: 'status-ongoing' },
-      finished: { label: '已结束', class: 'status-closed' }
+      signup: { label: t('home.statusRegistering'), class: 'status-active' },
+      upcoming: { label: t('home.statusUpcoming'), class: 'status-pending' },
+      ongoing: { label: t('home.statusOngoing'), class: 'status-ongoing' },
+      finished: { label: t('home.statusEnded'), class: 'status-closed' }
     }
     return config[status]
   }
@@ -127,7 +129,7 @@ const IndexPage = () => {
             )}
           </View>
           <View className="user-info">
-            <Text className="greeting">你好</Text>
+            <Text className="greeting">{t('home.greeting')}</Text>
             <Text className="username">{mockCurrentUser.name}</Text>
           </View>
         </View>
@@ -144,7 +146,7 @@ const IndexPage = () => {
       {/* 搜索框 */}
       <View className="search-bar" onClick={handleSearchClick}>
         <Image src={iconSearch} className="search-icon" mode="aspectFit" />
-        <Text className="search-placeholder">搜索活动、会议、讲座...</Text>
+        <Text className="search-placeholder">{t('home.searchPlaceholder')}</Text>
       </View>
 
       {/* 主内容 */}
@@ -153,9 +155,9 @@ const IndexPage = () => {
         {/* 热门精选 */}
         <View className="section">
           <View className="section-header">
-            <Text className="section-title">热门精选</Text>
+            <Text className="section-title">{t('home.hotPicks')}</Text>
             <View className="view-all" onClick={() => handleViewAll('featured')}>
-              <Text className="view-all-text">查看全部</Text>
+              <Text className="view-all-text">{t('common.more')}</Text>
               <Image src={iconArrowRight} className="view-all-icon" mode="aspectFit" />
             </View>
           </View>
@@ -166,8 +168,8 @@ const IndexPage = () => {
             </View>
           ) : featuredActivities.length === 0 ? (
             <View className="empty-state">
-              <Text className="empty-text">暂无热门活动</Text>
-              <Text className="empty-desc">敬请期待更多精彩活动</Text>
+              <Text className="empty-text">{t('home.noHotEvents')}</Text>
+              <Text className="empty-desc">{t('home.stayTuned')}</Text>
             </View>
           ) : (
             <>
@@ -213,7 +215,7 @@ const IndexPage = () => {
                           </View>
                           <View className="footer-item">
                             <Image src={iconCalendar} className="meta-icon" mode="aspectFit" />
-                            <Text className="footer-text">{activity.signup_count.toLocaleString()}人</Text>
+                            <Text className="footer-text">{activity.signup_count.toLocaleString()}{t('common.person')}</Text>
                           </View>
                         </View>
                       </View>
@@ -235,9 +237,9 @@ const IndexPage = () => {
         {/* 历史活动 */}
         <View className="section history-section">
           <View className="section-header">
-            <Text className="section-title">历史活动</Text>
+            <Text className="section-title">{t('home.historyEvents')}</Text>
             <View className="view-all" onClick={() => handleViewAll('history')}>
-              <Text className="view-all-text">查看全部</Text>
+              <Text className="view-all-text">{t('common.more')}</Text>
               <Image src={iconArrowRight} className="view-all-icon" mode="aspectFit" />
             </View>
           </View>
@@ -248,8 +250,8 @@ const IndexPage = () => {
             </View>
           ) : historyActivities.length === 0 ? (
             <View className="empty-state">
-              <Text className="empty-text">暂无历史活动</Text>
-              <Text className="empty-desc">历史活动记录将在此展示</Text>
+              <Text className="empty-text">{t('home.noHistoryEvents')}</Text>
+              <Text className="empty-desc">{t('home.historyHint')}</Text>
             </View>
           ) : (
             <View className="history-list">

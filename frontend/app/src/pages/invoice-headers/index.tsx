@@ -2,6 +2,7 @@
  * 发票抬头页面 — 后端分页 + Sketch 设计稿精确对标
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
@@ -19,6 +20,7 @@ const PAGE_SIZE = 4
 const EMPTY_FORM = { name: '', tax_number: '', address: '', phone: '', bank_name: '', bank_account: '' }
 
 export default function InvoiceHeaders() {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   const [headers, setHeaders] = useState<InvoiceHeaderItem[]>([])
   const [totalPages, setTotalPages] = useState(1)
@@ -64,19 +66,19 @@ export default function InvoiceHeaders() {
 
   const handleDelete = useCallback((id: number) => {
     Taro.showModal({
-      title: '删除发票抬头', content: '确定要删除该发票抬头吗？', confirmColor: '#e71d36',
+      title: t('invoiceHeaders.deleteConfirmTitle'), content: t('invoiceHeaders.deleteConfirmContent'), confirmColor: '#e71d36',
       success: async (res) => {
         if (res.confirm) {
           try {
             await deleteInvoiceHeader(id)
           } catch { /* fallback */ }
           setSwipedId(null)
-          Taro.showToast({ title: '已删除', icon: 'success' })
+          Taro.showToast({ title: t('common.deleted'), icon: 'success' })
           loadHeaders(currentPage)
         }
       },
     })
-  }, [currentPage, loadHeaders])
+  }, [currentPage, loadHeaders, t])
 
   const handleCopy = useCallback(async (item: InvoiceHeaderItem) => {
     try {
@@ -86,15 +88,15 @@ export default function InvoiceHeaders() {
       // 后端不可用时使用前端拼接
       const lines = [item.name]
       if (item.type === 'company') {
-        if (item.tax_number) lines.push(`税号: ${item.tax_number}`)
-        if (item.address) lines.push(`地址: ${item.address}`)
-        if (item.phone) lines.push(`电话: ${item.phone}`)
-        if (item.bank_name) lines.push(`开户银行: ${item.bank_name}`)
-        if (item.bank_account) lines.push(`银行账号: ${item.bank_account}`)
+        if (item.tax_number) lines.push(`${t('invoiceHeaders.taxNo')}: ${item.tax_number}`)
+        if (item.address) lines.push(`${t('invoiceHeaders.companyAddress')}: ${item.address}`)
+        if (item.phone) lines.push(`${t('invoiceHeaders.phoneLabel')}: ${item.phone}`)
+        if (item.bank_name) lines.push(`${t('invoiceHeaders.bankName')}: ${item.bank_name}`)
+        if (item.bank_account) lines.push(`${t('invoiceHeaders.bankAccount')}: ${item.bank_account}`)
       }
       Taro.setClipboardData({ data: lines.join('\n') })
     }
-  }, [])
+  }, [t])
 
   const openAdd = useCallback(() => {
     setForm(EMPTY_FORM)
@@ -121,7 +123,7 @@ export default function InvoiceHeaders() {
 
   const handleSave = useCallback(async () => {
     if (!form.name.trim()) {
-      Taro.showToast({ title: '请输入名称', icon: 'none' })
+      Taro.showToast({ title: t('invoiceHeaders.enterNameHint'), icon: 'none' })
       return
     }
     setSaving(true)
@@ -138,7 +140,7 @@ export default function InvoiceHeaders() {
             bank_account: form.bank_account || undefined,
           } : {}),
         })
-        Taro.showToast({ title: '添加成功', icon: 'success' })
+        Taro.showToast({ title: t('invoiceHeaders.addSuccess'), icon: 'success' })
       } else if (editingId !== null) {
         const payload: Record<string, string | undefined> = { name: form.name.trim() }
         if (addType === 'company') {
@@ -149,17 +151,17 @@ export default function InvoiceHeaders() {
           payload.bank_account = form.bank_account || undefined
         }
         await updateInvoiceHeader(editingId, payload)
-        Taro.showToast({ title: '保存成功', icon: 'success' })
+        Taro.showToast({ title: t('invoiceHeaders.saveSuccess'), icon: 'success' })
       }
     } catch {
-      Taro.showToast({ title: '操作失败', icon: 'none' })
+      Taro.showToast({ title: t('common.failed'), icon: 'none' })
     } finally {
       setSaving(false)
       setShowSheet(false)
       setForm(EMPTY_FORM)
       loadHeaders(currentPage)
     }
-  }, [form, addType, sheetMode, editingId, currentPage, loadHeaders])
+  }, [form, addType, sheetMode, editingId, currentPage, loadHeaders, t])
 
   const updateField = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }))
 
@@ -173,7 +175,7 @@ export default function InvoiceHeaders() {
 
       <View className="ih-add-btn" onClick={openAdd}>
         <View className="ih-add-icon" />
-        <Text className="ih-add-text">添加发票抬头</Text>
+        <Text className="ih-add-text">{t('invoiceHeaders.addTitle')}</Text>
       </View>
 
       <ScrollView scrollY className="ih-scroll">
@@ -193,7 +195,7 @@ export default function InvoiceHeaders() {
                     </View>
                     <View className="ih-card-info">
                       <Text className="ih-card-name">{item.name}</Text>
-                      <Text className="ih-card-type">{item.type === 'personal' ? '个人' : '单位'}</Text>
+                      <Text className="ih-card-type">{item.type === 'personal' ? t('invoiceHeaders.personal') : t('invoiceHeaders.company')}</Text>
                     </View>
                   </View>
                   <View className="ih-qr-icon" />
@@ -201,10 +203,10 @@ export default function InvoiceHeaders() {
                 <View className="ih-card-divider" />
                 <View className="ih-card-actions">
                   <View className="ih-action ih-action-edit" onClick={() => openEdit(item)}>
-                    <Text>编辑</Text>
+                    <Text>{t('common.edit')}</Text>
                   </View>
                   <View className="ih-action ih-action-copy" onClick={() => handleCopy(item)}>
-                    <Text>复制内容</Text>
+                    <Text>{t('common.copy')}</Text>
                   </View>
                 </View>
               </View>
@@ -217,7 +219,7 @@ export default function InvoiceHeaders() {
             </View>
           ))}
           {headers.length === 0 && (
-            <View className="ih-empty"><Text>暂无发票抬头</Text></View>
+            <View className="ih-empty"><Text>{t('invoiceHeaders.noHeaders')}</Text></View>
           )}
         </View>
 
@@ -241,7 +243,7 @@ export default function InvoiceHeaders() {
           <View className="ih-sheet" onClick={e => e.stopPropagation()}>
             <View className="ih-sheet-handle" />
             <Text className="ih-sheet-title">
-              {sheetMode === 'add' ? '添加发票抬头' : '编辑发票抬头'}
+              {sheetMode === 'add' ? t('invoiceHeaders.addTitle') : t('invoiceHeaders.editTitle')}
             </Text>
 
             {sheetMode === 'add' && (
@@ -250,13 +252,13 @@ export default function InvoiceHeaders() {
                   className={`ih-seg-item ${addType === 'personal' ? 'active' : ''}`}
                   onClick={() => setAddType('personal')}
                 >
-                  <Text>个人</Text>
+                  <Text>{t('invoiceHeaders.personal')}</Text>
                 </View>
                 <View
                   className={`ih-seg-item ${addType === 'company' ? 'active' : ''}`}
                   onClick={() => setAddType('company')}
                 >
-                  <Text>单位</Text>
+                  <Text>{t('invoiceHeaders.company')}</Text>
                 </View>
               </View>
             )}
@@ -264,34 +266,34 @@ export default function InvoiceHeaders() {
             <ScrollView scrollY className="ih-form-scroll">
               {addType === 'personal' ? (
                 <View className="ih-field">
-                  <Text className="ih-field-label">名称</Text>
-                  <Input className="ih-field-input" value={form.name} onInput={e => updateField('name', e.detail.value)} placeholder="姓名（必填）" placeholderClass="ih-placeholder" />
+                  <Text className="ih-field-label">{t('invoiceHeaders.nameLabel')}</Text>
+                  <Input className="ih-field-input" value={form.name} onInput={e => updateField('name', e.detail.value)} placeholder={t('invoiceHeaders.namePlaceholderPersonal')} placeholderClass="ih-placeholder" />
                 </View>
               ) : (
                 <>
                   <View className="ih-field">
-                    <Text className="ih-field-label">名称</Text>
-                    <Input className="ih-field-input" value={form.name} onInput={e => updateField('name', e.detail.value)} placeholder="单位名称（必填）" placeholderClass="ih-placeholder" />
+                    <Text className="ih-field-label">{t('invoiceHeaders.nameLabel')}</Text>
+                    <Input className="ih-field-input" value={form.name} onInput={e => updateField('name', e.detail.value)} placeholder={t('invoiceHeaders.namePlaceholderCompany')} placeholderClass="ih-placeholder" />
                   </View>
                   <View className="ih-field">
-                    <Text className="ih-field-label">税号</Text>
-                    <Input className="ih-field-input" value={form.tax_number} onInput={e => updateField('tax_number', e.detail.value)} placeholder="纳税人识别号" placeholderClass="ih-placeholder" />
+                    <Text className="ih-field-label">{t('invoiceHeaders.taxNo')}</Text>
+                    <Input className="ih-field-input" value={form.tax_number} onInput={e => updateField('tax_number', e.detail.value)} placeholder={t('invoiceHeaders.taxNoPlaceholder')} placeholderClass="ih-placeholder" />
                   </View>
                   <View className="ih-field">
-                    <Text className="ih-field-label">单位地址</Text>
-                    <Input className="ih-field-input" value={form.address} onInput={e => updateField('address', e.detail.value)} placeholder="单位地址信息" placeholderClass="ih-placeholder" />
+                    <Text className="ih-field-label">{t('invoiceHeaders.companyAddress')}</Text>
+                    <Input className="ih-field-input" value={form.address} onInput={e => updateField('address', e.detail.value)} placeholder={t('invoiceHeaders.addressPlaceholder')} placeholderClass="ih-placeholder" />
                   </View>
                   <View className="ih-field">
-                    <Text className="ih-field-label">电话</Text>
-                    <Input className="ih-field-input" value={form.phone} onInput={e => updateField('phone', e.detail.value)} placeholder="电话号码" placeholderClass="ih-placeholder" />
+                    <Text className="ih-field-label">{t('invoiceHeaders.phoneLabel')}</Text>
+                    <Input className="ih-field-input" value={form.phone} onInput={e => updateField('phone', e.detail.value)} placeholder={t('invoiceHeaders.phonePlaceholder')} placeholderClass="ih-placeholder" />
                   </View>
                   <View className="ih-field">
-                    <Text className="ih-field-label">开户银行</Text>
-                    <Input className="ih-field-input" value={form.bank_name} onInput={e => updateField('bank_name', e.detail.value)} placeholder="开户银行名称" placeholderClass="ih-placeholder" />
+                    <Text className="ih-field-label">{t('invoiceHeaders.bankName')}</Text>
+                    <Input className="ih-field-input" value={form.bank_name} onInput={e => updateField('bank_name', e.detail.value)} placeholder={t('invoiceHeaders.bankNamePlaceholder')} placeholderClass="ih-placeholder" />
                   </View>
                   <View className="ih-field">
-                    <Text className="ih-field-label">银行账号</Text>
-                    <Input className="ih-field-input" value={form.bank_account} onInput={e => updateField('bank_account', e.detail.value)} placeholder="银行账户号码" placeholderClass="ih-placeholder" />
+                    <Text className="ih-field-label">{t('invoiceHeaders.bankAccount')}</Text>
+                    <Input className="ih-field-input" value={form.bank_account} onInput={e => updateField('bank_account', e.detail.value)} placeholder={t('invoiceHeaders.bankAccountPlaceholder')} placeholderClass="ih-placeholder" />
                   </View>
                 </>
               )}
@@ -299,7 +301,7 @@ export default function InvoiceHeaders() {
 
             <View className="ih-sheet-footer">
               <View className={`ih-save-btn ${form.name.trim() ? 'active' : ''}`} onClick={handleSave}>
-                <Text>保存</Text>
+                <Text>{t('common.save')}</Text>
               </View>
             </View>
 
@@ -307,7 +309,7 @@ export default function InvoiceHeaders() {
               <View className="ih-loading-overlay">
                 <View className="ih-loading-box">
                   <View className="ih-loading-spinner" />
-                  <Text className="ih-loading-text">加载中</Text>
+                  <Text className="ih-loading-text">{t('common.loading')}</Text>
                 </View>
               </View>
             )}

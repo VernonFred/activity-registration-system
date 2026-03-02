@@ -5,6 +5,7 @@
  * 重构时间: 2026年2月27日
  */
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Notification, NotifyTab, MentionItem, MyCommentItem } from '../types'
@@ -45,6 +46,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   onDeleteNotification,
   onRequestSheet,
 }) => {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
   const [mentions, setMentions] = useState<MentionItem[]>([])
   const [myComments, setMyComments] = useState<MyCommentItem[]>([])
@@ -97,31 +99,31 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
   // ========== 底部弹窗: 清空消息 ==========
   const handleShowClearSheet = useCallback(() => {
     onRequestSheet?.({
-      title: '清空消息提醒',
-      desc: '确定要清空全部消息提醒吗？',
+      title: t('profile.clearNotice'),
+      desc: t('profile.clearNoticeConfirm'),
       onConfirm: async () => {
         try {
           await clearAllNotifications()
           setNotifications([])
           onRequestSheet?.(null)
-          Taro.showToast({ title: '已清空', icon: 'success' })
+          Taro.showToast({ title: t('profile.cleared'), icon: 'success' })
         } catch {
-          Taro.showToast({ title: '操作失败', icon: 'none' })
+          Taro.showToast({ title: t('common.failed'), icon: 'none' })
         }
       },
     })
-  }, [onRequestSheet])
+  }, [onRequestSheet, t])
 
   // ========== 全部已读 ==========
   const handleMarkAllRead = useCallback(async () => {
     try {
       await markAllNotificationsRead()
       setNotifications(prev => prev.map(n => ({ ...n, is_new: false })))
-      Taro.showToast({ title: '已全部标为已读', icon: 'success' })
+      Taro.showToast({ title: t('profile.allRead'), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '操作失败', icon: 'none' })
+      Taro.showToast({ title: t('common.failed'), icon: 'none' })
     }
-  }, [])
+  }, [t])
 
   // ========== 滑动删除 ==========
   const handleTouchStart = useCallback((e: any) => {
@@ -147,11 +149,11 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
       onDeleteNotification(id)
       setNotifications(prev => prev.filter(n => n.id !== id))
       setSwipedId(null)
-      Taro.showToast({ title: '已删除', icon: 'success' })
+      Taro.showToast({ title: t('common.deleted'), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '删除失败', icon: 'none' })
+      Taro.showToast({ title: t('profile.deleteFailed'), icon: 'none' })
     }
-  }, [onDeleteNotification])
+  }, [onDeleteNotification, t])
 
   // ========== 批量删除 ==========
   const toggleBatchMode = useCallback(() => {
@@ -180,29 +182,29 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
       setNotifications(prev => prev.filter(n => !selectedIds.has(n.id)))
       setSelectedIds(new Set())
       setBatchMode(false)
-      Taro.showToast({ title: `已删除 ${ids.length} 条`, icon: 'success' })
+      Taro.showToast({ title: t('profile.deletedCount', { count: ids.length }), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '删除失败', icon: 'none' })
+      Taro.showToast({ title: t('profile.deleteFailed'), icon: 'none' })
     }
-  }, [selectedIds, onDeleteNotification])
+  }, [selectedIds, onDeleteNotification, t])
 
   // ========== 我的评论: 删除评论 ==========
   const handleDeleteComment = useCallback((commentId: number) => {
     onRequestSheet?.({
-      title: '删除评论',
-      desc: '确定要删除这条评论吗？',
+      title: t('profile.deleteComment'),
+      desc: t('profile.deleteCommentConfirm'),
       onConfirm: async () => {
         try {
           await deleteComment(commentId)
           setMyComments(prev => prev.filter(c => c.id !== commentId))
           onRequestSheet?.(null)
-          Taro.showToast({ title: '已删除', icon: 'success' })
+          Taro.showToast({ title: t('common.deleted'), icon: 'success' })
         } catch {
-          Taro.showToast({ title: '删除失败', icon: 'none' })
+          Taro.showToast({ title: t('profile.deleteFailed'), icon: 'none' })
         }
       },
     })
-  }, [onRequestSheet])
+  }, [onRequestSheet, t])
 
   // ========== 我的评论: 修改 ==========
   const handleEditComment = useCallback((commentId: number, activityId: number) => {
@@ -227,9 +229,9 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
           : c
       ))
     } catch {
-      Taro.showToast({ title: '操作失败', icon: 'none' })
+      Taro.showToast({ title: t('common.failed'), icon: 'none' })
     }
-  }, [])
+  }, [t])
 
   const handleToggleFavorite = useCallback(async (item: MyCommentItem) => {
     try {
@@ -248,9 +250,9 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
           : c
       ))
     } catch {
-      Taro.showToast({ title: '操作失败', icon: 'none' })
+      Taro.showToast({ title: t('common.failed'), icon: 'none' })
     }
-  }, [])
+  }, [t])
 
   const handleShare = useCallback(async (item: MyCommentItem) => {
     try {
@@ -260,11 +262,11 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
           ? { ...c, stats: { ...c.stats, shares: c.stats.shares + 1 } }
           : c
       ))
-      Taro.showToast({ title: '分享成功', icon: 'success' })
+      Taro.showToast({ title: t('profile.shareSuccess'), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '分享失败', icon: 'none' })
+      Taro.showToast({ title: t('profile.shareFailed'), icon: 'none' })
     }
-  }, [])
+  }, [t])
 
   const handleGoComment = useCallback((activityId: number) => {
     Taro.navigateTo({ url: `/pages/comment/index?id=${activityId}` })
@@ -357,7 +359,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
               <View className="nt-card-content">
                 <View className="nt-card-header">
                   <Text className="nt-card-title">{notify.title}</Text>
-                  {notify.is_new && <View className="nt-new-tag"><Text>新</Text></View>}
+                  {notify.is_new && <View className="nt-new-tag"><Text>{t('common.new')}</Text></View>}
                 </View>
                 <Text className="nt-card-text">{notify.content}</Text>
                 {notify.action_url && (
@@ -365,7 +367,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
                     className="nt-action-btn"
                     onClick={() => Taro.navigateTo({ url: notify.action_url! })}
                   >
-                    <Text>→ {notify.action_text || '查看'}</Text>
+                    <Text>{notify.action_text ? `→ ${notify.action_text}` : t('common.view')}</Text>
                   </View>
                 )}
                 <Text className="nt-card-time">{notify.time}</Text>
@@ -380,7 +382,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
           </View>
         ))}
         {items.length === 0 && !loading && (
-          <View className="nt-empty"><Text>暂无通知</Text></View>
+          <View className="nt-empty"><Text>{t('profile.noNotifications')}</Text></View>
         )}
         {renderPagination(notifications.length)}
       </View>
@@ -411,13 +413,13 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
             <View className="nt-mention-actions">
               <View className="nt-reply-btn" onClick={() => handleReply(mention)}>
                 <Text className="nt-reply-icon">↩</Text>
-                <Text className="nt-reply-text">回复</Text>
+                <Text className="nt-reply-text">{t('common.reply')}</Text>
               </View>
             </View>
           </View>
         ))}
         {items.length === 0 && !loading && (
-          <View className="nt-empty"><Text>暂无@我的消息</Text></View>
+          <View className="nt-empty"><Text>{t('profile.noMentions')}</Text></View>
         )}
         {renderPagination(mentions.length)}
       </View>
@@ -450,19 +452,19 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
             <View className="nt-comment-stats">
               <View className="nt-stat-item" onClick={() => handleToggleLike(item)}>
                 <Text className={`nt-stat-icon nt-stat-like ${item.is_liked ? 'active' : ''}`}>♥</Text>
-                <Text className={`nt-stat-val ${item.is_liked ? 'nt-stat-val-active' : ''}`}>{item.stats.likes} 点赞</Text>
+                <Text className={`nt-stat-val ${item.is_liked ? 'nt-stat-val-active' : ''}`}>{item.stats.likes} {t('profile.likes')}</Text>
               </View>
               <View className="nt-stat-item" onClick={() => handleGoComment(item.activity_id)}>
                 <Text className="nt-stat-icon nt-stat-comment">◎</Text>
-                <Text className="nt-stat-val">{item.stats.comments} 评论</Text>
+                <Text className="nt-stat-val">{item.stats.comments} {t('profile.comments')}</Text>
               </View>
               <View className="nt-stat-item" onClick={() => handleToggleFavorite(item)}>
                 <Text className={`nt-stat-icon nt-stat-fav ${item.is_favorited ? 'active' : ''}`}>✦</Text>
-                <Text className={`nt-stat-val ${item.is_favorited ? 'nt-stat-val-active' : ''}`}>{item.stats.favorites} 收藏</Text>
+                <Text className={`nt-stat-val ${item.is_favorited ? 'nt-stat-val-active' : ''}`}>{item.stats.favorites} {t('profile.favorites')}</Text>
               </View>
               <View className="nt-stat-item" onClick={() => handleShare(item)}>
                 <Text className="nt-stat-icon nt-stat-share">↗</Text>
-                <Text className="nt-stat-val">{item.stats.shares} 分享</Text>
+                <Text className="nt-stat-val">{item.stats.shares} {t('profile.shares')}</Text>
               </View>
             </View>
             <View className="nt-my-comment-row">
@@ -484,14 +486,14 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
                       onClick={() => { setActiveMenu(null); handleEditComment(item.id, item.activity_id) }}
                     >
                       <Text className="nt-dropdown-icon">✎</Text>
-                      <Text>修改</Text>
+                      <Text>{t('common.modify')}</Text>
                     </View>
                     <View
                       className="nt-dropdown-item nt-dropdown-danger"
                       onClick={() => { setActiveMenu(null); handleDeleteComment(item.id) }}
                     >
                       <Text className="nt-dropdown-icon">▬</Text>
-                      <Text>删除</Text>
+                      <Text>{t('common.delete')}</Text>
                     </View>
                   </View>
                 )}
@@ -500,7 +502,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
           </View>
         ))}
         {items.length === 0 && !loading && (
-          <View className="nt-empty"><Text>暂无评论</Text></View>
+          <View className="nt-empty"><Text>{t('profile.noComments')}</Text></View>
         )}
         {renderPagination(myComments.length)}
       </View>
@@ -512,9 +514,9 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
       {/* 子Tab */}
       <View className="nt-tabs">
         {([
-          { key: 'system' as NotifyTab, label: '系统通知' },
-          { key: 'mentions' as NotifyTab, label: '@ 我的' },
-          { key: 'comments' as NotifyTab, label: '我的评论' },
+          { key: 'system' as NotifyTab, label: t('profile.tabSystemNotice') },
+          { key: 'mentions' as NotifyTab, label: t('profile.tabMentions') },
+          { key: 'comments' as NotifyTab, label: t('profile.tabMyComments') },
         ]).map(tab => (
           <View
             key={tab.key}
@@ -534,14 +536,14 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
             {batchMode ? (
               <>
                 <View className="nt-batch-cancel" onClick={toggleBatchMode}>
-                  <Text>取消</Text>
+                  <Text>{t('common.cancel')}</Text>
                 </View>
-                <Text className="nt-batch-count">已选 {selectedIds.size} 项</Text>
+                <Text className="nt-batch-count">{t('common.selected', { count: selectedIds.size })}</Text>
                 <View
                   className={`nt-batch-delete-btn ${selectedIds.size === 0 ? 'disabled' : ''}`}
                   onClick={handleBatchDelete}
                 >
-                  <Text>删除</Text>
+                  <Text>{t('common.delete')}</Text>
                 </View>
               </>
             ) : (
@@ -563,7 +565,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
 
       {/* 内容区 */}
       {loading ? (
-        <View className="nt-loading"><Text>加载中...</Text></View>
+        <View className="nt-loading"><Text>{t('common.loading')}</Text></View>
       ) : (
         <>
           {notifyTab === 'system' && renderSystemTab()}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchSignupDetail } from '../../services/user'
 import { fetchActivityDetail } from '../../services/activities'
@@ -13,6 +14,7 @@ import iconMapPin from '../../assets/icons/map-pin.png'
 export default function CheckinPage() {
   const router = useRouter()
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const signupId = Number(router.params.signupId || router.params.signup_id || 0)
   const activityId = Number(router.params.activityId || router.params.activity_id || 0)
 
@@ -85,11 +87,11 @@ export default function CheckinPage() {
   const handleCheckin = useCallback(async () => {
     if (phase !== 'idle') return
     if (!signupId) {
-      Taro.showToast({ title: '报名记录不存在', icon: 'none' })
+      Taro.showToast({ title: t('checkin.noRegistration'), icon: 'none' })
       return
     }
     if (!CONFIG.USE_MOCK && !token.trim()) {
-      Taro.showToast({ title: '请输入签到码', icon: 'none' })
+      Taro.showToast({ title: t('checkin.enterCodeHint'), icon: 'none' })
       setShowTokenInput(true)
       return
     }
@@ -102,7 +104,7 @@ export default function CheckinPage() {
       setTimeout(() => setPhase('done'), 1200)
     } catch (error: any) {
       console.error('签到失败:', error)
-      Taro.showToast({ title: error?.response?.data?.detail || '签到失败', icon: 'none' })
+      Taro.showToast({ title: error?.response?.data?.detail || t('checkin.checkinFailed'), icon: 'none' })
       setPhase('idle')
     }
   }, [phase, signupId, token])
@@ -146,26 +148,26 @@ export default function CheckinPage() {
             <View className="core">
               <View className="core-shine" />
               <Text className="core-label">
-                {phase === 'pressing' ? '··' : '签到'}
+                {phase === 'pressing' ? '··' : t('checkin.signIn')}
               </Text>
             </View>
           </View>
 
           <Text className="pre-hint">
-            {phase === 'pressing' ? '正在验证' : '轻触签到'}
+            {phase === 'pressing' ? t('checkin.verifying') : t('checkin.tapToSign')}
           </Text>
 
           {!CONFIG.USE_MOCK && (
             <View className="token-area">
               <Text className="token-link" onClick={() => setShowTokenInput((v) => !v)}>
-                {showTokenInput ? '收起' : '签到码'}
+                {showTokenInput ? t('common.collapse') : t('checkin.checkinCode')}
               </Text>
               {showTokenInput && (
                 <Input
                   className="token-input"
                   value={token}
                   onInput={(e) => setToken(e.detail.value)}
-                  placeholder="输入签到码"
+                  placeholder={t('checkin.enterCode')}
                 />
               )}
             </View>
@@ -177,10 +179,10 @@ export default function CheckinPage() {
           <View className="light-sweep" />
 
           <View className="done-hero">
-            <Text className="done-label">CHECKED IN</Text>
+            <Text className="done-label">{t('checkin.checkedIn')}</Text>
             <View className="done-line" />
-            <Text className="done-title">签到成功</Text>
-            <Text className="done-sub">祝您参会愉快</Text>
+            <Text className="done-title">{t('checkin.checkinSuccess')}</Text>
+            <Text className="done-sub">{t('checkin.enjoyConference')}</Text>
           </View>
 
           <View className="done-card">
@@ -191,7 +193,7 @@ export default function CheckinPage() {
                 <Image src={iconCalendar} className="card-img" mode="aspectFit" />
               </View>
               <View className="card-col">
-                <Text className="card-key">签到时间</Text>
+                <Text className="card-key">{t('checkin.checkinTime')}</Text>
                 <Text className="card-val">{displayTime || '--'}</Text>
               </View>
             </View>
@@ -200,7 +202,7 @@ export default function CheckinPage() {
                 <Image src={iconMapPin} className="card-img" mode="aspectFit" />
               </View>
               <View className="card-col">
-                <Text className="card-key">签到地点</Text>
+                <Text className="card-key">{t('checkin.checkinLocation')}</Text>
                 <Text className="card-val">{location || '--'}</Text>
               </View>
             </View>

@@ -6,6 +6,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchCurrentUser } from '../../services/user'
 import { mockBadges, mockUserData } from '../profile/mockData'
@@ -15,6 +16,7 @@ import './index.scss'
 
 export default function BadgeWall() {
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const [user, setUser] = useState<UserInfo | null>(null)
   const [badges, setBadges] = useState<Badge[]>(mockBadges)
 
@@ -62,17 +64,17 @@ export default function BadgeWall() {
         </View>
         <View className="bw-stats">
           <View className="bw-stat">
-            <Text className="bw-stat-label">累积成就</Text>
+            <Text className="bw-stat-label">{t('badgeWall.totalAchievements')}</Text>
             <View className="bw-stat-val">
               <Text className="bw-stat-big">{earnedCount}</Text>
-              <Text className="bw-stat-small">/{totalCount}枚</Text>
+              <Text className="bw-stat-small">/{totalCount}{t('badgeWall.unit')}</Text>
             </View>
           </View>
           <View className="bw-stat">
-            <Text className="bw-stat-label">超越</Text>
+            <Text className="bw-stat-label">{t('badgeWall.surpass')}</Text>
             <View className="bw-stat-val">
               <Text className="bw-stat-big">{percent}%</Text>
-              <Text className="bw-stat-small">用户</Text>
+              <Text className="bw-stat-small">{t('badgeWall.users')}</Text>
             </View>
           </View>
         </View>
