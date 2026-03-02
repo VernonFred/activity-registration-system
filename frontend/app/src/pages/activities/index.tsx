@@ -17,6 +17,22 @@ import { fetchActivityList } from '../../services/activities'
 import type { ActivityItem, ActivityStatus, FilterState } from './types'
 import './index.scss'
 
+// 将 mock/API 返回的数据格式统一映射为页面使用的 ActivityItem
+const normalizeActivity = (raw: any): ActivityItem => ({
+  id: String(raw.id),
+  title: raw.title || '',
+  cover: raw.cover || '',
+  rating: raw.rating || 0,
+  ratingCount: raw.rating_count ?? raw.ratingCount ?? 0,
+  startDate: raw.start_time || raw.startDate || '',
+  endDate: raw.end_time || raw.endDate || '',
+  city: raw.location || raw.city || '',
+  location: raw.venue || raw.location || '',
+  status: raw.status === 'signup' ? 'ongoing' : (raw.status as ActivityStatus),
+  isFree: raw.is_free ?? raw.isFree ?? false,
+  price: raw.price,
+})
+
 const ActivitiesPage = () => {
   const { t } = useTranslation()
   const { theme } = useTheme()
@@ -53,8 +69,8 @@ const ActivitiesPage = () => {
       // 处理返回数据格式
       // Mock 模式返回 { items: [...], total, page, ... }
       // 真实 API 可能直接返回数组
-      const data = Array.isArray(response) ? response : (response.items || [])
-      setActivities(data)
+      const rawData = Array.isArray(response) ? response : (response.items || [])
+      setActivities(rawData.map(normalizeActivity))
     } catch (error) {
       console.error('加载活动列表失败:', error)
       Taro.showToast({
