@@ -30,6 +30,28 @@
       height: 200rpx;
       background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
     }
+
+    .cover-back-btn {
+      position: absolute;
+      top: calc(20rpx + constant(safe-area-inset-top));
+      top: calc(20rpx + env(safe-area-inset-top));
+      left: 24rpx;
+      width: 64rpx;
+      height: 64rpx;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+
+      .cover-back-arrow {
+        font-size: 40rpx;
+        color: #333;
+        line-height: 1;
+        margin-top: -4rpx;
+      }
+    }
   }
 
   // ============================================================

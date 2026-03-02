@@ -402,6 +402,10 @@ export default function CommentPage() {
       <View className="header-cover">
         <Image src={coverUrl} className="cover-image" mode="aspectFill" />
         <View className="cover-overlay" />
+        {/* 返回按钮 */}
+        <View className="cover-back-btn" onClick={() => Taro.navigateBack()}>
+          <Text className="cover-back-arrow">‹</Text>
+        </View>
       </View>
 
       {/* 评分区域 */}
