@@ -9,6 +9,7 @@
  * 整体是一个胶囊浮岛，内部左边4个操作按钮，右边报名按钮
  */
 import { View, Text, Image } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 
 // 图标
 import iconBookmark from '../../../assets/icons/bookmark.png'
@@ -37,6 +38,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   onSignup,
   theme,
 }) => {
+  const { t } = useTranslation()
   return (
     <View className={`bottom-island theme-${theme}`}>
       {/* 整体胶囊容器 */}
@@ -45,28 +47,28 @@ const BottomBar: React.FC<BottomBarProps> = ({
         <View className="action-group">
         <View className={`action-item ${isFavorited ? 'active' : ''}`} onClick={onFavorite}>
             <Image src={iconBookmark} className="action-icon" mode="aspectFit" />
-          <Text className="action-text">收藏</Text>
+          <Text className="action-text">{t('activityDetail.favorite')}</Text>
         </View>
           
         <View className="action-item" onClick={onComment}>
             <Image src={iconMessageCircle} className="action-icon" mode="aspectFit" />
-          <Text className="action-text">评论</Text>
+          <Text className="action-text">{t('activityDetail.commentAction')}</Text>
         </View>
           
         <View className={`action-item ${isLiked ? 'active' : ''}`} onClick={onLike}>
             <Image src={iconHeart} className="action-icon" mode="aspectFit" />
-          <Text className="action-text">点赞</Text>
+          <Text className="action-text">{t('activityDetail.like')}</Text>
         </View>
           
         <View className="action-item" onClick={onShare}>
             <Image src={iconShare} className="action-icon" mode="aspectFit" />
-          <Text className="action-text">分享</Text>
+          <Text className="action-text">{t('activityDetail.share')}</Text>
         </View>
       </View>
 
         {/* 右侧报名按钮 */}
         <View className="signup-btn" onClick={onSignup}>
-          <Text className="signup-text">立即报名</Text>
+          <Text className="signup-text">{t('activityDetail.signupNow')}</Text>
         </View>
       </View>
     </View>

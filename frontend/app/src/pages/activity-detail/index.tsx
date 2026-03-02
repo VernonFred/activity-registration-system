@@ -557,7 +557,7 @@ export default function ActivityDetail() {
           date: formatDate(data.start_time),
           time: formatTime(data.start_time),
           status: data.status,
-          location: data.location_city || data.location_name || '待定'
+          location: data.location_city || data.location_name || t('activityDetail.tbd')
         })
       })
       .catch((err) => {
@@ -656,7 +656,7 @@ export default function ActivityDetail() {
 
         {/* 标题 Overlay（显示副标题或分类） */}
         <View className="title-overlay">
-          <Text className="subtitle">暑期培训会</Text>
+          <Text className="subtitle">{activity.category || activity.title}</Text>
         </View>
       </View>
 

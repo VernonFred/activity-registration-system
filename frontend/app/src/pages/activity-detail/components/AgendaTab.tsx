@@ -8,6 +8,7 @@
  * - 跳转到独立议程页面
  */
 import { View, Text, Image } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 import Taro from '@tarojs/taro'
 import type { AgendaItem, AgendaGroup, AgendaDay } from '../types'
 
@@ -32,6 +33,7 @@ const isAgendaGroups = (agenda: AgendaItem[] | AgendaGroup[] | AgendaDay[]): age
 }
 
 const AgendaTab: React.FC<AgendaTabProps> = ({ agenda, theme, activityId }) => {
+  const { t } = useTranslation()
   // 获取预览数据
   const getPreviewData = () => {
     let days = 0
@@ -138,7 +140,7 @@ const AgendaTab: React.FC<AgendaTabProps> = ({ agenda, theme, activityId }) => {
       })
     } catch (e) {
       console.error('跳转失败', e)
-      Taro.showToast({ title: '跳转失败', icon: 'none' })
+      Taro.showToast({ title: t('activityDetail.navigateFailed'), icon: 'none' })
     }
   }
 
@@ -146,7 +148,7 @@ const AgendaTab: React.FC<AgendaTabProps> = ({ agenda, theme, activityId }) => {
     return (
       <View className={`tab-content agenda-preview theme-${theme}`}>
         <View className="preview-empty">
-          <Text className="empty-text">暂无议程信息</Text>
+          <Text className="empty-text">{t('activityDetail.noAgenda')}</Text>
         </View>
       </View>
     )
@@ -185,15 +187,15 @@ const AgendaTab: React.FC<AgendaTabProps> = ({ agenda, theme, activityId }) => {
         {/* 统计信息 */}
         <View className="preview-stats">
           <Text className="stats-text">
-            共 {days} 天议程
-            {groups > 0 && `，${groups} 个分组`}
-            ，{items} 个议程项
+            {t('activityDetail.agendaDays', { days })}
+            {groups > 0 && t('activityDetail.agendaGroups', { groups })}
+            {t('activityDetail.agendaItems', { items })}
           </Text>
         </View>
 
         {/* 查看完整议程按钮 */}
         <View className="view-full-btn" onClick={handleViewFullAgenda}>
-          <Text className="btn-text">查看完整议程</Text>
+          <Text className="btn-text">{t('activityDetail.viewFullAgenda')}</Text>
           <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />
         </View>
       </View>

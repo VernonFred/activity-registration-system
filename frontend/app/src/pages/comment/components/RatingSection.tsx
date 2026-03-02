@@ -3,6 +3,7 @@
  * 2026年1月29日 - 重写
  */
 import { View, Text, Image } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 import type { Rating } from '../types'
 import iconStar from '../../../assets/icons/star.png'
 
@@ -13,6 +14,7 @@ interface RatingSectionProps {
 }
 
 export default function RatingSection({ rating, onRateClick, onEditRating }: RatingSectionProps) {
+  const { t } = useTranslation()
   const hasRated = rating.user_rating && rating.user_rating > 0
 
   // 格式化日期
@@ -26,7 +28,7 @@ export default function RatingSection({ rating, onRateClick, onEditRating }: Rat
 
   return (
     <View className="rating-section">
-      <Text className="rating-title">星级评分</Text>
+      <Text className="rating-title">{t('comments.starRating')}</Text>
 
       <View className="rating-main-row">
         {/* 左侧：评分数字和星星 */}
@@ -50,16 +52,16 @@ export default function RatingSection({ rating, onRateClick, onEditRating }: Rat
         {/* 右侧：评分按钮 */}
         <View className="rating-button" onClick={onRateClick}>
           <Image src={iconStar} className="rating-button-icon" mode="aspectFit" />
-          <Text className="rating-button-text">评分</Text>
+          <Text className="rating-button-text">{t('comments.rating')}</Text>
         </View>
       </View>
 
-      <Text className="rating-count">{rating.total_count} 人评价</Text>
+      <Text className="rating-count">{t('comments.ratingCount', { count: rating.total_count })}</Text>
 
       {/* 我的评分 - 按设计稿布局 */}
       <View className="my-rating-row" onClick={hasRated ? onEditRating : onRateClick}>
         <View className="my-rating-left">
-          <Text className="my-rating-label">我的评分</Text>
+          <Text className="my-rating-label">{t('comments.myRating')}</Text>
           {hasRated && (
             <>
               <View className="my-rating-stars">
@@ -78,7 +80,7 @@ export default function RatingSection({ rating, onRateClick, onEditRating }: Rat
           {hasRated ? (
             <Text className="my-rating-date">{formatRatingDate()}</Text>
           ) : (
-            <Text className="my-rating-empty">暂未评分</Text>
+            <Text className="my-rating-empty">{t('comments.notRated')}</Text>
           )}
         </View>
       </View>

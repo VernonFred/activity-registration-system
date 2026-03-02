@@ -3,6 +3,7 @@
  * 创建时间: 2026年1月28日
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import type { Comment, CommentSortType } from '../types'
 import { formatTime, DEFAULT_AVATAR } from '../constants'
@@ -35,6 +36,7 @@ export default function CommentList({
   onEdit,
   onMenuClick
 }: CommentListProps) {
+  const { t } = useTranslation()
   // 记录加载失败的头像
   const [failedAvatars, setFailedAvatars] = useState<Set<number>>(new Set())
   
@@ -53,14 +55,14 @@ export default function CommentList({
   
   return (
     <View className="comments-section">
-      <Text className="comments-title">评论</Text>
+      <Text className="comments-title">{t('comments.comment')}</Text>
 
       {/* 排序按钮 */}
       <View className="sort-tabs">
         {[
-          { key: 'hottest', label: '最热门' },
-          { key: 'time', label: '按时间' },
-          { key: 'newest', label: '最新' }
+          { key: 'hottest', label: t('comments.hottest') },
+          { key: 'time', label: t('comments.byTime') },
+          { key: 'newest', label: t('comments.latest') }
         ].map(tab => (
           <View
             key={tab.key}
@@ -108,7 +110,7 @@ export default function CommentList({
               {comment.reply_count > 0 && (
                 <View className="reply-link-wrapper">
                   <Text className="reply-link" onClick={() => onViewReplies(comment.id)}>
-                    {comment.reply_count}条回复 &gt;
+                    {t('comments.replyCount', { count: comment.reply_count })} &gt;
                   </Text>
                 </View>
               )}
@@ -129,11 +131,11 @@ export default function CommentList({
                       {/* 自己的评论：修改 + 删除 */}
                       <View className="action-item edit" onClick={() => onEdit(comment.id, comment.content)}>
                         <Text className="action-icon">✏️</Text>
-                        <Text className="action-text">修改</Text>
+                        <Text className="action-text">{t('common.modify')}</Text>
                       </View>
                       <View className="action-item cancel" onClick={() => onDelete(comment.id)}>
                         <Text className="action-icon">🗑️</Text>
-                        <Text className="action-text">删除</Text>
+                        <Text className="action-text">{t('common.delete')}</Text>
                       </View>
                     </>
                   ) : (
@@ -141,11 +143,11 @@ export default function CommentList({
                       {/* 别人的评论：回复 + 取消 */}
                       <View className="action-item reply" onClick={() => onQuickReply(comment.user_name)}>
                         <Text className="action-icon">💬</Text>
-                        <Text className="action-text">回复</Text>
+                        <Text className="action-text">{t('common.reply')}</Text>
                       </View>
                       <View className="action-item cancel" onClick={() => onMenuClick(0, { stopPropagation: () => {} })}>
                         <Text className="action-icon">✕</Text>
-                        <Text className="action-text">取消</Text>
+                        <Text className="action-text">{t('common.cancel')}</Text>
                       </View>
                     </>
                   )}

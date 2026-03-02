@@ -120,7 +120,22 @@ const en = {
     localWeather: 'Local Weather',
     humidity: 'Humidity',
     windSpeed: 'Wind',
-    visibility: 'Visibility'
+    visibility: 'Visibility',
+    tbd: 'TBD',
+    favorite: 'Favorite',
+    commentAction: 'Comment',
+    like: 'Like',
+    share: 'Share',
+    signupNow: 'Register Now',
+    livePhotoTitle: 'Photo Gallery',
+    livePhotoDesc: 'View event highlights',
+    viewLive: 'View Gallery',
+    noAgenda: 'No agenda available',
+    navigateFailed: 'Navigation failed',
+    agendaDays: '{{days}}-day agenda',
+    agendaGroups: ', {{groups}} groups',
+    agendaItems: ', {{items}} sessions',
+    viewFullAgenda: 'View Full Agenda'
   },
 
   // ── Signup Flow ──

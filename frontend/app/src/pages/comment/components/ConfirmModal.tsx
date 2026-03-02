@@ -3,6 +3,7 @@
  * 2026年1月29日
  */
 import { View, Text } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 import './ConfirmModal.scss'
 
 interface ConfirmModalProps {
@@ -13,6 +14,7 @@ interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({ visible, title, onConfirm, onCancel }: ConfirmModalProps) {
+  const { t } = useTranslation()
   if (!visible) return null
 
   return (
@@ -20,10 +22,10 @@ export default function ConfirmModal({ visible, title, onConfirm, onCancel }: Co
       <View className="confirm-modal" onClick={(e) => e.stopPropagation()}>
         <Text className="modal-title">{title}</Text>
         <View className="modal-confirm-btn" onClick={onConfirm}>
-          <Text className="confirm-text">确定</Text>
+          <Text className="confirm-text">{t('common.confirm')}</Text>
         </View>
         <View className="modal-cancel-btn" onClick={onCancel}>
-          <Text className="cancel-text">取消</Text>
+          <Text className="cancel-text">{t('common.cancel')}</Text>
         </View>
       </View>
     </View>

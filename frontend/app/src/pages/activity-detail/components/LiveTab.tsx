@@ -3,6 +3,7 @@
  * 创建时间: 2025年12月9日
  */
 import { View, Text, Image } from '@tarojs/components'
+import { useTranslation } from 'react-i18next'
 
 interface LiveTabProps {
   coverUrl?: string
@@ -11,6 +12,7 @@ interface LiveTabProps {
 }
 
 const LiveTab: React.FC<LiveTabProps> = ({ coverUrl, onViewLive, theme }) => {
+  const { t } = useTranslation()
   return (
     <View className={`tab-content live theme-${theme}`}>
       <View className="live-container">
@@ -21,10 +23,10 @@ const LiveTab: React.FC<LiveTabProps> = ({ coverUrl, onViewLive, theme }) => {
         />
         <View className="live-overlay">
           <View className="live-icon">📷</View>
-          <Text className="live-title">图片直播</Text>
-          <Text className="live-desc">查看活动精彩瞬间</Text>
+          <Text className="live-title">{t('activityDetail.livePhotoTitle')}</Text>
+          <Text className="live-desc">{t('activityDetail.livePhotoDesc')}</Text>
           <View className="live-button" onClick={onViewLive}>
-            <Text className="btn-text">查看直播</Text>
+            <Text className="btn-text">{t('activityDetail.viewLive')}</Text>
           </View>
         </View>
       </View>

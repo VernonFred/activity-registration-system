@@ -120,7 +120,22 @@ const zhCN = {
     localWeather: '当地天气',
     humidity: '湿度',
     windSpeed: '风速',
-    visibility: '能见度'
+    visibility: '能见度',
+    tbd: '待定',
+    favorite: '收藏',
+    commentAction: '评论',
+    like: '点赞',
+    share: '分享',
+    signupNow: '立即报名',
+    livePhotoTitle: '图片直播',
+    livePhotoDesc: '查看活动精彩瞬间',
+    viewLive: '查看直播',
+    noAgenda: '暂无议程信息',
+    navigateFailed: '跳转失败',
+    agendaDays: '共 {{days}} 天议程',
+    agendaGroups: '，{{groups}} 个分组',
+    agendaItems: '，{{items}} 个议程项',
+    viewFullAgenda: '查看完整议程'
   },
 
   // ── 报名流程 ──
