@@ -9,6 +9,7 @@ import SignupManage from './pages/SignupManage'
 import ReviewNotify from './pages/ReviewNotify'
 import ActivityData from './pages/ActivityData'
 import CommentsManage from './pages/CommentsManage'
+import PaymentManage from './pages/PaymentManage'
 import SettingsManage from './pages/SettingsManage'
 import BadgeRules from './pages/BadgeRules'
 import Notifications from './pages/Notifications'
@@ -16,6 +17,7 @@ import Scheduler from './pages/Scheduler'
 import NotFound from './pages/NotFound'
 import { getToken } from './services/auth'
 import FormDesigner from './pages/FormDesigner'
+import UserManage from './pages/UserManage'
 
 function RequireAuth() {
   const location = useLocation()
@@ -35,12 +37,16 @@ export default function App() {
           <Route element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="/activities" element={<Activities />} />
+            <Route path="/activities/new" element={<ActivityCreate />} />
+            <Route path="/activities/:id" element={<ActivityDetail />} />
             <Route path="/activity-create" element={<ActivityCreate />} />
             <Route path="/signups" element={<SignupManage />} />
             <Route path="/form-designer" element={<FormDesigner />} />
             <Route path="/reviews" element={<ReviewNotify />} />
             <Route path="/activity-data" element={<ActivityData />} />
             <Route path="/comments" element={<CommentsManage />} />
+            <Route path="/payments" element={<PaymentManage />} />
+            <Route path="/users" element={<UserManage />} />
             <Route path="/settings" element={<SettingsManage />} />
             <Route path="/badge-rules" element={<BadgeRules />} />
             <Route path="/notifications" element={<Notifications />} />

@@ -1,10 +1,9 @@
 import { PropsWithChildren } from 'react'
 
-export default function SectionCard({ children, style }: PropsWithChildren<{ style?: React.CSSProperties }>) {
+export default function SectionCard({ children, style, className }: PropsWithChildren<{ style?: React.CSSProperties; className?: string }>) {
   return (
-    <div className="section-card" style={style}>
+    <div className={className ? `section-card ${className}` : 'section-card'} style={style}>
       {children}
     </div>
   )
 }
-

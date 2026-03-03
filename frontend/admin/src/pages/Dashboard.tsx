@@ -1,127 +1,368 @@
 import { useEffect, useState } from 'react'
-import { Col, Row, Segmented, Select, Empty } from 'antd'
-import StatCard from '../components/StatCard'
-import { getOverview, getActivityReport } from '../services/reports'
+import { Segmented, Select } from 'antd'
+import ReactECharts from 'echarts-for-react'
+import { AlarmClock, BellRing, CheckCheck, CircleAlert } from 'lucide-react'
 import { listActivities } from '../services/activities'
-import PageHeader from '../components/PageHeader'
-import SectionCard from '../components/SectionCard'
-import ActivityCard from '../components/ActivityCard'
-import { listAuditLogs } from '../services/audit'
-import { listLogs } from '../services/notifications'
-import RecentEventsCard from '../components/RecentEventsCard'
-import ActivityFeedCard from '../components/ActivityFeedCard'
+import { getActivityReport, getOverview } from '../services/reports'
 import { recentFeed } from '../services/engagements'
+import { listLogs } from '../services/notifications'
+import { useThemeContext } from '../hooks/useTheme'
+
+interface MetricItem {
+  title: string
+  value: number | string
+}
+
+interface FeedItem {
+  id: number
+  user: string
+  action: string
+  target: string
+  time: string
+}
+
+interface NotifyItem {
+  id: number
+  type: 'info' | 'success' | 'warning' | 'error'
+  title: string
+  desc: string
+  time: string
+}
 
 export default function Dashboard() {
   const [days, setDays] = useState(7)
+  const [activityId, setActivityId] = useState<number | undefined>()
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
-  const [activityId, setActivityId] = useState<number | undefined>(undefined)
+  const [activities, setActivities] = useState<any[]>([])
   const [options, setOptions] = useState<any[]>([])
-  const [topActivities, setTopActivities] = useState<any[]>([])
-  const [feed, setFeed] = useState<any[]>([])
-  const [notifs, setNotifs] = useState<any[]>([])
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([])
+  const [notifyItems, setNotifyItems] = useState<NotifyItem[]>([])
+  const { isDark } = useThemeContext()
 
   useEffect(() => {
-    // load activities for selector once
-    listActivities({ limit: 6 })
+    listActivities({ limit: 10 })
       .then((res) => {
-        setOptions(res.map((a: any) => ({ label: a.title, value: a.id })))
-        setTopActivities(res.slice(0, 4))
+        setActivities(res)
+        setOptions(res.map((item: any) => ({ label: item.title, value: item.id })))
       })
-      .catch(() => setOptions([]))
-    // activity feed：默认取第一个活动的 feed；若无活动则用演示数据
-    recentFeedForTop().then(setFeed)
-    listLogs({ limit: 10 })
-      .then((arr) => setNotifs(arr && arr.length ? arr : [
-        { id: 'n1', event: 'signup_submitted', status: 'SENT', channel: 'WECHAT', created_at: new Date().toISOString() },
-        { id: 'n2', event: 'signup_approved', status: 'SENT', channel: 'WECHAT', created_at: new Date(Date.now() - 1800_000).toISOString() },
-        { id: 'n3', event: 'checkin_reminder', status: 'PENDING', channel: 'WECHAT', created_at: new Date(Date.now() - 3600_000).toISOString() },
-      ]))
-      .catch(() => setNotifs([
-        { id: 'n1', event: 'signup_submitted', status: 'SENT', channel: 'WECHAT', created_at: new Date().toISOString() },
-        { id: 'n2', event: 'signup_approved', status: 'SENT', channel: 'WECHAT', created_at: new Date(Date.now() - 1800_000).toISOString() },
-        { id: 'n3', event: 'checkin_reminder', status: 'PENDING', channel: 'WECHAT', created_at: new Date(Date.now() - 3600_000).toISOString() },
-      ]))
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
     setLoading(true)
     const loader = activityId ? getActivityReport(activityId, days) : getOverview(days)
     loader.then(setData).finally(() => setLoading(false))
-  }, [days, activityId])
+  }, [activityId, days])
+
+  useEffect(() => {
+    const targetActivityId = activityId ?? activities[0]?.id
+    if (!targetActivityId) {
+      setFeedItems([])
+      return
+    }
+
+    recentFeed(targetActivityId, 5)
+      .then((items) => {
+        setFeedItems(
+          Array.isArray(items)
+            ? items.map((item: any, index: number) => ({
+                id: index,
+                user: item.user_name || '匿名用户',
+                action: mapFeedType(item.type),
+                target: item.content || '-',
+                time: formatRelativeTime(item.created_at),
+              }))
+            : [],
+        )
+      })
+      .catch(() => setFeedItems([]))
+  }, [activityId, activities])
+
+  useEffect(() => {
+    listLogs({ limit: 4 })
+      .then((items) => {
+        setNotifyItems(
+          Array.isArray(items)
+            ? items.map((item: any) => ({
+                id: item.id,
+                type: mapNotifyType(item.status),
+                title: mapNotifyTitle(item.event),
+                desc: item.payload?.title || item.payload?.content || `${item.channel}`,
+                time: formatRelativeTime(item.sent_at || item.created_at),
+              }))
+            : [],
+        )
+      })
+      .catch(() => setNotifyItems([]))
+  }, [])
+
+  const metrics = extractMetrics(data)
 
   return (
-    <div>
-      <PageHeader title="仪表盘" subtitle="全局概览" />
-      <Row gutter={[16, 16]}>
-        {/* 顶部大图根据最新规划移除，聚焦卡片与活动流 */}
-        <Col xs={24} lg={14}>
-          <div className="page-title" style={{ fontSize: 16, margin: '0 0 8px 0' }}>当前活动</div>
-          {/* 每个活动单独一张卡片，不再包一层大卡片 */}
-          {topActivities.length ? topActivities.map((a: any) => <ActivityCard key={a.id} activity={a} />) : <SectionCard><Empty description="暂无活动" /></SectionCard>}
-          <div style={{ height: 16 }} />
-          {/* 活动流放在活动卡片下方 */}
-          <div className="page-title" style={{ fontSize: 16, margin: '0 0 8px 0' }}>活动流</div>
-          <ActivityFeedCard withTitle={false} items={(feed && feed.length ? feed : demoFeed()).map((f: any, i: number) => ({
-            id: `${f.type}-${i}`,
-            userName: f.user_name || '匿名用户',
-            userTitle: f.type === 'comment' ? '发布了评论' : f.content,
-            chips: [ { icon: 'upload', text: f.content } ],
-          }))} />
-        </Col>
-        <Col xs={24} lg={10}>
-          <div className="page-title" style={{ fontSize: 16, margin: '0 0 8px 0' }}>最近通知</div>
-          <RecentEventsCard withTitle={false} items={notifs.map((n: any, i: number) => ({
-            id: n.id,
-            title: eventLabel(n.event) + (n.status ? ` · ${n.status}` : ''),
-            time: n.created_at,
-            direction: i % 2 ? 'down' : 'up',
-            content: n.payload?.text || n.payload?.template || `渠道：${n.channel}`,
-          }))} />
-        </Col>
-        {/* 移除底部小指标卡片 */}
-        {/* 底部 8 张小卡片按你的要求移除，不在仪表盘展示 */}
-      </Row>
+    <div className="dashboard-shell dashboard-shell--snow">
+      <section className="dashboard-topbar dashboard-topbar--compact">
+        <div className="dashboard-topbar__tools dashboard-topbar__tools--end">
+          <Segmented
+            value={days}
+            options={[
+              { label: '7天', value: 7 },
+              { label: '14天', value: 14 },
+              { label: '30天', value: 30 },
+            ]}
+            onChange={(value) => setDays(Number(value))}
+          />
+          <Select
+            allowClear
+            placeholder="聚焦活动"
+            options={options}
+            value={activityId}
+            onChange={setActivityId}
+            className="dashboard-topbar__select"
+          />
+        </div>
+      </section>
+
+      <section className="dashboard-kpis dashboard-kpis--two">
+        {metrics.map((item, index) => (
+          <article key={item.title} className={`dashboard-kpi dashboard-kpi--${index + 1}`}>
+            <div className="dashboard-kpi__label">{item.title}</div>
+            <div className="dashboard-kpi__value">{loading ? '...' : item.value}</div>
+          </article>
+        ))}
+      </section>
+
+      <section className="dashboard-grid dashboard-grid--single">
+        <article className="dashboard-panel dashboard-panel--signal">
+          <header className="dashboard-panel__header compact">
+            <h2 className="dashboard-panel__title">报名趋势</h2>
+          </header>
+          <div className="dashboard-signal dashboard-signal--chart-only">
+            <div className="dashboard-signal__chart dashboard-signal__chart--full">
+              <TrendChart data={pickTimeSeries(data)} isDark={isDark} />
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section className="dashboard-grid dashboard-grid--secondary">
+        <article className="dashboard-panel">
+          <header className="dashboard-panel__header compact">
+            <h2 className="dashboard-panel__title small">活动流</h2>
+          </header>
+          <ActivityFeed items={feedItems} />
+        </article>
+
+        <article className="dashboard-panel">
+          <header className="dashboard-panel__header compact">
+            <h2 className="dashboard-panel__title small">通知列表</h2>
+          </header>
+          <NotificationList items={notifyItems} />
+        </article>
+      </section>
     </div>
   )
 }
 
-function eventLabel(ev: string) {
-  const map: Record<string, string> = {
-    signup_submitted: '报名提交',
-    signup_approved: '审核通过',
-    signup_rejected: '审核驳回',
-    signup_reminder: '报名提醒',
-    checkin_reminder: '签到提醒',
-  }
-  return map[ev?.toLowerCase()] || ev
-}
-
-function auditText(a: any) {
-  const map: Record<string, string> = {
-    signup_reviewed: '已完成一次报名审核',
-    task_run: '系统调度已运行一项任务',
-    badge_rule_triggered: '规则引擎触发一次自动授勋',
-  }
-  return map[a?.action?.toLowerCase()] || '系统产生了一条活动记录'
-}
-
-async function recentFeedForTop() {
-  try {
-    const list = await listActivities({ limit: 1 })
-    if (!list.length) return []
-    const f = await recentFeed(list[0].id, 10)
-    return f
-  } catch {
-    return []
-  }
-}
-
-function demoFeed() {
-  const now = new Date()
+function extractMetrics(data: any): MetricItem[] {
   return [
-    { type: 'comment', user_name: '奥斯卡·雪洛韦', content: '已完成一次报名审核', created_at: now.toISOString() },
-    { type: 'share', user_name: '艾米丽·泰勒', content: '分享了活动（微信）', created_at: new Date(now.getTime() - 3600_000).toISOString() },
+    {
+      title: '总报名',
+      value: data?.total_signups ?? data?.totalSignups ?? data?.signups ?? '-',
+    },
+    {
+      title: '总签到',
+      value: data?.checked_in_signups ?? data?.checkedInSignups ?? data?.checked_in ?? data?.checkedIn ?? data?.checkins ?? '-',
+    },
   ]
+}
+
+function TrendChart({ data, isDark }: { data: any[]; isDark: boolean }) {
+  const textColor = isDark ? 'rgba(255,255,255,0.64)' : 'rgba(15,23,42,0.56)'
+  const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.06)'
+  const primaryLine = isDark ? '#18181b' : '#18181b'
+  const secondaryLine = isDark ? '#0f766e' : '#0f766e'
+
+  const option = {
+    tooltip: {
+      trigger: 'axis' as const,
+      backgroundColor: isDark ? 'rgba(20,20,20,0.95)' : 'rgba(255,255,255,0.96)',
+      borderWidth: 0,
+      textStyle: { color: isDark ? '#f8fafc' : '#0f172a' },
+    },
+    legend: { show: false },
+    grid: { left: 32, right: 16, top: 14, bottom: 24 },
+    xAxis: {
+      type: 'category' as const,
+      data: data.length ? data.map((item: any) => item.date) : mockDates(7),
+      boundaryGap: false,
+      axisLine: { lineStyle: { color: gridColor } },
+      axisTick: { show: false },
+      axisLabel: { color: textColor, fontSize: 11 },
+    },
+    yAxis: {
+      type: 'value' as const,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { lineStyle: { color: gridColor } },
+      axisLabel: { color: textColor, fontSize: 11 },
+    },
+    series: [
+      {
+        name: '报名',
+        type: 'line' as const,
+        smooth: true,
+        symbol: 'none',
+        lineStyle: { width: 3, color: primaryLine },
+        data: data.length ? data.map((item: any) => item.signups) : mockValues(7, 20, 64),
+      },
+      {
+        name: '签到',
+        type: 'line' as const,
+        smooth: true,
+        symbol: 'none',
+        lineStyle: { width: 2, color: secondaryLine, type: 'dashed' as const },
+        data: data.length ? data.map((item: any) => item.checkins) : mockValues(7, 14, 46),
+      },
+    ],
+  }
+
+  return <ReactECharts option={option} style={{ height: 320 }} />
+}
+
+function ActivityFeed({ items }: { items: FeedItem[] }) {
+  const renderItems = items.length ? items : mockFeedItems
+  return (
+    <div className="dashboard-feed dashboard-feed--clean">
+      {renderItems.map((item) => (
+        <div key={item.id} className="dashboard-feed__item dashboard-feed__item--compact">
+          <div className="dashboard-feed__avatar">{item.user.charAt(item.user.length - 1)}</div>
+          <div className="dashboard-feed__body">
+            <div className="dashboard-feed__meta">
+              <strong>{item.user}</strong>
+              <span>{item.action}</span>
+              <time>{item.time}</time>
+            </div>
+            <div className="dashboard-feed__target">{item.target}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function NotificationList({ items }: { items: NotifyItem[] }) {
+  const renderItems = items.length ? items : mockNotifications
+  return (
+    <div className="dashboard-rail-list">
+      {renderItems.map((item) => {
+        const Icon = item.type === 'success' ? CheckCheck : item.type === 'warning' ? AlarmClock : item.type === 'error' ? CircleAlert : BellRing
+        return (
+          <div key={item.id} className={`dashboard-rail-item tone-${item.type}`}>
+            <div className="dashboard-rail-item__icon">
+              <Icon size={15} />
+            </div>
+            <div className="dashboard-rail-item__body">
+              <strong>{item.title}</strong>
+              <span>{item.desc}</span>
+            </div>
+            <time>{item.time}</time>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+const mockFeedItems: FeedItem[] = [
+  { id: 1, user: '张三', action: '评论', target: '高校品牌沙龙 · 长沙', time: '2小时前' },
+  { id: 2, user: '李四', action: '评分', target: '春季学术研讨会', time: '3小时前' },
+  { id: 3, user: '王五', action: '评论', target: '暑期培训会议', time: '5小时前' },
+  { id: 4, user: '赵六', action: '评分', target: '行业闭门会', time: '6小时前' },
+  { id: 5, user: '陈七', action: '评论', target: '高校品牌沙龙 · 长沙', time: '8小时前' },
+]
+
+const mockNotifications: NotifyItem[] = [
+  { id: 1, type: 'warning', title: '3 份报名待审核', desc: '需要在 2 小时内完成处理', time: '10分钟前' },
+  { id: 2, type: 'success', title: '批量审核完成', desc: '已通过 12 份报名申请', time: '1小时前' },
+  { id: 3, type: 'info', title: '新活动已发布', desc: '春季学术研讨会开放报名', time: '3小时前' },
+  { id: 4, type: 'error', title: '通知推送失败', desc: '2 条短信通知发送失败', time: '5小时前' },
+]
+
+function pickTimeSeries(data: any) {
+  return data?.time_series ?? data?.timeSeries ?? data?.trend ?? data?.timeseries ?? []
+}
+
+function mapFeedType(type?: string) {
+  switch (type) {
+    case 'comment':
+      return '评论'
+    case 'like':
+      return '点赞'
+    case 'favorite':
+      return '收藏'
+    case 'share':
+      return '分享'
+    default:
+      return '动态'
+  }
+}
+
+function mapNotifyType(status?: string): NotifyItem['type'] {
+  switch (status) {
+    case 'failed':
+      return 'error'
+    case 'sent':
+      return 'success'
+    case 'queued':
+      return 'warning'
+    default:
+      return 'info'
+  }
+}
+
+function mapNotifyTitle(event?: string) {
+  switch (event) {
+    case 'signup_submitted':
+      return '报名提交'
+    case 'signup_approved':
+      return '报名通过'
+    case 'signup_rejected':
+      return '报名驳回'
+    case 'payment_reminder':
+      return '缴费提醒'
+    case 'checkin_reminder':
+      return '签到提醒'
+    case 'badge_earned':
+      return '徽章发放'
+    default:
+      return '系统通知'
+  }
+}
+
+function formatRelativeTime(value?: string) {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '-'
+  const diff = Date.now() - date.getTime()
+  const minutes = Math.max(1, Math.floor(diff / 60000))
+  if (minutes < 60) return `${minutes}分钟前`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}小时前`
+  const days = Math.floor(hours / 24)
+  return `${days}天前`
+}
+
+function mockDates(count: number) {
+  const dates: string[] = []
+  const now = new Date()
+  for (let index = count - 1; index >= 0; index -= 1) {
+    const date = new Date(now.getTime() - index * 86400_000)
+    dates.push(`${date.getMonth() + 1}.${date.getDate()}`)
+  }
+  return dates
+}
+
+function mockValues(count: number, min: number, max: number) {
+  return Array.from({ length: count }, () => Math.floor(Math.random() * (max - min) + min))
 }

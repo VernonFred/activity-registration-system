@@ -1,0 +1,226 @@
+/**
+ * Frost Admin — Design Token System
+ * Apple Vision Pro / visionOS inspired frosted glass aesthetic
+ * Dual theme: Light (default) + Dark ([data-theme="dark"])
+ * Primary: Teal cold-tone palette
+ */
+
+/* ═══ Google Fonts ═══ */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ═══════════════════════════════════════════
+   LIGHT THEME (default)
+   ═══════════════════════════════════════════ */
+
+:root {
+  /* ── Primary (Teal) ── */
+  --frost-primary-50:  #f0fdfa;
+  --frost-primary-100: #ccfbf1;
+  --frost-primary-200: #99f6e4;
+  --frost-primary-300: #5eead4;
+  --frost-primary-400: #2dd4bf;
+  --frost-primary-500: #14b8a6;
+  --frost-primary-600: #0d9488;
+  --frost-primary-700: #0f766e;
+  --frost-primary-800: #115e59;
+  --frost-primary-900: #134e4a;
+  --frost-primary:       #0d9488;
+  --frost-primary-hover:  #0f766e;
+  --frost-primary-active: #115e59;
+  --frost-primary-glow:   rgba(13, 148, 136, 0.15);
+  --frost-primary-shadow: rgba(13, 148, 136, 0.25);
+
+  /* ── Neutrals (Slate) ── */
+  --frost-gray-50:  #f8fafc;
+  --frost-gray-100: #f1f5f9;
+  --frost-gray-200: #e2e8f0;
+  --frost-gray-300: #cbd5e1;
+  --frost-gray-400: #94a3b8;
+  --frost-gray-500: #64748b;
+  --frost-gray-600: #475569;
+  --frost-gray-700: #334155;
+  --frost-gray-800: #1e293b;
+  --frost-gray-900: #0f172a;
+  --frost-gray-950: #020617;
+
+  /* ── Semantic ── */
+  --frost-success:    #10b981;
+  --frost-success-bg: rgba(16, 185, 129, 0.10);
+  --frost-warning:    #f59e0b;
+  --frost-warning-bg: rgba(245, 158, 11, 0.10);
+  --frost-error:      #ef4444;
+  --frost-error-bg:   rgba(239, 68, 68, 0.10);
+  --frost-info:       #0ea5e9;
+  --frost-info-bg:    rgba(14, 165, 233, 0.10);
+
+  /* ── Surfaces (Glass) ── */
+  --frost-bg-page:           #eef2f7;
+  --frost-bg-surface:        rgba(255, 255, 255, 0.72);
+  --frost-bg-surface-hover:  rgba(255, 255, 255, 0.82);
+  --frost-bg-surface-raised: rgba(255, 255, 255, 0.88);
+  --frost-bg-sidebar:        rgba(255, 255, 255, 0.95);
+  --frost-bg-header:         rgba(255, 255, 255, 0.68);
+  --frost-bg-overlay:        rgba(15, 23, 42, 0.40);
+  --frost-bg-input:          rgba(255, 255, 255, 0.60);
+
+  /* ── Mesh Gradient Layers ── */
+  --frost-mesh-1: radial-gradient(ellipse 1200px 600px at 0% 0%, rgba(13, 148, 136, 0.10) 0%, transparent 50%);
+  --frost-mesh-2: radial-gradient(ellipse 900px 500px at 100% 10%, rgba(14, 165, 233, 0.07) 0%, transparent 50%);
+  --frost-mesh-3: radial-gradient(ellipse 800px 600px at 50% 100%, rgba(255, 255, 255, 0.60) 0%, transparent 65%);
+
+  /* ── Blur & Glass ── */
+  --frost-blur-sm:   blur(12px) saturate(150%);
+  --frost-blur-md:   blur(20px) saturate(160%);
+  --frost-blur-lg:   blur(24px) saturate(180%);
+  --frost-blur-xl:   blur(32px) saturate(200%);
+
+  /* ── Borders ── */
+  --frost-border:          rgba(255, 255, 255, 0.20);
+  --frost-border-subtle:   rgba(255, 255, 255, 0.10);
+  --frost-border-strong:   rgba(255, 255, 255, 0.35);
+  --frost-border-glow:     rgba(255, 255, 255, 0.50);
+  --frost-border-input:    rgba(0, 0, 0, 0.08);
+  --frost-border-sidebar:  rgba(0, 0, 0, 0.10);
+
+  /* ── Text ── */
+  --frost-text:            #0f172a;
+  --frost-text-secondary:  #475569;
+  --frost-text-muted:      #94a3b8;
+  --frost-text-inverse:    #ffffff;
+  --frost-text-sidebar:    #64748b;
+  --frost-text-sidebar-active: #0f172a;
+
+  /* ── Shadows ── */
+  --frost-shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.04);
+  --frost-shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.06);
+  --frost-shadow-md:    0 4px 16px rgba(0, 0, 0, 0.08);
+  --frost-shadow-lg:    0 8px 32px rgba(0, 0, 0, 0.10);
+  --frost-shadow-xl:    0 16px 48px rgba(0, 0, 0, 0.12);
+  --frost-shadow-glow:  0 0 24px var(--frost-primary-glow);
+  --frost-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --frost-shadow-card:  0 8px 32px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+
+  /* ── Typography ── */
+  --frost-font-display: 'Outfit', -apple-system, 'PingFang SC', sans-serif;
+  --frost-font-body:    'DM Sans', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --frost-font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  --frost-text-xs:  0.75rem;   /* 12px */
+  --frost-text-sm:  0.8125rem; /* 13px */
+  --frost-text-base: 0.875rem; /* 14px */
+  --frost-text-lg:  1rem;      /* 16px */
+  --frost-text-xl:  1.125rem;  /* 18px */
+  --frost-text-2xl: 1.375rem;  /* 22px */
+  --frost-text-3xl: 1.75rem;   /* 28px */
+  --frost-text-4xl: 2.25rem;   /* 36px */
+
+  --frost-weight-normal:   400;
+  --frost-weight-medium:   500;
+  --frost-weight-semibold: 600;
+  --frost-weight-bold:     700;
+  --frost-weight-extrabold: 800;
+
+  --frost-leading-tight:   1.2;
+  --frost-leading-normal:  1.5;
+  --frost-leading-relaxed: 1.65;
+
+  /* ── Spacing ── */
+  --frost-space-1:  4px;
+  --frost-space-2:  8px;
+  --frost-space-3:  12px;
+  --frost-space-4:  16px;
+  --frost-space-5:  20px;
+  --frost-space-6:  24px;
+  --frost-space-8:  32px;
+  --frost-space-10: 40px;
+  --frost-space-12: 48px;
+  --frost-space-16: 64px;
+
+  /* ── Radius ── */
+  --frost-radius-sm:   6px;
+  --frost-radius-md:   10px;
+  --frost-radius-lg:   14px;
+  --frost-radius-xl:   18px;
+  --frost-radius-2xl:  24px;
+  --frost-radius-pill:  9999px;
+
+  /* ── Motion ── */
+  --frost-duration-fast:    150ms;
+  --frost-duration-normal:  250ms;
+  --frost-duration-slow:    350ms;
+  --frost-duration-theme:   400ms;
+  --frost-ease:             cubic-bezier(0.4, 0, 0.2, 1);
+  --frost-ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+  --frost-ease-out:         cubic-bezier(0, 0, 0.2, 1);
+
+  /* ── Layout ── */
+  --frost-sidebar-width:     212px;
+  --frost-sidebar-collapsed:  72px;
+  --frost-header-height:      60px;
+  --frost-page-padding:       24px;
+}
+
+
+/* ═══════════════════════════════════════════
+   DARK THEME
+   ═══════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  /* ── Primary shifts lighter for dark bg ── */
+  --frost-primary:       #2dd4bf;
+  --frost-primary-hover:  #5eead4;
+  --frost-primary-active: #14b8a6;
+  --frost-primary-glow:   rgba(45, 212, 191, 0.15);
+  --frost-primary-shadow: rgba(45, 212, 191, 0.20);
+
+  /* ── Semantic (brighter on dark) ── */
+  --frost-success:    #34d399;
+  --frost-success-bg: rgba(52, 211, 153, 0.12);
+  --frost-warning:    #fbbf24;
+  --frost-warning-bg: rgba(251, 191, 36, 0.12);
+  --frost-error:      #f87171;
+  --frost-error-bg:   rgba(248, 113, 113, 0.12);
+  --frost-info:       #38bdf8;
+  --frost-info-bg:    rgba(56, 189, 248, 0.12);
+
+  /* ── Surfaces ── */
+  --frost-bg-page:           #000000;
+  --frost-bg-surface:        rgba(18, 18, 18, 0.55);
+  --frost-bg-surface-hover:  rgba(18, 18, 18, 0.70);
+  --frost-bg-surface-raised: rgba(18, 18, 18, 0.82);
+  --frost-bg-sidebar:        rgba(0, 0, 0, 0.95);
+  --frost-bg-header:         rgba(8, 8, 8, 0.70);
+  --frost-bg-overlay:        rgba(0, 0, 0, 0.60);
+  --frost-bg-input:          rgba(18, 18, 18, 0.50);
+
+  /* ── Mesh (dimmer, teal glow) ── */
+  --frost-mesh-1: radial-gradient(ellipse 1000px 500px at 0% 0%, rgba(13, 148, 136, 0.08) 0%, transparent 50%);
+  --frost-mesh-2: radial-gradient(ellipse 800px 400px at 100% 15%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+  --frost-mesh-3: radial-gradient(ellipse 600px 400px at 50% 100%, rgba(18, 18, 18, 0.40) 0%, transparent 60%);
+
+  /* ── Borders ── */
+  --frost-border:          rgba(255, 255, 255, 0.10);
+  --frost-border-subtle:   rgba(255, 255, 255, 0.06);
+  --frost-border-strong:   rgba(255, 255, 255, 0.18);
+  --frost-border-glow:     rgba(45, 212, 191, 0.15);
+  --frost-border-input:    rgba(255, 255, 255, 0.12);
+  --frost-border-sidebar:  rgba(255, 255, 255, 0.08);
+
+  /* ── Text ── */
+  --frost-text:            #f5f5f5;
+  --frost-text-secondary:  #d4d4d4;
+  --frost-text-muted:      #a3a3a3;
+  --frost-text-inverse:    #0f172a;
+  --frost-text-sidebar:    rgba(255, 255, 255, 0.55);
+  --frost-text-sidebar-active: rgba(255, 255, 255, 0.95);
+
+  /* ── Shadows (deeper) ── */
+  --frost-shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.10);
+  --frost-shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.16);
+  --frost-shadow-md:    0 4px 16px rgba(0, 0, 0, 0.22);
+  --frost-shadow-lg:    0 8px 32px rgba(0, 0, 0, 0.28);
+  --frost-shadow-xl:    0 16px 48px rgba(0, 0, 0, 0.35);
+  --frost-shadow-glow:  0 0 32px var(--frost-primary-glow);
+  --frost-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --frost-shadow-card:  0 8px 32px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
