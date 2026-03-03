@@ -145,6 +145,45 @@ body *:not(.no-transition) {
   border-color: var(--frost-border-subtle);
 }
 
+.field-label {
+  margin-bottom: 8px;
+  color: var(--frost-text-muted);
+  font-size: 12px;
+  font-weight: var(--frost-weight-medium);
+}
+
+.activity-create-shell {
+  padding: 12px;
+}
+
+.activity-create-tabs .ant-tabs-nav {
+  margin-bottom: 20px;
+}
+
+.activity-create-tabs .ant-tabs-tab {
+  border-radius: 999px;
+  padding-inline: 14px;
+}
+
+.activity-builder-card {
+  border: 1px solid var(--frost-border-subtle);
+  border-radius: var(--frost-radius-lg);
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.activity-builder-subcard {
+  border: 1px solid var(--frost-border-subtle);
+  border-radius: var(--frost-radius-md);
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .activity-builder-card,
+[data-theme="dark"] .activity-builder-subcard {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR — Adaptive Glass Navigation

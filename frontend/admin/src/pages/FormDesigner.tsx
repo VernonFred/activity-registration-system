@@ -1,6 +1,7 @@
 // 顶部 import：增加生成器与样式，移除未使用的 useMemo
 import { useEffect, useState } from 'react'
 import { Button, Space, Table, Select, Input, Switch, Modal, Form, message } from 'antd'
+import { useSearchParams } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
 import SectionCard from '../components/SectionCard'
 import { listActivities, getActivity, updateActivity } from '../services/activities'
@@ -114,6 +115,8 @@ function fromFRSchema(schema: any): FieldItem[] {
 }
 
 export default function FormDesigner() {
+  const [searchParams] = useSearchParams()
+  const presetActivityId = searchParams.get('activityId')
   const [activities, setActivities] = useState<any[]>([])
   const [activityId, setActivityId] = useState<number | undefined>(undefined)
   const [fields, setFields] = useState<FieldItem[]>([])
@@ -125,6 +128,13 @@ export default function FormDesigner() {
   const [frSchema, setFrSchema] = useState<any>({ type: 'object', properties: {} })
 
   useEffect(() => { listActivities({ limit: 100 }).then(setActivities).catch(()=>setActivities([])) }, [])
+  useEffect(() => {
+    if (!presetActivityId) return
+    const parsed = Number(presetActivityId)
+    if (Number.isFinite(parsed)) {
+      setActivityId(parsed)
+    }
+  }, [presetActivityId])
   useEffect(() => {
     if (!activityId) return
     setLoading(true)
