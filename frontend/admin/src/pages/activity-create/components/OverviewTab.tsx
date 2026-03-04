@@ -1,6 +1,7 @@
 import { Col, DatePicker, Input, InputNumber, Row, Select, Switch } from 'antd'
 import dayjs from 'dayjs'
 import { FileText, Clock, MapPin, Settings, PenLine } from 'lucide-react'
+import ImageUploader from '../../../components/ImageUploader'
 import RichEditor from '../../../components/RichEditor'
 import SectionCard from '../../../components/SectionCard'
 import type { ActivityCreateFormState } from '../types'
@@ -11,6 +12,15 @@ type Props = {
 }
 
 export default function OverviewTab({ state, onChange }: Props) {
+  const CATEGORY_OPTIONS = [
+    { label: '论坛', value: '论坛' },
+    { label: '品牌沙龙', value: '品牌沙龙' },
+    { label: '培训会议', value: '培训会议' },
+    { label: '闭门研讨', value: '闭门研讨' },
+    { label: '峰会', value: '峰会' },
+    { label: '交流会', value: '交流会' },
+  ]
+
   const updateBase = <K extends keyof ActivityCreateFormState['base']>(key: K, value: ActivityCreateFormState['base'][K]) => {
     onChange({
       ...state,
@@ -35,16 +45,42 @@ export default function OverviewTab({ state, onChange }: Props) {
         </div>
         <Row gutter={[24, 16]}>
           <Col span={12}>
-            <div className="field-label">活动标题 <span className="field-required">*</span></div>
+            <div className="field-label">主标题 <span className="field-required">*</span></div>
             <Input value={state.base.title} onChange={(e) => updateBase('title', e.target.value)} placeholder="例如：高校品牌沙龙·长沙" />
           </Col>
           <Col span={12}>
             <div className="field-label">副标题</div>
             <Input value={state.base.subtitle} onChange={(e) => updateBase('subtitle', e.target.value)} placeholder="可选" />
           </Col>
+        </Row>
+        <div className="overview-tab__cover-row">
+          <div className="overview-tab__cover-panel">
+            <div className="field-label">活动封面</div>
+            <ImageUploader value={state.base.cover_image_url} onChange={(value) => updateBase('cover_image_url', value || '')} />
+          </div>
+        </div>
+        <Row gutter={[24, 16]} className="overview-tab__meta-row">
           <Col span={8}>
             <div className="field-label">分类</div>
-            <Input value={state.base.category} onChange={(e) => updateBase('category', e.target.value)} placeholder="例如：品牌沙龙" />
+            <Select
+              mode="tags"
+              maxCount={1}
+              value={state.base.category ? [state.base.category] : []}
+              style={{ width: '100%' }}
+              options={CATEGORY_OPTIONS}
+              onChange={(values) => updateBase('category', values?.[0] || '')}
+              placeholder="选择或输入分类"
+            />
+          </Col>
+          <Col span={8}>
+            <div className="field-label">标签</div>
+            <Select
+              mode="tags"
+              value={state.base.tags}
+              style={{ width: '100%' }}
+              onChange={(value) => updateBase('tags', value)}
+              placeholder="输入标签"
+            />
           </Col>
           <Col span={8}>
             <div className="field-label">状态 <span className="field-required">*</span></div>
@@ -61,24 +97,6 @@ export default function OverviewTab({ state, onChange }: Props) {
               ]}
             />
           </Col>
-          <Col span={8}>
-            <div className="field-label">标签</div>
-            <Select
-              mode="tags"
-              value={state.base.tags}
-              style={{ width: '100%' }}
-              onChange={(value) => updateBase('tags', value)}
-              placeholder="输入标签"
-            />
-          </Col>
-          <Col span={12}>
-            <div className="field-label">封面图 URL</div>
-            <Input value={state.base.cover_image_url} onChange={(e) => updateBase('cover_image_url', e.target.value)} placeholder="封面图链接" />
-          </Col>
-          <Col span={12}>
-            <div className="field-label">Banner URL</div>
-            <Input value={state.base.banner_image_url} onChange={(e) => updateBase('banner_image_url', e.target.value)} placeholder="Banner 链接" />
-          </Col>
         </Row>
       </SectionCard>
 
@@ -88,7 +106,7 @@ export default function OverviewTab({ state, onChange }: Props) {
           <Clock size={18} />
           <span>时间安排</span>
         </div>
-        <Row gutter={[24, 16]}>
+        <Row gutter={[24, 16]} className="overview-tab__time-row">
           <Col span={8}>
             <div className="field-label">活动开始 <span className="field-required">*</span></div>
             <DatePicker showTime style={{ width: '100%' }} value={state.base.start_time ? dayjs(state.base.start_time) : null} onChange={(v) => setDate('start_time', v)} placeholder="请选择日期" />
@@ -101,18 +119,18 @@ export default function OverviewTab({ state, onChange }: Props) {
             <div className="field-label">名额上限</div>
             <InputNumber min={0} style={{ width: '100%' }} value={state.base.max_participants} onChange={(value) => updateBase('max_participants', typeof value === 'number' ? value : undefined)} placeholder="不填表示不限" />
           </Col>
-          <Col span={8}>
+        </Row>
+        <Row gutter={[24, 16]} className="overview-tab__time-row">
+          <Col span={12}>
             <div className="field-label">报名开始</div>
             <DatePicker showTime style={{ width: '100%' }} value={state.base.signup_start_time ? dayjs(state.base.signup_start_time) : null} onChange={(v) => setDate('signup_start_time', v)} placeholder="请选择日期" />
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <div className="field-label">报名截止</div>
             <DatePicker showTime style={{ width: '100%' }} value={state.base.signup_end_time ? dayjs(state.base.signup_end_time) : null} onChange={(v) => setDate('signup_end_time', v)} placeholder="请选择日期" />
           </Col>
-          <Col span={8}>
-            <div className="field-label">群二维码 URL</div>
-            <Input value={state.base.group_qr_image_url} onChange={(e) => updateBase('group_qr_image_url', e.target.value)} placeholder="群二维码图片链接" />
-          </Col>
+        </Row>
+        <Row gutter={[24, 16]} className="overview-tab__time-row">
           <Col span={12}>
             <div className="field-label">签到开始</div>
             <DatePicker showTime style={{ width: '100%' }} value={state.base.checkin_start_time ? dayjs(state.base.checkin_start_time) : null} onChange={(v) => setDate('checkin_start_time', v)} placeholder="请选择日期" />
@@ -122,6 +140,33 @@ export default function OverviewTab({ state, onChange }: Props) {
             <DatePicker showTime style={{ width: '100%' }} value={state.base.checkin_end_time ? dayjs(state.base.checkin_end_time) : null} onChange={(v) => setDate('checkin_end_time', v)} placeholder="请选择日期" />
           </Col>
         </Row>
+        <div className="overview-tab__time-assets">
+          <div className="overview-tab__time-qr">
+            <div className="field-label">活动群二维码</div>
+            <ImageUploader value={state.base.group_qr_image_url} onChange={(value) => updateBase('group_qr_image_url', value || '')} />
+          </div>
+          <div className="overview-tab__time-settings">
+            <div className="field-label">显示目前报名人数</div>
+            <div className="overview-tab__inline-switch">
+              <span className="overview-tab__inline-switch-text">
+                {state.extra.overview.show_signup_count ? '显示' : '隐藏'}
+              </span>
+              <Switch
+                checked={state.extra.overview.show_signup_count}
+                onChange={(checked) => onChange({
+                  ...state,
+                  extra: {
+                    ...state.extra,
+                    overview: {
+                      ...state.extra.overview,
+                      show_signup_count: checked,
+                    },
+                  },
+                })}
+              />
+            </div>
+          </div>
+        </div>
       </SectionCard>
 
       {/* ── 卡片 3: 地点与联系方式 ── */}

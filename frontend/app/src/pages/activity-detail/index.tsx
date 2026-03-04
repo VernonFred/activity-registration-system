@@ -13,6 +13,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
+import { fetchMySignups as fetchMySignupsApi } from '../../services/user'
 import { addRecentView } from '../../utils/storage'
 import { OverviewTab, AgendaTab, HotelTab, LiveTab, BottomBar } from './components'
 import type { TabKey, Activity } from './types'
@@ -504,6 +505,7 @@ export default function ActivityDetail() {
   const TABS = useMemo(() => TAB_KEYS.map(({ key, labelKey }) => ({ key, label: t(labelKey) })), [t])
   
   const [activity, setActivity] = useState<Activity | null>(null)
+  const [currentSignup, setCurrentSignup] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<TabKey>('overview')
   const [isFavorited, setIsFavorited] = useState(false)
@@ -541,23 +543,41 @@ export default function ActivityDetail() {
     }
 
     setLoading(true)
-    fetchActivityDetail(activityId)
-      .then((data) => {
+    Promise.all([
+      fetchActivityDetail(activityId),
+      fetchMySignupsApi({ status: 'all', page: 1, per_page: 100 }).catch(() => null),
+    ])
+      .then(([data, signupResp]) => {
+        const normalized: Activity = {
+          ...data,
+          cover_url: data?.cover_url || data?.cover_image_url,
+          group_qr_image_url: data?.group_qr_image_url,
+          location_city: data?.location_city || data?.city,
+          location_name: data?.location_name || data?.location,
+          location_address: data?.location_address || data?.location_detail,
+          signup_deadline: data?.signup_deadline || data?.signup_end_time,
+          current_participants: data?.current_participants ?? data?.signup_count,
+          extra: data?.extra || {},
+        }
+
         // 补充默认数据
         // 使用多天会议数据进行测试（可切换为 DEFAULT_AGENDA 测试单天）
-        if (!data.agenda) data.agenda = DEFAULT_MULTI_DAY_AGENDA
-        if (!data.hotels) data.hotels = DEFAULT_HOTELS
-        setActivity(data)
+        if (!normalized.agenda) normalized.agenda = DEFAULT_MULTI_DAY_AGENDA
+        if (!normalized.hotels) normalized.hotels = DEFAULT_HOTELS
+        setActivity(normalized)
+
+        const signupItems = signupResp?.items || []
+        setCurrentSignup(signupItems.find((item: any) => item?.activity?.id === normalized.id) || null)
         
         // 记录到最近浏览
         addRecentView({
-          id: data.id,
-          title: data.title,
-          cover_url: data.cover_url || 'https://via.placeholder.com/400',
-          date: formatDate(data.start_time),
-          time: formatTime(data.start_time),
-          status: data.status,
-          location: data.location_city || data.location_name || t('activityDetail.tbd')
+          id: normalized.id,
+          title: normalized.title,
+          cover_url: normalized.cover_url || 'https://via.placeholder.com/400',
+          date: formatDate(normalized.start_time),
+          time: formatTime(normalized.start_time),
+          status: normalized.status,
+          location: normalized.location_city || normalized.location_name || t('activityDetail.tbd')
         })
       })
       .catch((err) => {
@@ -594,8 +614,12 @@ export default function ActivityDetail() {
   }, [t])
   const handleSignup = useCallback(() => {
     if (!activityId) return
+    if (currentSignup?.id) {
+      Taro.navigateTo({ url: `/pages/checkin/index?signupId=${currentSignup.id}&activityId=${activityId}` })
+      return
+    }
     Taro.navigateTo({ url: `/pages/signup/index?activity_id=${activityId}` })
-  }, [activityId])
+  }, [activityId, currentSignup])
   const handleCall = useCallback((phone: string) => Taro.makePhoneCall({ phoneNumber: phone }), [])
   const handleViewLive = useCallback(() => {
     if (activity?.live_url) {
@@ -604,6 +628,8 @@ export default function ActivityDetail() {
       Taro.showToast({ title: t('activityDetail.liveNotStarted'), icon: 'none' })
     }
   }, [activity, t])
+
+  const primaryActionText = currentSignup?.id ? t('profile.goCheckin') : t('activityDetail.signupNow')
 
   // 加载状态
   if (loading) {
@@ -696,6 +722,7 @@ export default function ActivityDetail() {
         onLike={handleLike}
         onShare={handleShare}
         onSignup={handleSignup}
+        ctaText={primaryActionText}
         theme={theme}
       />
     </View>

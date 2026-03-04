@@ -85,6 +85,9 @@ export type HotelConfig = {
 }
 
 export type ActivityExtraConfig = {
+  overview: {
+    show_signup_count: boolean
+  }
   agenda_blocks: AgendaBlock[]
   hotels: HotelConfig[]
   signup_config: {
@@ -210,6 +213,9 @@ export function createDefaultActivityCreateFormState(): ActivityCreateFormState 
     },
     agendaSummary: '',
     extra: {
+      overview: {
+        show_signup_count: true,
+      },
       agenda_blocks: [createEmptyAgendaBlock()],
       hotels: [createEmptyHotel()],
       signup_config: {

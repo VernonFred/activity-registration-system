@@ -11,6 +11,7 @@ export interface Activity {
   id: number
   title: string
   cover_url?: string
+  group_qr_image_url?: string
   status: string
   start_time: string
   end_time: string
@@ -157,4 +158,3 @@ export interface Comment {
   is_liked: boolean           // 当前用户是否已点赞
   replies?: CommentReply[]    // 回复列表
 }
-

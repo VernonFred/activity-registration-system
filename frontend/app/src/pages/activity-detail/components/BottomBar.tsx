@@ -25,6 +25,7 @@ interface BottomBarProps {
   onLike: () => void
   onShare: () => void
   onSignup: () => void
+  ctaText: string
   theme: string
 }
 
@@ -36,6 +37,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   onLike,
   onShare,
   onSignup,
+  ctaText,
   theme,
 }) => {
   const { t } = useTranslation()
@@ -68,7 +70,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
         {/* 右侧报名按钮 */}
         <View className="signup-btn" onClick={onSignup}>
-          <Text className="signup-text">{t('activityDetail.signupNow')}</Text>
+          <Text className="signup-text">{ctaText || t('activityDetail.signupNow')}</Text>
         </View>
       </View>
     </View>

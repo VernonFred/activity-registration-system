@@ -135,9 +135,10 @@ const SignupPage = () => {
         id: detail.id,
         title: detail.title,
         location: detail.location,
-        location_name: detail.location_name,
+        location_name: detail.location_name || detail.location,
         start_time: detail.start_time,
         end_time: detail.end_time,
+        group_qr_image_url: detail.group_qr_image_url,
       })
     } catch (error) {
       console.error('加载活动失败:', error)

@@ -67,6 +67,16 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanio
         
         <Text className="activity-date">{formatDateRange()}</Text>
 
+        {activity.group_qr_image_url && (
+          <>
+            <View className="divider" />
+            <View className="group-qrcode-section">
+              <Text className="group-qrcode-title">活动群二维码</Text>
+              <Image src={activity.group_qr_image_url} className="group-qrcode-image" mode="aspectFit" />
+            </View>
+          </>
+        )}
+
         {/* 分隔线 */}
         <View className="divider" />
 
@@ -103,4 +113,3 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ data, onFinish, onAddCompanio
 }
 
 export default SuccessPage
-

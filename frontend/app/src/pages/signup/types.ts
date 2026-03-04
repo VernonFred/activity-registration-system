@@ -86,6 +86,7 @@ export interface ActivityInfo {
   location_name?: string
   start_time?: string
   end_time?: string
+  group_qr_image_url?: string
 }
 
 // 报名成功数据

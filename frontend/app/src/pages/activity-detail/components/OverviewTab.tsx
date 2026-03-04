@@ -71,28 +71,32 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
 
         <View className="info-divider" />
 
-        {/* 报名人数 */}
-        <View className="participants-section">
-          <Text className="participants-label">{t('activityDetail.currentParticipants')}</Text>
-          <View className="participants-info">
-            <Text className="participants-count">{activity.current_participants || 215}</Text>
-            <Text className="participants-unit">{t('common.person')}</Text>
-            <View className="avatar-stack">
-              {[1, 2, 3, 4, 5].map((i) => (
-                  <Image
-                  key={i}
-                    className="avatar-img"
-                    src={`https://i.pravatar.cc/40?img=${i + 10}`}
-                    mode="aspectFill"
-                  style={{ left: `${(i - 1) * 16}px` }}
-                  />
-              ))}
+        {activity.extra?.overview?.show_signup_count !== false && (
+          <>
+            {/* 报名人数 */}
+            <View className="participants-section">
+              <Text className="participants-label">{t('activityDetail.currentParticipants')}</Text>
+              <View className="participants-info">
+                <Text className="participants-count">{activity.current_participants || 215}</Text>
+                <Text className="participants-unit">{t('common.person')}</Text>
+                <View className="avatar-stack">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Image
+                      key={i}
+                      className="avatar-img"
+                      src={`https://i.pravatar.cc/40?img=${i + 10}`}
+                      mode="aspectFill"
+                      style={{ left: `${(i - 1) * 16}px` }}
+                    />
+                  ))}
+                </View>
+                <Text className="signup-status">{t('activityDetail.hotRegistration')}</Text>
+              </View>
             </View>
-            <Text className="signup-status">{t('activityDetail.hotRegistration')}</Text>
-          </View>
-        </View>
 
-        <View className="info-divider" />
+            <View className="info-divider" />
+          </>
+        )}
 
         {/* 活动介绍 */}
         <View className="description-section">

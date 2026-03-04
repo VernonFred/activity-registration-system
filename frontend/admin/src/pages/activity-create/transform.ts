@@ -8,6 +8,21 @@ import {
   type FormFieldSummary,
 } from './types'
 
+function cleanScalar(value: unknown): unknown | undefined {
+  if (value == null) return undefined
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    return trimmed || undefined
+  }
+  if (Array.isArray(value)) {
+    const cleaned: unknown[] = value
+      .map((item) => cleanScalar(item))
+      .filter((item) => item !== undefined)
+    return cleaned.length ? cleaned : undefined
+  }
+  return value
+}
+
 function cleanObject<T>(value: T): T | undefined {
   if (value == null) return undefined
   if (Array.isArray(value)) {
@@ -31,9 +46,33 @@ function cleanObject<T>(value: T): T | undefined {
 
 export function buildActivityPayload(state: ActivityCreateFormState, options?: { includeFormFields?: boolean }) {
   const payload: Record<string, unknown> = {
-    ...state.base,
-    description: state.base.description?.trim() || undefined,
-    agenda: state.agendaSummary?.trim() || undefined,
+    title: state.base.title.trim(),
+    subtitle: cleanScalar(state.base.subtitle),
+    category: cleanScalar(state.base.category),
+    tags: cleanScalar(state.base.tags),
+    cover_image_url: cleanScalar(state.base.cover_image_url),
+    banner_image_url: cleanScalar(state.base.banner_image_url),
+    city: cleanScalar(state.base.city),
+    location: cleanScalar(state.base.location),
+    location_detail: cleanScalar(state.base.location_detail),
+    contact_name: cleanScalar(state.base.contact_name),
+    contact_phone: cleanScalar(state.base.contact_phone),
+    contact_email: cleanScalar(state.base.contact_email),
+    description: cleanScalar(state.base.description),
+    start_time: state.base.start_time,
+    end_time: state.base.end_time,
+    signup_start_time: state.base.signup_start_time,
+    signup_end_time: state.base.signup_end_time,
+    checkin_start_time: state.base.checkin_start_time,
+    checkin_end_time: state.base.checkin_end_time,
+    max_participants: state.base.max_participants,
+    approval_required: state.base.approval_required,
+    require_payment: state.base.require_payment,
+    allow_feedback: state.base.allow_feedback,
+    allow_waitlist: state.base.allow_waitlist,
+    group_qr_image_url: cleanScalar(state.base.group_qr_image_url),
+    status: state.base.status,
+    agenda: cleanScalar(state.agendaSummary),
     extra: cleanObject<ActivityExtraConfig>(state.extra),
     materials: cleanObject<ActivityMaterials>(state.materials),
   }
@@ -82,6 +121,10 @@ export function parseActivityDetailToFormState(detail: any): ActivityCreateFormS
     },
     agendaSummary: detail?.agenda || '',
     extra: {
+      overview: {
+        ...defaults.extra.overview,
+        ...(extra.overview || {}),
+      },
       agenda_blocks: Array.isArray(extra.agenda_blocks) && extra.agenda_blocks.length ? extra.agenda_blocks : [createEmptyAgendaBlock()],
       hotels: Array.isArray(extra.hotels) && extra.hotels.length ? extra.hotels.map((hotel: any) => ({
         ...createEmptyHotel(),

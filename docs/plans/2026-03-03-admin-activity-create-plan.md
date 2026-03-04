@@ -75,6 +75,15 @@
 - `group_qr_image_url`
 - `status`
 
+## 1.1 `extra.overview`
+
+用于承载活动速览页的展示补充配置：
+
+- `show_signup_count`
+- `map.lat`
+- `map.lng`
+- `map.label`
+
 ## 2. `agenda`
 
 - 保留为议程摘要 / 富文本总说明
@@ -195,6 +204,8 @@
 - `POST /activities` 正常
 - `PATCH /activities/{id}` 正常
 - `GET /activities/{id}` 回填正常
+- 地址区域有经纬度时，可直接触发地图导航
+- 地址区域无经纬度时，保持静态展示，不依赖外部地理编码服务
 
 ## 回归
 
@@ -210,3 +221,15 @@
 - 不重做后台导航结构
 - 不把文章管理合并进活动创建
 - 不取消 `表单设计`
+
+---
+
+## 当前补充重点（2026年3月4日）
+
+- `活动速览 > 时间安排`
+  - `group_qr_image_url` 已通过上传组件接入
+  - `show_signup_count` 已通过 `extra.overview.show_signup_count` 接入
+- `活动速览 > 地点与联系方式`
+  - 下一步补充 `extra.overview.map.lat/lng/label`
+  - 小程序端地址区域优先使用经纬度直接打开地图导航
+  - 第一版不引入外部地理编码服务
