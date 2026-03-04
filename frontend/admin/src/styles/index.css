@@ -1082,121 +1082,52 @@ body *:not(.no-transition) {
 
 
 /* ═══════════════════════════════════════════════════════════
-   ACTIVITY CREATE — Overview Tab
+   ACTIVITY CREATE — Overview Tab (双栏布局)
    ═══════════════════════════════════════════════════════════ */
 
 .overview-tab {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-.overview-tab__card {
-  padding: var(--frost-space-5) var(--frost-space-5) var(--frost-space-4);
-}
-
-.overview-tab__cover-row {
-  margin-top: 20px;
-  margin-bottom: 4px;
-}
-
-.overview-tab__cover-panel {
-  width: fit-content;
-  padding: 14px;
-  border-radius: var(--frost-radius-xl);
-  background: rgba(15, 23, 42, 0.025);
-  border: 1px solid var(--frost-border-subtle);
-}
-
-.overview-tab__cover-panel .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload,
-.overview-tab__cover-panel .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list-item-container {
-  width: 148px;
-  height: 148px;
-}
-
-.overview-tab__meta-row {
-  margin-top: 4px;
-}
-
-.overview-tab__inline-switch {
-  min-height: 52px;
-  display: inline-flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 0 14px;
-  border-radius: var(--frost-radius-lg);
-  border: 1px solid var(--frost-border);
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.overview-tab__inline-switch-text {
-  color: var(--frost-text-secondary);
-  font-size: var(--frost-text-sm);
-}
-
-.overview-tab__time-row {
-  margin-bottom: 4px;
-}
-
-.overview-tab__time-assets {
+/* ── 双栏行容器 ── */
+.overview-tab__row {
   display: grid;
-  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
   align-items: start;
-  margin-top: 8px;
 }
 
-.overview-tab__time-qr {
-  width: fit-content;
-  padding: 14px;
-  border-radius: var(--frost-radius-xl);
-  background: rgba(15, 23, 42, 0.025);
-  border: 1px solid var(--frost-border-subtle);
+.overview-tab__row--stretch {
+  align-items: stretch;
 }
 
-.overview-tab__time-qr .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload,
-.overview-tab__time-qr .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list-item-container {
-  width: 148px;
-  height: 148px;
-}
-
-.overview-tab__time-settings {
+.overview-tab__row--stretch .overview-tab__card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-.overview-tab__location-row {
-  margin-bottom: 4px;
+.overview-tab__row--stretch .overview-tab__form-grid {
+  flex: 1;
+  justify-content: space-between;
 }
 
-.overview-tab__location-map {
-  margin-top: 8px;
-  padding: 16px;
-  border-radius: var(--frost-radius-xl);
-  background: rgba(15, 23, 42, 0.025);
-  border: 1px solid var(--frost-border-subtle);
-}
-
-.overview-tab__location-map-header {
-  margin-bottom: 12px;
-  color: var(--frost-text);
-  font-size: 14px;
-  font-weight: var(--frost-weight-medium);
+/* ── Card ── */
+.overview-tab__card {
+  padding: 18px 20px 16px;
 }
 
 .overview-tab__card-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding-bottom: 14px;
+  gap: 7px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--frost-border-subtle);
   color: var(--frost-text);
   font-family: var(--frost-font-display);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: var(--frost-weight-semibold);
   letter-spacing: -0.01em;
 }
@@ -1206,12 +1137,13 @@ body *:not(.no-transition) {
   flex-shrink: 0;
 }
 
-/* Field labels */
-.field-label {
-  margin-bottom: 6px;
+/* ── Field labels ── */
+.overview-tab .field-label {
+  margin-bottom: 5px;
   color: var(--frost-text-secondary);
-  font-size: var(--frost-text-sm);
+  font-size: 12.5px;
   font-weight: var(--frost-weight-medium);
+  line-height: 1;
 }
 
 .field-required {
@@ -1219,80 +1151,165 @@ body *:not(.no-transition) {
   margin-left: 2px;
 }
 
-/* Switches grid */
+/* ── Form grid ── */
+.overview-tab__form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.overview-tab__field-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.overview-tab__upload-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.overview-tab__upload-block .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload,
+.overview-tab__upload-block .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list-item-container {
+  width: 132px;
+  height: 132px;
+}
+
+/* ── 地点与联系方式: 双栏内部布局 ── */
+.overview-tab__location-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.overview-tab__location-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.overview-tab__col-title {
+  color: var(--frost-text-muted);
+  font-size: 11.5px;
+  font-weight: var(--frost-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+/* ── Sub-block (地图导航) ── */
+.overview-tab__sub-block {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: var(--frost-radius-lg);
+  background: var(--frost-bg-elevated, rgba(15, 23, 42, 0.015));
+  border: 1px solid var(--frost-border-subtle);
+}
+
+[data-theme='dark'] .overview-tab__sub-block {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.overview-tab__sub-block-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.overview-tab__sub-block-title {
+  color: var(--frost-text);
+  font-size: 13px;
+  font-weight: var(--frost-weight-semibold);
+}
+
+.overview-tab__map-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.overview-tab__coord-picker-btn {
+  padding: 0 !important;
+  height: auto !important;
+  font-size: 12.5px !important;
+  color: var(--frost-primary) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* ── 功能配置: 横向 2x2 grid ── */
 .overview-tab__switches {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px 24px;
+  gap: 8px 14px;
 }
 
 .overview-tab__switch-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 10px 14px;
   border-radius: var(--frost-radius-lg);
-  background: rgba(15, 23, 42, 0.03);
+  background: var(--frost-bg-elevated, rgba(15, 23, 42, 0.015));
   border: 1px solid transparent;
-  transition: background 200ms ease, border-color 200ms ease;
+  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .overview-tab__switch-item:hover {
-  background: rgba(15, 23, 42, 0.05);
+  background: rgba(15, 23, 42, 0.035);
   border-color: var(--frost-border-subtle);
 }
 
 [data-theme='dark'] .overview-tab__switch-item {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 [data-theme='dark'] .overview-tab__switch-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.08);
 }
 
 .overview-tab__switch-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 }
 
 .overview-tab__switch-title {
   color: var(--frost-text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: var(--frost-weight-medium);
 }
 
 .overview-tab__switch-desc {
   color: var(--frost-text-muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .overview-tab__row {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 768px) {
-  .overview-tab__time-row .ant-col {
-    max-width: 100%;
-    flex: 0 0 100%;
-  }
-
-  .overview-tab__location-row .ant-col {
-    max-width: 100%;
-    flex: 0 0 100%;
-  }
-
-  .overview-tab__time-assets {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .overview-tab__meta-row .ant-col {
+  .overview-tab__form-grid .ant-col {
     max-width: 100%;
     flex: 0 0 100%;
   }
 
   .overview-tab__switches {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .overview-tab__location-grid {
+    grid-template-columns: 1fr;
   }
 }
 

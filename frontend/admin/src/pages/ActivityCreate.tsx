@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, message, Spin, Tabs } from 'antd'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import PageHeader from '../components/PageHeader'
 import SectionCard from '../components/SectionCard'
 import { createActivity, getActivity, updateActivity } from '../services/activities'
 import AgendaTab from './activity-create/components/AgendaTab'
@@ -106,11 +105,9 @@ export default function ActivityCreate() {
 
   return (
     <div>
-      <PageHeader
-        title={activityId ? '编辑活动' : '活动创建'}
-        subtitle="配置活动展示与报名规则"
-        extra={<Button type="primary" loading={saving} onClick={handleSubmit}>保存</Button>}
-      />
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+        <Button type="primary" loading={saving} onClick={handleSubmit}>保存</Button>
+      </div>
 
       <SectionCard className="activity-create-shell">
         <Spin spinning={loading}>

@@ -88,6 +88,8 @@ export type ActivityExtraConfig = {
   overview: {
     show_signup_count: boolean
     map: {
+      enabled: boolean
+      address?: string
       lat?: number
       lng?: number
       label?: string
@@ -221,6 +223,8 @@ export function createDefaultActivityCreateFormState(): ActivityCreateFormState 
       overview: {
         show_signup_count: true,
         map: {
+          enabled: false,
+          address: '',
           lat: undefined,
           lng: undefined,
           label: '',

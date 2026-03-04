@@ -22,6 +22,9 @@ export interface MockActivity {
   tags: string[] // 标签
   created_at: string
   article_url?: string // 微信文章链接（已结束的活动）
+  contact_name?: string
+  contact_phone?: string
+  contact_email?: string
 }
 
 export const mockActivities: MockActivity[] = [
@@ -44,6 +47,9 @@ export const mockActivities: MockActivity[] = [
     description: '汇聚全国高等教育领域的专家学者，共同探讨高等教育改革发展新路径。',
     tags: ['论坛', '高等教育', '学术交流'],
     created_at: '2024-11-20T10:00:00',
+    contact_name: '张老师',
+    contact_phone: '13812345678',
+    contact_email: 'zhang@edu.cn',
   },
   {
     id: 2,
@@ -63,6 +69,9 @@ export const mockActivities: MockActivity[] = [
     description: '聚焦教育创新与人才培养，探讨新时代教育发展新模式。',
     tags: ['论坛', '教育创新', '人才培养'],
     created_at: '2024-11-15T10:00:00',
+    contact_name: '李秘书',
+    contact_phone: '15098765432',
+    contact_email: 'li@xiangjiang-edu.org',
   },
   {
     id: 3,
