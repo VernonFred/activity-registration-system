@@ -88,6 +88,12 @@ export function parseActivityDetailToFormState(detail: any): ActivityCreateFormS
   const defaults = createDefaultActivityCreateFormState()
   const extra = (detail?.extra || {}) as Partial<ActivityExtraConfig>
   const materials = (detail?.materials || {}) as Partial<ActivityMaterials>
+  const overviewMap = (extra.overview?.map || {}) as Partial<ActivityExtraConfig['overview']['map']>
+  const hasLegacyCoords =
+    typeof overviewMap.lat === 'number' &&
+    Number.isFinite(overviewMap.lat) &&
+    typeof overviewMap.lng === 'number' &&
+    Number.isFinite(overviewMap.lng)
 
   return {
     base: {
@@ -126,7 +132,11 @@ export function parseActivityDetailToFormState(detail: any): ActivityCreateFormS
         ...(extra.overview || {}),
         map: {
           ...defaults.extra.overview.map,
-          ...(extra.overview?.map || {}),
+          ...overviewMap,
+          enabled:
+            typeof overviewMap.enabled === 'boolean'
+              ? overviewMap.enabled
+              : hasLegacyCoords,
         },
       },
       agenda_blocks: Array.isArray(extra.agenda_blocks) && extra.agenda_blocks.length ? extra.agenda_blocks : [createEmptyAgendaBlock()],

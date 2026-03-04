@@ -22,7 +22,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
   const mapConfig = activity.extra?.overview?.map || {}
   const latitude = Number(mapConfig?.lat)
   const longitude = Number(mapConfig?.lng)
-  const canNavigate = Number.isFinite(latitude) && Number.isFinite(longitude)
+  const mapEnabled = mapConfig?.enabled !== false
+  const canNavigate = mapEnabled && Number.isFinite(latitude) && Number.isFinite(longitude)
 
   const handleOpenLocation = () => {
     if (!canNavigate) return
@@ -31,7 +32,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
       latitude,
       longitude,
       name: mapConfig?.label || activity.location_name || activity.title,
-      address: activity.location_address || activity.location_name || '',
+      address: mapConfig?.address || activity.location_address || activity.location_name || '',
       scale: 18,
     }).catch(() => {
       Taro.showToast({
@@ -130,7 +131,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
             <View className="participants-section">
               <Text className="participants-label">{t('activityDetail.currentParticipants')}</Text>
               <View className="participants-info">
-                <Text className="participants-count">{activity.current_participants || 215}</Text>
+                <Text className="participants-count">{activity.current_participants ?? 0}</Text>
                 <Text className="participants-unit">{t('common.person')}</Text>
                 <View className="avatar-stack">
                   {[1, 2, 3, 4, 5].map((i) => (

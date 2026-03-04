@@ -51,6 +51,22 @@ export default function ActivityCreate() {
       return
     }
 
+    if (!state.base.start_time || !state.base.end_time) {
+      message.error('请完整填写活动时间')
+      setActiveKey('overview')
+      return
+    }
+
+    const overviewMap = state.extra.overview.map
+    if (
+      overviewMap.enabled &&
+      (!Number.isFinite(overviewMap.lat) || !Number.isFinite(overviewMap.lng))
+    ) {
+      message.error('开启地图导航时，请填写完整经纬度')
+      setActiveKey('overview')
+      return
+    }
+
     setSaving(true)
     try {
       if (activityId) {
