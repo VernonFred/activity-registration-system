@@ -29,21 +29,43 @@ export type ActivityBasePayload = {
   status: ActivityStatus
 }
 
-export type AgendaItem = {
-  time: string
+export type ActivityAgendaModerator = {
+  name: string
+  title?: string
+}
+
+export type ActivityAgendaSpeaker = {
+  name: string
+  title?: string
+  avatar?: string
+}
+
+export type ActivityAgendaEntry = {
+  id: string
+  time_start: string
+  time_end: string
+  type: 'speech' | 'break' | 'discussion' | 'activity'
+  title: string
+  speaker?: ActivityAgendaSpeaker
   location?: string
-  title: string
-  content?: string
+  description?: string
+  tag?: string
 }
 
-export type AgendaGroup = {
+export type ActivityAgendaGroup = {
+  id: string
   title: string
-  items: AgendaItem[]
+  time_start?: string
+  time_end?: string
+  moderator?: ActivityAgendaModerator
+  items: ActivityAgendaEntry[]
 }
 
-export type AgendaBlock = {
-  day_label: string
-  groups: AgendaGroup[]
+export type ActivityAgendaDay = {
+  id: string
+  display_date: string
+  date?: string
+  groups: ActivityAgendaGroup[]
 }
 
 export type HotelRoomType = {
@@ -95,7 +117,7 @@ export type ActivityExtraConfig = {
       label?: string
     }
   }
-  agenda_blocks: AgendaBlock[]
+  agenda_blocks: ActivityAgendaDay[]
   hotels: HotelConfig[]
   signup_config: {
     payment: {
@@ -142,16 +164,49 @@ export type FormFieldSummary = {
   requiredCount: number
 }
 
-export function createEmptyAgendaItem(): AgendaItem {
-  return { time: '', title: '', location: '', content: '' }
+function createAgendaNodeId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
-export function createEmptyAgendaGroup(): AgendaGroup {
-  return { title: '', items: [createEmptyAgendaItem()] }
+export function createEmptyAgendaEntry(): ActivityAgendaEntry {
+  return {
+    id: createAgendaNodeId(),
+    time_start: '',
+    time_end: '',
+    type: 'speech',
+    title: '',
+    speaker: {
+      name: '',
+      title: '',
+      avatar: '',
+    },
+    location: '',
+    description: '',
+    tag: '',
+  }
 }
 
-export function createEmptyAgendaBlock(): AgendaBlock {
-  return { day_label: '', groups: [createEmptyAgendaGroup()] }
+export function createEmptyAgendaGroup(): ActivityAgendaGroup {
+  return {
+    id: createAgendaNodeId(),
+    title: '',
+    time_start: '',
+    time_end: '',
+    moderator: {
+      name: '',
+      title: '',
+    },
+    items: [createEmptyAgendaEntry()],
+  }
+}
+
+export function createEmptyAgendaDay(): ActivityAgendaDay {
+  return {
+    id: createAgendaNodeId(),
+    display_date: '',
+    date: '',
+    groups: [createEmptyAgendaGroup()],
+  }
 }
 
 export function createEmptyHotel(): HotelConfig {
@@ -230,7 +285,7 @@ export function createDefaultActivityCreateFormState(): ActivityCreateFormState 
           label: '',
         },
       },
-      agenda_blocks: [createEmptyAgendaBlock()],
+      agenda_blocks: [createEmptyAgendaDay()],
       hotels: [createEmptyHotel()],
       signup_config: {
         payment: {

@@ -16,6 +16,7 @@ import { fetchActivityDetail } from '../../services/activities'
 import { fetchMySignups as fetchMySignupsApi } from '../../services/user'
 import { addRecentView } from '../../utils/storage'
 import { OverviewTab, AgendaTab, HotelTab, LiveTab, BottomBar } from './components'
+import { normalizeAgendaFromDetail } from './adapters/agenda'
 import type { TabKey, Activity } from './types'
 import { formatDate, formatTime } from './utils'
 import './index.scss'
@@ -415,6 +416,9 @@ const DEFAULT_MULTI_DAY_AGENDA = [
   },
 ]
 
+void DEFAULT_AGENDA
+void DEFAULT_MULTI_DAY_AGENDA
+
 // 默认酒店数据（多个酒店）
 const DEFAULT_HOTELS = [
   {
@@ -560,12 +564,11 @@ export default function ActivityDetail() {
           contact_email: data?.contact_email,
           signup_deadline: data?.signup_deadline || data?.signup_end_time,
           current_participants: data?.current_participants ?? data?.signup_count,
+          agenda: normalizeAgendaFromDetail(data),
           extra: data?.extra || {},
         }
 
         // 补充默认数据
-        // 使用多天会议数据进行测试（可切换为 DEFAULT_AGENDA 测试单天）
-        if (!normalized.agenda) normalized.agenda = DEFAULT_MULTI_DAY_AGENDA
         if (!normalized.hotels) normalized.hotels = DEFAULT_HOTELS
         setActivity(normalized)
 

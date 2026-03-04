@@ -13,6 +13,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '../../context/ThemeContext'
+import { fetchActivityDetail } from '../../services/activities'
+import { normalizeAgendaFromDetail } from '../activity-detail/adapters/agenda'
 import type { AgendaDay } from '../activity-detail/types'
 import { DateTabs } from './components/DateTabs'
 import { AgendaGroupSection } from './components/AgendaGroupSection'
@@ -34,27 +36,42 @@ export default function AgendaPage() {
   const [activeDay, setActiveDay] = useState<string>('')
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
   const [statusBarHeight, setStatusBarHeight] = useState(44)
+  const [loading, setLoading] = useState(true)
 
   // 初始化
   useEffect(() => {
     const sysInfo = Taro.getSystemInfoSync()
     setStatusBarHeight(sysInfo.statusBarHeight || 44)
 
-    // 从 localStorage 获取议程数据
-    try {
-      const stored = Taro.getStorageSync('current_agenda_data')
-      if (stored) {
-        const data: AgendaDay[] = JSON.parse(stored)
-        setAgendaData(data)
-        if (data.length > 0) {
-          setActiveDay(data[0].id.toString())
-          initializeDefaultExpanded(data)
+    ;(async () => {
+      let nextAgenda: AgendaDay[] = []
+
+      try {
+        const stored = Taro.getStorageSync('current_agenda_data')
+        if (stored) {
+          nextAgenda = JSON.parse(stored)
+        }
+      } catch (e) {
+        console.error('加载议程缓存失败', e)
+      }
+
+      if ((!nextAgenda || nextAgenda.length === 0) && activityId) {
+        try {
+          const detail = await fetchActivityDetail(activityId)
+          nextAgenda = normalizeAgendaFromDetail(detail)
+        } catch (e) {
+          console.error('加载议程详情失败', e)
         }
       }
-    } catch (e) {
-      console.error('加载议程数据失败', e)
-    }
-  }, [])
+
+      setAgendaData(nextAgenda)
+      if (nextAgenda.length > 0) {
+        setActiveDay(nextAgenda[0].id.toString())
+        initializeDefaultExpanded(nextAgenda)
+      }
+      setLoading(false)
+    })()
+  }, [activityId])
 
   // 初始化默认展开第一个分组
   const initializeDefaultExpanded = (data: AgendaDay[]) => {
@@ -128,6 +145,15 @@ export default function AgendaPage() {
   const handleDayChange = useCallback((dayId: string) => {
     setActiveDay(dayId)
   }, [])
+
+  if (loading) {
+    return (
+      <View className={`agenda-page theme-${theme} empty`}>
+        <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
+        <Text className="empty-text">加载中...</Text>
+      </View>
+    )
+  }
 
   if (!agendaData || agendaData.length === 0) {
     return (
@@ -220,4 +246,3 @@ export default function AgendaPage() {
     </View>
   )
 }
-
