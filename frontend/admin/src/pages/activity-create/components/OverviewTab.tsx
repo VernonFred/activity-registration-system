@@ -1,5 +1,6 @@
-import { Col, DatePicker, Input, InputNumber, Row, Select } from 'antd'
+import { Col, DatePicker, Input, InputNumber, Row, Select, Switch } from 'antd'
 import dayjs from 'dayjs'
+import { FileText, Clock, MapPin, Settings, PenLine } from 'lucide-react'
 import RichEditor from '../../../components/RichEditor'
 import SectionCard from '../../../components/SectionCard'
 import type { ActivityCreateFormState } from '../types'
@@ -25,11 +26,16 @@ export default function OverviewTab({ state, onChange }: Props) {
   }
 
   return (
-    <div style={{ display: 'grid', gap: 16 }}>
-      <SectionCard>
-        <Row gutter={[16, 16]}>
+    <div className="overview-tab">
+      {/* ── 卡片 1: 基本信息 ── */}
+      <SectionCard className="overview-tab__card">
+        <div className="overview-tab__card-header">
+          <FileText size={18} />
+          <span>基本信息</span>
+        </div>
+        <Row gutter={[24, 16]}>
           <Col span={12}>
-            <div className="field-label">活动标题</div>
+            <div className="field-label">活动标题 <span className="field-required">*</span></div>
             <Input value={state.base.title} onChange={(e) => updateBase('title', e.target.value)} placeholder="例如：高校品牌沙龙·长沙" />
           </Col>
           <Col span={12}>
@@ -41,7 +47,7 @@ export default function OverviewTab({ state, onChange }: Props) {
             <Input value={state.base.category} onChange={(e) => updateBase('category', e.target.value)} placeholder="例如：品牌沙龙" />
           </Col>
           <Col span={8}>
-            <div className="field-label">状态</div>
+            <div className="field-label">状态 <span className="field-required">*</span></div>
             <Select
               value={state.base.status}
               style={{ width: '100%' }}
@@ -73,12 +79,64 @@ export default function OverviewTab({ state, onChange }: Props) {
             <div className="field-label">Banner URL</div>
             <Input value={state.base.banner_image_url} onChange={(e) => updateBase('banner_image_url', e.target.value)} placeholder="Banner 链接" />
           </Col>
+        </Row>
+      </SectionCard>
+
+      {/* ── 卡片 2: 时间安排 ── */}
+      <SectionCard className="overview-tab__card">
+        <div className="overview-tab__card-header">
+          <Clock size={18} />
+          <span>时间安排</span>
+        </div>
+        <Row gutter={[24, 16]}>
+          <Col span={8}>
+            <div className="field-label">活动开始 <span className="field-required">*</span></div>
+            <DatePicker showTime style={{ width: '100%' }} value={state.base.start_time ? dayjs(state.base.start_time) : null} onChange={(v) => setDate('start_time', v)} placeholder="请选择日期" />
+          </Col>
+          <Col span={8}>
+            <div className="field-label">活动结束 <span className="field-required">*</span></div>
+            <DatePicker showTime style={{ width: '100%' }} value={state.base.end_time ? dayjs(state.base.end_time) : null} onChange={(v) => setDate('end_time', v)} placeholder="请选择日期" />
+          </Col>
+          <Col span={8}>
+            <div className="field-label">名额上限</div>
+            <InputNumber min={0} style={{ width: '100%' }} value={state.base.max_participants} onChange={(value) => updateBase('max_participants', typeof value === 'number' ? value : undefined)} placeholder="不填表示不限" />
+          </Col>
+          <Col span={8}>
+            <div className="field-label">报名开始</div>
+            <DatePicker showTime style={{ width: '100%' }} value={state.base.signup_start_time ? dayjs(state.base.signup_start_time) : null} onChange={(v) => setDate('signup_start_time', v)} placeholder="请选择日期" />
+          </Col>
+          <Col span={8}>
+            <div className="field-label">报名截止</div>
+            <DatePicker showTime style={{ width: '100%' }} value={state.base.signup_end_time ? dayjs(state.base.signup_end_time) : null} onChange={(v) => setDate('signup_end_time', v)} placeholder="请选择日期" />
+          </Col>
+          <Col span={8}>
+            <div className="field-label">群二维码 URL</div>
+            <Input value={state.base.group_qr_image_url} onChange={(e) => updateBase('group_qr_image_url', e.target.value)} placeholder="群二维码图片链接" />
+          </Col>
+          <Col span={12}>
+            <div className="field-label">签到开始</div>
+            <DatePicker showTime style={{ width: '100%' }} value={state.base.checkin_start_time ? dayjs(state.base.checkin_start_time) : null} onChange={(v) => setDate('checkin_start_time', v)} placeholder="请选择日期" />
+          </Col>
+          <Col span={12}>
+            <div className="field-label">签到结束</div>
+            <DatePicker showTime style={{ width: '100%' }} value={state.base.checkin_end_time ? dayjs(state.base.checkin_end_time) : null} onChange={(v) => setDate('checkin_end_time', v)} placeholder="请选择日期" />
+          </Col>
+        </Row>
+      </SectionCard>
+
+      {/* ── 卡片 3: 地点与联系方式 ── */}
+      <SectionCard className="overview-tab__card">
+        <div className="overview-tab__card-header">
+          <MapPin size={18} />
+          <span>地点与联系方式</span>
+        </div>
+        <Row gutter={[24, 16]}>
           <Col span={8}>
             <div className="field-label">城市</div>
             <Input value={state.base.city} onChange={(e) => updateBase('city', e.target.value)} placeholder="城市" />
           </Col>
           <Col span={8}>
-            <div className="field-label">地点</div>
+            <div className="field-label">地点名称</div>
             <Input value={state.base.location} onChange={(e) => updateBase('location', e.target.value)} placeholder="地点名称" />
           </Col>
           <Col span={8}>
@@ -97,43 +155,53 @@ export default function OverviewTab({ state, onChange }: Props) {
             <div className="field-label">联系邮箱</div>
             <Input value={state.base.contact_email} onChange={(e) => updateBase('contact_email', e.target.value)} placeholder="联系邮箱" />
           </Col>
-          <Col span={8}>
-            <div className="field-label">活动开始</div>
-            <DatePicker showTime style={{ width: '100%' }} value={state.base.start_time ? dayjs(state.base.start_time) : null} onChange={(v) => setDate('start_time', v)} />
-          </Col>
-          <Col span={8}>
-            <div className="field-label">活动结束</div>
-            <DatePicker showTime style={{ width: '100%' }} value={state.base.end_time ? dayjs(state.base.end_time) : null} onChange={(v) => setDate('end_time', v)} />
-          </Col>
-          <Col span={8}>
-            <div className="field-label">名额上限</div>
-            <InputNumber min={0} style={{ width: '100%' }} value={state.base.max_participants} onChange={(value) => updateBase('max_participants', typeof value === 'number' ? value : undefined)} placeholder="不填表示不限" />
-          </Col>
-          <Col span={8}>
-            <div className="field-label">报名开始</div>
-            <DatePicker showTime style={{ width: '100%' }} value={state.base.signup_start_time ? dayjs(state.base.signup_start_time) : null} onChange={(v) => setDate('signup_start_time', v)} />
-          </Col>
-          <Col span={8}>
-            <div className="field-label">报名截止</div>
-            <DatePicker showTime style={{ width: '100%' }} value={state.base.signup_end_time ? dayjs(state.base.signup_end_time) : null} onChange={(v) => setDate('signup_end_time', v)} />
-          </Col>
-          <Col span={8}>
-            <div className="field-label">群二维码 URL</div>
-            <Input value={state.base.group_qr_image_url} onChange={(e) => updateBase('group_qr_image_url', e.target.value)} placeholder="群二维码图片链接" />
-          </Col>
-          <Col span={12}>
-            <div className="field-label">签到开始</div>
-            <DatePicker showTime style={{ width: '100%' }} value={state.base.checkin_start_time ? dayjs(state.base.checkin_start_time) : null} onChange={(v) => setDate('checkin_start_time', v)} />
-          </Col>
-          <Col span={12}>
-            <div className="field-label">签到结束</div>
-            <DatePicker showTime style={{ width: '100%' }} value={state.base.checkin_end_time ? dayjs(state.base.checkin_end_time) : null} onChange={(v) => setDate('checkin_end_time', v)} />
-          </Col>
         </Row>
       </SectionCard>
 
-      <SectionCard>
-        <div className="field-label" style={{ marginBottom: 8 }}>活动介绍</div>
+      {/* ── 卡片 4: 功能配置 ── */}
+      <SectionCard className="overview-tab__card">
+        <div className="overview-tab__card-header">
+          <Settings size={18} />
+          <span>功能配置</span>
+        </div>
+        <div className="overview-tab__switches">
+          <div className="overview-tab__switch-item">
+            <div className="overview-tab__switch-info">
+              <div className="overview-tab__switch-title">报名审核</div>
+              <div className="overview-tab__switch-desc">开启后，用户报名需管理员审核通过</div>
+            </div>
+            <Switch checked={state.base.approval_required} onChange={(checked) => updateBase('approval_required', checked)} />
+          </div>
+          <div className="overview-tab__switch-item">
+            <div className="overview-tab__switch-info">
+              <div className="overview-tab__switch-title">需要缴费</div>
+              <div className="overview-tab__switch-desc">开启后，报名流程中需完成缴费</div>
+            </div>
+            <Switch checked={state.base.require_payment} onChange={(checked) => updateBase('require_payment', checked)} />
+          </div>
+          <div className="overview-tab__switch-item">
+            <div className="overview-tab__switch-info">
+              <div className="overview-tab__switch-title">允许反馈</div>
+              <div className="overview-tab__switch-desc">允许参会者对活动进行评分和评论</div>
+            </div>
+            <Switch checked={state.base.allow_feedback} onChange={(checked) => updateBase('allow_feedback', checked)} />
+          </div>
+          <div className="overview-tab__switch-item">
+            <div className="overview-tab__switch-info">
+              <div className="overview-tab__switch-title">允许候补</div>
+              <div className="overview-tab__switch-desc">名额满时允许用户加入候补名单</div>
+            </div>
+            <Switch checked={state.base.allow_waitlist} onChange={(checked) => updateBase('allow_waitlist', checked)} />
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* ── 卡片 5: 活动介绍 ── */}
+      <SectionCard className="overview-tab__card">
+        <div className="overview-tab__card-header">
+          <PenLine size={18} />
+          <span>活动介绍</span>
+        </div>
         <RichEditor
           value={state.base.description}
           onChange={(value) => updateBase('description', value)}

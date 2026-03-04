@@ -1075,6 +1075,111 @@ body *:not(.no-transition) {
 
 
 /* ═══════════════════════════════════════════════════════════
+   ACTIVITY CREATE — Overview Tab
+   ═══════════════════════════════════════════════════════════ */
+
+.overview-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.overview-tab__card {
+  padding: var(--frost-space-5) var(--frost-space-5) var(--frost-space-4);
+}
+
+.overview-tab__card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--frost-border-subtle);
+  color: var(--frost-text);
+  font-family: var(--frost-font-display);
+  font-size: 16px;
+  font-weight: var(--frost-weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.overview-tab__card-header svg {
+  color: var(--frost-primary);
+  flex-shrink: 0;
+}
+
+/* Field labels */
+.field-label {
+  margin-bottom: 6px;
+  color: var(--frost-text-secondary);
+  font-size: var(--frost-text-sm);
+  font-weight: var(--frost-weight-medium);
+}
+
+.field-required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+/* Switches grid */
+.overview-tab__switches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+
+.overview-tab__switch-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: var(--frost-radius-lg);
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid transparent;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+
+.overview-tab__switch-item:hover {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: var(--frost-border-subtle);
+}
+
+[data-theme='dark'] .overview-tab__switch-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .overview-tab__switch-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.overview-tab__switch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.overview-tab__switch-title {
+  color: var(--frost-text);
+  font-size: 14px;
+  font-weight: var(--frost-weight-medium);
+}
+
+.overview-tab__switch-desc {
+  color: var(--frost-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .overview-tab__switches {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
    ANT DESIGN OVERRIDES (Glass-compatible)
    ═══════════════════════════════════════════════════════════ */
 
