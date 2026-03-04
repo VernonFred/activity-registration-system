@@ -1168,6 +1168,25 @@ body *:not(.no-transition) {
   gap: 12px;
 }
 
+.overview-tab__location-row {
+  margin-bottom: 4px;
+}
+
+.overview-tab__location-map {
+  margin-top: 8px;
+  padding: 16px;
+  border-radius: var(--frost-radius-xl);
+  background: rgba(15, 23, 42, 0.025);
+  border: 1px solid var(--frost-border-subtle);
+}
+
+.overview-tab__location-map-header {
+  margin-bottom: 12px;
+  color: var(--frost-text);
+  font-size: 14px;
+  font-weight: var(--frost-weight-medium);
+}
+
 .overview-tab__card-header {
   display: flex;
   align-items: center;
@@ -1254,6 +1273,11 @@ body *:not(.no-transition) {
 
 @media (max-width: 768px) {
   .overview-tab__time-row .ant-col {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .overview-tab__location-row .ant-col {
     max-width: 100%;
     flex: 0 0 100%;
   }

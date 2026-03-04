@@ -87,6 +87,11 @@ export type HotelConfig = {
 export type ActivityExtraConfig = {
   overview: {
     show_signup_count: boolean
+    map: {
+      lat?: number
+      lng?: number
+      label?: string
+    }
   }
   agenda_blocks: AgendaBlock[]
   hotels: HotelConfig[]
@@ -215,6 +220,11 @@ export function createDefaultActivityCreateFormState(): ActivityCreateFormState 
     extra: {
       overview: {
         show_signup_count: true,
+        map: {
+          lat: undefined,
+          lng: undefined,
+          label: '',
+        },
       },
       agenda_blocks: [createEmptyAgendaBlock()],
       hotels: [createEmptyHotel()],

@@ -273,6 +273,10 @@
     .row-icon { filter: brightness(0) saturate(100%) invert(55%) sepia(95%) saturate(1000%) hue-rotate(360deg); }
     .main-text { color: $light-foreground; }
     .sub-text, .deadline-text, .distance-text { color: $light-muted-foreground; }
+    .map-link-text { color: $light-primary; }
+    .contact-item { background: rgba($light-muted, 0.6); }
+    .contact-label { color: $light-muted-foreground; }
+    .contact-value { color: $light-foreground; }
     .participants-label { color: $light-muted-foreground; }
     .participants-count, .participants-unit { color: $light-primary; }
     .avatar-img { border-color: $light-card; }
@@ -425,6 +429,10 @@
     .row-icon { filter: brightness(0) saturate(100%) invert(65%) sepia(80%) saturate(800%) hue-rotate(360deg); }
     .main-text { color: $dark-foreground; }
     .sub-text, .deadline-text, .distance-text { color: $dark-muted-foreground; }
+    .map-link-text { color: $dark-primary; }
+    .contact-item { background: rgba(255, 255, 255, 0.03); }
+    .contact-label { color: $dark-muted-foreground; }
+    .contact-value { color: $dark-foreground; }
     .participants-label { color: $dark-muted-foreground; }
     .participants-count, .participants-unit { color: $dark-primary; }
     .avatar-img { border-color: $dark-card; }

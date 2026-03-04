@@ -138,6 +138,10 @@
     }
   }
 
+  .info-row.is-clickable {
+    cursor: pointer;
+  }
+
   .deadline-text {
     font-size: 22rpx;
     transition: color 0.3s ease;
@@ -147,6 +151,44 @@
   .distance-text {
     font-size: 22rpx;
     transition: color 0.3s ease;
+  }
+
+  .map-link-text {
+    font-size: 24rpx;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  .contact-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16rpx;
+  }
+
+  .contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+    padding: 20rpx 24rpx;
+    border-radius: $radius-lg;
+  }
+
+  .contact-label {
+    font-size: 22rpx;
+    transition: color 0.3s ease;
+  }
+
+  .contact-value {
+    font-size: 24rpx;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+    word-break: break-all;
   }
 
   // 报名人数
@@ -221,3 +263,10 @@
   }
 }
 
+@media (max-width: 600px) {
+  .overview {
+    .contact-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

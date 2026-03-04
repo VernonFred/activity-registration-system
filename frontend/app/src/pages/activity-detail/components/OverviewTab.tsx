@@ -2,10 +2,11 @@
  * 活动速览Tab组件 - Lovable 风格
  * 创建时间: 2025年12月9日
  */
+import Taro from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { useTranslation } from 'react-i18next'
 import type { Activity } from '../types'
-import { formatDate, formatDistance } from '../utils'
+import { formatDate } from '../utils'
 
 // 图标
 import iconCalendar from '../../../assets/icons/calendar.png'
@@ -18,6 +19,27 @@ interface OverviewTabProps {
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
   const { t } = useTranslation()
+  const mapConfig = activity.extra?.overview?.map || {}
+  const latitude = Number(mapConfig?.lat)
+  const longitude = Number(mapConfig?.lng)
+  const canNavigate = Number.isFinite(latitude) && Number.isFinite(longitude)
+
+  const handleOpenLocation = () => {
+    if (!canNavigate) return
+
+    Taro.openLocation({
+      latitude,
+      longitude,
+      name: mapConfig?.label || activity.location_name || activity.title,
+      address: activity.location_address || activity.location_name || '',
+      scale: 18,
+    }).catch(() => {
+      Taro.showToast({
+        title: t('activityDetail.navigateFailed'),
+        icon: 'none',
+      })
+    })
+  }
 
   return (
     <View className={`tab-content overview theme-${theme}`}>
@@ -53,7 +75,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
         <View className="info-divider" />
 
         {/* 地点信息 */}
-        <View className="info-row">
+        <View className={`info-row ${canNavigate ? 'is-clickable' : ''}`} onClick={canNavigate ? handleOpenLocation : undefined}>
           <View className="row-left">
             <Image src={iconMapPin} className="row-icon" mode="aspectFit" />
             <View className="row-content">
@@ -63,13 +85,44 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ activity, theme }) => {
               <Text className="sub-text">{activity.location_address}</Text>
             </View>
           </View>
-          <View className="row-right distance">
-            <Text className="distance-icon">📍</Text>
-            <Text className="distance-text">{formatDistance(401.9)}</Text>
-          </View>
+          {canNavigate && (
+            <View className="row-right map-cta">
+              <Text className="map-link-text">{t('activityDetail.openMap')}</Text>
+            </View>
+          )}
         </View>
 
         <View className="info-divider" />
+
+        {(activity.contact_name || activity.contact_phone || activity.contact_email) && (
+          <>
+            <View className="contact-section">
+              <Text className="section-title">{t('activityDetail.contactSection')}</Text>
+              <View className="contact-grid">
+                {activity.contact_name && (
+                  <View className="contact-item">
+                    <Text className="contact-label">{t('activityDetail.contactName')}</Text>
+                    <Text className="contact-value">{activity.contact_name}</Text>
+                  </View>
+                )}
+                {activity.contact_phone && (
+                  <View className="contact-item">
+                    <Text className="contact-label">{t('activityDetail.contactPhone')}</Text>
+                    <Text className="contact-value">{activity.contact_phone}</Text>
+                  </View>
+                )}
+                {activity.contact_email && (
+                  <View className="contact-item">
+                    <Text className="contact-label">{t('activityDetail.contactEmail')}</Text>
+                    <Text className="contact-value">{activity.contact_email}</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+
+            <View className="info-divider" />
+          </>
+        )}
 
         {activity.extra?.overview?.show_signup_count !== false && (
           <>

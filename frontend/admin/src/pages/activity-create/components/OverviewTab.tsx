@@ -31,6 +31,19 @@ export default function OverviewTab({ state, onChange }: Props) {
     })
   }
 
+  const updateOverview = (patch: Partial<ActivityCreateFormState['extra']['overview']>) => {
+    onChange({
+      ...state,
+      extra: {
+        ...state.extra,
+        overview: {
+          ...state.extra.overview,
+          ...patch,
+        },
+      },
+    })
+  }
+
   const setDate = (key: 'start_time' | 'end_time' | 'signup_start_time' | 'signup_end_time' | 'checkin_start_time' | 'checkin_end_time', value: any) => {
     updateBase(key, value ? value.toISOString() : undefined)
   }
@@ -175,8 +188,8 @@ export default function OverviewTab({ state, onChange }: Props) {
           <MapPin size={18} />
           <span>地点与联系方式</span>
         </div>
-        <Row gutter={[24, 16]}>
-          <Col span={8}>
+        <Row gutter={[24, 16]} className="overview-tab__location-row">
+          <Col span={6}>
             <div className="field-label">城市</div>
             <Input value={state.base.city} onChange={(e) => updateBase('city', e.target.value)} placeholder="城市" />
           </Col>
@@ -184,10 +197,12 @@ export default function OverviewTab({ state, onChange }: Props) {
             <div className="field-label">地点名称</div>
             <Input value={state.base.location} onChange={(e) => updateBase('location', e.target.value)} placeholder="地点名称" />
           </Col>
-          <Col span={8}>
+          <Col span={10}>
             <div className="field-label">详细地址</div>
             <Input value={state.base.location_detail} onChange={(e) => updateBase('location_detail', e.target.value)} placeholder="详细地址" />
           </Col>
+        </Row>
+        <Row gutter={[24, 16]} className="overview-tab__location-row">
           <Col span={8}>
             <div className="field-label">联系人</div>
             <Input value={state.base.contact_name} onChange={(e) => updateBase('contact_name', e.target.value)} placeholder="联系人姓名" />
@@ -201,6 +216,58 @@ export default function OverviewTab({ state, onChange }: Props) {
             <Input value={state.base.contact_email} onChange={(e) => updateBase('contact_email', e.target.value)} placeholder="联系邮箱" />
           </Col>
         </Row>
+        <div className="overview-tab__location-map">
+          <div className="overview-tab__location-map-header">地图导航</div>
+          <Row gutter={[24, 16]} className="overview-tab__location-row">
+            <Col span={12}>
+              <div className="field-label">导航标题</div>
+              <Input
+                value={state.extra.overview.map.label}
+                onChange={(e) => updateOverview({
+                  map: {
+                    ...state.extra.overview.map,
+                    label: e.target.value,
+                  },
+                })}
+                placeholder="例如：长沙国际会展中心"
+              />
+            </Col>
+            <Col span={6}>
+              <div className="field-label">纬度</div>
+              <InputNumber
+                min={-90}
+                max={90}
+                precision={6}
+                style={{ width: '100%' }}
+                value={state.extra.overview.map.lat}
+                onChange={(value) => updateOverview({
+                  map: {
+                    ...state.extra.overview.map,
+                    lat: typeof value === 'number' ? value : undefined,
+                  },
+                })}
+                placeholder="28.2282"
+              />
+            </Col>
+            <Col span={6}>
+              <div className="field-label">经度</div>
+              <InputNumber
+                min={-180}
+                max={180}
+                precision={6}
+                style={{ width: '100%' }}
+                value={state.extra.overview.map.lng}
+                onChange={(value) => updateOverview({
+                  map: {
+                    ...state.extra.overview.map,
+                    lng: typeof value === 'number' ? value : undefined,
+                  },
+                })}
+                placeholder="112.9388"
+              />
+            </Col>
+          </Row>
+        </div>
       </SectionCard>
 
       {/* ── 卡片 4: 功能配置 ── */}

@@ -124,6 +124,10 @@ export function parseActivityDetailToFormState(detail: any): ActivityCreateFormS
       overview: {
         ...defaults.extra.overview,
         ...(extra.overview || {}),
+        map: {
+          ...defaults.extra.overview.map,
+          ...(extra.overview?.map || {}),
+        },
       },
       agenda_blocks: Array.isArray(extra.agenda_blocks) && extra.agenda_blocks.length ? extra.agenda_blocks : [createEmptyAgendaBlock()],
       hotels: Array.isArray(extra.hotels) && extra.hotels.length ? extra.hotels.map((hotel: any) => ({

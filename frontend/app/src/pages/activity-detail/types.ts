@@ -19,6 +19,9 @@ export interface Activity {
   location_name?: string
   location_address?: string
   location_city?: string
+  contact_name?: string
+  contact_phone?: string
+  contact_email?: string
   description?: string
   max_participants?: number
   current_participants?: number
