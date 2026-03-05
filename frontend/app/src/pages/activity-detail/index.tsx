@@ -17,6 +17,7 @@ import { fetchMySignups as fetchMySignupsApi } from '../../services/user'
 import { addRecentView } from '../../utils/storage'
 import { OverviewTab, AgendaTab, HotelTab, LiveTab, BottomBar } from './components'
 import { normalizeAgendaFromDetail } from './adapters/agenda'
+import { normalizeHotelsFromDetail } from './adapters/hotel'
 import type { TabKey, Activity } from './types'
 import { formatDate, formatTime } from './utils'
 import './index.scss'
@@ -500,6 +501,8 @@ const DEFAULT_HOTELS = [
   },
 ]
 
+void DEFAULT_HOTELS
+
 export default function ActivityDetail() {
   const { t } = useTranslation()
   const router = useRouter()
@@ -565,11 +568,10 @@ export default function ActivityDetail() {
           signup_deadline: data?.signup_deadline || data?.signup_end_time,
           current_participants: data?.current_participants ?? data?.signup_count,
           agenda: normalizeAgendaFromDetail(data),
+          hotels: normalizeHotelsFromDetail(data),
           extra: data?.extra || {},
         }
 
-        // 补充默认数据
-        if (!normalized.hotels) normalized.hotels = DEFAULT_HOTELS
         setActivity(normalized)
 
         const signupItems = signupResp?.items || []
