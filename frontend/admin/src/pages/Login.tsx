@@ -16,11 +16,12 @@ export default function Login() {
       message.success('登录成功')
       navigate(from, { replace: true })
     } catch (e: any) {
-      const canUseDevFallback = import.meta.env.DEV && !e?.response && values.username === 'admin' && values.password === 'Admin@123'
+      const isDevMode = import.meta.env.DEV
+      const isDefaultCred = values.username === 'admin' && values.password === 'Admin@123'
 
-      if (canUseDevFallback) {
+      if (isDevMode && isDefaultCred) {
         setToken('dev-admin-token')
-        message.warning('后端未连接，已进入前端演示模式')
+        message.warning('后端未就绪，已进入前端演示模式')
         navigate(from, { replace: true })
         return
       }
