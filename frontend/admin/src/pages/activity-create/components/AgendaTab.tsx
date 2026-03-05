@@ -1,5 +1,6 @@
-import { Button, Col, Input, Row, Select, Space } from 'antd'
-import RichEditor from '../../../components/RichEditor'
+import { AutoComplete, Button, DatePicker, Input, TimePicker } from 'antd'
+import dayjs from 'dayjs'
+import { Calendar, Layers, Mic, Plus, Trash2 } from 'lucide-react'
 import SectionCard from '../../../components/SectionCard'
 import type {
   ActivityAgendaDay,
@@ -13,6 +14,8 @@ import {
   createEmptyAgendaGroup,
 } from '../types'
 
+const { RangePicker: TimeRangePicker } = TimePicker
+
 type Props = {
   state: ActivityCreateFormState
   onChange: (next: ActivityCreateFormState) => void
@@ -24,6 +27,30 @@ const ENTRY_TYPE_OPTIONS = [
   { label: '讨论', value: 'discussion' },
   { label: '活动', value: 'activity' },
 ] as const
+
+const TIME_FORMAT = 'HH:mm'
+const DAY_FORMAT = 'YYYY-MM-DD HH:mm'
+
+/** Convert "HH:mm" string to dayjs, or null */
+function timeToDayjs(t?: string) {
+  if (!t) return null
+  const d = dayjs(t, TIME_FORMAT)
+  return d.isValid() ? d : null
+}
+
+function dateToDayjs(date?: string) {
+  if (!date) return null
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(date)) {
+    const parsed = dayjs(date.replace(' ', 'T') + ':00')
+    return parsed.isValid() ? parsed : null
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const parsed = dayjs(`${date}T00:00:00`)
+    return parsed.isValid() ? parsed : null
+  }
+  const parsed = dayjs(date)
+  return parsed.isValid() ? parsed : null
+}
 
 export default function AgendaTab({ state, onChange }: Props) {
   const updateAgendaBlocks = (agenda_blocks: ActivityAgendaDay[]) => {
@@ -88,215 +115,288 @@ export default function AgendaTab({ state, onChange }: Props) {
   }
 
   return (
-    <div style={{ display: 'grid', gap: 16 }}>
-      <SectionCard>
-        <div className="field-label" style={{ marginBottom: 8 }}>议程摘要</div>
-        <RichEditor
-          value={state.agendaSummary}
-          onChange={(agendaSummary) => onChange({ ...state, agendaSummary })}
-          placeholder="填写议程摘要与说明"
-        />
-      </SectionCard>
-
+    <div className="agenda-tab">
       {state.extra.agenda_blocks.map((day, dayIndex) => (
         <SectionCard key={day.id || `agenda-day-${dayIndex}`}>
-          <Space direction="vertical" size={16} style={{ width: '100%' }}>
-            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-              <div className="field-label">议程日 {dayIndex + 1}</div>
-              <Button danger onClick={() => removeDay(dayIndex)}>删除议程日</Button>
-            </Space>
+          {/* ---- Day header ---- */}
+          <div className="agenda-tab__day-header">
+            <div className="agenda-tab__day-title">
+              <Calendar size={15} />
+              <span>议程日 {dayIndex + 1}</span>
+            </div>
+            <Button
+              type="text"
+              danger
+              size="small"
+              icon={<Trash2 size={13} />}
+              onClick={() => removeDay(dayIndex)}
+            >
+              删除
+            </Button>
+          </div>
 
-            <Row gutter={[12, 12]}>
-              <Col xs={24} md={14}>
-                <div className="field-label" style={{ marginBottom: 8 }}>显示日期</div>
-                <Input
-                  value={day.display_date}
-                  onChange={(e) => updateDay(dayIndex, { display_date: e.target.value })}
-                  placeholder="例如：2025年11月12日（第一天）"
-                />
-              </Col>
-              <Col xs={24} md={10}>
-                <div className="field-label" style={{ marginBottom: 8 }}>日期（可选）</div>
-                <Input
-                  value={day.date}
-                  onChange={(e) => updateDay(dayIndex, { date: e.target.value })}
-                  placeholder="例如：2025-11-12"
-                />
-              </Col>
-            </Row>
+          {/* ---- Day date fields (2-col) ---- */}
+          <div className="agenda-tab__day-fields">
+            <div>
+              <div className="field-label">显示日期</div>
+              <Input
+                value={day.display_date}
+                onChange={(e) => updateDay(dayIndex, { display_date: e.target.value })}
+                placeholder="用于小程序议程顶部日期标签"
+              />
+            </div>
+            <div>
+              <div className="field-label">日期时间（可选）</div>
+              <DatePicker
+                showTime
+                format={DAY_FORMAT}
+                style={{ width: '100%' }}
+                value={dateToDayjs(day.date)}
+                onChange={(value) => {
+                  const formatted = value ? value.format(DAY_FORMAT) : ''
+                  const autoLabel = value ? value.format('YYYY年MM月DD日') : ''
+                  updateDay(dayIndex, {
+                    date: formatted,
+                    display_date: day.display_date?.trim() ? day.display_date : autoLabel,
+                  })
+                }}
+                placeholder="请选择日期时间"
+              />
+            </div>
+          </div>
 
-            {day.groups.map((group, groupIndex) => (
-              <div key={group.id || `agenda-group-${dayIndex}-${groupIndex}`} className="activity-builder-card">
-                <Space direction="vertical" size={12} style={{ width: '100%' }}>
-                  <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                    <div className="field-label">议程分组 {groupIndex + 1}</div>
-                    <Button danger type="text" onClick={() => removeGroup(dayIndex, groupIndex)}>删除分组</Button>
-                  </Space>
+          {/* ---- Groups ---- */}
+          {day.groups.map((group, groupIndex) => (
+            <div key={group.id || `agenda-group-${dayIndex}-${groupIndex}`} className="agenda-tab__group">
+              {/* Group header */}
+              <div className="agenda-tab__group-header">
+                <div className="agenda-tab__group-title">
+                  <Layers size={13} />
+                  <span>分组 {groupIndex + 1}</span>
+                </div>
+                <Button
+                  type="text"
+                  danger
+                  size="small"
+                  onClick={() => removeGroup(dayIndex, groupIndex)}
+                >
+                  删除分组
+                </Button>
+              </div>
 
-                  <Row gutter={[12, 12]}>
-                    <Col xs={24} md={12}>
-                      <div className="field-label" style={{ marginBottom: 8 }}>分组标题</div>
-                      <Input
-                        value={group.title}
-                        onChange={(e) => updateGroup(dayIndex, groupIndex, { title: e.target.value })}
-                        placeholder="例如：开幕仪式 / 主旨报告"
+              {/* Group fields: Row 1 — title + time range */}
+              <div className="agenda-tab__group-fields">
+                <div className="agenda-tab__field-half">
+                  <div className="field-label">分组标题</div>
+                  <Input
+                    value={group.title}
+                    onChange={(e) => updateGroup(dayIndex, groupIndex, { title: e.target.value })}
+                    placeholder="例如：开幕仪式 / 主旨报告"
+                  />
+                </div>
+                <div className="agenda-tab__field-half">
+                  <div className="field-label">时间范围</div>
+                  <TimeRangePicker
+                    format={TIME_FORMAT}
+                    style={{ width: '100%' }}
+                    value={[timeToDayjs(group.time_start), timeToDayjs(group.time_end)]}
+                    onChange={(vals) => {
+                      updateGroup(dayIndex, groupIndex, {
+                        time_start: vals?.[0]?.format(TIME_FORMAT) ?? '',
+                        time_end: vals?.[1]?.format(TIME_FORMAT) ?? '',
+                      })
+                    }}
+                    placeholder={['开始', '结束']}
+                  />
+                </div>
+              </div>
+
+              {/* Group fields: Row 2 — moderator */}
+              <div className="agenda-tab__group-fields">
+                <div className="agenda-tab__field-half">
+                  <div className="field-label">主持人姓名</div>
+                  <Input
+                    value={group.moderator?.name}
+                    onChange={(e) => updateGroup(dayIndex, groupIndex, {
+                      moderator: {
+                        ...(group.moderator || { name: '', title: '' }),
+                        name: e.target.value,
+                      },
+                    })}
+                    placeholder="可选"
+                  />
+                </div>
+                <div className="agenda-tab__field-half">
+                  <div className="field-label">主持人头衔</div>
+                  <Input
+                    value={group.moderator?.title}
+                    onChange={(e) => updateGroup(dayIndex, groupIndex, {
+                      moderator: {
+                        ...(group.moderator || { name: '', title: '' }),
+                        title: e.target.value,
+                      },
+                    })}
+                    placeholder="可选"
+                  />
+                </div>
+              </div>
+
+              {/* ---- Entries ---- */}
+              {group.items.map((entry, entryIndex) => (
+                <div key={entry.id || `agenda-entry-${dayIndex}-${groupIndex}-${entryIndex}`} className="agenda-tab__entry">
+                  {/* Entry header */}
+                  <div className="agenda-tab__entry-header">
+                    <div className="agenda-tab__entry-title">
+                      <Mic size={12} />
+                      <span>议程项 {entryIndex + 1}</span>
+                    </div>
+                    <Button
+                      type="text"
+                      danger
+                      size="small"
+                      onClick={() => removeEntry(dayIndex, groupIndex, entryIndex)}
+                    >
+                      删除
+                    </Button>
+                  </div>
+
+                  {/* Entry Row 1: time + type + tag */}
+                  <div className="agenda-tab__entry-row-3">
+                    <div>
+                      <div className="field-label">时间</div>
+                      <TimeRangePicker
+                        format={TIME_FORMAT}
+                        style={{ width: '100%' }}
+                        value={[timeToDayjs(entry.time_start), timeToDayjs(entry.time_end)]}
+                        onChange={(vals) => {
+                          updateEntry(dayIndex, groupIndex, entryIndex, {
+                            time_start: vals?.[0]?.format(TIME_FORMAT) ?? '',
+                            time_end: vals?.[1]?.format(TIME_FORMAT) ?? '',
+                          })
+                        }}
+                        placeholder={['开始', '结束']}
                       />
-                    </Col>
-                    <Col xs={24} md={6}>
-                      <div className="field-label" style={{ marginBottom: 8 }}>开始时间</div>
+                    </div>
+                    <div>
+                      <div className="field-label">类型</div>
+                      <AutoComplete
+                        style={{ width: '100%' }}
+                        options={ENTRY_TYPE_OPTIONS as any}
+                        value={entry.type || ''}
+                        onChange={(value) =>
+                          updateEntry(dayIndex, groupIndex, entryIndex, {
+                            type: (value || '') as ActivityAgendaEntry['type'],
+                          })}
+                        filterOption={(inputValue, option) =>
+                          String(option?.value || '')
+                            .toLowerCase()
+                            .includes(inputValue.toLowerCase())
+                          || String(option?.label || '')
+                            .toLowerCase()
+                            .includes(inputValue.toLowerCase())
+                        }
+                      >
+                        <Input allowClear placeholder="选择或输入类型" />
+                      </AutoComplete>
+                    </div>
+                    <div>
+                      <div className="field-label">标签</div>
                       <Input
-                        value={group.time_start}
-                        onChange={(e) => updateGroup(dayIndex, groupIndex, { time_start: e.target.value })}
-                        placeholder="09:00"
+                        value={entry.tag}
+                        onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { tag: e.target.value })}
+                        placeholder="可选"
                       />
-                    </Col>
-                    <Col xs={24} md={6}>
-                      <div className="field-label" style={{ marginBottom: 8 }}>结束时间</div>
+                    </div>
+                  </div>
+
+                  {/* Entry Row 2: title (full width) */}
+                  <div>
+                    <div className="field-label">标题</div>
+                    <Input
+                      value={entry.title}
+                      onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { title: e.target.value })}
+                      placeholder="议程标题"
+                    />
+                  </div>
+
+                  {/* Entry Row 3: speaker + location */}
+                  <div className="agenda-tab__entry-row-3">
+                    <div>
+                      <div className="field-label">演讲人</div>
                       <Input
-                        value={group.time_end}
-                        onChange={(e) => updateGroup(dayIndex, groupIndex, { time_end: e.target.value })}
-                        placeholder="09:30"
-                      />
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <div className="field-label" style={{ marginBottom: 8 }}>主持人姓名</div>
-                      <Input
-                        value={group.moderator?.name}
-                        onChange={(e) => updateGroup(dayIndex, groupIndex, {
-                          moderator: {
-                            ...(group.moderator || { name: '', title: '' }),
+                        value={entry.speaker?.name}
+                        onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, {
+                          speaker: {
+                            ...(entry.speaker || { name: '', title: '', avatar: '' }),
                             name: e.target.value,
                           },
                         })}
-                        placeholder="主持人姓名（可选）"
+                        placeholder="姓名"
                       />
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <div className="field-label" style={{ marginBottom: 8 }}>主持人头衔</div>
+                    </div>
+                    <div>
+                      <div className="field-label">头衔</div>
                       <Input
-                        value={group.moderator?.title}
-                        onChange={(e) => updateGroup(dayIndex, groupIndex, {
-                          moderator: {
-                            ...(group.moderator || { name: '', title: '' }),
+                        value={entry.speaker?.title}
+                        onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, {
+                          speaker: {
+                            ...(entry.speaker || { name: '', title: '', avatar: '' }),
                             title: e.target.value,
                           },
                         })}
-                        placeholder="主持人头衔（可选）"
+                        placeholder="头衔"
                       />
-                    </Col>
-                  </Row>
-
-                  {group.items.map((entry, entryIndex) => (
-                    <div key={entry.id || `agenda-entry-${dayIndex}-${groupIndex}-${entryIndex}`} className="activity-builder-subcard">
-                      <Space direction="vertical" size={10} style={{ width: '100%' }}>
-                        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                          <div className="field-label">议程项 {entryIndex + 1}</div>
-                          <Button danger type="text" onClick={() => removeEntry(dayIndex, groupIndex, entryIndex)}>删除议程项</Button>
-                        </Space>
-
-                        <Row gutter={[12, 12]}>
-                          <Col xs={24} md={6}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>开始时间</div>
-                            <Input
-                              value={entry.time_start}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { time_start: e.target.value })}
-                              placeholder="09:00"
-                            />
-                          </Col>
-                          <Col xs={24} md={6}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>结束时间</div>
-                            <Input
-                              value={entry.time_end}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { time_end: e.target.value })}
-                              placeholder="09:30"
-                            />
-                          </Col>
-                          <Col xs={24} md={6}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>类型</div>
-                            <Select
-                              style={{ width: '100%' }}
-                              value={entry.type}
-                              options={ENTRY_TYPE_OPTIONS as any}
-                              onChange={(type) => updateEntry(dayIndex, groupIndex, entryIndex, { type })}
-                            />
-                          </Col>
-                          <Col xs={24} md={6}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>标签</div>
-                            <Input
-                              value={entry.tag}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { tag: e.target.value })}
-                              placeholder="可选标签"
-                            />
-                          </Col>
-                          <Col span={24}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>标题</div>
-                            <Input
-                              value={entry.title}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { title: e.target.value })}
-                              placeholder="议程标题"
-                            />
-                          </Col>
-                          <Col xs={24} md={12}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>演讲人姓名</div>
-                            <Input
-                              value={entry.speaker?.name}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, {
-                                speaker: {
-                                  ...(entry.speaker || { name: '', title: '', avatar: '' }),
-                                  name: e.target.value,
-                                },
-                              })}
-                              placeholder="演讲人姓名（可选）"
-                            />
-                          </Col>
-                          <Col xs={24} md={12}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>演讲人头衔</div>
-                            <Input
-                              value={entry.speaker?.title}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, {
-                                speaker: {
-                                  ...(entry.speaker || { name: '', title: '', avatar: '' }),
-                                  title: e.target.value,
-                                },
-                              })}
-                              placeholder="演讲人头衔（可选）"
-                            />
-                          </Col>
-                          <Col span={24}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>地点</div>
-                            <Input
-                              value={entry.location}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { location: e.target.value })}
-                              placeholder="地点（可选）"
-                            />
-                          </Col>
-                          <Col span={24}>
-                            <div className="field-label" style={{ marginBottom: 8 }}>描述</div>
-                            <Input.TextArea
-                              value={entry.description}
-                              onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { description: e.target.value })}
-                              placeholder="描述（可选）"
-                              autoSize={{ minRows: 2, maxRows: 5 }}
-                            />
-                          </Col>
-                        </Row>
-                      </Space>
                     </div>
-                  ))}
+                    <div>
+                      <div className="field-label">地点</div>
+                      <Input
+                        value={entry.location}
+                        onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { location: e.target.value })}
+                        placeholder="可选"
+                      />
+                    </div>
+                  </div>
 
-                  <Button onClick={() => updateGroup(dayIndex, groupIndex, { items: [...group.items, createEmptyAgendaEntry()] })}>
-                    新增议程项
-                  </Button>
-                </Space>
-              </div>
-            ))}
+                  {/* Entry Row 4: description */}
+                  <div>
+                    <div className="field-label">描述</div>
+                    <Input.TextArea
+                      value={entry.description}
+                      onChange={(e) => updateEntry(dayIndex, groupIndex, entryIndex, { description: e.target.value })}
+                      placeholder="描述（可选）"
+                      autoSize={{ minRows: 2, maxRows: 4 }}
+                    />
+                  </div>
+                </div>
+              ))}
 
-            <Button onClick={() => updateDay(dayIndex, { groups: [...day.groups, createEmptyAgendaGroup()] })}>新增分组</Button>
-          </Space>
+              <Button
+                type="dashed"
+                size="small"
+                icon={<Plus size={13} />}
+                onClick={() => updateGroup(dayIndex, groupIndex, { items: [...group.items, createEmptyAgendaEntry()] })}
+              >
+                新增议程项
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            type="dashed"
+            icon={<Plus size={14} />}
+            onClick={() => updateDay(dayIndex, { groups: [...day.groups, createEmptyAgendaGroup()] })}
+          >
+            新增分组
+          </Button>
         </SectionCard>
       ))}
 
-      <Button type="dashed" onClick={() => updateAgendaBlocks([...state.extra.agenda_blocks, createEmptyAgendaDay()])}>
+      <Button
+        type="dashed"
+        block
+        icon={<Plus size={14} />}
+        onClick={() => updateAgendaBlocks([...state.extra.agenda_blocks, createEmptyAgendaDay()])}
+      >
         新增议程日
       </Button>
     </div>

@@ -44,7 +44,7 @@ export type ActivityAgendaEntry = {
   id: string
   time_start: string
   time_end: string
-  type: 'speech' | 'break' | 'discussion' | 'activity'
+  type: 'speech' | 'break' | 'discussion' | 'activity' | string
   title: string
   speaker?: ActivityAgendaSpeaker
   location?: string
