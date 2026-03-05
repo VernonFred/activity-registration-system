@@ -68,42 +68,44 @@ export type ActivityAgendaDay = {
   groups: ActivityAgendaGroup[]
 }
 
-export type HotelRoomType = {
-  name: string
-  price?: string
-  description?: string
+export type HotelFacility = {
+  icon: string
+  label: string
+}
+
+export type HotelTransportInfo = {
+  type: 'subway' | 'bus' | 'drive'
+  title: string
+  description: string
+}
+
+export type HotelWeatherInfo = {
+  temperature?: number
+  condition?: string
+  humidity?: number
+  wind_speed?: number
+  visibility?: number
 }
 
 export type HotelConfig = {
   id: string
   name: string
-  tag?: string
-  image_url?: string
+  logo?: string
+  image?: string
+  room_type?: string
+  price?: number
+  price_note?: string
+  booking_tip?: string
+  contact_name?: string
+  contact_phone?: string
+  facilities: HotelFacility[]
   address?: string
-  phone?: string
-  room_types: HotelRoomType[]
-  booking: {
-    notice?: string
-    contact_name?: string
-    contact_phone?: string
-  }
-  map: {
-    lat?: number
-    lng?: number
-    address?: string
-    navigation_label?: string
-  }
-  transport: {
-    metro?: string
-    bus?: string
-    drive?: string
-  }
-  weather: {
-    temperature?: string
-    humidity?: string
-    wind_speed?: string
-    visibility?: string
-  }
+  lat?: number
+  lng?: number
+  map_image?: string
+  map_url?: string
+  transport: HotelTransportInfo[]
+  weather: HotelWeatherInfo
 }
 
 export type ActivityExtraConfig = {
@@ -213,34 +215,27 @@ export function createEmptyHotel(): HotelConfig {
   return {
     id: String(Date.now()),
     name: '',
-    tag: '',
-    image_url: '',
+    logo: '',
+    image: '',
+    room_type: '',
+    price: undefined,
+    price_note: '',
+    booking_tip: '',
+    contact_name: '',
+    contact_phone: '',
+    facilities: [],
     address: '',
-    phone: '',
-    room_types: [{ name: '', price: '', description: '' }],
-    booking: {
-      notice: '',
-      contact_name: '',
-      contact_phone: '',
-    },
-    map: {
-      lat: undefined,
-      lng: undefined,
-      address: '',
-      navigation_label: '',
-    },
-    transport: {
-      metro: '',
-      bus: '',
-      drive: '',
-    },
-    weather: {
-      temperature: '',
-      humidity: '',
-      wind_speed: '',
-      visibility: '',
-    },
+    lat: undefined,
+    lng: undefined,
+    map_image: '',
+    map_url: '',
+    transport: [],
+    weather: {},
   }
+}
+
+export function createEmptyTransportInfo(): HotelTransportInfo {
+  return { type: 'subway', title: '地铁', description: '' }
 }
 
 export function createDefaultActivityCreateFormState(): ActivityCreateFormState {

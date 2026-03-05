@@ -174,7 +174,7 @@ export default function OverviewTab({ state, onChange }: Props) {
               <div className="field-label">名额上限</div>
               <InputNumber min={0} style={{ width: '100%' }} value={state.base.max_participants} onChange={(value) => updateBase('max_participants', typeof value === 'number' ? value : undefined)} placeholder="不填表示不限" />
             </div>
-            <div>
+            <div className="overview-tab__upload-block">
               <div className="field-label">活动群二维码</div>
               <ImageUploader value={state.base.group_qr_image_url} onChange={(value) => updateBase('group_qr_image_url', value || '')} />
             </div>
