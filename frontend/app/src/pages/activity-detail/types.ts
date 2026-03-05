@@ -30,6 +30,16 @@ export interface Activity {
   agenda?: AgendaItem[] | AgendaGroup[] | AgendaDay[]  // 支持扁平数组、分组数组或多天数组
   hotels?: Hotel[]
   live_url?: string
+  materials?: {
+    live?: {
+      enabled?: boolean
+      cover_image_url?: string
+      action_type?: 'link' | 'qrcode'
+      action_url?: string
+      button_text?: string
+      qrcode_image_url?: string
+    }
+  }
   extra?: Record<string, any>
 }
 

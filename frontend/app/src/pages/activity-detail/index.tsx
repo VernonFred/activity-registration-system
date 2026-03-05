@@ -569,6 +569,7 @@ export default function ActivityDetail() {
           current_participants: data?.current_participants ?? data?.signup_count,
           agenda: normalizeAgendaFromDetail(data),
           hotels: normalizeHotelsFromDetail(data),
+          materials: data?.materials || {},
           extra: data?.extra || {},
         }
 
@@ -630,11 +631,31 @@ export default function ActivityDetail() {
   }, [activityId, currentSignup])
   const handleCall = useCallback((phone: string) => Taro.makePhoneCall({ phoneNumber: phone }), [])
   const handleViewLive = useCallback(() => {
-    if (activity?.live_url) {
-      Taro.navigateTo({ url: activity.live_url })
-    } else {
+    const live = activity?.materials?.live
+    if (live?.enabled === false) {
       Taro.showToast({ title: t('activityDetail.liveNotStarted'), icon: 'none' })
+      return
     }
+
+    if (live?.action_type === 'qrcode' && live?.qrcode_image_url) {
+      Taro.previewImage({
+        current: live.qrcode_image_url,
+        urls: [live.qrcode_image_url],
+      })
+      return
+    }
+
+    const liveUrl = live?.action_url || activity?.live_url
+    if (liveUrl) {
+      if (/^https?:\/\//i.test(liveUrl)) {
+        Taro.navigateTo({ url: `/pages/webview/index?url=${encodeURIComponent(liveUrl)}` })
+      } else {
+        Taro.navigateTo({ url: liveUrl })
+      }
+      return
+    }
+
+    Taro.showToast({ title: t('activityDetail.liveNotStarted'), icon: 'none' })
   }, [activity, t])
 
   const primaryActionText = currentSignup?.id ? t('profile.goCheckin') : t('activityDetail.signupNow')
@@ -715,7 +736,15 @@ export default function ActivityDetail() {
         {activeTab === 'overview' && <OverviewTab activity={activity} theme={theme} />}
         {activeTab === 'agenda' && <AgendaTab agenda={activity.agenda || []} theme={theme} activityId={activity.id} />}
         {activeTab === 'hotel' && <HotelTab hotels={activity.hotels || []} onCall={handleCall} theme={theme} />}
-        {activeTab === 'live' && <LiveTab coverUrl={activity.cover_url} onViewLive={handleViewLive} theme={theme} />}
+        {activeTab === 'live' && (
+          <LiveTab
+            coverUrl={activity.materials?.live?.cover_image_url || activity.cover_url}
+            buttonText={activity.materials?.live?.button_text}
+            enabled={activity.materials?.live?.enabled !== false}
+            onViewLive={handleViewLive}
+            theme={theme}
+          />
+        )}
 
         {/* 底部安全区 */}
         <View className="bottom-spacer" />

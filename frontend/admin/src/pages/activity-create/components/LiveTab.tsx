@@ -1,4 +1,5 @@
 import { Col, Input, Row, Select, Switch } from 'antd'
+import ImageUploader from '../../../components/ImageUploader'
 import SectionCard from '../../../components/SectionCard'
 import type { ActivityCreateFormState } from '../types'
 
@@ -47,8 +48,11 @@ export default function LiveTab({ state, onChange }: Props) {
           <Input value={live.button_text} onChange={(e) => updateLive({ button_text: e.target.value })} placeholder="查看直播" />
         </Col>
         <Col span={24}>
-          <div className="field-label">直播封面 URL</div>
-          <Input value={live.cover_image_url} onChange={(e) => updateLive({ cover_image_url: e.target.value })} placeholder="直播封面链接" />
+          <div className="field-label">直播封面</div>
+          <ImageUploader
+            value={live.cover_image_url}
+            onChange={(url) => updateLive({ cover_image_url: url })}
+          />
         </Col>
         {live.action_type === 'link' ? (
           <Col span={24}>
@@ -57,8 +61,11 @@ export default function LiveTab({ state, onChange }: Props) {
           </Col>
         ) : (
           <Col span={24}>
-            <div className="field-label">二维码图片 URL</div>
-            <Input value={live.qrcode_image_url} onChange={(e) => updateLive({ qrcode_image_url: e.target.value })} placeholder="二维码图片链接" />
+            <div className="field-label">二维码图片</div>
+            <ImageUploader
+              value={live.qrcode_image_url}
+              onChange={(url) => updateLive({ qrcode_image_url: url })}
+            />
           </Col>
         )}
       </Row>

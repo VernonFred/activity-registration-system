@@ -7,11 +7,13 @@ import { useTranslation } from 'react-i18next'
 
 interface LiveTabProps {
   coverUrl?: string
+  buttonText?: string
+  enabled?: boolean
   onViewLive: () => void
   theme: string
 }
 
-const LiveTab: React.FC<LiveTabProps> = ({ coverUrl, onViewLive, theme }) => {
+const LiveTab: React.FC<LiveTabProps> = ({ coverUrl, buttonText, enabled = true, onViewLive, theme }) => {
   const { t } = useTranslation()
   return (
     <View className={`tab-content live theme-${theme}`}>
@@ -24,9 +26,9 @@ const LiveTab: React.FC<LiveTabProps> = ({ coverUrl, onViewLive, theme }) => {
         <View className="live-overlay">
           <View className="live-icon">📷</View>
           <Text className="live-title">{t('activityDetail.livePhotoTitle')}</Text>
-          <Text className="live-desc">{t('activityDetail.livePhotoDesc')}</Text>
+          <Text className="live-desc">{enabled ? t('activityDetail.livePhotoDesc') : t('activityDetail.liveNotStarted')}</Text>
           <View className="live-button" onClick={onViewLive}>
-            <Text className="btn-text">{t('activityDetail.viewLive')}</Text>
+            <Text className="btn-text">{buttonText || t('activityDetail.viewLive')}</Text>
           </View>
         </View>
       </View>
