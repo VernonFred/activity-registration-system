@@ -28,6 +28,17 @@ const ENTRY_TYPE_OPTIONS = [
   { label: '活动', value: 'activity' },
 ] as const
 
+const ENTRY_TYPE_VALUE_TO_LABEL: Record<string, string> = {
+  speech: '演讲',
+  break: '茶歇',
+  discussion: '讨论',
+  activity: '活动',
+}
+
+const ENTRY_TYPE_LABEL_TO_VALUE: Record<string, string> = Object.fromEntries(
+  Object.entries(ENTRY_TYPE_VALUE_TO_LABEL).map(([value, label]) => [label, value]),
+)
+
 const TIME_FORMAT = 'HH:mm'
 const DAY_FORMAT = 'YYYY-MM-DD HH:mm'
 
@@ -50,6 +61,17 @@ function dateToDayjs(date?: string) {
   }
   const parsed = dayjs(date)
   return parsed.isValid() ? parsed : null
+}
+
+function toTypeDisplayValue(type?: string) {
+  if (!type) return ''
+  return ENTRY_TYPE_VALUE_TO_LABEL[type] || type
+}
+
+function toTypeStoredValue(raw?: string) {
+  const value = (raw || '').trim()
+  if (!value) return ''
+  return ENTRY_TYPE_LABEL_TO_VALUE[value] || value
 }
 
 export default function AgendaTab({ state, onChange }: Props) {
@@ -282,10 +304,10 @@ export default function AgendaTab({ state, onChange }: Props) {
                       <AutoComplete
                         style={{ width: '100%' }}
                         options={ENTRY_TYPE_OPTIONS as any}
-                        value={entry.type || ''}
+                        value={toTypeDisplayValue(entry.type)}
                         onChange={(value) =>
                           updateEntry(dayIndex, groupIndex, entryIndex, {
-                            type: (value || '') as ActivityAgendaEntry['type'],
+                            type: toTypeStoredValue(value) as ActivityAgendaEntry['type'],
                           })}
                         filterOption={(inputValue, option) =>
                           String(option?.value || '')
