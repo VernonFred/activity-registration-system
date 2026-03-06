@@ -1,60 +1,75 @@
-/**
- * 报名页面 - 弹窗式卡片设计
- * 重构时间: 2026年1月6日
- *
- * 设计参考: 小程序端设计/立即报名-*.png
- * 分步表单: 个人信息 → 缴费信息 → 住宿信息 → 交通信息 → 成功
- */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useTheme } from '../../context/ThemeContext'
 import { fetchActivityDetail } from '../../services/activities'
-import { submitRegistration, createCompanion } from '../../services/signups'
+import { createCompanion, submitRegistration, type RegistrationStepPayload } from '../../services/signups'
 import { fetchSignupDetail, updateSignupFormData } from '../../services/user'
-import {
-  StepIndicator,
-  PersonalForm,
-  PaymentForm,
-  AccommodationForm,
-  TransportForm,
-  SuccessPage,
-  AddCompanionDialog
-} from './components'
-import { STEPS, DEFAULT_FORM_DATA, VALIDATION_RULES } from './constants'
-import type { SignupFormData, ActivityInfo, SignupSuccessData } from './types'
+import { AddCompanionDialog, StepIndicator, SuccessPage } from './components'
+import DynamicStepForm from './components/DynamicStepForm'
+import { VALIDATION_RULES } from './constants'
+import type { ActivityInfo, SignupDraft, SignupSuccessData, StepConfig, FormField } from './types'
+import { normalizeSignupFlowFromActivity, type SignupFlowNormalized } from './adapters/flow'
 import './index.scss'
 
-// 图标
 import iconClose from '../../assets/icons/x.png'
 import iconArrowLeft from '../../assets/icons/arrow-left.png'
 import iconArrowRight from '../../assets/icons/arrow-right.png'
 
-const STEP_INDEX_BY_MODE: Record<string, number> = {
-  payment: 1,
-  transport: 3,
-  edit: 0,
+function resolveStepIndexByKey(stepList: StepConfig[], key: string) {
+  const idx = stepList.findIndex((step) => step.key === key)
+  return idx >= 0 ? idx : 0
 }
 
-const mapSignupDetailToFormData = (signup: any): SignupFormData => ({
-  personal: {
-    ...DEFAULT_FORM_DATA.personal,
-    ...(signup?.personal || {}),
-  },
-  payment: {
-    ...DEFAULT_FORM_DATA.payment,
-    ...(signup?.payment || {}),
-  },
-  accommodation: {
-    ...DEFAULT_FORM_DATA.accommodation,
-    ...(signup?.accommodation || {}),
-  },
-  transport: {
-    ...DEFAULT_FORM_DATA.transport,
-    ...(signup?.transport || {}),
-  },
-})
+function getFieldValueKey(field: FormField) {
+  const bind = field.config?.bind || field.name
+  const segments = bind.split('.')
+  return segments[segments.length - 1] || field.name
+}
+
+function buildDraftFromSignup(signUp: any, normalized: SignupFlowNormalized): SignupDraft {
+  const next: SignupDraft = JSON.parse(JSON.stringify(normalized.defaults || {}))
+  const stepMapFromExtra = signUp?.extra?.step_map || {}
+  const stepsFromExtra = Array.isArray(signUp?.extra?.steps) ? signUp.extra.steps : []
+
+  stepsFromExtra.forEach((step: any) => {
+    if (!step?.step_key) return
+    next[step.step_key] = {
+      ...(next[step.step_key] || {}),
+      ...(step.values || {}),
+    }
+  })
+
+  normalized.steps.forEach((step) => {
+    const legacyValues = signUp?.[step.key] || signUp?.extra?.[step.key] || stepMapFromExtra[step.key]
+    if (legacyValues && typeof legacyValues === 'object') {
+      next[step.key] = {
+        ...(next[step.key] || {}),
+        ...legacyValues,
+      }
+    }
+  })
+
+  return next
+}
+
+function hasValue(value: any) {
+  if (Array.isArray(value)) return value.length > 0
+  if (typeof value === 'boolean') return value
+  if (value == null) return false
+  return String(value).trim().length > 0
+}
+
+function cleanStepValues(values: Record<string, any>) {
+  return Object.fromEntries(
+    Object.entries(values || {}).filter(([, value]) => {
+      if (Array.isArray(value)) return value.length > 0
+      if (typeof value === 'boolean') return value
+      return value != null && String(value).trim() !== ''
+    }),
+  )
+}
 
 const SignupPage = () => {
   const { t } = useTranslation()
@@ -66,55 +81,56 @@ const SignupPage = () => {
   const [statusBarHeight, setStatusBarHeight] = useState(0)
 
   const [activity, setActivity] = useState<ActivityInfo | null>(null)
-  const [formData, setFormData] = useState<SignupFormData>(DEFAULT_FORM_DATA)
+  const [flowData, setFlowData] = useState<SignupFlowNormalized | null>(null)
+  const [steps, setSteps] = useState<StepConfig[]>([])
+  const [formData, setFormData] = useState<SignupDraft>({})
   const [currentStep, setCurrentStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showCompanionDialog, setShowCompanionDialog] = useState(false)
-
-  // 同行人员状态
   const [isAddingCompanion, setIsAddingCompanion] = useState(false)
   const [companionCount, setCompanionCount] = useState(0)
   const [signupId, setSignupId] = useState<number | null>(null)
-  const isRouteEditMode = routeSignupId > 0 && ['edit', 'payment', 'transport'].includes(routeMode)
-  const isScopedStepMode = routeSignupId > 0 && (routeMode === 'payment' || routeMode === 'transport')
 
-  // 获取状态栏高度（用于安全区域）
+  const isRouteEditMode = routeSignupId > 0 && ['edit', 'payment', 'transport'].includes(routeMode)
+  const isScopedStepMode = routeSignupId > 0 && steps.some((step) => step.key === routeMode)
+
   useEffect(() => {
     const sysInfo = Taro.getSystemInfoSync()
     setStatusBarHeight(sysInfo.statusBarHeight || 44)
   }, [])
 
-  // 加载活动数据
   useEffect(() => {
     if (!activityId) {
       Taro.showToast({ title: t('signup.invalidActivityId'), icon: 'none' })
       return
     }
     loadActivity()
-  }, [activityId])
+  }, [activityId, routeMode, t])
 
   useEffect(() => {
+    if (!routeSignupId || !flowData) return
     let active = true
 
     const initFromSignup = async () => {
-      if (!routeSignupId) return
-
       try {
         const signup: any = await fetchSignupDetail(routeSignupId)
         if (!active) return
 
         setSignupId(routeSignupId)
-
+        const draft = buildDraftFromSignup(signup, flowData)
         if (routeMode === 'companion') {
           setIsAddingCompanion(true)
+          setFormData(draft)
           setCurrentStep(0)
           return
         }
 
         if (isRouteEditMode) {
-          setFormData(mapSignupDetailToFormData(signup))
-          setCurrentStep(STEP_INDEX_BY_MODE[routeMode] ?? 0)
+          setFormData(draft)
+          if (routeMode) {
+            setCurrentStep(resolveStepIndexByKey(steps, routeMode))
+          }
         }
       } catch (error) {
         console.error('加载报名详情失败:', error)
@@ -126,11 +142,20 @@ const SignupPage = () => {
     return () => {
       active = false
     }
-  }, [routeSignupId, routeMode, isRouteEditMode])
+  }, [routeSignupId, routeMode, isRouteEditMode, steps, flowData, t])
 
   const loadActivity = async () => {
     try {
       const detail = await fetchActivityDetail(activityId) as any
+      const normalizedFlow = normalizeSignupFlowFromActivity(detail)
+      setFlowData(normalizedFlow)
+      setSteps(normalizedFlow.steps)
+      if (!isRouteEditMode) {
+        setFormData(normalizedFlow.defaults)
+      }
+      if (routeMode && normalizedFlow.steps.some((step) => step.key === routeMode)) {
+        setCurrentStep(resolveStepIndexByKey(normalizedFlow.steps, routeMode))
+      }
       setActivity({
         id: detail.id,
         title: detail.title,
@@ -146,178 +171,125 @@ const SignupPage = () => {
     }
   }
 
-  // 验证当前步骤
-  const validateStep = (): boolean => {
-    const step = STEPS[currentStep]
+  useEffect(() => {
+    if (!steps.length) return
+    if (currentStep <= steps.length - 1) return
+    setCurrentStep(steps.length - 1)
+  }, [currentStep, steps])
 
-    if (step.key === 'personal') {
-      const { name, school, department, phone } = formData.personal
-      if (!name.trim()) {
-        Taro.showToast({ title: t('signup.enterName'), icon: 'none' })
+  const currentStepConfig = steps[currentStep]
+  const currentFields = useMemo(() => {
+    if (!flowData || !currentStepConfig) return []
+    return flowData.fieldsByStep[currentStepConfig.key] || []
+  }, [flowData, currentStepConfig])
+
+  const validateStep = () => {
+    if (!currentStepConfig) return false
+    const values = formData[currentStepConfig.key] || {}
+    for (const field of currentFields) {
+      const value = values[getFieldValueKey(field)]
+      const required = field.required || (field.config?.widget === 'image_upload' && field.config?.upload?.required)
+      if (required && !hasValue(value)) {
+        Taro.showToast({ title: `${field.label}不能为空`, icon: 'none' })
         return false
       }
-      if (!school.trim()) {
-        Taro.showToast({ title: t('signup.enterSchool'), icon: 'none' })
-        return false
-      }
-      if (!department.trim()) {
-        Taro.showToast({ title: t('signup.enterDepartment'), icon: 'none' })
-        return false
-      }
-      if (!phone.trim() || !VALIDATION_RULES.phone.test(phone)) {
+      const valueKey = getFieldValueKey(field)
+      if (hasValue(value) && valueKey.includes('phone') && !VALIDATION_RULES.phone.test(String(value))) {
         Taro.showToast({ title: t('signup.invalidPhone'), icon: 'none' })
         return false
       }
-    }
-
-    if (step.key === 'payment') {
-      const { invoice_title, email } = formData.payment
-      if (!invoice_title.trim()) {
-        Taro.showToast({ title: t('signup.enterInvoiceTitle'), icon: 'none' })
-        return false
-      }
-      if (!email.trim() || !VALIDATION_RULES.email.test(email)) {
+      if (hasValue(value) && valueKey.includes('email') && !VALIDATION_RULES.email.test(String(value))) {
         Taro.showToast({ title: t('signup.invalidEmail'), icon: 'none' })
         return false
       }
     }
-
     return true
   }
 
-  // 下一步
   const handleNext = () => {
     if (!validateStep()) return
-
-    if (currentStep < STEPS.length - 1) {
-      setCurrentStep(prev => prev + 1)
-    } else {
-      handleSubmit()
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1)
+      return
     }
-  }
-
-  // 上一步
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1)
-    }
-  }
-
-  // 稍后填写（跳过交通信息）
-  const handleSkip = () => {
     handleSubmit()
   }
 
-  // 提交报名
+  const handlePrev = () => {
+    if (currentStep > 0) setCurrentStep((prev) => prev - 1)
+  }
+
+  const buildRegistrationPayload = () => {
+    const stepPayloads: RegistrationStepPayload[] = steps.map((step) => ({
+      step_key: step.key,
+      step_title: step.title,
+      values: cleanStepValues(formData[step.key] || {}),
+    }))
+
+    const payload: any = {
+      activity_id: activityId,
+      steps: stepPayloads,
+    }
+
+    ;['personal', 'payment', 'accommodation', 'transport'].forEach((stepKey) => {
+      const found = stepPayloads.find((step) => step.step_key === stepKey)
+      if (found) payload[stepKey] = found.values
+    })
+
+    return payload
+  }
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true)
+      const submitPayload = buildRegistrationPayload()
 
       if (isAddingCompanion && signupId) {
-        // 同行人员模式：提交同行人员
+        const personal = submitPayload.personal || {}
         await createCompanion(signupId, {
-          personal: formData.personal,
-          payment: formData.payment,
-          accommodation: formData.accommodation,
-          transport: formData.transport,
+          name: personal.name || '同行人员',
+          mobile: personal.phone,
+          organization: [personal.school, personal.department].filter(Boolean).join(' / '),
+          title: personal.position,
+          extra: {
+            steps: submitPayload.steps,
+            step_map: Object.fromEntries(submitPayload.steps.map((step: RegistrationStepPayload) => [step.step_key, step.values])),
+          },
         })
-
-        // 增加同行人员计数
-        setCompanionCount(prev => prev + 1)
-
-        Taro.showToast({
-          title: t('signup.companionAdded'),
-          icon: 'success',
-          duration: 1500
-        })
-
-        // 显示成功页面
+        setCompanionCount((prev) => prev + 1)
+        Taro.showToast({ title: t('signup.companionAdded'), icon: 'success', duration: 1500 })
         setShowSuccess(true)
       } else if (isRouteEditMode && routeSignupId) {
         await updateSignupFormData(routeSignupId, {
-          personal: formData.personal,
-          payment: formData.payment,
-          accommodation: formData.accommodation,
-          transport: formData.transport,
+          personal: submitPayload.personal,
+          payment: submitPayload.payment,
+          accommodation: submitPayload.accommodation,
+          transport: submitPayload.transport,
         })
-
-        Taro.showToast({
-          title: t('signup.saveSuccess'),
-          icon: 'success',
-          duration: 1500
-        })
-
+        Taro.showToast({ title: t('signup.saveSuccess'), icon: 'success', duration: 1500 })
         setTimeout(() => {
           Taro.navigateBack({ delta: 1 }).catch(() => {
             Taro.reLaunch({ url: '/pages/profile/index' })
           })
         }, 300)
       } else {
-        // 主报名模式：提交主报名
-        const result: any = await submitRegistration({
-          activity_id: activityId,
-          personal: formData.personal,
-          payment: formData.payment,
-          accommodation: formData.accommodation,
-          transport: formData.transport,
-        })
-
-        // 保存报名ID，用于后续添加同行人员
+        const result: any = await submitRegistration(submitPayload)
         setSignupId(result?.registration_id || result?.id)
-
         setShowSuccess(true)
       }
     } catch (error: any) {
       console.error('提交失败:', error)
-
-      // 根据错误类型显示不同提示
       const errorMessage = error?.response?.data?.message || error?.message || t('signup.submitFailed')
-      Taro.showToast({
-        title: errorMessage,
-        icon: 'none',
-        duration: 3000
-      })
+      Taro.showToast({ title: errorMessage, icon: 'none', duration: 3000 })
     } finally {
       setSubmitting(false)
     }
   }
 
-  // 检查表单是否有填写内容（对比当前表单和默认表单）
-  const isFormDirty = (): boolean => {
-    // 检查个人信息
-    if (formData.personal.name.trim() !== '') return true
-    if (formData.personal.school.trim() !== '') return true
-    if (formData.personal.department.trim() !== '') return true
-    if (formData.personal.position?.trim() !== '') return true
-    if (formData.personal.phone.trim() !== '') return true
+  const isFormDirty = () => JSON.stringify(formData || {}) !== JSON.stringify(flowData?.defaults || {})
 
-    // 检查缴费信息
-    if (formData.payment.invoice_title.trim() !== '') return true
-    if (formData.payment.email.trim() !== '') return true
-    if (formData.payment.payment_screenshot?.trim() !== '') return true
-
-    // 检查住宿信息（对比默认值）
-    if (formData.accommodation.accommodation_type !== DEFAULT_FORM_DATA.accommodation.accommodation_type) return true
-    if (formData.accommodation.hotel !== DEFAULT_FORM_DATA.accommodation.hotel) return true
-    if (formData.accommodation.room_type !== DEFAULT_FORM_DATA.accommodation.room_type) return true
-    if (formData.accommodation.stay_type !== DEFAULT_FORM_DATA.accommodation.stay_type) return true
-
-    // 检查交通信息（对比默认值）
-    if (formData.transport.pickup_point !== DEFAULT_FORM_DATA.transport.pickup_point) return true
-    if (formData.transport.arrival_time?.trim() !== '') return true
-    if (formData.transport.flight_train_number?.trim() !== '') return true
-    if (formData.transport.dropoff_point !== DEFAULT_FORM_DATA.transport.dropoff_point) return true
-    if (formData.transport.return_time?.trim() !== '') return true
-    if (formData.transport.return_flight_train_number?.trim() !== '') return true
-
-    return false
-  }
-
-  // 关闭页面（右上角 ✕ 按钮）
   const handleClose = () => {
-    // 智能退出逻辑
     if (isFormDirty()) {
-      // 表单有内容，显示确认弹窗
       Taro.showModal({
         title: t('signup.exitConfirm'),
         content: '',
@@ -326,63 +298,34 @@ const SignupPage = () => {
         confirmColor: '#1E5A3C',
         cancelColor: '#E74C3C',
         success: (res) => {
-          if (res.confirm) {
-            // 用户确认退出
-            Taro.navigateBack()
-          }
-          // 用户取消，不做任何操作
-        }
+          if (res.confirm) Taro.navigateBack()
+        },
       })
-    } else {
-      // 表单为空，直接退出
-      Taro.navigateBack()
+      return
     }
-  }
-
-  // 完成（点击成功页面的完成按钮）
-  const handleFinish = () => {
-    // 弹出添加同行人员对话框
-    setShowCompanionDialog(true)
-  }
-
-  // 添加同行人员
-  const handleAddCompanion = () => {
-    setShowCompanionDialog(false)
-
-    // 进入同行人员模式
-    setIsAddingCompanion(true)
-
-    // 重置表单数据
-    setFormData(DEFAULT_FORM_DATA)
-
-    // 重置到第一步
-    setCurrentStep(0)
-
-    // 隐藏成功页面，显示表单
-    setShowSuccess(false)
-
-    Taro.showToast({
-      title: t('signup.fillCompanionInfo'),
-      icon: 'none',
-      duration: 1500
-    })
-  }
-
-  // 暂不添加同行人员
-  const handleSkipCompanion = () => {
-    setShowCompanionDialog(false)
-
-    // 重置同行人员状态
-    setIsAddingCompanion(false)
-    setCompanionCount(0)
-    setSignupId(null)
-
-    // 直接返回上一页
     Taro.navigateBack()
   }
 
-  // 加载中
-  if (!activity) {
+  const handleFinish = () => setShowCompanionDialog(true)
+
+  const handleAddCompanion = () => {
+    setShowCompanionDialog(false)
+    setIsAddingCompanion(true)
+    setFormData(flowData?.defaults || {})
+    setCurrentStep(0)
+    setShowSuccess(false)
+    Taro.showToast({ title: t('signup.fillCompanionInfo'), icon: 'none', duration: 1500 })
+  }
+
+  const handleSkipCompanion = () => {
+    setShowCompanionDialog(false)
+    setIsAddingCompanion(false)
+    setCompanionCount(0)
+    setSignupId(null)
+    Taro.navigateBack()
+  }
+
+  if (!activity || steps.length === 0 || !currentStepConfig) {
     return (
       <View className={`signup-page theme-${theme} loading`}>
         <Text className="loading-text">{t('common.loading')}</Text>
@@ -390,42 +333,27 @@ const SignupPage = () => {
     )
   }
 
-  // 成功页面
   if (showSuccess) {
     const successData: SignupSuccessData = {
       activity,
-      personal: formData.personal,
+      personal: formData.personal || {},
       companionCount: isAddingCompanion ? companionCount : undefined,
     }
-
     return (
       <>
-        {/* 当弹窗显示时，隐藏成功页面，避免重叠 */}
-        {!showCompanionDialog && (
-          <SuccessPage data={successData} onFinish={handleFinish} theme={theme} />
-        )}
-        <AddCompanionDialog
-          visible={showCompanionDialog}
-          onAddCompanion={handleAddCompanion}
-          onSkip={handleSkipCompanion}
-          theme={theme}
-        />
+        {!showCompanionDialog && <SuccessPage data={successData} onFinish={handleFinish} theme={theme} />}
+        <AddCompanionDialog visible={showCompanionDialog} onAddCompanion={handleAddCompanion} onSkip={handleSkipCompanion} theme={theme} />
       </>
     )
   }
 
-  const currentStepConfig = STEPS[currentStep]
-  const isLastStep = currentStep === STEPS.length - 1
+  const isLastStep = currentStep === steps.length - 1
   const isTransportStep = currentStepConfig.key === 'transport'
 
   return (
     <View className={`signup-page theme-${theme}`}>
-      {/* 状态栏占位 - 保持顶部安全区域 */}
       <View className="status-bar" style={{ height: `${statusBarHeight}px` }} />
-
-      {/* 弹窗式主卡片容器 */}
       <View className="modal-card">
-        {/* 卡片头部：标题 + 关闭按钮 */}
         <View className="card-header">
           <View className="card-header-info">
             <Text className="card-title">{t('signup.pageTitle')}</Text>
@@ -436,47 +364,25 @@ const SignupPage = () => {
           </View>
         </View>
 
-        {/* 步骤指示器 */}
         <View className="step-section">
-          <StepIndicator steps={STEPS} currentStep={currentStep} theme={theme} />
+          <StepIndicator steps={steps} currentStep={currentStep} theme={theme} />
           <Text className="step-title">{currentStepConfig.title}</Text>
         </View>
 
-        {/* 表单内容区域 - 可滚动 */}
         <ScrollView className="form-scroll" scrollY enhanced showScrollbar={false}>
           <View className="form-content">
-            {currentStepConfig.key === 'personal' && (
-              <PersonalForm
-                data={formData.personal}
-                onChange={(data) => setFormData(prev => ({ ...prev, personal: data }))}
-                theme={theme}
-              />
-            )}
-            {currentStepConfig.key === 'payment' && (
-              <PaymentForm
-                data={formData.payment}
-                onChange={(data) => setFormData(prev => ({ ...prev, payment: data }))}
-                theme={theme}
-              />
-            )}
-            {currentStepConfig.key === 'accommodation' && (
-              <AccommodationForm
-                data={formData.accommodation}
-                onChange={(data) => setFormData(prev => ({ ...prev, accommodation: data }))}
-                theme={theme}
-              />
-            )}
-            {currentStepConfig.key === 'transport' && (
-              <TransportForm
-                data={formData.transport}
-                onChange={(data) => setFormData(prev => ({ ...prev, transport: data }))}
-                theme={theme}
-              />
-            )}
+            <DynamicStepForm
+              fields={currentFields}
+              values={formData[currentStepConfig.key] || {}}
+              onChange={(nextValues) => setFormData((prev) => ({ ...prev, [currentStepConfig.key]: nextValues }))}
+              theme={theme}
+              paymentQrImageUrl={currentStepConfig.key === 'payment' ? flowData?.signupConfig.payment.qrImageUrl : undefined}
+              paymentInvoiceEnabled={currentStepConfig.key === 'payment' ? flowData?.signupConfig.payment.invoiceEnabled : true}
+              transportNote={currentStepConfig.key === 'transport' ? flowData?.signupConfig.transport.note : undefined}
+            />
           </View>
         </ScrollView>
 
-        {/* 底部操作按钮 */}
         <View className="card-actions">
           {currentStep > 0 && (
             <View className="action-button secondary" onClick={handlePrev}>
@@ -487,14 +393,11 @@ const SignupPage = () => {
 
           {isTransportStep && !isScopedStepMode ? (
             <>
-              <View className="action-button outline" onClick={handleSkip}>
+              <View className="action-button outline" onClick={handleSubmit}>
                 <Text className="btn-text">{t('common.laterFill')}</Text>
               </View>
-              <View
-                className={`action-button primary ${submitting ? 'loading' : ''}`}
-                onClick={handleSubmit}
-              >
-                <Text className="btn-text">{isScopedStepMode ? t('common.save') : t('signup.submitSignup')}</Text>
+              <View className={`action-button primary ${submitting ? 'loading' : ''}`} onClick={handleSubmit}>
+                <Text className="btn-text">{t('signup.submitSignup')}</Text>
               </View>
             </>
           ) : (
@@ -508,12 +411,8 @@ const SignupPage = () => {
                 handleNext()
               }}
             >
-              <Text className="btn-text">
-                {(isScopedStepMode && currentStepConfig.key === routeMode) ? t('common.save') : (isLastStep ? t('signup.submitSignup') : t('common.next'))}
-              </Text>
-              {!(isScopedStepMode && currentStepConfig.key === routeMode) && !isLastStep && (
-                <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />
-              )}
+              <Text className="btn-text">{(isScopedStepMode && currentStepConfig.key === routeMode) ? t('common.save') : (isLastStep ? t('signup.submitSignup') : t('common.next'))}</Text>
+              {!(isScopedStepMode && currentStepConfig.key === routeMode) && !isLastStep && <Image src={iconArrowRight} className="btn-icon" mode="aspectFit" />}
             </View>
           )}
         </View>

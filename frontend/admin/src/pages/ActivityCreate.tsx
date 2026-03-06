@@ -7,9 +7,8 @@ import AgendaTab from './activity-create/components/AgendaTab'
 import HotelTab from './activity-create/components/HotelTab'
 import LiveTab from './activity-create/components/LiveTab'
 import OverviewTab from './activity-create/components/OverviewTab'
-import SignupConfigTab from './activity-create/components/SignupConfigTab'
-import { buildActivityPayload, extractFormFieldSummary, parseActivityDetailToFormState } from './activity-create/transform'
-import { createDefaultActivityCreateFormState, type ActivityCreateFormState, type FormFieldSummary } from './activity-create/types'
+import { buildActivityPayload, parseActivityDetailToFormState } from './activity-create/transform'
+import { createDefaultActivityCreateFormState, type ActivityCreateFormState } from './activity-create/types'
 
 export default function ActivityCreate() {
   const navigate = useNavigate()
@@ -21,12 +20,10 @@ export default function ActivityCreate() {
   const [loading, setLoading] = useState(false)
   const [activeKey, setActiveKey] = useState('overview')
   const [state, setState] = useState<ActivityCreateFormState>(createDefaultActivityCreateFormState())
-  const [fieldSummary, setFieldSummary] = useState<FormFieldSummary>({ count: 0, requiredCount: 0 })
 
   useEffect(() => {
     if (!activityId) {
       setState(createDefaultActivityCreateFormState())
-      setFieldSummary({ count: 0, requiredCount: 0 })
       return
     }
 
@@ -35,7 +32,6 @@ export default function ActivityCreate() {
       try {
         const detail = await getActivity(activityId)
         setState(parseActivityDetailToFormState(detail))
-        setFieldSummary(extractFormFieldSummary(detail))
       } catch (error: any) {
         message.error(error?.response?.data?.detail || '活动详情加载失败')
       } finally {
@@ -105,19 +101,7 @@ export default function ActivityCreate() {
       label: '图片直播',
       children: <LiveTab state={state} onChange={setState} />,
     },
-    {
-      key: 'signup',
-      label: '报名配置',
-      children: (
-        <SignupConfigTab
-          state={state}
-          onChange={setState}
-          fieldSummary={fieldSummary}
-          onOpenFormDesigner={() => navigate(activityId ? `/form-designer?activityId=${activityId}` : '/form-designer')}
-        />
-      ),
-    },
-  ]), [activityId, fieldSummary, navigate, state])
+  ]), [state])
 
   return (
     <div>

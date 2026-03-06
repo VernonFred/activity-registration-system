@@ -29,6 +29,20 @@ export type ActivityBasePayload = {
   status: ActivityStatus
 }
 
+export type SignupStepDefinition = {
+  id: string
+  key: string
+  title: string
+  description?: string
+  enabled: boolean
+  built_in: boolean
+  order: number
+}
+
+export type SignupFlowConfig = {
+  steps: SignupStepDefinition[]
+}
+
 export type ActivityAgendaModerator = {
   name: string
   title?: string
@@ -121,24 +135,25 @@ export type ActivityExtraConfig = {
   }
   agenda_blocks: ActivityAgendaDay[]
   hotels: HotelConfig[]
-  signup_config: {
-    payment: {
-      enabled: boolean
+  signup_flow: SignupFlowConfig
+  signup_config?: {
+    payment?: {
+      enabled?: boolean
       qr_image_url?: string
-      invoice_enabled: boolean
-      receipt_required: boolean
+      invoice_enabled?: boolean
+      receipt_required?: boolean
     }
-    accommodation: {
-      enabled: boolean
-      hotel_options: string[]
-      room_intents: string[]
-      occupancy_options: string[]
+    accommodation?: {
+      enabled?: boolean
+      hotel_options?: string[]
+      room_intents?: string[]
+      occupancy_options?: string[]
     }
-    transport: {
-      enabled: boolean
+    transport?: {
+      enabled?: boolean
       note?: string
-      pickup_points: string[]
-      dropoff_points: string[]
+      pickup_points?: string[]
+      dropoff_points?: string[]
     }
   }
 }
@@ -161,18 +176,68 @@ export type ActivityCreateFormState = {
   materials: ActivityMaterials
 }
 
-export type FormFieldSummary = {
-  count: number
-  requiredCount: number
+const BUILTIN_SIGNUP_STEP_PRESETS = [
+  {
+    key: 'personal',
+    title: '个人信息',
+    description: '报名入口第一步，负责姓名、学校、部门等基础资料。',
+  },
+  {
+    key: 'payment',
+    title: '缴费信息',
+    description: '配置缴费凭证、开票信息、支付截图等字段。',
+  },
+  {
+    key: 'accommodation',
+    title: '住宿信息',
+    description: '配置酒店、房型、入住意向与住宿补充说明。',
+  },
+  {
+    key: 'transport',
+    title: '交通信息',
+    description: '配置到达、返程、车次/航班等交通字段。',
+  },
+] as const
+
+function createNodeId(prefix: string) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
-function createAgendaNodeId() {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+export function createDefaultSignupFlow(): SignupFlowConfig {
+  return {
+    steps: BUILTIN_SIGNUP_STEP_PRESETS.map((step, index) => ({
+      id: createNodeId(step.key),
+      key: step.key,
+      title: step.title,
+      description: step.description,
+      enabled: step.key !== 'accommodation',
+      built_in: true,
+      order: index,
+    })),
+  }
+}
+
+export function createEmptySignupStep(existingKeys: string[]): SignupStepDefinition {
+  let index = 1
+  let key = `custom_step_${index}`
+  while (existingKeys.includes(key)) {
+    index += 1
+    key = `custom_step_${index}`
+  }
+  return {
+    id: createNodeId('step'),
+    key,
+    title: `自定义步骤 ${index}`,
+    description: '补充未来可扩展的报名流程节点。',
+    enabled: true,
+    built_in: false,
+    order: existingKeys.length,
+  }
 }
 
 export function createEmptyAgendaEntry(): ActivityAgendaEntry {
   return {
-    id: createAgendaNodeId(),
+    id: createNodeId('entry'),
     time_start: '',
     time_end: '',
     type: 'speech',
@@ -190,7 +255,7 @@ export function createEmptyAgendaEntry(): ActivityAgendaEntry {
 
 export function createEmptyAgendaGroup(): ActivityAgendaGroup {
   return {
-    id: createAgendaNodeId(),
+    id: createNodeId('group'),
     title: '',
     time_start: '',
     time_end: '',
@@ -204,7 +269,7 @@ export function createEmptyAgendaGroup(): ActivityAgendaGroup {
 
 export function createEmptyAgendaDay(): ActivityAgendaDay {
   return {
-    id: createAgendaNodeId(),
+    id: createNodeId('day'),
     display_date: '',
     date: '',
     groups: [createEmptyAgendaGroup()],
@@ -282,26 +347,7 @@ export function createDefaultActivityCreateFormState(): ActivityCreateFormState 
       },
       agenda_blocks: [createEmptyAgendaDay()],
       hotels: [createEmptyHotel()],
-      signup_config: {
-        payment: {
-          enabled: false,
-          qr_image_url: '',
-          invoice_enabled: false,
-          receipt_required: false,
-        },
-        accommodation: {
-          enabled: false,
-          hotel_options: [],
-          room_intents: ['大床房', '标准间'],
-          occupancy_options: ['单住', '合住'],
-        },
-        transport: {
-          enabled: false,
-          note: '',
-          pickup_points: [],
-          dropoff_points: [],
-        },
-      },
+      signup_flow: createDefaultSignupFlow(),
     },
     materials: {
       live: {

@@ -1,4 +1,4 @@
-import { Col, Input, Row, Select, Switch } from 'antd'
+import { Input, Select, Switch } from 'antd'
 import ImageUploader from '../../../components/ImageUploader'
 import SectionCard from '../../../components/SectionCard'
 import type { ActivityCreateFormState } from '../types'
@@ -26,49 +26,77 @@ export default function LiveTab({ state, onChange }: Props) {
 
   return (
     <SectionCard>
-      <Row gutter={[16, 16]}>
-        <Col span={8}>
-          <div className="field-label">启用图片直播</div>
-          <Switch checked={live.enabled} onChange={(checked) => updateLive({ enabled: checked })} />
-        </Col>
-        <Col span={8}>
-          <div className="field-label">跳转方式</div>
-          <Select
-            value={live.action_type}
-            style={{ width: '100%' }}
-            onChange={(value) => updateLive({ action_type: value })}
-            options={[
-              { label: '链接', value: 'link' },
-              { label: '二维码', value: 'qrcode' },
-            ]}
-          />
-        </Col>
-        <Col span={8}>
-          <div className="field-label">按钮文案</div>
-          <Input value={live.button_text} onChange={(e) => updateLive({ button_text: e.target.value })} placeholder="查看直播" />
-        </Col>
-        <Col span={24}>
+      <div className="live-tab">
+        <div className="live-tab__section live-tab__section--compact">
+          <div className="live-tab__switch-row">
+            <div>
+              <div className="field-label">启用图片直播</div>
+              <div className="live-tab__hint">
+                关闭后，小程序端将隐藏「图片直播」Tab
+              </div>
+            </div>
+            <Switch checked={live.enabled} onChange={(checked) => updateLive({ enabled: checked })} />
+          </div>
+        </div>
+
+        <div className="live-tab__section">
+          <div className="live-tab__grid-2">
+            <div>
+              <div className="field-label">跳转方式</div>
+              <Select
+                value={live.action_type}
+                style={{ width: '100%' }}
+                onChange={(value) => updateLive({ action_type: value })}
+                options={[
+                  { label: '链接', value: 'link' },
+                  { label: '二维码', value: 'qrcode' },
+                ]}
+              />
+            </div>
+            <div>
+              <div className="field-label">按钮文案</div>
+              <Input
+                value={live.button_text}
+                onChange={(e) => updateLive({ button_text: e.target.value })}
+                placeholder="查看直播"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="live-tab__section">
           <div className="field-label">直播封面</div>
-          <ImageUploader
-            value={live.cover_image_url}
-            onChange={(url) => updateLive({ cover_image_url: url })}
-          />
-        </Col>
-        {live.action_type === 'link' ? (
-          <Col span={24}>
-            <div className="field-label">跳转链接</div>
-            <Input value={live.action_url} onChange={(e) => updateLive({ action_url: e.target.value })} placeholder="直播跳转链接" />
-          </Col>
-        ) : (
-          <Col span={24}>
-            <div className="field-label">二维码图片</div>
+          <div className="live-tab__dropzone">
             <ImageUploader
-              value={live.qrcode_image_url}
-              onChange={(url) => updateLive({ qrcode_image_url: url })}
+              value={live.cover_image_url}
+              onChange={(url) => updateLive({ cover_image_url: url })}
             />
-          </Col>
-        )}
-      </Row>
+          </div>
+        </div>
+
+        <div className="live-tab__section">
+          {live.action_type === 'link' ? (
+            <>
+              <div className="field-label">跳转链接</div>
+              <Input
+                value={live.action_url}
+                onChange={(e) => updateLive({ action_url: e.target.value })}
+                placeholder="直播跳转链接（支持 https://...）"
+              />
+            </>
+          ) : (
+            <>
+              <div className="field-label">二维码图片</div>
+              <div className="live-tab__dropzone">
+                <ImageUploader
+                  value={live.qrcode_image_url}
+                  onChange={(url) => updateLive({ qrcode_image_url: url })}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </SectionCard>
   )
 }

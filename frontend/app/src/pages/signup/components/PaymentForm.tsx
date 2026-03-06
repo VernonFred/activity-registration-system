@@ -11,9 +11,21 @@ interface PaymentFormProps {
   data: PaymentFormData
   onChange: (data: PaymentFormData) => void
   theme?: string
+  qrImageUrl?: string
+  invoiceEnabled?: boolean
+  uploadEnabled?: boolean
+  receiptRequired?: boolean
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ data, onChange, theme = 'light' }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({
+  data,
+  onChange,
+  theme = 'light',
+  qrImageUrl = '',
+  invoiceEnabled = true,
+  uploadEnabled = true,
+  receiptRequired = false,
+}) => {
   const handleChange = (field: keyof PaymentFormData, value: string) => {
     onChange({ ...data, [field]: value })
   }
@@ -33,28 +45,33 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ data, onChange, theme = 'ligh
       {/* 二维码区域 */}
       <View className="qrcode-section">
         <View className="qrcode-wrapper">
-          {/* 这里可以放置实际的收款二维码 */}
-          <View className="qrcode-placeholder">
-            <Text className="qrcode-text">收款二维码</Text>
-          </View>
+          {qrImageUrl ? (
+            <Image src={qrImageUrl} className="upload-preview" mode="aspectFit" />
+          ) : (
+            <View className="qrcode-placeholder">
+              <Text className="qrcode-text">收款二维码</Text>
+            </View>
+          )}
         </View>
         <Text className="qrcode-tip">请扫码或识别二维码进行缴费</Text>
       </View>
 
       {/* 发票抬头 */}
-      <View className="form-item">
-        <View className="form-label">
-          <Text className="label-text">发票抬头</Text>
-          <Text className="required">*</Text>
+      {invoiceEnabled && (
+        <View className="form-item">
+          <View className="form-label">
+            <Text className="label-text">发票抬头</Text>
+            <Text className="required">*</Text>
+          </View>
+          <Input
+            className="form-input"
+            placeholder="请输入您的开票单位"
+            placeholderClass="placeholder"
+            value={data.invoice_title}
+            onInput={(e) => handleChange('invoice_title', e.detail.value)}
+          />
         </View>
-        <Input
-          className="form-input"
-          placeholder="请输入您的开票单位"
-          placeholderClass="placeholder"
-          value={data.invoice_title}
-          onInput={(e) => handleChange('invoice_title', e.detail.value)}
-        />
-      </View>
+      )}
 
       {/* 电子邮箱 */}
       <View className="form-item">
@@ -72,21 +89,23 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ data, onChange, theme = 'ligh
       </View>
 
       {/* 缴费截图 */}
-      <View className="form-item">
-        <View className="form-label">
-          <Text className="label-text">缴费截图</Text>
+      {uploadEnabled && (
+        <View className="form-item">
+          <View className="form-label">
+            <Text className="label-text">缴费截图</Text>
+            {receiptRequired && <Text className="required">*</Text>}
+          </View>
+          <View className="file-upload" onClick={handleChooseImage}>
+            {data.payment_screenshot ? (
+              <Image src={data.payment_screenshot} className="upload-preview" mode="aspectFit" />
+            ) : (
+              <Text className="upload-text">选择文件  未选择任何文件</Text>
+            )}
+          </View>
         </View>
-        <View className="file-upload" onClick={handleChooseImage}>
-          {data.payment_screenshot ? (
-            <Image src={data.payment_screenshot} className="upload-preview" mode="aspectFit" />
-          ) : (
-            <Text className="upload-text">选择文件  未选择任何文件</Text>
-          )}
-        </View>
-      </View>
+      )}
     </View>
   )
 }
 
 export default PaymentForm
-

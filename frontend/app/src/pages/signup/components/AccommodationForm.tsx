@@ -3,6 +3,7 @@
  * 按设计稿实现: 2025年12月15日
  */
 import { View, Text, Picker, Image } from '@tarojs/components'
+import Taro from '@tarojs/taro'
 import type { AccommodationFormData } from '../types'
 import { ACCOMMODATION_OPTIONS, HOTEL_OPTIONS, ROOM_TYPE_OPTIONS, STAY_TYPE_OPTIONS } from '../constants'
 import './FormStyles.scss'
@@ -14,15 +15,37 @@ interface AccommodationFormProps {
   data: AccommodationFormData
   onChange: (data: AccommodationFormData) => void
   theme?: string
+  hotelOptions?: { value: string; label: string }[]
+  roomIntentOptions?: { value: string; label: string }[]
+  occupancyOptions?: { value: string; label: string }[]
+  uploadEnabled?: boolean
 }
 
-const AccommodationForm: React.FC<AccommodationFormProps> = ({ data, onChange, theme = 'light' }) => {
+const AccommodationForm: React.FC<AccommodationFormProps> = ({
+  data,
+  onChange,
+  theme = 'light',
+  hotelOptions = HOTEL_OPTIONS,
+  roomIntentOptions = ROOM_TYPE_OPTIONS,
+  occupancyOptions = STAY_TYPE_OPTIONS,
+  uploadEnabled = false,
+}) => {
   const handleChange = (field: keyof AccommodationFormData, value: string) => {
     onChange({ ...data, [field]: value })
   }
 
+  const handleChooseAttachment = () => {
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+    }).then(res => {
+      handleChange('attachment', res.tempFilePaths[0])
+    }).catch(() => {})
+  }
+
   const getHotelLabel = (value: string) => {
-    return HOTEL_OPTIONS.find(o => o.value === value)?.label || '请选择'
+    return hotelOptions.find(o => o.value === value)?.label || '请选择'
   }
 
   return (
@@ -57,10 +80,10 @@ const AccommodationForm: React.FC<AccommodationFormProps> = ({ data, onChange, t
         </View>
         <Picker
           mode="selector"
-          range={HOTEL_OPTIONS}
+          range={hotelOptions}
           rangeKey="label"
-          value={HOTEL_OPTIONS.findIndex(o => o.value === data.hotel)}
-          onChange={(e) => handleChange('hotel', HOTEL_OPTIONS[Number(e.detail.value)].value)}
+          value={Math.max(0, hotelOptions.findIndex(o => o.value === data.hotel))}
+          onChange={(e) => handleChange('hotel', hotelOptions[Number(e.detail.value)].value)}
         >
           <View className="form-select">
             <Text className="select-text">{getHotelLabel(data.hotel)}</Text>
@@ -76,7 +99,7 @@ const AccommodationForm: React.FC<AccommodationFormProps> = ({ data, onChange, t
           <Text className="required">*</Text>
         </View>
         <View className="radio-group">
-          {ROOM_TYPE_OPTIONS.map(option => (
+          {roomIntentOptions.map(option => (
             <View 
               key={option.value}
               className={`radio-item ${data.room_type === option.value ? 'active' : ''}`}
@@ -98,7 +121,7 @@ const AccommodationForm: React.FC<AccommodationFormProps> = ({ data, onChange, t
           <Text className="required">*</Text>
         </View>
         <View className="radio-group">
-          {STAY_TYPE_OPTIONS.map(option => (
+          {occupancyOptions.map(option => (
             <View 
               key={option.value}
               className={`radio-item ${data.stay_type === option.value ? 'active' : ''}`}
@@ -112,9 +135,23 @@ const AccommodationForm: React.FC<AccommodationFormProps> = ({ data, onChange, t
           ))}
         </View>
       </View>
+
+      {uploadEnabled && (
+        <View className="form-item">
+          <View className="form-label">
+            <Text className="label-text">补充图片</Text>
+          </View>
+          <View className="file-upload" onClick={handleChooseAttachment}>
+            {data.attachment ? (
+              <Image src={data.attachment} className="upload-preview" mode="aspectFit" />
+            ) : (
+              <Text className="upload-text">选择文件  未选择任何文件</Text>
+            )}
+          </View>
+        </View>
+      )}
     </View>
   )
 }
 
 export default AccommodationForm
-

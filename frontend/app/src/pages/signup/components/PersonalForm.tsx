@@ -16,11 +16,22 @@ interface PersonalFormProps {
   data: PersonalFormData
   onChange: (data: PersonalFormData) => void
   theme?: string
+  uploadEnabled?: boolean
 }
 
-const PersonalForm: React.FC<PersonalFormProps> = ({ data, onChange, theme = 'light' }) => {
+const PersonalForm: React.FC<PersonalFormProps> = ({ data, onChange, theme = 'light', uploadEnabled = false }) => {
   const handleChange = (field: keyof PersonalFormData, value: string) => {
     onChange({ ...data, [field]: value })
+  }
+
+  const handleChooseAttachment = () => {
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+    }).then(res => {
+      handleChange('attachment', res.tempFilePaths[0])
+    }).catch(() => {})
   }
 
   // 微信一键获取手机号
@@ -163,6 +174,21 @@ const PersonalForm: React.FC<PersonalFormProps> = ({ data, onChange, theme = 'li
           </Button>
         </View>
       </View>
+
+      {uploadEnabled && (
+        <View className="form-item">
+          <View className="form-label">
+            <Text className="label-text">补充图片</Text>
+          </View>
+          <View className="file-upload" onClick={handleChooseAttachment}>
+            {data.attachment ? (
+              <Image src={data.attachment} className="upload-preview" mode="aspectFit" />
+            ) : (
+              <Text className="upload-text">选择文件  未选择任何文件</Text>
+            )}
+          </View>
+        </View>
+      )}
     </View>
   )
 }

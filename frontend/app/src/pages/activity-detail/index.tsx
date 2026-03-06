@@ -509,7 +509,13 @@ export default function ActivityDetail() {
   const { theme } = useTheme()
   const activityId = Number(router.params.id)
 
-  const TABS = useMemo(() => TAB_KEYS.map(({ key, labelKey }) => ({ key, label: t(labelKey) })), [t])
+  const TABS = useMemo(
+    () =>
+      TAB_KEYS
+        .filter(({ key }) => key !== 'live' || activity?.materials?.live?.enabled !== false)
+        .map(({ key, labelKey }) => ({ key, label: t(labelKey) })),
+    [t, activity?.materials?.live?.enabled],
+  )
   
   const [activity, setActivity] = useState<Activity | null>(null)
   const [currentSignup, setCurrentSignup] = useState<any | null>(null)
@@ -533,6 +539,12 @@ export default function ActivityDetail() {
     const sysInfo = Taro.getSystemInfoSync()
     setStatusBarHeight(sysInfo.statusBarHeight || 44)
   }, [])
+
+  useEffect(() => {
+    if (activeTab === 'live' && activity?.materials?.live?.enabled === false) {
+      setActiveTab('overview')
+    }
+  }, [activeTab, activity?.materials?.live?.enabled])
 
   // 加载活动数据
   useEffect(() => {

@@ -1672,6 +1672,84 @@ body *:not(.no-transition) {
   }
 }
 
+/* ───────────────────────────────────────────────────────────
+   LIVE TAB
+   ─────────────────────────────────────────────────────────── */
+
+.live-tab {
+  display: grid;
+  gap: 14px;
+}
+
+.live-tab__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--frost-bg-card-sub, rgba(0, 0, 0, 0.02));
+}
+
+[data-theme='dark'] .live-tab__section {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.live-tab__section--compact {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.live-tab__switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.live-tab__hint {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--frost-text-tertiary);
+}
+
+.live-tab__grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.live-tab__dropzone .ant-upload-wrapper,
+.live-tab__dropzone .ant-upload-list {
+  width: 100%;
+}
+
+.live-tab__dropzone .ant-upload.ant-upload-select,
+.live-tab__dropzone .ant-upload-list-item-container {
+  width: 100% !important;
+  height: 140px !important;
+}
+
+.live-tab__dropzone .ant-upload-list-picture-card .ant-upload-list-item {
+  width: 100% !important;
+  height: 140px !important;
+}
+
+.live-tab__dropzone .ant-upload-list-picture-card .ant-upload-list-item img {
+  object-fit: cover;
+}
+
+.live-tab__dropzone .ant-upload.ant-upload-select {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .live-tab__grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* ═══════════════════════════════════════════════════════════
    ANT DESIGN OVERRIDES (Glass-compatible)
@@ -2978,4 +3056,42 @@ body *:not(.no-transition) {
   .dashboard-kpis--two {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.form-designer-preview-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+}
+
+.form-designer-preview-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.form-designer-preview-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-designer-preview-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 999px;
+}
+
+[data-theme="dark"] .form-designer-preview-scroll {
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+[data-theme="dark"] .form-designer-preview-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.form-designer-select .ant-select-selector {
+  background: var(--frost-bg-surface-raised) !important;
+  border-color: var(--frost-border-input) !important;
+  box-shadow: none !important;
+}
+
+.form-designer-select.ant-select-focused .ant-select-selector,
+.form-designer-select.ant-select-open .ant-select-selector {
+  background: var(--frost-bg-surface-raised) !important;
+  border-color: var(--frost-primary) !important;
 }

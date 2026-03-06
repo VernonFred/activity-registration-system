@@ -1,84 +1,61 @@
 /**
  * 报名页面类型定义
- * 按设计稿重构: 2025年12月15日
  */
 
-// 步骤配置
 export interface StepConfig {
-  key: StepKey
-  number: number
+  key: string
   title: string
   description?: string
   icon?: string
+  enabled?: boolean
+  builtIn?: boolean
+  order?: number
 }
 
-export type StepKey = 'personal' | 'payment' | 'accommodation' | 'transport'
+export type StepKey = string
 
-// 表单字段类型
-export type FieldType = 'text' | 'phone' | 'select' | 'radio' | 'date' | 'file' | 'qrcode'
+export type FieldType = 'text' | 'phone' | 'select' | 'radio' | 'date' | 'file' | 'qrcode' | 'textarea' | 'checkbox' | 'datetime' | 'switch' | 'number'
+export type FieldWidget = 'input' | 'textarea' | 'select' | 'radio' | 'checkboxes' | 'dateTime' | 'switch' | 'image_upload'
 
-// 表单字段定义
-export interface FormField {
-  id: number
-  name: string
-  label: string
-  field_type: FieldType
-  required: boolean
-  placeholder?: string
-  options?: FieldOption[]
-  step?: StepKey
-}
-
-// 字段选项
 export interface FieldOption {
   value: string
   label: string
   is_default?: boolean
 }
 
-// 个人信息表单数据
-export interface PersonalFormData {
+export interface FormField {
+  id?: number
   name: string
-  school: string
-  department: string
-  position?: string
-  phone: string
+  label: string
+  field_type: FieldType
+  required: boolean
+  placeholder?: string
+  options?: FieldOption[]
+  step?: string
+  config?: {
+    step?: string
+    bind?: string
+    widget?: FieldWidget
+    upload?: {
+      max_count?: number
+      required?: boolean
+    }
+  }
 }
 
-// 缴费信息表单数据
-export interface PaymentFormData {
-  invoice_title: string
-  email: string
-  payment_screenshot?: string
+export type StepValues = Record<string, any>
+export type SignupDraft = Record<string, StepValues>
+
+export interface PersonalFormData extends StepValues {}
+export interface PaymentFormData extends StepValues {}
+export interface AccommodationFormData extends StepValues {}
+export interface TransportFormData extends StepValues {}
+export interface SignupFormData extends SignupDraft {}
+
+export interface SignupFlow {
+  steps: StepConfig[]
 }
 
-// 住宿信息表单数据
-export interface AccommodationFormData {
-  accommodation_type: 'self' | 'organizer'
-  hotel: string
-  room_type: 'double' | 'standard'
-  stay_type: 'single' | 'shared'
-}
-
-// 交通信息表单数据
-export interface TransportFormData {
-  pickup_point?: string
-  arrival_time?: string
-  flight_train_number?: string
-  dropoff_point?: string
-  return_time?: string
-  return_flight_train_number?: string
-}
-
-// 完整报名表单数据
-export interface SignupFormData {
-  personal: PersonalFormData
-  payment: PaymentFormData
-  accommodation: AccommodationFormData
-  transport: TransportFormData
-}
-
-// 活动信息（用于报名页面展示）
 export interface ActivityInfo {
   id: number
   title: string
@@ -89,9 +66,13 @@ export interface ActivityInfo {
   group_qr_image_url?: string
 }
 
-// 报名成功数据
 export interface SignupSuccessData {
   activity: ActivityInfo
-  personal: PersonalFormData
-  companionCount?: number  // 已添加的同行人员数量
+  personal: {
+    name?: string
+    school?: string
+    department?: string
+    phone?: string
+  }
+  companionCount?: number
 }

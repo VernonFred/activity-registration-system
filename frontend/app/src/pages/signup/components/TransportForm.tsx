@@ -4,6 +4,7 @@
  */
 import { useState } from 'react'
 import { View, Text, Input, Picker, Image, Swiper, SwiperItem } from '@tarojs/components'
+import Taro from '@tarojs/taro'
 import type { TransportFormData } from '../types'
 import { PICKUP_OPTIONS } from '../constants'
 import './FormStyles.scss'
@@ -17,9 +18,21 @@ interface TransportFormProps {
   data: TransportFormData
   onChange: (data: TransportFormData) => void
   theme?: string
+  pickupOptions?: { value: string; label: string }[]
+  dropoffOptions?: { value: string; label: string }[]
+  note?: string
+  uploadEnabled?: boolean
 }
 
-const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = 'light' }) => {
+const TransportForm: React.FC<TransportFormProps> = ({
+  data,
+  onChange,
+  theme = 'light',
+  pickupOptions = PICKUP_OPTIONS,
+  dropoffOptions = PICKUP_OPTIONS,
+  note = '如果您已购买车票或航班，请填写以下信息。如果暂未购买，可以选择稍后填写。',
+  uploadEnabled = false,
+}) => {
   const [activePanel, setActivePanel] = useState(0)
 
   const handleChange = (field: keyof TransportFormData, value: string) => {
@@ -27,11 +40,11 @@ const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = '
   }
 
   const getPickupLabel = (value?: string) => {
-    return PICKUP_OPTIONS.find(o => o.value === value)?.label || '选择接站地点'
+    return pickupOptions.find(o => o.value === value)?.label || '选择接站地点'
   }
   
   const getDropoffLabel = (value?: string) => {
-    return PICKUP_OPTIONS.find(o => o.value === value)?.label || '选择送站地点'
+    return dropoffOptions.find(o => o.value === value)?.label || '选择送站地点'
   }
 
   const formatDateTime = (dateTime?: string) => {
@@ -44,12 +57,22 @@ const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = '
     { key: 'return', title: '返程信息', tone: 'red' as const },
   ]
 
+  const handleChooseAttachment = () => {
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+    }).then(res => {
+      handleChange('attachment', res.tempFilePaths[0])
+    }).catch(() => {})
+  }
+
   return (
     <View className={`form-container transport-form-container theme-${theme}`}>
       {/* 提示信息 */}
       <View className="info-tip">
         <Text className="tip-text">
-          如果您已购买车票或航班，请填写以下信息。如果暂未购买，可以选择稍后填写。
+          {note}
         </Text>
       </View>
 
@@ -74,10 +97,10 @@ const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = '
               <View className="form-item">
                 <Picker
                   mode="selector"
-                  range={PICKUP_OPTIONS}
+                  range={pickupOptions}
                   rangeKey="label"
-                  value={PICKUP_OPTIONS.findIndex(o => o.value === data.pickup_point)}
-                  onChange={(e) => handleChange('pickup_point', PICKUP_OPTIONS[Number(e.detail.value)].value)}
+                  value={Math.max(0, pickupOptions.findIndex(o => o.value === data.pickup_point))}
+                  onChange={(e) => handleChange('pickup_point', pickupOptions[Number(e.detail.value)].value)}
                 >
                   <View className="form-select">
                     <Text className="select-text">{getPickupLabel(data.pickup_point)}</Text>
@@ -125,10 +148,10 @@ const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = '
               <View className="form-item">
                 <Picker
                   mode="selector"
-                  range={PICKUP_OPTIONS}
+                  range={dropoffOptions}
                   rangeKey="label"
-                  value={PICKUP_OPTIONS.findIndex(o => o.value === data.dropoff_point)}
-                  onChange={(e) => handleChange('dropoff_point', PICKUP_OPTIONS[Number(e.detail.value)].value)}
+                  value={Math.max(0, dropoffOptions.findIndex(o => o.value === data.dropoff_point))}
+                  onChange={(e) => handleChange('dropoff_point', dropoffOptions[Number(e.detail.value)].value)}
                 >
                   <View className="form-select">
                     <Text className="select-text">{getDropoffLabel(data.dropoff_point)}</Text>
@@ -172,6 +195,21 @@ const TransportForm: React.FC<TransportFormProps> = ({ data, onChange, theme = '
           />
         ))}
       </View>
+
+      {uploadEnabled && (
+        <View className="form-item">
+          <View className="form-label">
+            <Text className="label-text">补充图片</Text>
+          </View>
+          <View className="file-upload" onClick={handleChooseAttachment}>
+            {data.attachment ? (
+              <Image src={data.attachment} className="upload-preview" mode="aspectFit" />
+            ) : (
+              <Text className="upload-text">选择文件  未选择任何文件</Text>
+            )}
+          </View>
+        </View>
+      )}
     </View>
   )
 }
