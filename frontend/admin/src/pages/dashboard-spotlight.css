@@ -1,0 +1,219 @@
+.dashboard-spotlight {
+  display: grid;
+  gap: 12px;
+}
+
+.dashboard-spotlight__item {
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.56);
+}
+
+[data-theme='dark'] .dashboard-spotlight__item {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-spotlight__meta,
+.dashboard-spotlight__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dashboard-spotlight__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--frost-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+[data-theme='dark'] .dashboard-spotlight__status {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-spotlight__date,
+.dashboard-spotlight__footer span {
+  color: var(--frost-text-muted);
+  font-size: 12px;
+}
+
+.dashboard-spotlight__title {
+  margin-top: 12px;
+  color: var(--frost-text);
+  font-family: var(--frost-font-display);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.dashboard-spotlight__footer {
+  margin-top: 14px;
+}
+
+.dashboard-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--frost-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 1280px) {
+  .dashboard-grid--lead,
+  .dashboard-grid--secondary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-signal {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-signal__stack {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+  }
+
+  .dashboard-cta {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-hero__tools {
+    justify-content: flex-start;
+  }
+
+  .dashboard-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-signal__stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-rail-item,
+  .dashboard-feed__item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .dashboard-rail-item time,
+  .dashboard-feed__meta time {
+    margin-left: 0;
+    grid-column: 2;
+  }
+}
+
+/* layout cleanup overrides */
+.dashboard-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 4px;
+}
+
+.dashboard-topbar__title {
+  margin: 0;
+  color: var(--frost-text);
+  font-family: var(--frost-font-display);
+  font-size: 24px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-topbar__tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dashboard-topbar__select {
+  min-width: 180px;
+}
+
+.dashboard-kpi__meta {
+  min-height: 18px;
+}
+
+.dashboard-grid--secondary {
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-topbar__tools {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.dashboard-topbar--compact {
+  padding: 0;
+  justify-content: flex-end;
+}
+
+.dashboard-topbar__tools--end {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.dashboard-kpis--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.dashboard-signal--chart-only {
+  display: block;
+}
+
+.dashboard-signal__chart--full {
+  padding-right: 0;
+}
+
+.dashboard-feed--clean {
+  gap: 12px;
+}
+
+.dashboard-feed__item--compact {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.dashboard-feed__target {
+  color: var(--frost-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .dashboard-kpis--two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

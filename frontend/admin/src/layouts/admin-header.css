@@ -1,0 +1,170 @@
+/* ═══════════════════════════════════════════════════════════
+   HEADER — Floating Glass Bar
+   ═══════════════════════════════════════════════════════════ */
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--frost-header-height);
+  padding: 0 var(--frost-page-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--frost-bg-header);
+  backdrop-filter: var(--frost-blur-md);
+  -webkit-backdrop-filter: var(--frost-blur-md);
+  border-bottom: 1px solid var(--frost-border-subtle);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.04),
+    var(--frost-shadow-inset);
+}
+
+.admin-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--frost-space-3);
+  min-width: 0;
+}
+
+.admin-header__toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--frost-radius-md);
+  border: 1px solid var(--frost-border);
+  background: var(--frost-bg-surface);
+  color: var(--frost-text-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background var(--frost-duration-fast) var(--frost-ease),
+    color var(--frost-duration-fast) var(--frost-ease);
+}
+
+.admin-header__toggle:hover {
+  background: var(--frost-bg-surface-hover);
+  color: var(--frost-text);
+}
+
+.admin-header__breadcrumb {
+  font-size: var(--frost-text-sm);
+  color: var(--frost-text-muted);
+}
+
+.admin-header__breadcrumb a {
+  color: var(--frost-text-muted);
+  transition: color var(--frost-duration-fast) var(--frost-ease);
+}
+
+.admin-header__breadcrumb a:hover {
+  color: var(--frost-primary);
+}
+
+.admin-header__breadcrumb .current {
+  color: var(--frost-text);
+  font-weight: var(--frost-weight-medium);
+}
+
+.admin-header__right {
+  display: flex;
+  align-items: center;
+  gap: var(--frost-space-3);
+}
+
+/* Theme toggle */
+.admin-header__theme-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--frost-radius-md);
+  border: 1px solid var(--frost-border);
+  background: var(--frost-bg-surface);
+  color: var(--frost-text-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition:
+    background var(--frost-duration-fast) var(--frost-ease),
+    color var(--frost-duration-fast) var(--frost-ease),
+    transform var(--frost-duration-fast) var(--frost-ease-spring);
+}
+
+.admin-header__theme-btn:hover {
+  background: var(--frost-bg-surface-hover);
+  color: var(--frost-primary);
+  transform: rotate(15deg);
+}
+
+/* Account pill */
+.admin-header__account {
+  border: 1px solid var(--frost-border);
+  background: var(--frost-bg-surface);
+  backdrop-filter: var(--frost-blur-sm);
+  -webkit-backdrop-filter: var(--frost-blur-sm);
+  border-radius: var(--frost-radius-pill);
+  padding: 5px 14px 5px 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition:
+    border-color var(--frost-duration-fast) var(--frost-ease),
+    box-shadow var(--frost-duration-fast) var(--frost-ease);
+}
+
+.admin-header__account:hover {
+  border-color: var(--frost-primary-glow);
+  box-shadow: var(--frost-shadow-glow);
+}
+
+.admin-header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--frost-text-inverse);
+  font-family: var(--frost-font-display);
+  font-weight: var(--frost-weight-semibold);
+  font-size: var(--frost-text-sm);
+  background: linear-gradient(135deg, var(--frost-primary, #0d9488), #0f766e);
+}
+
+[data-theme="dark"] .admin-header__avatar {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+.admin-header__account-name {
+  font-size: var(--frost-text-sm);
+  font-weight: var(--frost-weight-medium);
+  color: var(--frost-text);
+}
+
+.admin-header__account-role {
+  font-size: var(--frost-text-xs);
+  color: var(--frost-text-muted);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   CONTENT AREA
+   ═══════════════════════════════════════════════════════════ */
+
+.admin-content {
+  padding: var(--frost-page-padding);
+  position: relative;
+  z-index: 1;
+  animation: frost-fade-in 400ms var(--frost-ease-out);
+}
+
+@keyframes frost-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

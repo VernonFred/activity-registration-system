@@ -1,0 +1,81 @@
+/* ═══════════════════════════════════════════════════════════
+   ACTIVITY CREATE — Overview Tab (双栏布局)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────
+   LIVE TAB
+   ─────────────────────────────────────────────────────────── */
+
+.live-tab {
+  display: grid;
+  gap: 14px;
+}
+
+.live-tab__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--frost-bg-card-sub, rgba(0, 0, 0, 0.02));
+}
+
+[data-theme='dark'] .live-tab__section {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.live-tab__section--compact {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.live-tab__switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.live-tab__hint {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--frost-text-tertiary);
+}
+
+.live-tab__grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.live-tab__dropzone .ant-upload-wrapper,
+.live-tab__dropzone .ant-upload-list {
+  width: 100%;
+}
+
+.live-tab__dropzone .ant-upload.ant-upload-select,
+.live-tab__dropzone .ant-upload-list-item-container {
+  width: 100% !important;
+  height: 140px !important;
+}
+
+.live-tab__dropzone .ant-upload-list-picture-card .ant-upload-list-item {
+  width: 100% !important;
+  height: 140px !important;
+}
+
+.live-tab__dropzone .ant-upload-list-picture-card .ant-upload-list-item img {
+  object-fit: cover;
+}
+
+.live-tab__dropzone .ant-upload.ant-upload-select {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .live-tab__grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

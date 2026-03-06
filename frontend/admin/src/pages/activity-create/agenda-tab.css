@@ -1,0 +1,109 @@
+.agenda-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.agenda-tab__day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.agenda-tab__day-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: var(--frost-weight-semibold);
+  color: var(--frost-text);
+}
+
+.agenda-tab__day-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.agenda-tab__group {
+  border: 1px solid var(--frost-border-subtle);
+  border-radius: var(--frost-radius-lg);
+  padding: 12px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+[data-theme='dark'] .agenda-tab__group {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.agenda-tab__group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agenda-tab__group-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: var(--frost-weight-semibold);
+  color: var(--frost-text);
+}
+
+.agenda-tab__group-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.agenda-tab__entry {
+  border: 1px solid var(--frost-border-subtle);
+  border-radius: var(--frost-radius-md);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+[data-theme='dark'] .agenda-tab__entry {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.agenda-tab__entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agenda-tab__entry-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: var(--frost-weight-medium);
+  color: var(--frost-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.agenda-tab__entry-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .agenda-tab__day-fields,
+  .agenda-tab__group-fields,
+  .agenda-tab__entry-row-3 {
+    grid-template-columns: 1fr;
+  }
+}

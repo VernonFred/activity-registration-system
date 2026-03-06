@@ -3,6 +3,9 @@ import { Moon, Sun } from 'lucide-react'
 import { login, setToken } from '../services/auth'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useThemeContext } from '../hooks/useTheme'
+import './login.css'
+import '../layouts/snow-header.css'
+import '../layouts/snow-sidebar-frame.css'
 
 export default function Login() {
   const navigate = useNavigate()

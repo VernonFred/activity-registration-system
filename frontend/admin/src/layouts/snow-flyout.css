@@ -1,0 +1,45 @@
+.snow-flyout {
+  position: absolute;
+  left: calc(100% + 10px);
+  width: 164px;
+  padding: 8px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)),
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.24), transparent 38%);
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  z-index: 12;
+}
+
+[data-theme='dark'] .snow-flyout {
+  background:
+    linear-gradient(180deg, rgba(8, 8, 8, 0.9), rgba(16, 16, 16, 0.82)),
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.04), transparent 38%);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.snow-flyout__item {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--frost-text-secondary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.snow-flyout__item:hover,
+.snow-flyout__item.is-active {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--frost-text);
+}
+
+[data-theme='dark'] .snow-flyout__item:hover,
+[data-theme='dark'] .snow-flyout__item.is-active {
+  background: rgba(255, 255, 255, 0.06);
+}

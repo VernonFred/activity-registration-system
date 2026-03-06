@@ -1,0 +1,26 @@
+// ── 我的发票抬头 ──
+  export const invoiceHeaders = {
+    addTitle: '添加发票抬头',
+    editTitle: '编辑发票抬头',
+    personal: '个人',
+    company: '单位',
+    nameLabel: '名称',
+    taxNo: '税号',
+    companyAddress: '单位地址',
+    phoneLabel: '电话',
+    bankName: '开户银行',
+    bankAccount: '银行账号',
+    namePlaceholderPersonal: '姓名（必填）',
+    namePlaceholderCompany: '单位名称（必填）',
+    taxNoPlaceholder: '纳税人识别号',
+    addressPlaceholder: '单位地址（选填）',
+    phonePlaceholder: '电话（选填）',
+    bankNamePlaceholder: '开户银行（选填）',
+    bankAccountPlaceholder: '银行账号（选填）',
+    deleteConfirmTitle: '删除发票抬头',
+    deleteConfirmContent: '确定要删除该发票抬头吗？',
+    enterNameHint: '请输入名称',
+    addSuccess: '添加成功',
+    saveSuccess: '保存成功',
+    noHeaders: '暂无发票抬头'
+  }

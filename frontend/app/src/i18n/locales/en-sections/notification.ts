@@ -1,0 +1,22 @@
+// ── Notification Content ──
+  export const notification = {
+    mePrefix: 'Me: ',
+    signupSubmittedTitle: 'Registration Successful',
+    signupSubmittedBody: 'Your registration for "{{activity}}" is confirmed. Please attend on time.',
+    signupApprovedTitle: 'Registration Approved',
+    signupApprovedBody: 'Your registration for "{{activity}}" has been approved.',
+    signupRejectedTitle: 'Registration Rejected',
+    signupRejectedBody: 'Your registration for "{{activity}}" was not approved.',
+    activityReminderTitle: 'Event Reminder',
+    activityReminderBody: '"{{activity}}" is about to start. Please get ready.',
+    checkinReminderTitle: 'Check-in Reminder',
+    checkinReminderBody: 'Check-in for "{{activity}}" is now open. Please check in promptly.',
+    surveyTitle: 'Complete Survey',
+    surveyBody: '"{{activity}}" has concluded. We\'d love to hear your feedback.',
+    unpaidTitle: 'Payment Pending',
+    unpaidBody: 'Payment for "{{activity}}" is pending. Please complete it soon.',
+    badgeEarnedTitle: 'Badge Earned',
+    badgeEarnedBody: 'Congratulations! You\'ve unlocked the "{{badge}}" badge.',
+    action_2: 'Fill Out',
+    action_4: 'View Badge',
+  }

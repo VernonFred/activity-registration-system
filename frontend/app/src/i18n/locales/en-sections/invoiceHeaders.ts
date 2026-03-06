@@ -1,0 +1,26 @@
+// ── Invoice Headers ──
+  export const invoiceHeaders = {
+    addTitle: 'Add Invoice Header',
+    editTitle: 'Edit Invoice Header',
+    personal: 'Personal',
+    company: 'Company',
+    nameLabel: 'Name',
+    taxNo: 'Tax ID',
+    companyAddress: 'Address',
+    phoneLabel: 'Phone',
+    bankName: 'Bank',
+    bankAccount: 'Account',
+    namePlaceholderPersonal: 'Name (required)',
+    namePlaceholderCompany: 'Company name (required)',
+    taxNoPlaceholder: 'Tax identification number',
+    addressPlaceholder: 'Address (optional)',
+    phonePlaceholder: 'Phone (optional)',
+    bankNamePlaceholder: 'Bank name (optional)',
+    bankAccountPlaceholder: 'Account number (optional)',
+    deleteConfirmTitle: 'Delete Invoice Header',
+    deleteConfirmContent: 'Delete this invoice header?',
+    enterNameHint: 'Please enter a name',
+    addSuccess: 'Added',
+    saveSuccess: 'Saved',
+    noHeaders: 'No invoice headers'
+  }

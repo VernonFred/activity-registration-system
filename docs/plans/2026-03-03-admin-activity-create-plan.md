@@ -298,3 +298,10 @@
 1. 拆分 `FormDesigner.tsx`，避免继续在超长单文件上叠加逻辑
 2. 拆分 `frontend/admin/src/styles/index.css`，把表单设计相关样式抽到独立模块
 3. 对动态步骤链路执行一次完整端到端回归
+
+
+## 2026年3月6日补充（结构治理已完成）
+
+- 本轮超长文件拆分治理已完成，管理端与报名相关链路的超标文件已全部清零。
+- `FormDesigner`、`ActivityCreate`、报名小程序页以及后端 `activities/signups` service 已完成模块化拆分。
+- 当前专项计划的执行重点从“结构拆分”切回“真实业务回归”和“页面细节收口”。

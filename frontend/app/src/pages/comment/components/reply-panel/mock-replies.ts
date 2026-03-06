@@ -1,0 +1,77 @@
+import type { Reply } from '../../types'
+
+export const MOCK_NESTED_REPLIES: Reply[] = [
+  {
+    id: 101,
+    comment_id: 1,
+    user_name: '王小二',
+    user_avatar: 'https://i.pravatar.cc/150?img=5',
+    content: '@王大二 真的就是干货满满！',
+    created_at: '2026-01-05T15:30:00',
+    reply_to: '王大二',
+    like_count: 12,
+    is_liked: false,
+    replies: [
+      {
+        id: 1011,
+        comment_id: 1,
+        user_name: '李四',
+        user_avatar: 'https://i.pravatar.cc/150?img=7',
+        content: '@王小二 同意你的看法！',
+        created_at: '2026-01-05T16:00:00',
+        reply_to: '王小二',
+        like_count: 5,
+        is_liked: false,
+        replies: [
+          {
+            id: 10111,
+            comment_id: 1,
+            user_name: '张三',
+            user_avatar: 'https://i.pravatar.cc/150?img=8',
+            content: '@李四 确实如此',
+            created_at: '2026-01-05T17:00:00',
+            reply_to: '李四',
+            like_count: 2,
+            is_liked: false,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 102,
+    comment_id: 1,
+    user_name: '王大二',
+    user_avatar: 'https://i.pravatar.cc/150?img=6',
+    content: '同意楼上的观点！',
+    created_at: '2026-01-05T16:00:00',
+    like_count: 8,
+    is_liked: false,
+    replies: [
+      {
+        id: 1021,
+        comment_id: 1,
+        user_name: '赵五',
+        user_avatar: 'https://i.pravatar.cc/150?img=9',
+        content: '@王大二 说得好！',
+        created_at: '2026-01-05T18:00:00',
+        reply_to: '王大二',
+        like_count: 3,
+        is_liked: false,
+        replies: [
+          {
+            id: 10211,
+            comment_id: 1,
+            user_name: '钱六',
+            user_avatar: 'https://i.pravatar.cc/150?img=10',
+            content: '@赵五 +1',
+            created_at: '2026-01-05T19:00:00',
+            reply_to: '赵五',
+            like_count: 1,
+            is_liked: false,
+          },
+        ],
+      },
+    ],
+  },
+]

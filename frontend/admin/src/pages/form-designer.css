@@ -1,0 +1,37 @@
+.form-designer-preview-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+}
+
+.form-designer-preview-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.form-designer-preview-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-designer-preview-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 999px;
+}
+
+[data-theme="dark"] .form-designer-preview-scroll {
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+[data-theme="dark"] .form-designer-preview-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.form-designer-select .ant-select-selector {
+  background: var(--frost-bg-surface-raised) !important;
+  border-color: var(--frost-border-input) !important;
+  box-shadow: none !important;
+}
+
+.form-designer-select.ant-select-focused .ant-select-selector,
+.form-designer-select.ant-select-open .ant-select-selector {
+  background: var(--frost-bg-surface-raised) !important;
+  border-color: var(--frost-primary) !important;
+}

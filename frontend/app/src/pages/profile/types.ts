@@ -104,3 +104,10 @@ export interface Badge {
   is_featured?: boolean
   is_hidden?: boolean
 }
+
+
+export interface BottomSheetConfig {
+  title: string
+  desc: string
+  onConfirm: () => void
+}

@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════
+   LOGIN PAGE
+   ═══════════════════════════════════════════════════════════ */
+
+.login-bg {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--frost-space-10) var(--frost-space-4);
+  background:
+    var(--frost-mesh-1),
+    var(--frost-mesh-2),
+    var(--frost-mesh-3),
+    var(--frost-bg-page);
+}
+
+.login-card .ant-card-body {
+  padding: 28px 32px 24px;
+}
+
+.login-card__title {
+  font-family: var(--frost-font-display);
+  font-size: 36px;
+  font-weight: var(--frost-weight-extrabold);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--frost-text);
+  margin-bottom: 8px;
+}
+
+.login-card__subtitle {
+  color: var(--frost-text-secondary);
+  margin-bottom: 28px;
+  font-size: var(--frost-text-lg);
+}
+
+.login-card__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: var(--frost-radius-pill);
+  border: 1px solid var(--frost-primary-glow);
+  background: var(--frost-primary-glow);
+  color: var(--frost-primary);
+  font-family: var(--frost-font-display);
+  font-size: 11px;
+  font-weight: var(--frost-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.login-card__hint {
+  margin-top: 4px;
+  color: var(--frost-text-muted);
+  font-size: var(--frost-text-xs);
+}

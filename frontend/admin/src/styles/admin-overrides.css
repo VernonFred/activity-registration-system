@@ -1,0 +1,118 @@
+/* ═══════════════════════════════════════════════════════════
+   ANT DESIGN OVERRIDES (Glass-compatible)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Forms */
+.ant-modal .section-card {
+  box-shadow: none;
+  padding: var(--frost-space-3) var(--frost-space-4);
+}
+
+.ant-form-vertical .ant-form-item {
+  margin-bottom: var(--frost-space-3);
+}
+
+.ant-form-item-label > label {
+  font-weight: var(--frost-weight-medium) !important;
+  color: var(--frost-text-secondary) !important;
+}
+
+/* Pickers */
+.ant-picker {
+  width: 100%;
+}
+
+.ant-picker-input > input {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Primary button glow */
+.ant-btn-primary {
+  box-shadow: 0 6px 20px var(--frost-primary-shadow) !important;
+}
+
+.ant-btn-primary:hover {
+  box-shadow: 0 8px 24px var(--frost-primary-shadow) !important;
+}
+
+/* Tables */
+.ant-table-wrapper .ant-table {
+  background: transparent !important;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+  font-family: var(--frost-font-display) !important;
+  font-weight: var(--frost-weight-semibold) !important;
+  font-size: var(--frost-text-xs) !important;
+  letter-spacing: 0.03em !important;
+  text-transform: uppercase !important;
+}
+
+/* Rich Editor */
+.ql-toolbar.ql-snow {
+  border-radius: var(--frost-radius-md) var(--frost-radius-md) 0 0;
+  border-color: var(--frost-border-input) !important;
+}
+
+.ql-container.ql-snow {
+  border-radius: 0 0 var(--frost-radius-md) var(--frost-radius-md);
+  border-color: var(--frost-border-input) !important;
+  min-height: 220px;
+}
+
+.ql-editor {
+  min-height: 220px;
+  font-family: var(--frost-font-body);
+}
+
+/* Upload */
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload,
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list-item-container {
+  width: 200px;
+  height: 200px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1280px) {
+  .dashboard-stats-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .admin-header {
+    padding-inline: var(--frost-space-4);
+  }
+
+  .admin-content {
+    padding: var(--frost-space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-header__account-name,
+  .admin-header__account-role {
+    display: none;
+  }
+
+  .dashboard-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .section-card {
+    border-radius: var(--frost-radius-lg);
+  }
+}
